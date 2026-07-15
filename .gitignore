@@ -1,0 +1,8 @@
+# OS junk
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# Logs and local script output
+*.log
+*.csv
