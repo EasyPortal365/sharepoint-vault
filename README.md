@@ -64,9 +64,9 @@ Found a trap we haven't documented? Have a script worth sharing? Issues and PRs 
 
 ## Who's behind this
 
-The vault is curated by **Kamil Juřík** — former Microsoft MVP for SharePoint and Microsoft-certified expert, working hands-on with SharePoint since 2001 across dozens of projects, from small intranets to full-blown business platforms. Czech readers may remember his *„Zápisky z bojového pole"* (Notes from the battlefield) — this vault carries that tradition on, in the open.
+The vault is curated by **[Kamil Juřík](https://www.linkedin.com/in/kamiljurik/)** — former Microsoft MVP for SharePoint and Microsoft-certified expert, working hands-on with SharePoint since 2001 across dozens of projects, from small intranets to full-blown business platforms. Czech readers may remember his *„Zápisky z bojového pole"* (Notes from the battlefield) — this vault carries that tradition on, in the open.
 
-It is maintained by the team behind [**EasyPortal 365**](https://www.easyportal365.com) — a suite of business apps built natively on SharePoint Online. The material here comes straight from our day-to-day product development and consulting work.
+It is maintained by the team behind [**EasyPortal 365**](https://www.easyportal365.com) ([LinkedIn](https://www.linkedin.com/company/easyportal-365)) — a suite of business apps built natively on SharePoint Online. The material here comes straight from our day-to-day product development and consulting work.
 
 ## License
 
