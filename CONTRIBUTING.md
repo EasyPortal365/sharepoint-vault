@@ -63,7 +63,7 @@ Edge cases, related traps, links.
 ## Pull requests
 
 1. One topic per PR.
-2. Update the section README's index when you add a file.
+2. When you add a file, update the section README's index **and** the root [INDEX.md](INDEX.md).
 3. Walk through the sanitization table above one more time.
 
 Not sure whether something fits? [Open an issue](https://github.com/EasyPortal365/sharepoint-vault/issues) and ask.

@@ -15,7 +15,7 @@
 
 ---
 
-## What is this?
+## Why this vault exists
 
 **SharePoint Vault** is a growing library of practical material for people who build on, administer, and troubleshoot SharePoint — Online first, on-premises where noted.
 
@@ -38,6 +38,8 @@ It is **not** another copy of Microsoft's documentation. Everything in the vault
 | [`snippets/`](snippets/) | Small copy-paste fragments for daily work |
 | [`templates/`](templates/) | Reusable templates — site scripts, list formatting, schemas |
 | [`resources/`](resources/) | Curated links — tools, docs, community sources |
+
+Prefer everything on a single page? Browse the 🗂️ **[full vault index](INDEX.md)** — a tree of every item in the repo.
 
 ## Fresh from the vault
 
