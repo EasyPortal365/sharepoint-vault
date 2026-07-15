@@ -20,6 +20,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [Choice fields accept any value](gotchas/rest-api/choice-fields-accept-any-value.md) — REST skips choice validation entirely; enforce vocabulary yourself
     - [Lookup fields need `$expand`](gotchas/rest-api/lookup-fields-need-expand.md) — read via `$expand` + projections, write via `<Name>Id`; ~12-lookup query limit
     - [File size needs `$expand=File`](gotchas/rest-api/file-size-needs-expand-file.md) — `File_x0020_Size` 400s in `$select`; use `File/Length`
+    - [Create a modern page via REST (3-step)](gotchas/rest-api/create-modern-page-via-rest-sitepages.md) — `CanvasContent1` won't stick on create; create → SavePageAsDraft → Publish, canvas is JSON
   - **lists/**
     - [The 5,000-item view threshold](gotchas/lists/list-view-threshold-and-indexes.md) — it's scanned rows, not returned rows; index early, page always
   - **spfx/**

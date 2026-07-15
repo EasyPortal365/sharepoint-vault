@@ -19,6 +19,7 @@ Every article carries frontmatter with `tags` and `applies-to`, so repo search g
 | [Choice fields accept any value](rest-api/choice-fields-accept-any-value.md) | Validation is a form-only illusion — REST writes anything; enforce vocabulary yourself |
 | [Lookup fields need `$expand`](rest-api/lookup-fields-need-expand.md) | Relations, not values — read via `$expand` + projected fields, write via `<Name>Id`; mind the ~12-lookup limit |
 | [File size needs `$expand=File`](rest-api/file-size-needs-expand-file.md) | `File_x0020_Size` is computed and 400s in `$select` — use `File/Length` + `File/UIVersionLabel` |
+| [Create a modern page via REST (3-step)](rest-api/create-modern-page-via-rest-sitepages.md) | `CanvasContent1` won't stick on create — it's create → SavePageAsDraft → Publish, and the canvas is JSON, not HTML |
 
 ### lists/
 
