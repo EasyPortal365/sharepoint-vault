@@ -35,6 +35,15 @@ Every single thing in the vault, on one page. Section names link to folder READM
   - **graph/**
     - [`/me/sendMail`: From is always the signed-in user](gotchas/graph/sendmail-from-is-the-signed-in-user.md) — delegated `Mail.Send` can't impersonate; configure Reply-To instead
     - [Purview Audit Query API is async](gotchas/graph/purview-audit-query-api-is-async.md) — hour-long queries; attach to the last succeeded, create in background
+    - [Office files: property demotion changes the hash](gotchas/graph/office-files-property-demotion.md) — metadata PATCH rewrites docx bytes; key change detection on `lastModifiedBy`
+    - [Usage reports are CORS-blocked in the browser](gotchas/graph/usage-reports-cors-blocked-in-browser.md) — fetch server-side; browser inventory = SP Search + `/_api/site/usage`
+    - [Tenant-wide enumeration is app-only](gotchas/graph/tenant-wide-enumeration-is-app-only.md) — `getAllSites` rejects delegated tokens; check the Permissions table first
+    - [`PATCH /me`: directory vs profile fields](gotchas/graph/patch-me-directory-vs-profile-fields.md) — mixed field groups fail whole; two PATCHes, profile best-effort
+  - **search/**
+    - [ViewsX properties sort only by `ViewsLifeTime`](gotchas/search/viewsx-properties-sort-only-by-viewslifetime.md) — windowed counts select but don't sort; re-rank client-side
+    - [Compare SharePoint paths decode-first](gotchas/search/compare-sharepoint-paths-decode-first.md) — normalize encoding + boundary-aware prefix, or matches never fire
+  - **powershell/**
+    - [PS 5.1 `Get-Content` mangles UTF-8](gotchas/powershell/get-content-mangles-utf8.md) — ANSI default double-encodes diacritics; use `System.IO.File` + BOM-less `UTF8Encoding`
 - 🧭 **[guides/](guides/)** — end-to-end walkthroughs
   - [Calling SharePoint REST like a pro](guides/calling-sharepoint-rest-like-a-pro.md) — clients, headers, safe writes, reading well, and the ten-minute diagnosis routine
 - ✂️ **[snippets/](snippets/)** — small copy-paste fragments
