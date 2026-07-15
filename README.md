@@ -43,10 +43,10 @@ Prefer everything on a single page? Browse the 🗂️ **[full vault index](INDE
 
 ## Fresh from the vault
 
+- [**SharePoint's SPA router hijacks anchor clicks**](gotchas/spfx/spa-router-hijacks-anchor-clicks.md) — why your React `onClick` never fires on published pages
+- [**File upload 406 needs verbose**](gotchas/rest-api/file-upload-406-needs-verbose.md) — `/Files/add` never learned modern OData, and mobile cameras upload nameless files
+- [**Graph `/me/sendMail`: From is always the signed-in user**](gotchas/graph/sendmail-from-is-the-signed-in-user.md) — what a "sender address" setting should actually control
 - [**Get-SiteCollectionInventory.ps1**](scripts/reporting/Get-SiteCollectionInventory.ps1) — one CSV with every site collection: storage, owner, template, sharing, last activity
-- [**Search REST API needs `odata-version: 3.0`**](gotchas/rest-api/search-api-needs-odata-version-3.md) — the header that turns mysterious 500s into working queries
-- [**SPFx and the ES2015 `lib` trap**](gotchas/spfx/es2015-lib-forbidden-apis.md) — why `padStart` breaks your build (TS2550) and what to use instead
-- [**Get lists by URL, not by title**](gotchas/rest-api/get-list-by-url-not-by-title.md) — rename-proof your list lookups
 
 ## How to use the vault
 
