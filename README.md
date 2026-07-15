@@ -2,6 +2,8 @@
 
 # 🗝️ SharePoint Vault
 
+*„Zápisky z bojového pole" — Notes from the battlefield.*
+
 **Field-tested scripts, hard-won lessons, and ready-to-use templates for SharePoint professionals.**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
@@ -62,7 +64,9 @@ Found a trap we haven't documented? Have a script worth sharing? Issues and PRs 
 
 ## Who's behind this
 
-Maintained by the team behind [**EasyPortal 365**](https://www.easyportal365.com) — a suite of business apps built natively on SharePoint Online. The material here comes straight from our day-to-day product development and consulting work.
+The vault is curated by **Kamil Juřík** — former Microsoft MVP for SharePoint and Microsoft-certified expert, working hands-on with SharePoint since 2001 across dozens of projects, from small intranets to full-blown business platforms. Czech readers may remember his *„Zápisky z bojového pole"* (Notes from the battlefield) — this vault carries that tradition on, in the open.
+
+It is maintained by the team behind [**EasyPortal 365**](https://www.easyportal365.com) — a suite of business apps built natively on SharePoint Online. The material here comes straight from our day-to-day product development and consulting work.
 
 ## License
 
