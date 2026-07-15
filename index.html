@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SharePoint Vault — field-tested scripts, gotchas and guides for SharePoint professionals</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="Zápisky z bojového pole — notes from the battlefield. Field-tested PowerShell scripts, hard-won gotchas, guides and templates for SharePoint professionals. Maintained by the EasyPortal 365 team.">
+  <meta property="og:title" content="SharePoint Vault">
+  <meta property="og:description" content="Field-tested scripts, hard-won lessons, and ready-to-use templates for SharePoint professionals.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://sharepointvault.online/">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🗝️</text></svg>">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsify@4/lib/themes/vue.css">
+  <style>
+    :root {
+      --theme-color: #00A8B0;
+    }
+    .sidebar > h1 a { color: #002163; font-weight: 700; }
+    .app-name-link img { max-width: 140px; }
+    .markdown-section code { color: #0a5d61; }
+    .markdown-section table { display: block; overflow-x: auto; }
+    .cover-blurb { color: #4A5874; }
+  </style>
+</head>
+<body>
+  <div id="app">Opening the vault…</div>
+  <script>
+    window.$docsify = {
+      name: '🗝️ SharePoint Vault',
+      repo: 'EasyPortal365/sharepoint-vault',
+      homepage: 'README.md',
+      loadSidebar: '_sidebar.md',
+      subMaxLevel: 2,
+      auto2top: true,
+      maxLevel: 3,
+      search: {
+        placeholder: 'Search the vault…',
+        noData: 'Nothing found — try a different term.',
+        depth: 3
+      },
+      frontMatter: {}
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/docsify@4/lib/docsify.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/docsify@4/lib/plugins/search.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/docsify@4/lib/plugins/front-matter.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/docsify-copy-code@2/dist/docsify-copy-code.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-typescript.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-tsx.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-jsx.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-powershell.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-json.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-bash.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-http.min.js"></script>
+</body>
+</html>
