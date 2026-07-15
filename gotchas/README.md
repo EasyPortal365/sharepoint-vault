@@ -20,6 +20,8 @@ Every article carries frontmatter with `tags` and `applies-to`, so repo search g
 | [Lookup fields need `$expand`](rest-api/lookup-fields-need-expand.md) | Relations, not values — read via `$expand` + projected fields, write via `<Name>Id`; mind the ~12-lookup limit |
 | [File size needs `$expand=File`](rest-api/file-size-needs-expand-file.md) | `File_x0020_Size` is computed and 400s in `$select` — use `File/Length` + `File/UIVersionLabel` |
 | [Create a modern page via REST (3-step)](rest-api/create-modern-page-via-rest-sitepages.md) | `CanvasContent1` won't stick on create — it's create → SavePageAsDraft → Publish, and the canvas is JSON, not HTML |
+| [`$filter` on multi-value person fields 400s](rest-api/filter-on-multivalue-person-field-400.md) | UserMulti projections don't filter server-side — fall back to client filtering, but only on HTTP 400 |
+| [Silent fallbacks poison destructive writes](rest-api/silent-fallbacks-poison-destructive-writes.md) | `catch → []` is great for rendering and catastrophic for delete-then-insert syncs — offer strict and safe reads |
 
 ### lists/
 
@@ -37,6 +39,10 @@ Every article carries frontmatter with `tags` and `applies-to`, so repo search g
 | [Minified React errors cheatsheet](spfx/react-minified-errors-cheatsheet.md) | #310/#300 = hooks after early returns, #31 = object as child, #185 = setState loop — decoded for SPFx |
 | [People search endpoints that work](spfx/people-search-endpoints-that-work.md) | `clientPeoplePickerSearchUser` comes back empty, `siteusers` is not a directory — use the SP Search People source + `ensureuser` |
 | [Fixed dropdowns in transformed panels](spfx/fixed-dropdowns-in-transformed-panels.md) | `transform` makes ancestors the containing block even for `position: fixed` — portal your dropdowns to `document.body` |
+| [Teams personal app needs global deploy](spfx/teams-personal-app-needs-global-deploy.md) | `skipFeatureDeployment: true` + "all sites", or the root-hosted app crashes on `componentType`; plus the `teams/` icon-folder convention |
+| [Teams mobile webview renders desktop width](spfx/teams-mobile-webview-renders-desktop-width.md) | ~980px layout you can't reproduce in a browser — fix the viewport meta in Teams, then debug breakpoints |
+| [Centered flex clips on mobile](spfx/centered-flex-clips-on-mobile.md) | `justify-content:center` + overflow = content cut off above the scroll — use flex "springs" instead |
+| [JSX attributes and smart quotes](spfx/jsx-attributes-and-smart-quotes.md) | Typographic quotes in `"…"` attributes = TS1003 — wrap localized strings as `{'…'}` |
 
 ### app-catalog/
 
@@ -67,6 +73,19 @@ Every article carries frontmatter with `tags` and `applies-to`, so repo search g
 | Gotcha | TL;DR |
 |---|---|
 | [PS 5.1 `Get-Content` mangles UTF-8](powershell/get-content-mangles-utf8.md) | ANSI-default reads double-encode diacritics (`á`→`Ã¡`) — go through `System.IO.File` with BOM-less `UTF8Encoding` |
+| [Smart quotes are string delimiters](powershell/smart-quotes-are-string-delimiters.md) | PS parses `„` and `"` like ASCII `"` — localized text belongs in single-quoted here-strings |
+
+### security/
+
+| Gotcha | TL;DR |
+|---|---|
+| [Stored XSS via list content](security/stored-xss-from-list-content.md) | React doesn't block `javascript:` hrefs or sanitize SVG — allowlist `safeHref` with C0-strip at every sink |
+
+### tooling/
+
+| Gotcha | TL;DR |
+|---|---|
+| [Git Bash mangles backslashes for native exes](tooling/git-bash-mangles-backslashes-for-native-exes.md) | `[\\/]` arrives as `[/]` — Windows-path regexes silently under-match; use `.{1,4}` or run from PowerShell |
 
 ## Writing your own
 

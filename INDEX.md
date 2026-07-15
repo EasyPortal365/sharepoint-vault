@@ -21,6 +21,8 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [Lookup fields need `$expand`](gotchas/rest-api/lookup-fields-need-expand.md) — read via `$expand` + projections, write via `<Name>Id`; ~12-lookup query limit
     - [File size needs `$expand=File`](gotchas/rest-api/file-size-needs-expand-file.md) — `File_x0020_Size` 400s in `$select`; use `File/Length`
     - [Create a modern page via REST (3-step)](gotchas/rest-api/create-modern-page-via-rest-sitepages.md) — `CanvasContent1` won't stick on create; create → SavePageAsDraft → Publish, canvas is JSON
+    - [`$filter` on multi-value person fields 400s](gotchas/rest-api/filter-on-multivalue-person-field-400.md) — fall back to client filtering, but only on HTTP 400
+    - [Silent fallbacks poison destructive writes](gotchas/rest-api/silent-fallbacks-poison-destructive-writes.md) — `catch → []` + delete-then-insert = data loss; strict and safe reads
   - **lists/**
     - [The 5,000-item view threshold](gotchas/lists/list-view-threshold-and-indexes.md) — it's scanned rows, not returned rows; index early, page always
   - **spfx/**
@@ -30,6 +32,10 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [Minified React errors cheatsheet](gotchas/spfx/react-minified-errors-cheatsheet.md) — #310/#300/#321/#31/#185 decoded for SPFx debugging
     - [People search endpoints that work](gotchas/spfx/people-search-endpoints-that-work.md) — SP Search People source + `ensureuser`; why the obvious endpoints fail
     - [Fixed dropdowns in transformed panels](gotchas/spfx/fixed-dropdowns-in-transformed-panels.md) — the CSS transform containing-block trap; portal to `document.body`
+    - [Teams personal app needs global deploy](gotchas/spfx/teams-personal-app-needs-global-deploy.md) — `skipFeatureDeployment: true` + "all sites"; the `teams/` icon-folder convention
+    - [Teams mobile webview renders desktop width](gotchas/spfx/teams-mobile-webview-renders-desktop-width.md) — ~980px layout; fix the viewport meta in Teams first
+    - [Centered flex clips on mobile](gotchas/spfx/centered-flex-clips-on-mobile.md) — centering + overflow cuts content above the scroll; flex "springs"
+    - [JSX attributes and smart quotes](gotchas/spfx/jsx-attributes-and-smart-quotes.md) — typographic quotes in attributes = TS1003; wrap as `{'…'}`
   - **app-catalog/**
     - [Three `.sppkg` packaging pitfalls](gotchas/app-catalog/sppkg-packaging-pitfalls.md) — ASCII-only solution name, icon exactly 96×96, Publisher column is AppSource-only
   - **graph/**
@@ -44,8 +50,15 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [Compare SharePoint paths decode-first](gotchas/search/compare-sharepoint-paths-decode-first.md) — normalize encoding + boundary-aware prefix, or matches never fire
   - **powershell/**
     - [PS 5.1 `Get-Content` mangles UTF-8](gotchas/powershell/get-content-mangles-utf8.md) — ANSI default double-encodes diacritics; use `System.IO.File` + BOM-less `UTF8Encoding`
+    - [Smart quotes are string delimiters](gotchas/powershell/smart-quotes-are-string-delimiters.md) — `„`/`"` parse like `"`; localized text in single-quoted here-strings
+  - **security/**
+    - [Stored XSS via list content](gotchas/security/stored-xss-from-list-content.md) — React doesn't block `javascript:` hrefs; allowlist `safeHref` with C0-strip at every sink
+  - **tooling/**
+    - [Git Bash mangles backslashes for native exes](gotchas/tooling/git-bash-mangles-backslashes-for-native-exes.md) — `[\\/]` arrives as `[/]`; Windows-path regexes silently under-match
 - 🧭 **[guides/](guides/)** — end-to-end walkthroughs
   - [Calling SharePoint REST like a pro](guides/calling-sharepoint-rest-like-a-pro.md) — clients, headers, safe writes, reading well, and the ten-minute diagnosis routine
+  - [Search queries that actually work](guides/search-queries-that-actually-work.md) — the mandatory header, practical KQL, managed properties, paging, freshness traps
+  - [SharePoint REST vs Microsoft Graph](guides/sharepoint-rest-vs-microsoft-graph.md) — decision table by capability, SPFx auth difference, throttling budgets
 - ✂️ **[snippets/](snippets/)** — small copy-paste fragments
   - **rest/**
     - [Read all items from a large list — paging done right](snippets/rest/get-all-list-items-paged.md) — `$top` caps at 5,000, `$skip` is ignored; follow `odata.nextLink`

@@ -43,10 +43,10 @@ Prefer everything on a single page? Browse the 🗂️ **[full vault index](INDE
 
 ## Fresh from the vault
 
-- [**Office files change their content hash when you PATCH metadata**](gotchas/graph/office-files-property-demotion.md) — property demotion makes `cTag` *and* hashes lie to your sync jobs
-- [**Tenant-wide enumeration in Graph is app-only**](gotchas/graph/tenant-wide-enumeration-is-app-only.md) — the silent 403 that looks like consent trouble
-- [**Guide: Calling SharePoint REST like a pro**](guides/calling-sharepoint-rest-like-a-pro.md) — clients, the headers that matter, safe writes, and a ten-minute diagnosis routine
-- [**PS 5.1 `Get-Content` mangles UTF-8**](gotchas/powershell/get-content-mangles-utf8.md) — why your bulk edit turned `á` into `Ã¡`, and the pattern that doesn't
+- [**Guide: Search queries that actually work**](guides/search-queries-that-actually-work.md) — practical KQL, managed properties, and the traps between you and useful results
+- [**Guide: SharePoint REST vs Microsoft Graph**](guides/sharepoint-rest-vs-microsoft-graph.md) — the decision table we actually use, and where people pick wrong
+- [**Stored XSS via SharePoint list content**](gotchas/security/stored-xss-from-list-content.md) — React won't block `javascript:` hrefs; the `safeHref` pattern with the C0-strip that closes the bypass
+- [**SPFx in Teams: personal apps need global deployment**](gotchas/spfx/teams-personal-app-needs-global-deploy.md) — the `componentType` crash, the `teams/` icon convention, and the tenant-wide extension twist
 
 ## How to use the vault
 
