@@ -6,7 +6,7 @@ PowerShell scripts for SharePoint Online administration and diagnostics.
 
 - Every script carries comment-based help — run `Get-Help .\TheScript.ps1 -Full` before first use.
 - **Read-only unless clearly stated otherwise** in the script header.
-- Built on [PnP.PowerShell](https://pnp.github.io/powershell/) and expecting **your own Entra app registration** passed via `-ClientId` ([why and how](https://pnp.github.io/powershell/articles/registerapplication.html)).
+- **Module policy:** scripts use the official [SharePoint Online Management Shell](https://learn.microsoft.com/en-us/powershell/sharepoint/sharepoint-online/connect-sharepoint-online) (`Microsoft.Online.SharePoint.PowerShell`) wherever it covers the task — plain admin sign-in, no app registration. [PnP.PowerShell](https://pnp.github.io/powershell/) appears only where the official module can't go (list-level and content-level work); those scripts say so in their header and expect **your own Entra app registration** via `-ClientId` ([why and how](https://pnp.github.io/powershell/articles/registerapplication.html)).
 - Review the code before running anything against a production tenant. Always.
 
 ## Index
@@ -21,7 +21,7 @@ PowerShell scripts for SharePoint Online administration and diagnostics.
 
 | Script | Purpose |
 |---|---|
-| [Get-LargeListsReport.ps1](lists-and-libraries/Get-LargeListsReport.ps1) | Finds lists approaching or past the 5,000-item list view threshold |
+| [Get-LargeListsReport.ps1](lists-and-libraries/Get-LargeListsReport.ps1) | Finds lists approaching or past the 5,000-item list view threshold *(PnP — needs list-level access)* |
 
 ## Planned categories
 

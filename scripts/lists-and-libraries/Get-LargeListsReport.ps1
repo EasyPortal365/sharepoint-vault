@@ -10,6 +10,10 @@
 
     READ-ONLY: this script makes no changes.
 
+    Module note: this script uses PnP.PowerShell because the official
+    SharePoint Online Management Shell has no list-level cmdlets — see
+    the module policy in scripts/README.md.
+
     Related gotcha in this repo:
     gotchas/lists/list-view-threshold-and-indexes.md
 

@@ -54,7 +54,7 @@ Edge cases, related traps, links.
 - PowerShell, named `Verb-Noun.ps1` (approved verbs), placed in a category subfolder.
 - Must carry comment-based help (`.SYNOPSIS`, `.DESCRIPTION`, `.PARAMETER`, `.EXAMPLE`, `.NOTES`) and a `#Requires` statement.
 - **Read-only by default.** Anything that changes data must support `-WhatIf` and say so loudly in its header.
-- PnP.PowerShell preferred; parameterize the Entra app registration with `-ClientId` — never hardcode it.
+- **Prefer the official SharePoint Online Management Shell** (`Microsoft.Online.SharePoint.PowerShell`). Use PnP.PowerShell only where the official module doesn't reach (list-level and content-level work) — say so in the script header, and parameterize the Entra app registration with `-ClientId`, never hardcode it.
 
 ### Guides (`guides/`) and snippets (`snippets/`)
 

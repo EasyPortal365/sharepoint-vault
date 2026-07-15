@@ -15,7 +15,7 @@
 
 ---
 
-## Why this vault exists
+## Straight from the battlefield
 
 **SharePoint Vault** is a growing library of practical material for people who build on, administer, and troubleshoot SharePoint — Online first, on-premises where noted.
 
@@ -56,7 +56,7 @@ All scripts in the vault:
 
 - are **read-only unless clearly stated otherwise** in their header,
 - carry comment-based help — run `Get-Help .\TheScript.ps1 -Full` before first use,
-- use [PnP.PowerShell](https://pnp.github.io/powershell/) unless noted, and expect **your own Entra app registration** (`-ClientId`) — the shared "PnP Management Shell" app is history.
+- prefer the official **SharePoint Online Management Shell** — plain admin sign-in, no app registration needed. [PnP.PowerShell](https://pnp.github.io/powershell/) appears only where the official module can't go (list-level and content-level work); those scripts say so in their header and expect **your own Entra app registration** (`-ClientId`).
 
 > ⚠️ **Always review a script before running it against your tenant.** That's not a disclaimer, that's professional hygiene.
 
