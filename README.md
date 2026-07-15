@@ -43,10 +43,10 @@ Prefer everything on a single page? Browse the 🗂️ **[full vault index](INDE
 
 ## Fresh from the vault
 
-- [**SharePoint's SPA router hijacks anchor clicks**](gotchas/spfx/spa-router-hijacks-anchor-clicks.md) — why your React `onClick` never fires on published pages
-- [**File upload 406 needs verbose**](gotchas/rest-api/file-upload-406-needs-verbose.md) — `/Files/add` never learned modern OData, and mobile cameras upload nameless files
-- [**Graph `/me/sendMail`: From is always the signed-in user**](gotchas/graph/sendmail-from-is-the-signed-in-user.md) — what a "sender address" setting should actually control
-- [**Get-SiteCollectionInventory.ps1**](scripts/reporting/Get-SiteCollectionInventory.ps1) — one CSV with every site collection: storage, owner, template, sharing, last activity
+- [**Building a people picker in SPFx — the endpoints that actually work**](gotchas/spfx/people-search-endpoints-that-work.md) — why the obvious ones return nothing, and the SP Search pattern that doesn't
+- [**Minified React error #310 (and friends)**](gotchas/spfx/react-minified-errors-cheatsheet.md) — the SPFx debugging cheatsheet for numbers-only errors
+- [**Read all items from a large list — paging done right**](snippets/rest/get-all-list-items-paged.md) — `$skip` is a lie on list items; follow `odata.nextLink`
+- [**SPO Management Shell one-liners**](snippets/cli/spo-management-shell-one-liners.md) — storage, external sharing, deleted sites, lock state — straight from the official module
 
 ## How to use the vault
 

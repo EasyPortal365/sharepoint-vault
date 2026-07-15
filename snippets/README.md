@@ -2,13 +2,20 @@
 
 Small, self-contained fragments to copy straight into your solution — each with a two-line intro saying when to reach for it.
 
+## Index
+
+### rest/
+
+| Snippet | When to reach for it |
+|---|---|
+| [Read all items from a large list — paging done right](rest/get-all-list-items-paged.md) | Any list past a few thousand items: `$top` caps at 5,000, `$skip` is ignored — follow `odata.nextLink` |
+
+### cli/
+
+| Snippet | When to reach for it |
+|---|---|
+| [SPO Management Shell one-liners](cli/spo-management-shell-one-liners.md) | Quick admin answers — storage top 20, external sharing, deleted sites, lock state — no script file needed |
+
 ## Planned categories
 
-| Folder | Content |
-|---|---|
-| `rest/` | REST call patterns — paged reads, batch requests, item CRUD with the right headers |
-| `caml/` | CAML query building blocks |
-| `list-formatting/` | Column and view formatting JSON |
-| `cli/` | One-liners for PnP.PowerShell and CLI for Microsoft 365 |
-
-First snippets are on the way — watch the repo (a ⭐ helps too).
+`caml/` (CAML query building blocks) · `list-formatting/` (column and view formatting JSON)
