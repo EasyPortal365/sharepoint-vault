@@ -18,6 +18,8 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [File upload 406 needs verbose](gotchas/rest-api/file-upload-406-needs-verbose.md) — `/Files/add` is classic OData 3; plus the empty-filename mobile camera trap
     - [Apostrophes in OData literals](gotchas/rest-api/odata-string-literals-and-apostrophes.md) — `encodeURIComponent` leaves `'` alone; double it
     - [Choice fields accept any value](gotchas/rest-api/choice-fields-accept-any-value.md) — REST skips choice validation entirely; enforce vocabulary yourself
+    - [Lookup fields need `$expand`](gotchas/rest-api/lookup-fields-need-expand.md) — read via `$expand` + projections, write via `<Name>Id`; ~12-lookup query limit
+    - [File size needs `$expand=File`](gotchas/rest-api/file-size-needs-expand-file.md) — `File_x0020_Size` 400s in `$select`; use `File/Length`
   - **lists/**
     - [The 5,000-item view threshold](gotchas/lists/list-view-threshold-and-indexes.md) — it's scanned rows, not returned rows; index early, page always
   - **spfx/**
@@ -31,8 +33,9 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [Three `.sppkg` packaging pitfalls](gotchas/app-catalog/sppkg-packaging-pitfalls.md) — ASCII-only solution name, icon exactly 96×96, Publisher column is AppSource-only
   - **graph/**
     - [`/me/sendMail`: From is always the signed-in user](gotchas/graph/sendmail-from-is-the-signed-in-user.md) — delegated `Mail.Send` can't impersonate; configure Reply-To instead
+    - [Purview Audit Query API is async](gotchas/graph/purview-audit-query-api-is-async.md) — hour-long queries; attach to the last succeeded, create in background
 - 🧭 **[guides/](guides/)** — end-to-end walkthroughs
-  - *first guides in the works — see [planned topics](guides/README.md)*
+  - [Calling SharePoint REST like a pro](guides/calling-sharepoint-rest-like-a-pro.md) — clients, headers, safe writes, reading well, and the ten-minute diagnosis routine
 - ✂️ **[snippets/](snippets/)** — small copy-paste fragments
   - **rest/**
     - [Read all items from a large list — paging done right](snippets/rest/get-all-list-items-paged.md) — `$top` caps at 5,000, `$skip` is ignored; follow `odata.nextLink`

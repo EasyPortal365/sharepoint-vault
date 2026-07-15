@@ -2,9 +2,14 @@
 
 End-to-end walkthroughs that connect the dots — the "how it all fits together" layer above scripts and snippets.
 
-## Planned first guides
+## Index
 
-- **Calling SharePoint REST like a pro** — auth options, the headers that matter, OData quirks, paging patterns
+| Guide | What it covers |
+|---|---|
+| [Calling SharePoint REST like a pro](calling-sharepoint-rest-like-a-pro.md) | The client landscape, headers that matter, safe writes, reading well, field/list creation quirks, and a ten-minute diagnosis routine |
+
+## Planned next
+
 - **SharePoint REST vs Microsoft Graph** — which API for which job, and where they disagree
 - **SPFx from zero to App Catalog** — scaffolding, debugging, packaging, deployment paths
 - **Search queries that actually work** — KQL essentials, managed properties, the REST search endpoint
