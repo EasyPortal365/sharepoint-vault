@@ -289,7 +289,7 @@
     }
     function svLoad() {
       try {
-        var cached = JSON.parse(localStorage.getItem('sv-gh') || 'null');
+        var cached = JSON.parse(localStorage.getItem('sv-gh-v2') || 'null');
         if (cached && Date.now() - cached.t < 1800000) { SV_GH = cached.d; svFill(); return; }
       } catch (e) {}
       var base = 'https://api.github.com/repos/EasyPortal365/sharepoint-vault';
@@ -324,7 +324,7 @@
         if (res[3] && res[3].length) { SV_GH.spark = res[3].map(function (w) { return w.total; }); }
         var baseCommit = res[4] && res[4].length ? res[4][0].sha : null;
         var finish = function () {
-          try { localStorage.setItem('sv-gh', JSON.stringify({ t: Date.now(), d: SV_GH })); } catch (e) {}
+          try { localStorage.setItem('sv-gh-v2', JSON.stringify({ t: Date.now(), d: SV_GH })); } catch (e) {}
           svFill();
         };
         if (baseCommit) {
