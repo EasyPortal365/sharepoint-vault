@@ -86,6 +86,7 @@ Every article carries frontmatter with `tags` and `applies-to`, so repo search g
 | Gotcha | TL;DR |
 |---|---|
 | [Git Bash mangles backslashes for native exes](tooling/git-bash-mangles-backslashes-for-native-exes.md) | `[\\/]` arrives as `[/]` — Windows-path regexes silently under-match; use `.{1,4}` or run from PowerShell |
+| [GitHub Pages certificate stuck](tooling/github-pages-certificate-stuck.md) | Domain added before DNS existed → cert never arrives — remove & re-add the domain to restart provisioning |
 
 ## Writing your own
 
