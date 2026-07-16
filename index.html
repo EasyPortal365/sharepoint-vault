@@ -192,12 +192,17 @@
           '<div class="out" id="sv-counts">gotchas&nbsp;&nbsp;guides&nbsp;&nbsp;scripts&nbsp;&nbsp;snippets&nbsp;&nbsp;templates&nbsp;&nbsp;resources&nbsp;&nbsp;<span class="ok">[all field-tested ✓]</span></div>' +
           '<div style="margin-top:14px"><span class="p">PS SPVault:\\&gt;</span> <span class="cmd">git log --oneline -5</span></div>' +
           '<div class="out" id="sv-gitlog">fetching from origin…</div>' +
+          '<div style="margin-top:14px"><span class="p">PS SPVault:\\&gt;</span> <span class="cmd">Get-CommitActivity -Weeks 52 | Show-Sparkline</span></div>' +
+          '<div class="out" id="sv-spark">…</div>' +
+          '<div style="margin-top:14px"><span class="p">PS SPVault:\\&gt;</span> <span class="cmd">Get-ChildItem -Added -Since 7d</span></div>' +
+          '<div class="out" id="sv-neww">…</div>' +
+          '<div style="margin-top:14px"><span class="p">PS SPVault:\\&gt;</span> <a href="#" id="sv-random" class="cmd" style="border-bottom:1px dashed var(--teal6)" title="Open a random gotcha">Get-Gotcha -Random</a></div>' +
           '<div style="margin-top:14px"><span class="p">PS SPVault:\\&gt;</span> <span class="cursor"></span></div>' +
         '</div>' +
       '</div>';
 
     /* ── živá GitHub data (cache 30 min, anonymní API) ── */
-    var SV_GH = { repo: null, commits: null, counts: null };
+    var SV_GH = { repo: null, commits: null, counts: null, gpaths: null, spark: null, neww: null, born: null };
     function svRel(iso) {
       var s = Math.floor((Date.now() - new Date(iso).getTime()) / 1000);
       if (s < 90) return 'just now';
@@ -243,6 +248,44 @@
         }
         log.innerHTML = rows;
       }
+      /* sparkline aktivity */
+      var sp = document.getElementById('sv-spark');
+      if (sp) {
+        if (SV_GH.spark && SV_GH.spark.length) {
+          var lv = '▁▂▃▄▅▆▇█', mx = 1, tot = 0, k;
+          for (k = 0; k < SV_GH.spark.length; k++) { if (SV_GH.spark[k] > mx) mx = SV_GH.spark[k]; tot += SV_GH.spark[k]; }
+          var line = '';
+          for (k = 0; k < SV_GH.spark.length; k++) { line += lv[Math.min(7, Math.round(SV_GH.spark[k] / mx * 7))]; }
+          sp.innerHTML = '<span class="hl" style="letter-spacing:1px">' + line + '</span>&nbsp;&nbsp;<span style="color:var(--soft)">' + tot + ' commits / 52 weeks</span>';
+        } else { sp.textContent = 'activity stats are being computed by GitHub — check back in a minute'; }
+      }
+      /* new this week */
+      var nw = document.getElementById('sv-neww');
+      if (nw) {
+        if (SV_GH.neww && SV_GH.neww.length) {
+          var shown = SV_GH.neww.slice(0, 6), out = '';
+          for (k = 0; k < shown.length; k++) {
+            var route = shown[k].replace(/\.md$/, '');
+            out += '<div><span class="ok">+</span> <a href="#/' + route + '" style="border:none;color:var(--navy)">' + shown[k] + '</a></div>';
+          }
+          if (SV_GH.neww.length > 6) { out += '<div style="color:var(--soft)">… and ' + (SV_GH.neww.length - 6) + ' more</div>'; }
+          nw.innerHTML = out;
+        } else if (SV_GH.born) {
+          nw.innerHTML = '<span style="color:var(--soft)">vault launched ' + svRel(SV_GH.born) + ' — everything is new this week</span>';
+        } else { nw.innerHTML = '<span style="color:var(--soft)">no new entries this week — the battlefield was quiet</span>'; }
+      }
+      /* random gotcha */
+      var rnd = document.getElementById('sv-random');
+      if (rnd && !rnd.dataset.wired) {
+        rnd.dataset.wired = '1';
+        rnd.addEventListener('click', function (e) {
+          e.preventDefault();
+          if (SV_GH.gpaths && SV_GH.gpaths.length) {
+            var pick = SV_GH.gpaths[Math.floor(Math.random() * SV_GH.gpaths.length)];
+            window.location.hash = '#/' + pick.replace(/\.md$/, '');
+          }
+        });
+      }
     }
     function svLoad() {
       try {
@@ -250,26 +293,52 @@
         if (cached && Date.now() - cached.t < 1800000) { SV_GH = cached.d; svFill(); return; }
       } catch (e) {}
       var base = 'https://api.github.com/repos/EasyPortal365/sharepoint-vault';
+      var isContent = function (p) {
+        return /^gotchas\/[^/]+\/[^/]+\.md$/.test(p) ||
+          (/^guides\/[^/]+\.md$/.test(p) && p.indexOf('README') === -1) ||
+          /^scripts\/.+\.ps1$/.test(p) ||
+          /^snippets\/[^/]+\/[^/]+\.md$/.test(p);
+      };
+      var weekAgo = new Date(Date.now() - 7 * 86400000).toISOString();
       Promise.all([
         fetch(base).then(function (r) { return r.ok ? r.json() : null; }),
         fetch(base + '/commits?per_page=5').then(function (r) { return r.ok ? r.json() : null; }),
-        fetch(base + '/git/trees/main?recursive=1').then(function (r) { return r.ok ? r.json() : null; })
+        fetch(base + '/git/trees/main?recursive=1').then(function (r) { return r.ok ? r.json() : null; }),
+        fetch(base + '/stats/commit_activity').then(function (r) { return r.status === 200 ? r.json() : null; }),
+        fetch(base + '/commits?until=' + encodeURIComponent(weekAgo) + '&per_page=1').then(function (r) { return r.ok ? r.json() : null; })
       ]).then(function (res) {
         SV_GH.repo = res[0]; SV_GH.commits = res[1];
+        if (res[0] && res[0].created_at) { SV_GH.born = res[0].created_at; }
         if (res[2] && res[2].tree) {
-          var n = { gotchas: 0, guides: 0, scripts: 0, snippets: 0, cats: 0 }, catSet = {};
+          var n = { gotchas: 0, guides: 0, scripts: 0, snippets: 0, cats: 0 }, catSet = {}, gp = [];
           for (var i = 0; i < res[2].tree.length; i++) {
             var p = res[2].tree[i].path;
-            if (/^gotchas\/[^/]+\/[^/]+\.md$/.test(p)) { n.gotchas++; catSet[p.split('/')[1]] = 1; }
+            if (/^gotchas\/[^/]+\/[^/]+\.md$/.test(p)) { n.gotchas++; catSet[p.split('/')[1]] = 1; gp.push(p); }
             else if (/^guides\/[^/]+\.md$/.test(p) && p.indexOf('README') === -1) { n.guides++; }
             else if (/^scripts\/.+\.ps1$/.test(p)) { n.scripts++; }
             else if (/^snippets\/[^/]+\/[^/]+\.md$/.test(p)) { n.snippets++; }
           }
           n.cats = Object.keys(catSet).length;
-          SV_GH.counts = n;
+          SV_GH.counts = n; SV_GH.gpaths = gp;
         }
-        try { localStorage.setItem('sv-gh', JSON.stringify({ t: Date.now(), d: SV_GH })); } catch (e) {}
-        svFill();
+        if (res[3] && res[3].length) { SV_GH.spark = res[3].map(function (w) { return w.total; }); }
+        var baseCommit = res[4] && res[4].length ? res[4][0].sha : null;
+        var finish = function () {
+          try { localStorage.setItem('sv-gh', JSON.stringify({ t: Date.now(), d: SV_GH })); } catch (e) {}
+          svFill();
+        };
+        if (baseCommit) {
+          fetch(base + '/compare/' + baseCommit + '...main').then(function (r) { return r.ok ? r.json() : null; })
+            .then(function (cmp) {
+              if (cmp && cmp.files) {
+                SV_GH.neww = [];
+                for (var f = 0; f < cmp.files.length; f++) {
+                  if (cmp.files[f].status === 'added' && isContent(cmp.files[f].filename)) { SV_GH.neww.push(cmp.files[f].filename); }
+                }
+              }
+              finish();
+            }).catch(finish);
+        } else { finish(); }
       }).catch(function () { /* offline / rate-limited → statické fallbacky zůstávají */ });
     }
     svLoad();
@@ -311,17 +380,25 @@
               var updEl = foot.querySelector('#sv-upd');
               var ck = 'sv-upd:' + file;
               var hit = null;
+              var updText = function (d, rev) {
+                return 'last updated: ' + svRel(d) + (rev > 1 ? ' · revisions: ' + rev : '');
+              };
               try { hit = JSON.parse(localStorage.getItem(ck) || 'null'); } catch (e) {}
               if (hit && Date.now() - hit.t < 21600000) {
-                updEl.textContent = 'last updated: ' + svRel(hit.d);
+                updEl.textContent = updText(hit.d, hit.r || 1);
               } else {
                 fetch('https://api.github.com/repos/EasyPortal365/sharepoint-vault/commits?path=' + encodeURIComponent(file) + '&per_page=1')
-                  .then(function (r) { return r.ok ? r.json() : null; })
-                  .then(function (cs) {
-                    if (cs && cs.length) {
-                      var d = cs[0].commit.author.date;
-                      updEl.textContent = 'last updated: ' + svRel(d);
-                      try { localStorage.setItem(ck, JSON.stringify({ t: Date.now(), d: d })); } catch (e) {}
+                  .then(function (r) {
+                    if (!r.ok) { return null; }
+                    var rev = 1, link = r.headers.get('Link');
+                    if (link) { var m = link.match(/[?&]page=(\d+)>;\s*rel="last"/); if (m) { rev = parseInt(m[1], 10); } }
+                    return r.json().then(function (cs) { return { cs: cs, rev: rev }; });
+                  })
+                  .then(function (data) {
+                    if (data && data.cs && data.cs.length) {
+                      var d = data.cs[0].commit.author.date;
+                      updEl.textContent = updText(d, data.rev);
+                      try { localStorage.setItem(ck, JSON.stringify({ t: Date.now(), d: d, r: data.rev })); } catch (e) {}
                     } else { updEl.textContent = ''; }
                   }).catch(function () { updEl.textContent = ''; });
               }
