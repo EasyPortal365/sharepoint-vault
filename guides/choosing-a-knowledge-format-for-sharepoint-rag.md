@@ -15,16 +15,13 @@ The candidates people actually consider: **site pages** (modern .aspx), **Word d
 
 | | Site pages (.aspx) | DOCX | Markdown (.md) | List items |
 |---|---|---|---|---|
-| Full-text in search index | ✅ HTML handler | ✅ | ❌ **name/metadata only** ([why](../gotchas/search/md-files-are-found-by-name-only.md)) | ✅ (but see caveat) |
+| Full-text in search index | ✅ HTML handler | ✅ | ✅ **despite the official table** ([details](../gotchas/search/md-is-fulltext-indexed-despite-the-docs.md)) | ✅ (but see caveat) |
 | Text extraction for the LLM | ❌ worst — rendered page = chrome + scripts around the content | ⚠️ needs a parser (mammoth etc.); comes out as flat text, structure lost | ✅ read the file, done — structure intact | ⚠️ HTML string in a column; only reachable if your pipeline handles items at all |
 | Markup overhead per token | ❌ high (before stripping) | ⚠️ n/a after extraction, but binary transfer + parse cost | ✅ minimal, and the markup *is* meaning | ⚠️ depends on stored HTML |
 | Authoring UX in M365 | ✅ page editor | ✅ Word | ❌ no first-class browser editor | ✅ if an app provides the form |
 | Versioning, permissions, approval | ✅ | ✅ | ✅ (it's a library file) | ✅ |
 
-No single format wins both halves of the pipeline — that's the core tension:
-
-- **Discovery** (search index) favors pages and DOCX.
-- **Reading** (extraction quality, token efficiency) favors Markdown by a wide margin.
+For the machine half of the pipeline, Markdown wins outright: it reads best by a wide margin (extraction quality, token efficiency) **and** — despite what the official parsed-file-types table implies — SharePoint Online full-text indexes it, so discovery works too. The real trade-off left on the table is **authoring UX**: pages and Word are where humans write comfortably, Markdown isn't (yet) first-class to edit in M365.
 
 ## How a query-time RAG pipeline sees SharePoint
 
@@ -50,7 +47,7 @@ Fully indexed, so discovery is fine. Extraction requires a real parser (mammoth 
 
 Where DOCX shines is authoring: everyone has Word, tracked changes, comments, co-authoring.
 
-### Markdown — the machine-native format, with one big catch
+### Markdown — the machine-native format
 
 For the reading half, Markdown is close to ideal:
 
@@ -58,15 +55,11 @@ For the reading half, Markdown is close to ideal:
 - Structure survives *in-band*: `#` headings, lists, tables, code fences cost single characters instead of kilobytes of markup, and LLMs are heavily trained on Markdown — they follow its structure natively.
 - Practically the whole character/token budget carries signal instead of scaffolding.
 
-The catch is the discovery half: **SharePoint Search never indexes `.md` bodies** — Markdown has no format handler, so only the filename and metadata columns are searchable ([details and workarounds](../gotchas/search/md-files-are-found-by-name-only.md)). A knowledge base of `.md` files with poor titles and no metadata is effectively invisible to a search-driven pipeline.
+And the discovery half works too — with an asterisk worth knowing about. The official parsed-file-types table doesn't list `.md`, which reads as "bodies never reach the index". **A live probe says otherwise: SharePoint Online full-text indexes `.md` bodies** (verified via `/_api/search/query` with the hit highlight coming from the body — [full story](../gotchas/search/md-is-fulltext-indexed-despite-the-docs.md)). If this is load-bearing for your design, spend the two minutes re-running that probe on your tenant; the docs and the service clearly move at different speeds.
 
-Mitigations, in order of preference:
+Metadata still pays off — not as a workaround, but as quality: rich Title/description/keyword columns (or a precomputed AI summary column written by a background job) lift ranking and give the pipeline a cheap high-signal snippet without re-reading the file.
 
-1. **Precompute searchable metadata**: a background job writes an AI summary + keywords into text columns on each file's item. Columns are indexed and inherit the file's permissions — discovery works even though the body isn't parsed, and the pipeline can even use the stored summary instead of re-reading the file.
-2. **Deliberate naming + Title/description discipline** — cheap, surprisingly effective for small libraries.
-3. **Scope-based retrieval**: if the knowledge lives in one known library, the pipeline can enumerate/query by path + metadata and skip content search for that source.
-
-Authoring is Markdown's second weakness in M365: there's no first-class browser editor, so either your authors are comfortable in VS Code/Typora-land, or an app generates the files (see below).
+Markdown's real weakness in M365 is authoring: there's no first-class browser editor, so either your authors are comfortable in VS Code/Typora-land, or an app generates the files (see below).
 
 ### List items — fine for apps, invisible to document pipelines
 
@@ -84,13 +77,13 @@ Deep-read budgets are finite (thousands of characters per source, not millions).
 
 1. Keep authoring in whatever has the best human workflow — Word, a page editor, or an app with forms and approval.
 2. On publish/approve, **generate a Markdown derivative** into a dedicated document library (one file per article, front-matter or columns for category/tags/owner). The source of truth stays where it was; the `.md` file is a build artifact, regenerated on every change.
-3. Add **summary/keyword metadata columns** to the library (precomputed if you can) so the derivative is discoverable despite the `.md` indexing gap.
+3. Add **summary/keyword metadata columns** to the library (precomputed if you can) — bodies are indexed, but curated metadata lifts ranking and gives the pipeline a cheap high-signal snippet.
 4. Point your RAG pipeline (or its "authoritative sources" allowlist, if it has one) at that library.
 
 This gets you page/Word-grade authoring, Markdown-grade extraction, and metadata-grade discovery — without asking either your authors or your pipeline to compromise.
 
 ## Related
 
-- [`.md` files are found by name only](../gotchas/search/md-files-are-found-by-name-only.md)
+- [Don't trust the parsed-file-types table: SPO does index `.md`](../gotchas/search/md-is-fulltext-indexed-despite-the-docs.md)
 - [Create a modern page via REST — `CanvasContent1` is JSON](../gotchas/rest-api/create-modern-page-via-rest-sitepages.md)
 - [Search queries that actually work](search-queries-that-actually-work.md)
