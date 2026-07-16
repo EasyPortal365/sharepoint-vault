@@ -207,7 +207,7 @@
         if (sha) sha.textContent = c0.sha.substring(0, 7);
         if (pushed) pushed.textContent = 'last commit ' + svRel(c0.commit.author.date);
       }
-      if (SV_GH.repo && stars) { stars.textContent = '★ ' + SV_GH.repo.stargazers_count + ' · '; }
+      if (SV_GH.repo && stars) { stars.textContent = SV_GH.repo.stargazers_count > 0 ? '★ ' + SV_GH.repo.stargazers_count + ' · ' : ''; }
       var counts = document.getElementById('sv-counts');
       if (counts && SV_GH.counts) {
         var n = SV_GH.counts;
