@@ -168,10 +168,10 @@
 <body>
   <div id="app">Opening the vault…</div>
   <div class="sv-status">
-    <span class="ok">● main</span>
-    <span class="hide-m">symptom → cause → fix</span>
+    <span class="ok">● main <span id="sv-sha"></span></span>
+    <span class="hide-m" id="sv-pushed"></span>
     <span class="hide-m">MIT · maintained by <a href="https://www.easyportal365.com" target="_blank" rel="noopener">EasyPortal 365</a></span>
-    <span class="right"><a href="https://github.com/EasyPortal365/sharepoint-vault" target="_blank" rel="noopener">github.com/EasyPortal365/sharepoint-vault</a></span>
+    <span class="right"><a href="https://github.com/EasyPortal365/sharepoint-vault" target="_blank" rel="noopener"><span id="sv-stars"></span>github.com/EasyPortal365/sharepoint-vault</a></span>
   </div>
   <script>
     var SV_HERO =
@@ -182,11 +182,78 @@
           '<h1>SharePoint Vault<span class="tick">_</span></h1>' +
           '<div class="sub">„Zápisky z bojového pole“ — notes from the battlefield.</div>' +
           '<div class="out">Field-tested scripts, hard-won gotchas and guides for SharePoint professionals.<br>No marketing. No doc rewrites. Only things that <span class="hl">survived contact with production</span>.</div>' +
-          '<div style="margin-top:14px"><span class="p">PS SPVault:\\&gt;</span> <span class="cmd">Get-Vault | Format-Table</span></div>' +
-          '<div class="out">gotchas&nbsp;&nbsp;guides&nbsp;&nbsp;scripts&nbsp;&nbsp;snippets&nbsp;&nbsp;templates&nbsp;&nbsp;resources&nbsp;&nbsp;<span class="ok">[all field-tested ✓]</span></div>' +
+          '<div style="margin-top:14px"><span class="p">PS SPVault:\\&gt;</span> <span class="cmd">Get-Vault | Measure-Object</span></div>' +
+          '<div class="out" id="sv-counts">gotchas&nbsp;&nbsp;guides&nbsp;&nbsp;scripts&nbsp;&nbsp;snippets&nbsp;&nbsp;templates&nbsp;&nbsp;resources&nbsp;&nbsp;<span class="ok">[all field-tested ✓]</span></div>' +
+          '<div style="margin-top:14px"><span class="p">PS SPVault:\\&gt;</span> <span class="cmd">git log --oneline -5</span></div>' +
+          '<div class="out" id="sv-gitlog">fetching from origin…</div>' +
           '<div style="margin-top:14px"><span class="p">PS SPVault:\\&gt;</span> <span class="cursor"></span></div>' +
         '</div>' +
       '</div>';
+
+    /* ── živá GitHub data (cache 30 min, anonymní API) ── */
+    var SV_GH = { repo: null, commits: null, counts: null };
+    function svRel(iso) {
+      var s = Math.floor((Date.now() - new Date(iso).getTime()) / 1000);
+      if (s < 90) return 'just now';
+      var m = Math.floor(s / 60); if (m < 90) return m + ' min ago';
+      var h = Math.floor(m / 60); if (h < 36) return h + ' h ago';
+      return Math.floor(h / 24) + ' d ago';
+    }
+    function svEsc(t) { var d = document.createElement('div'); d.textContent = t; return d.innerHTML; }
+    function svFill() {
+      var sha = document.getElementById('sv-sha'), pushed = document.getElementById('sv-pushed'), stars = document.getElementById('sv-stars');
+      if (SV_GH.commits && SV_GH.commits.length) {
+        var c0 = SV_GH.commits[0];
+        if (sha) sha.textContent = c0.sha.substring(0, 7);
+        if (pushed) pushed.textContent = 'last commit ' + svRel(c0.commit.author.date);
+      }
+      if (SV_GH.repo && stars) { stars.textContent = '★ ' + SV_GH.repo.stargazers_count + ' · '; }
+      var counts = document.getElementById('sv-counts');
+      if (counts && SV_GH.counts) {
+        var n = SV_GH.counts;
+        counts.innerHTML = '<span class="hl">' + n.gotchas + '</span> gotchas across <span class="hl">' + n.cats + '</span> categories · <span class="hl">' + n.guides + '</span> guides · <span class="hl">' + n.scripts + '</span> scripts · <span class="hl">' + n.snippets + '</span> snippets&nbsp;&nbsp;<span class="ok">[all field-tested ✓]</span>';
+      }
+      var log = document.getElementById('sv-gitlog');
+      if (log && SV_GH.commits) {
+        var rows = '';
+        for (var i = 0; i < Math.min(5, SV_GH.commits.length); i++) {
+          var c = SV_GH.commits[i];
+          var msg = (c.commit.message || '').split('\n')[0];
+          if (msg.length > 64) { msg = msg.substring(0, 63) + '…'; }
+          rows += '<div><a href="' + c.html_url + '" target="_blank" rel="noopener" style="border:none"><span class="hl">' + c.sha.substring(0, 7) + '</span></a> <span style="color:var(--navy)">' + svEsc(msg) + '</span> <span style="color:var(--soft)">· ' + svRel(c.commit.author.date) + '</span></div>';
+        }
+        log.innerHTML = rows;
+      }
+    }
+    function svLoad() {
+      try {
+        var cached = JSON.parse(localStorage.getItem('sv-gh') || 'null');
+        if (cached && Date.now() - cached.t < 1800000) { SV_GH = cached.d; svFill(); return; }
+      } catch (e) {}
+      var base = 'https://api.github.com/repos/EasyPortal365/sharepoint-vault';
+      Promise.all([
+        fetch(base).then(function (r) { return r.ok ? r.json() : null; }),
+        fetch(base + '/commits?per_page=5').then(function (r) { return r.ok ? r.json() : null; }),
+        fetch(base + '/git/trees/main?recursive=1').then(function (r) { return r.ok ? r.json() : null; })
+      ]).then(function (res) {
+        SV_GH.repo = res[0]; SV_GH.commits = res[1];
+        if (res[2] && res[2].tree) {
+          var n = { gotchas: 0, guides: 0, scripts: 0, snippets: 0, cats: 0 }, catSet = {};
+          for (var i = 0; i < res[2].tree.length; i++) {
+            var p = res[2].tree[i].path;
+            if (/^gotchas\/[^/]+\/[^/]+\.md$/.test(p)) { n.gotchas++; catSet[p.split('/')[1]] = 1; }
+            else if (/^guides\/[^/]+\.md$/.test(p) && p.indexOf('README') === -1) { n.guides++; }
+            else if (/^scripts\/.+\.ps1$/.test(p)) { n.scripts++; }
+            else if (/^snippets\/[^/]+\/[^/]+\.md$/.test(p)) { n.snippets++; }
+          }
+          n.cats = Object.keys(catSet).length;
+          SV_GH.counts = n;
+        }
+        try { localStorage.setItem('sv-gh', JSON.stringify({ t: Date.now(), d: SV_GH })); } catch (e) {}
+        svFill();
+      }).catch(function () { /* offline / rate-limited → statické fallbacky zůstávají */ });
+    }
+    svLoad();
 
     window.$docsify = {
       name: 'SharePoint<b>Vault</b> <i>~$</i>',
@@ -209,6 +276,7 @@
           });
           hook.doneEach(function () {
             document.body.classList.toggle('is-home', vm.route.path === '/');
+            svFill();
             // klasifikace seznamů: položky začínající odkazem → terminal tree místo wiki bulletů
             var lis = document.querySelectorAll('.markdown-section li');
             for (var i = 0; i < lis.length; i++) {
