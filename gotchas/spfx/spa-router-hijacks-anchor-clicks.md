@@ -2,7 +2,7 @@
 title: SharePoint's SPA router hijacks anchor clicks — onClick never fires
 tags: [spfx, react, modern-pages, ux]
 applies-to: SharePoint Online (modern pages)
-last-reviewed: 2026-07-15
+last-reviewed: 2026-07-16
 ---
 
 # SharePoint's SPA router hijacks `<a href>` clicks — your `onClick` never fires
@@ -45,6 +45,34 @@ Don't use `<a href>` for in-app actions. Use a non-anchor element:
 ```
 
 Reserve `<a href>` for real navigation — links that genuinely take the user away from the page (those you *want* the router or browser to handle).
+
+### The row-action variant: a button *inside* a link
+
+The trap resurfaces when the anchor is legitimate navigation but you need a small action on top of it — the classic "list row links to the detail page, plus an edit pencil on the right":
+
+```tsx
+// Broken: the router navigates before onEdit ever runs — and a <button>
+// inside an <a> is invalid HTML in the first place.
+<a href={item.url}>
+  …row…
+  <button onClick={onEdit}>✎</button>
+</a>
+```
+
+Make the action a **sibling** of the anchor and position it over the row:
+
+```tsx
+<div style={{ position: 'relative' }}>
+  <a href={item.url}>…row…</a>
+  <button
+    type="button"
+    onClick={onEdit}
+    style={{ position: 'absolute', right: 0, top: 12 }}
+  >✎</button>
+</div>
+```
+
+The click now lands on the button, never on the anchor, so there is nothing for the router to hijack — and the markup is valid.
 
 ## Notes
 
