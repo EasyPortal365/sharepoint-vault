@@ -153,6 +153,12 @@
     .is-home .markdown-section > div[align="center"] { display:none; }
     .is-home .markdown-section > div[align="center"] + hr { display:none; }
 
+    /* ── sidebar badge počty + článkový footer ── */
+    .sv-badge { font-family:var(--mono); font-size:9.5px; font-weight:700; color:var(--teal7); background:var(--mint); border-radius:999px; padding:1px 8px; margin-left:8px; vertical-align:1px; letter-spacing:0; }
+    .sv-artfoot { margin-top:48px; padding-top:14px; border-top:1px dashed var(--line2); font-family:var(--mono); font-size:11px; color:var(--soft); display:flex; gap:18px; flex-wrap:wrap; }
+    .sv-artfoot a { color:var(--teal7); border-bottom:none; font-weight:600; }
+    .sv-artfoot a:hover { text-decoration:underline; text-underline-offset:3px; }
+
     /* ── status bar ── */
     .sv-status { position:fixed; left:0; right:0; bottom:0; z-index:20; background:var(--navy); color:#fff; font-family:var(--mono); font-size:11px; letter-spacing:.04em; display:flex; gap:24px; padding:7px 18px 7px 320px; }
     .sv-status .ok { color:#5FE3DC; }
@@ -171,7 +177,7 @@
     <span class="ok">● main <span id="sv-sha"></span></span>
     <span class="hide-m" id="sv-pushed"></span>
     <span class="hide-m">MIT · maintained by <a href="https://www.easyportal365.com" target="_blank" rel="noopener">EasyPortal 365</a></span>
-    <span class="right"><a href="https://github.com/EasyPortal365/sharepoint-vault" target="_blank" rel="noopener"><span id="sv-stars"></span>github.com/EasyPortal365/sharepoint-vault</a></span>
+    <span class="right"><a href="https://github.com/EasyPortal365/sharepoint-vault/commits/main.atom" target="_blank" rel="noopener" title="Subscribe to vault updates (Atom feed)">feed</a>&nbsp;·&nbsp;<a href="https://github.com/EasyPortal365/sharepoint-vault" target="_blank" rel="noopener"><span id="sv-stars"></span>github.com/EasyPortal365/sharepoint-vault</a></span>
   </div>
   <script>
     var SV_HERO =
@@ -212,6 +218,19 @@
       if (counts && SV_GH.counts) {
         var n = SV_GH.counts;
         counts.innerHTML = '<span class="hl">' + n.gotchas + '</span> gotchas across <span class="hl">' + n.cats + '</span> categories · <span class="hl">' + n.guides + '</span> guides · <span class="hl">' + n.scripts + '</span> scripts · <span class="hl">' + n.snippets + '</span> snippets&nbsp;&nbsp;<span class="ok">[all field-tested ✓]</span>';
+      }
+      /* sidebar badge počty */
+      if (SV_GH.counts) {
+        var map = { 'guides': SV_GH.counts.guides, 'gotchas': SV_GH.counts.gotchas, 'scripts': SV_GH.counts.scripts, 'snippets': SV_GH.counts.snippets };
+        var labels = document.querySelectorAll('.sidebar-nav li > p > strong');
+        for (var b = 0; b < labels.length; b++) {
+          var key = labels[b].textContent.replace(/[^a-z]/gi, '').toLowerCase();
+          if (map[key] > 0 && !labels[b].querySelector('.sv-badge')) {
+            var badge = document.createElement('span');
+            badge.className = 'sv-badge'; badge.textContent = map[key];
+            labels[b].appendChild(badge);
+          }
+        }
       }
       var log = document.getElementById('sv-gitlog');
       if (log && SV_GH.commits) {
@@ -277,6 +296,36 @@
           hook.doneEach(function () {
             document.body.classList.toggle('is-home', vm.route.path === '/');
             svFill();
+            /* footer článku: Last updated + History/Edit/Source (lazy, cache 6 h) */
+            var file = vm.route.file;
+            var sect = document.querySelector('.markdown-section');
+            if (sect && file && vm.route.path !== '/' && !sect.querySelector('.sv-artfoot')) {
+              var gh = 'https://github.com/EasyPortal365/sharepoint-vault';
+              var foot = document.createElement('div');
+              foot.className = 'sv-artfoot';
+              foot.innerHTML = '<span id="sv-upd">last updated: …</span>' +
+                '<a href="' + gh + '/commits/main/' + file + '" target="_blank" rel="noopener">history</a>' +
+                '<a href="' + gh + '/edit/main/' + file + '" target="_blank" rel="noopener">edit on GitHub</a>' +
+                '<a href="' + gh + '/blob/main/' + file + '" target="_blank" rel="noopener">view source</a>';
+              sect.appendChild(foot);
+              var updEl = foot.querySelector('#sv-upd');
+              var ck = 'sv-upd:' + file;
+              var hit = null;
+              try { hit = JSON.parse(localStorage.getItem(ck) || 'null'); } catch (e) {}
+              if (hit && Date.now() - hit.t < 21600000) {
+                updEl.textContent = 'last updated: ' + svRel(hit.d);
+              } else {
+                fetch('https://api.github.com/repos/EasyPortal365/sharepoint-vault/commits?path=' + encodeURIComponent(file) + '&per_page=1')
+                  .then(function (r) { return r.ok ? r.json() : null; })
+                  .then(function (cs) {
+                    if (cs && cs.length) {
+                      var d = cs[0].commit.author.date;
+                      updEl.textContent = 'last updated: ' + svRel(d);
+                      try { localStorage.setItem(ck, JSON.stringify({ t: Date.now(), d: d })); } catch (e) {}
+                    } else { updEl.textContent = ''; }
+                  }).catch(function () { updEl.textContent = ''; });
+              }
+            }
             // klasifikace seznamů: položky začínající odkazem → terminal tree místo wiki bulletů
             var lis = document.querySelectorAll('.markdown-section li');
             for (var i = 0; i < lis.length; i++) {
