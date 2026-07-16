@@ -62,12 +62,22 @@ Every article carries frontmatter with `tags` and `applies-to`, so repo search g
 | [Tenant-wide enumeration is app-only](graph/tenant-wide-enumeration-is-app-only.md) | `getAllSites` & friends reject delegated tokens with a silent 403 — check the Permissions table *before* building |
 | [`PATCH /me`: directory vs profile fields](graph/patch-me-directory-vs-profile-fields.md) | Mixing `jobTitle` with `aboutMe` fails the whole request — two PATCHes, profile one best-effort |
 
+### azure-functions/
+
+The standard server-side companion of an SPFx solution — and its own set of traps.
+
+| Gotcha | TL;DR |
+|---|---|
+| [Windows zip deploy breaks the running app](azure-functions/windows-zip-deploy-breaks-running-app.md) | Copying onto a live `wwwroot` corrupts files → whole app 503 — re-run the deploy (not restart); prevent with `WEBSITE_RUN_FROM_PACKAGE=1` |
+| [Rate limit counts the capability probe](azure-functions/rate-limit-counts-capability-probe-corporate-nat.md) | Per-IP limits behind corporate NAT = per-company limits — metered "what can you do?" probes silently kill the feature's UI |
+
 ### search/
 
 | Gotcha | TL;DR |
 |---|---|
 | [ViewsX properties sort only by `ViewsLifeTime`](search/viewsx-properties-sort-only-by-viewslifetime.md) | Windowed view counts select fine but don't sort — one lifetime-sorted query, re-rank client-side |
 | [Compare SharePoint paths decode-first](search/compare-sharepoint-paths-decode-first.md) | Browser URLs are %-encoded, search `Path` is decoded — normalize both, then boundary-aware prefix match |
+| [`.md` files are found by name only](search/md-files-are-found-by-name-only.md) | Markdown has no format handler — bodies never reach the full-text index; carry searchability in metadata columns |
 
 ### powershell/
 

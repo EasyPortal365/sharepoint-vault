@@ -46,9 +46,13 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [Usage reports are CORS-blocked in the browser](gotchas/graph/usage-reports-cors-blocked-in-browser.md) — fetch server-side; browser inventory = SP Search + `/_api/site/usage`
     - [Tenant-wide enumeration is app-only](gotchas/graph/tenant-wide-enumeration-is-app-only.md) — `getAllSites` rejects delegated tokens; check the Permissions table first
     - [`PATCH /me`: directory vs profile fields](gotchas/graph/patch-me-directory-vs-profile-fields.md) — mixed field groups fail whole; two PATCHes, profile best-effort
+  - **azure-functions/**
+    - [Windows zip deploy breaks the running app](gotchas/azure-functions/windows-zip-deploy-breaks-running-app.md) — live `wwwroot` file locks → whole app 503; re-run the deploy, prevent with `WEBSITE_RUN_FROM_PACKAGE=1`
+    - [Rate limit counts the capability probe](gotchas/azure-functions/rate-limit-counts-capability-probe-corporate-nat.md) — corporate NAT makes per-IP per-company; metered probes silently hide the feature
   - **search/**
     - [ViewsX properties sort only by `ViewsLifeTime`](gotchas/search/viewsx-properties-sort-only-by-viewslifetime.md) — windowed counts select but don't sort; re-rank client-side
     - [Compare SharePoint paths decode-first](gotchas/search/compare-sharepoint-paths-decode-first.md) — normalize encoding + boundary-aware prefix, or matches never fire
+    - [`.md` files are found by name only](gotchas/search/md-files-are-found-by-name-only.md) — Markdown has no format handler; bodies never reach the full-text index
   - **powershell/**
     - [PS 5.1 `Get-Content` mangles UTF-8](gotchas/powershell/get-content-mangles-utf8.md) — ANSI default double-encodes diacritics; use `System.IO.File` + BOM-less `UTF8Encoding`
     - [Smart quotes are string delimiters](gotchas/powershell/smart-quotes-are-string-delimiters.md) — `„`/`"` parse like `"`; localized text in single-quoted here-strings
@@ -61,6 +65,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
   - [Calling SharePoint REST like a pro](guides/calling-sharepoint-rest-like-a-pro.md) — clients, headers, safe writes, reading well, and the ten-minute diagnosis routine
   - [Search queries that actually work](guides/search-queries-that-actually-work.md) — the mandatory header, practical KQL, managed properties, paging, freshness traps
   - [SharePoint REST vs Microsoft Graph](guides/sharepoint-rest-vs-microsoft-graph.md) — decision table by capability, SPFx auth difference, throttling budgets
+  - [Choosing a knowledge format for RAG](guides/choosing-a-knowledge-format-for-sharepoint-rag.md) — Markdown vs DOCX vs site pages vs list items; discovery/extraction tension and token economics
 - ✂️ **[snippets/](snippets/)** — small copy-paste fragments
   - **rest/**
     - [Read all items from a large list — paging done right](snippets/rest/get-all-list-items-paged.md) — `$top` caps at 5,000, `$skip` is ignored; follow `odata.nextLink`
