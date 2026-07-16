@@ -32,6 +32,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [Minified React errors cheatsheet](gotchas/spfx/react-minified-errors-cheatsheet.md) — #310/#300/#321/#31/#185 decoded for SPFx debugging
     - [People search endpoints that work](gotchas/spfx/people-search-endpoints-that-work.md) — SP Search People source + `ensureuser`; why the obvious endpoints fail
     - [Fixed dropdowns in transformed panels](gotchas/spfx/fixed-dropdowns-in-transformed-panels.md) — the CSS transform containing-block trap; portal to `document.body`
+    - [`SP.WebProxy` is add-in-only](gotchas/spfx/webproxy-is-add-in-only.md) — no SharePoint-native CORS proxy for SPFx; the 403 hides inside an HTTP 200
     - [Teams personal app needs global deploy](gotchas/spfx/teams-personal-app-needs-global-deploy.md) — `skipFeatureDeployment: true` + "all sites"; the `teams/` icon-folder convention
     - [Teams mobile webview renders desktop width](gotchas/spfx/teams-mobile-webview-renders-desktop-width.md) — ~980px layout; fix the viewport meta in Teams first
     - [Centered flex clips on mobile](gotchas/spfx/centered-flex-clips-on-mobile.md) — centering + overflow cuts content above the scroll; flex "springs"

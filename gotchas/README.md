@@ -39,6 +39,7 @@ Every article carries frontmatter with `tags` and `applies-to`, so repo search g
 | [Minified React errors cheatsheet](spfx/react-minified-errors-cheatsheet.md) | #310/#300 = hooks after early returns, #31 = object as child, #185 = setState loop — decoded for SPFx |
 | [People search endpoints that work](spfx/people-search-endpoints-that-work.md) | `clientPeoplePickerSearchUser` comes back empty, `siteusers` is not a directory — use the SP Search People source + `ensureuser` |
 | [Fixed dropdowns in transformed panels](spfx/fixed-dropdowns-in-transformed-panels.md) | `transform` makes ancestors the containing block even for `position: fixed` — portal your dropdowns to `document.body` |
+| [`SP.WebProxy` is add-in-only](spfx/webproxy-is-add-in-only.md) | There is no SharePoint-native CORS proxy for SPFx — 403 "without an app context", hidden inside an HTTP 200 |
 | [Teams personal app needs global deploy](spfx/teams-personal-app-needs-global-deploy.md) | `skipFeatureDeployment: true` + "all sites", or the root-hosted app crashes on `componentType`; plus the `teams/` icon-folder convention |
 | [Teams mobile webview renders desktop width](spfx/teams-mobile-webview-renders-desktop-width.md) | ~980px layout you can't reproduce in a browser — fix the viewport meta in Teams, then debug breakpoints |
 | [Centered flex clips on mobile](spfx/centered-flex-clips-on-mobile.md) | `justify-content:center` + overflow = content cut off above the scroll — use flex "springs" instead |
