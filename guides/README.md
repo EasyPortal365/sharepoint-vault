@@ -9,7 +9,7 @@ End-to-end walkthroughs that connect the dots — the "how it all fits together"
 | [Calling SharePoint REST like a pro](calling-sharepoint-rest-like-a-pro.md) | The client landscape, headers that matter, safe writes, reading well, field/list creation quirks, and a ten-minute diagnosis routine |
 | [Search queries that actually work](search-queries-that-actually-work.md) | The one mandatory header, practical KQL, managed properties (`RefinableString*`), paging/sorting, and the freshness/trimming traps |
 | [SharePoint REST vs Microsoft Graph](sharepoint-rest-vs-microsoft-graph.md) | A decision table by capability, the SPFx auth difference, common wrong picks, and throttling budgets |
-| [Choosing a knowledge format for RAG](choosing-a-knowledge-format-for-sharepoint-rag.md) | Markdown vs DOCX vs site pages vs list items — the discovery/extraction tension, token economics, and the author-here-publish-Markdown pattern |
+| [Choosing a knowledge format for RAG](choosing-a-knowledge-format-for-sharepoint-rag.md) | Markdown vs DOCX vs site pages vs list items — extraction quality, token economics, and the author-here-publish-Markdown pattern |
 
 ## Planned next
 

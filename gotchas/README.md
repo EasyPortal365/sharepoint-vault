@@ -77,7 +77,7 @@ The standard server-side companion of an SPFx solution — and its own set of tr
 |---|---|
 | [ViewsX properties sort only by `ViewsLifeTime`](search/viewsx-properties-sort-only-by-viewslifetime.md) | Windowed view counts select fine but don't sort — one lifetime-sorted query, re-rank client-side |
 | [Compare SharePoint paths decode-first](search/compare-sharepoint-paths-decode-first.md) | Browser URLs are %-encoded, search `Path` is decoded — normalize both, then boundary-aware prefix match |
-| [`.md` files are found by name only](search/md-files-are-found-by-name-only.md) | Markdown has no format handler — bodies never reach the full-text index; carry searchability in metadata columns |
+| [Don't trust the parsed-file-types table: SPO does index `.md`](search/md-is-fulltext-indexed-despite-the-docs.md) | The official table omits Markdown, yet live SPO full-text indexes it — probe capability tables before you architect around them |
 
 ### powershell/
 

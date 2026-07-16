@@ -52,7 +52,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
   - **search/**
     - [ViewsX properties sort only by `ViewsLifeTime`](gotchas/search/viewsx-properties-sort-only-by-viewslifetime.md) — windowed counts select but don't sort; re-rank client-side
     - [Compare SharePoint paths decode-first](gotchas/search/compare-sharepoint-paths-decode-first.md) — normalize encoding + boundary-aware prefix, or matches never fire
-    - [`.md` files are found by name only](gotchas/search/md-files-are-found-by-name-only.md) — Markdown has no format handler; bodies never reach the full-text index
+    - [Don't trust the parsed-file-types table: SPO does index `.md`](gotchas/search/md-is-fulltext-indexed-despite-the-docs.md) — the official table omits Markdown, yet live SPO full-text indexes it; probe before architecting
   - **powershell/**
     - [PS 5.1 `Get-Content` mangles UTF-8](gotchas/powershell/get-content-mangles-utf8.md) — ANSI default double-encodes diacritics; use `System.IO.File` + BOM-less `UTF8Encoding`
     - [Smart quotes are string delimiters](gotchas/powershell/smart-quotes-are-string-delimiters.md) — `„`/`"` parse like `"`; localized text in single-quoted here-strings
@@ -65,7 +65,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
   - [Calling SharePoint REST like a pro](guides/calling-sharepoint-rest-like-a-pro.md) — clients, headers, safe writes, reading well, and the ten-minute diagnosis routine
   - [Search queries that actually work](guides/search-queries-that-actually-work.md) — the mandatory header, practical KQL, managed properties, paging, freshness traps
   - [SharePoint REST vs Microsoft Graph](guides/sharepoint-rest-vs-microsoft-graph.md) — decision table by capability, SPFx auth difference, throttling budgets
-  - [Choosing a knowledge format for RAG](guides/choosing-a-knowledge-format-for-sharepoint-rag.md) — Markdown vs DOCX vs site pages vs list items; discovery/extraction tension and token economics
+  - [Choosing a knowledge format for RAG](guides/choosing-a-knowledge-format-for-sharepoint-rag.md) — Markdown vs DOCX vs site pages vs list items; extraction quality, token economics, and why Markdown wins the machine channel
 - ✂️ **[snippets/](snippets/)** — small copy-paste fragments
   - **rest/**
     - [Read all items from a large list — paging done right](snippets/rest/get-all-list-items-paged.md) — `$top` caps at 5,000, `$skip` is ignored; follow `odata.nextLink`
