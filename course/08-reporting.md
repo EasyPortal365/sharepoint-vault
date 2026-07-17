@@ -30,6 +30,8 @@ Microsoft Purview je platforma pro auditování, správu záznamů a životního
 - Přehled: <https://www.microsoft.com/cs-cz/security/business/microsoft-purview>
 - Portál: <https://purview.microsoft.com/>
 
+![Nabídka Řešení v portálu Microsoft Purview – Auditování, eDiscovery, Information Protection, Správa záznamů a další](images/08-purview-menu.png)
+
 ### Kdy funguje audit log
 
 Auditování v Microsoftu 365 je dostupné ve výchozím stavu, ale je potřeba počítat s tím, že:
@@ -168,6 +170,8 @@ Sloupce BS/E3 a E5 udávají, zda je událost dostupná v základní, resp. Prem
 2. **Přejdi do portálu Purview Audit** (<https://purview.microsoft.com/> → Audit).
 3. **Rozšířené auditování se zapíná automaticky**, jakmile máš správnou licenci a použiješ některou premium funkci (dotaz na `MailItemsAccessed`, záznam `FileDownloaded`, vysokofrekvenční aktivita). Hlavní vědomá akce je nastavení dlouhodobého uchovávání.
 4. **Aktivace 10letého uchovávání audit logů:** v levém menu *Audit retention policies* → *+ Create policy* → zadej název (např. „10letý audit SharePointu"), vyber aktivitu/uživatele, nastav *Retention duration: 10 years* a potvrď *Submit*.
+
+   ![Přehled Audit retention policies v Microsoft Purview – seznam politik s prioritou, typem záznamu, aktivitami a dobou uchování (ukázková data Microsoftu)](images/08-audit-retention-policies.png)
 5. **Ověření:** spusť auditní hledání např. pro `FileDownloaded`, `MailItemsAccessed` nebo `eDiscoveryViewedItem`. Pokud dostaneš výsledky, Audit Premium běží.
 
 ## Zásady upozornění (Alert policies)
