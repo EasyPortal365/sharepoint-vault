@@ -61,6 +61,7 @@ Every article carries frontmatter with `tags` and `applies-to`, so repo search g
 | [Office files: property demotion changes the hash](graph/office-files-property-demotion.md) | A metadata PATCH rewrites bytes inside docx/xlsx — `cTag` and even content hashes lie; key change detection on `lastModifiedBy` |
 | [Usage reports are CORS-blocked in the browser](graph/usage-reports-cors-blocked-in-browser.md) | Reports 302 to a host without CORS headers — fetch server-side; browse-time inventory = SP Search + `/_api/site/usage` |
 | [Tenant-wide enumeration is app-only](graph/tenant-wide-enumeration-is-app-only.md) | `getAllSites` & friends reject delegated tokens with a silent 403 — check the Permissions table *before* building |
+| [`MSGraphClient` calls bypass DevTools Network](graph/msgraphclient-calls-bypass-devtools-network.md) | SPFx Graph traffic doesn't show in the Network tab — diagnose with `performance` entries, `currentuser`, the DOM, and the user's own response |
 | [`PATCH /me`: directory vs profile fields](graph/patch-me-directory-vs-profile-fields.md) | Mixing `jobTitle` with `aboutMe` fails the whole request — two PATCHes, profile one best-effort |
 
 ### azure-functions/
