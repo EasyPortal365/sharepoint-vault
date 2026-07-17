@@ -79,6 +79,7 @@ The standard server-side companion of an SPFx solution — and its own set of tr
 | [ViewsX properties sort only by `ViewsLifeTime`](search/viewsx-properties-sort-only-by-viewslifetime.md) | Windowed view counts select fine but don't sort — one lifetime-sorted query, re-rank client-side |
 | [Compare SharePoint paths decode-first](search/compare-sharepoint-paths-decode-first.md) | Browser URLs are %-encoded, search `Path` is decoded — normalize both, then boundary-aware prefix match |
 | [Don't trust the parsed-file-types table: SPO does index `.md`](search/md-is-fulltext-indexed-despite-the-docs.md) | The official table omits Markdown, yet live SPO full-text indexes it — probe capability tables before you architect around them |
+| [Graph Search returns 0 hits — you passed the question as the `queryString`](search/graph-search-raw-question-returns-nothing.md) | A question isn't a query and "what's new" isn't a search — translate to keywords, use `*` + the default date sort, and only documented per-entity KQL |
 
 ### powershell/
 
