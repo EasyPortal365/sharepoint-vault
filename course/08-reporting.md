@@ -55,7 +55,9 @@ Politiky určují, jak dlouho se auditní data uchovávají. Bez vlastní politi
 
 ### Search
 
-Vyhledávání v datech audit logu – buď v portálu Purview, nebo přes PowerShell (viz níže).
+Vyhledávání v datech audit logu – buď v portálu Purview, nebo přes PowerShell (viz níže). Výsledek hledání zobrazí jednotlivé události s časem, uživatelem, IP adresou a typem záznamu; detail události ukazuje mimo jiné dotčený web, cílového uživatele a měněné vlastnosti.
+
+![Výsledek Audit search v Microsoft Purview – seznam událostí s časem a typem záznamu, vpravo panel s detailem události (citlivá data zamlžena)](images/08-audit-search.png)
 
 ### Purview a licence
 
