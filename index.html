@@ -152,6 +152,9 @@
     .sv-hero .ok { color:var(--green); font-weight:700; }
     .is-home .markdown-section > div[align="center"] { display:none; }
     .is-home .markdown-section > div[align="center"] + hr { display:none; }
+    .sv-hero .sv-badges { display:flex; gap:6px; flex-wrap:wrap; margin:14px 0 2px; }
+    .sv-hero .sv-badges img { height:20px; border-radius:4px; }
+    .sv-hero .sv-badges a { border-bottom:none; }
 
     /* ── sidebar badge počty + článkový footer ── */
     .sv-badge { font-family:var(--mono); font-size:9.5px; font-weight:700; color:var(--teal7); background:var(--mint); border-radius:999px; padding:1px 8px; margin-left:8px; vertical-align:1px; letter-spacing:0; }
@@ -359,11 +362,31 @@
       frontMatter: {},
       plugins: [
         function (hook, vm) {
+          hook.beforeEach(function (md) {
+            /* /README je tatáž stránka jako / — drž jedinou homepage */
+            if (vm.route.path === '/README') { window.location.replace(window.location.pathname + '#/'); }
+            return md;
+          });
           hook.afterEach(function (html, next) {
             if (vm.route.path === '/') { next(SV_HERO + html); } else { next(html); }
           });
           hook.doneEach(function () {
             document.body.classList.toggle('is-home', vm.route.path === '/');
+            /* badge pilulky z README přestěhovat do hero terminálu */
+            if (vm.route.path === '/') {
+              var heroBody = document.querySelector('.sv-hero .body');
+              var center = document.querySelector('.markdown-section > div[align="center"]');
+              if (heroBody && center && !heroBody.querySelector('.sv-badges')) {
+                var ps = center.querySelectorAll('p');
+                for (var bi = 0; bi < ps.length; bi++) {
+                  if (ps[bi].querySelector('img[src*="shields.io"]')) {
+                    ps[bi].className = 'sv-badges';
+                    heroBody.insertBefore(ps[bi], heroBody.children[4]);
+                    break;
+                  }
+                }
+              }
+            }
             svFill();
             /* footer článku: Last updated + History/Edit/Source (lazy, cache 6 h) */
             var file = vm.route.file;

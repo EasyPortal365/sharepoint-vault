@@ -1,4 +1,4 @@
-- [🗝️ Welcome](README.md)
+- [🗝️ Welcome](/)
 - [🗂️ Full index](INDEX.md)
 
 - **🧭 Guides**
