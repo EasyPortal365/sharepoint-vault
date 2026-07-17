@@ -159,6 +159,11 @@
     /* ── sidebar badge počty + článkový footer ── */
     .sv-badge { font-family:var(--mono); font-size:9.5px; font-weight:700; color:var(--teal7); background:var(--mint); border-radius:999px; padding:1px 8px; margin-left:8px; vertical-align:1px; letter-spacing:0; }
     .sv-artfoot { margin-top:48px; padding-top:14px; border-top:1px dashed var(--line2); font-family:var(--mono); font-size:11px; color:var(--soft); display:flex; gap:18px; flex-wrap:wrap; }
+    .sv-fileact { display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin:14px 0 4px; }
+    .sv-btn { font-family:var(--mono); font-size:11.5px; font-weight:600; color:var(--navy); background:var(--bg); border:1px solid var(--line); border-radius:999px; padding:8px 15px; cursor:pointer; text-decoration:none; }
+    .sv-btn:hover { border-color:var(--teal6); color:var(--teal7); }
+    a.sv-btn { border-bottom:1px solid var(--line); }
+    .sv-filemeta { font-family:var(--mono); font-size:11px; color:var(--soft); margin-left:auto; }
     .sv-artfoot a { color:var(--teal7); border-bottom:none; font-weight:600; }
     .sv-artfoot a:hover { text-decoration:underline; text-underline-offset:3px; }
 
@@ -206,6 +211,16 @@
 
     /* ── živá GitHub data (cache 30 min, anonymní API) ── */
     var SV_GH = { repo: null, commits: null, counts: null, gpaths: null, spark: null, neww: null, born: null };
+    var SV_CODE = {};
+    document.addEventListener('click', function (e) {
+      var t = e.target && e.target.closest ? e.target.closest('[data-svcopy]') : null;
+      if (t && navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(SV_CODE[t.getAttribute('data-svcopy')] || '').then(function () {
+          var o = t.textContent; t.textContent = 'copied ✓';
+          setTimeout(function () { t.textContent = o; }, 1600);
+        }).catch(function () {});
+      }
+    });
     function svRel(iso) {
       var s = Math.floor((Date.now() - new Date(iso).getTime()) / 1000);
       if (s < 90) return 'just now';
@@ -395,14 +410,34 @@
       frontMatter: {},
       plugins: [
         function (hook, vm) {
-          hook.beforeEach(function (md) {
+          hook.beforeEach(function (content, next) {
             /* /README je tatáž stránka jako / — drž jedinou homepage */
-            if (vm.route.path === '/README') { window.location.replace(window.location.pathname + '#/'); }
-            /* přímé routy na soubory s kódem → GitHub view (docsify je neumí renderovat) */
-            if (/\.(ps1|psm1|json|xml|txt)$/i.test(vm.route.path)) {
-              window.location.replace('https://github.com/EasyPortal365/sharepoint-vault/blob/main' + vm.route.path);
+            if (vm.route.path === '/README') { window.location.replace(window.location.pathname + '#/'); next(content); return; }
+            /* soubory s kódem (.ps1 aj.): fetchnout raw a vyrenderovat na stránce s akcemi */
+            var m = vm.route.path.match(/\.(ps1|psm1|json|xml|txt)$/i);
+            if (m) {
+              var rel = vm.route.path.replace(/^\//, '');
+              fetch(rel).then(function (r) { return r.ok ? r.text() : null; }).then(function (code) {
+                if (code === null) { next('# file not found\n\n`' + rel + '` is not in the vault.'); return; }
+                SV_CODE[vm.route.path] = code;
+                var langMap = { ps1: 'powershell', psm1: 'powershell', json: 'json', xml: 'xml', txt: 'text' };
+                var lang = langMap[m[1].toLowerCase()] || 'text';
+                var fname = rel.split('/').pop();
+                var lines = code.split('\n').length;
+                var kb = Math.round(code.length / 102.4) / 10;
+                var gh = 'https://github.com/EasyPortal365/sharepoint-vault';
+                next('# ' + fname + '\n\n' +
+                  '<div class="sv-fileact">' +
+                  '<button type="button" class="sv-btn" data-svcopy="' + vm.route.path + '">⧉ copy to clipboard</button>' +
+                  '<a class="sv-btn" href="' + rel + '" download="' + fname + '">⬇ download</a>' +
+                  '<a class="sv-btn" href="' + gh + '/blob/main/' + rel + '" target="_blank" rel="noopener">view on GitHub ↗</a>' +
+                  '<span class="sv-filemeta">' + lines + ' lines · ' + kb + ' KB</span>' +
+                  '</div>\n\n' +
+                  '````' + lang + '\n' + code + '\n````');
+              }).catch(function () { next('# file not found\n\n`' + rel + '` could not be loaded.'); });
+              return;
             }
-            return md;
+            next(content);
           });
           hook.afterEach(function (html, next) {
             if (vm.route.path === '/') { next(SV_HERO + html); } else { next(html); }
@@ -428,7 +463,7 @@
             /* footer článku: Last updated + History/Edit/Source (lazy, cache 6 h) */
             var file = vm.route.file;
             var sect = document.querySelector('.markdown-section');
-            if (sect && file && vm.route.path !== '/' && !sect.querySelector('.sv-artfoot')) {
+            if (sect && file && vm.route.path !== '/' && !/\.(ps1|psm1|json|xml|txt)$/i.test(vm.route.path) && !sect.querySelector('.sv-artfoot')) {
               var gh = 'https://github.com/EasyPortal365/sharepoint-vault';
               var foot = document.createElement('div');
               foot.className = 'sv-artfoot';
@@ -461,17 +496,6 @@
                       try { localStorage.setItem(ck, JSON.stringify({ t: Date.now(), d: d, r: data.rev })); } catch (e) {}
                     } else { updEl.textContent = ''; }
                   }).catch(function () { updEl.textContent = ''; });
-              }
-            }
-            // odkazy na soubory s kódem (.ps1, .json…) → GitHub view místo docsify routy
-            var codeLinks = document.querySelectorAll('.markdown-section a[href]');
-            for (var cl = 0; cl < codeLinks.length; cl++) {
-              var chref = codeLinks[cl].getAttribute('href') || '';
-              if (/\.(ps1|psm1|json|xml|txt)$/i.test(chref) && chref.indexOf('//') === -1) {
-                var cpath = chref.replace(/^#\//, '').replace(/^\.?\//, '');
-                codeLinks[cl].setAttribute('href', 'https://github.com/EasyPortal365/sharepoint-vault/blob/main/' + cpath);
-                codeLinks[cl].setAttribute('target', '_blank');
-                codeLinks[cl].setAttribute('rel', 'noopener');
               }
             }
             // klasifikace seznamů: položky začínající odkazem → terminal tree místo wiki bulletů
