@@ -7,6 +7,10 @@
   - [REST vs Microsoft Graph](/guides/sharepoint-rest-vs-microsoft-graph.md)
   - [Knowledge formats for RAG](/guides/choosing-a-knowledge-format-for-sharepoint-rag.md)
 
+- **🎓 Course (CZ)**
+  - [SharePoint od A do Z](/course/README.md)
+  - [08 · Reporting](/course/08-reporting.md)
+
 - **💥 Gotchas**
   - [All gotchas](/gotchas/README.md)
 
