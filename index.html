@@ -290,10 +290,46 @@
         });
       }
     }
+    function svSparkFromCommits(base) {
+      /* záloha: sparkline spočítaná z posledních 100 commitů */
+      return fetch(base + '/commits?per_page=100').then(function (r) { return r.ok ? r.json() : null; })
+        .then(function (cs) {
+          if (!cs || !cs.length) { return null; }
+          var weeks = []; for (var w = 0; w < 52; w++) { weeks.push(0); }
+          var now = Date.now();
+          for (var i = 0; i < cs.length; i++) {
+            var idx = Math.floor((now - new Date(cs[i].commit.author.date).getTime()) / 604800000);
+            if (idx >= 0 && idx < 52) { weeks[51 - idx]++; }
+          }
+          return weeks;
+        }).catch(function () { return null; });
+    }
+    function svFetchStats(base, attempt) {
+      /* GitHub stats vrací 202, dokud je nepočítá — retry, pak fallback z commitů */
+      return fetch(base + '/stats/commit_activity').then(function (r) {
+        if (r.status === 200) { return r.json().then(function (d) { return d && d.length ? d.map(function (w) { return w.total; }) : null; }); }
+        if (r.status === 202 && attempt < 3) {
+          return new Promise(function (res) { setTimeout(res, 2500); }).then(function () { return svFetchStats(base, attempt + 1); });
+        }
+        return null;
+      }).catch(function () { return null; });
+    }
+    function svSaveCache() {
+      try { localStorage.setItem('sv-gh-v2', JSON.stringify({ t: Date.now(), d: SV_GH })); } catch (e) {}
+    }
     function svLoad() {
+      var base0 = 'https://api.github.com/repos/EasyPortal365/sharepoint-vault';
       try {
         var cached = JSON.parse(localStorage.getItem('sv-gh-v2') || 'null');
-        if (cached && Date.now() - cached.t < 1800000) { SV_GH = cached.d; svFill(); return; }
+        if (cached && Date.now() - cached.t < 1800000) {
+          SV_GH = cached.d; svFill();
+          if (!SV_GH.spark) {
+            /* cache bez sparklne → dopočítat na pozadí a cache obohatit */
+            svFetchStats(base0, 0).then(function (s) { return s || svSparkFromCommits(base0); })
+              .then(function (s) { if (s) { SV_GH.spark = s; svSaveCache(); svFill(); } });
+          }
+          return;
+        }
       } catch (e) {}
       var base = 'https://api.github.com/repos/EasyPortal365/sharepoint-vault';
       var isContent = function (p) {
@@ -307,7 +343,7 @@
         fetch(base).then(function (r) { return r.ok ? r.json() : null; }),
         fetch(base + '/commits?per_page=5').then(function (r) { return r.ok ? r.json() : null; }),
         fetch(base + '/git/trees/main?recursive=1').then(function (r) { return r.ok ? r.json() : null; }),
-        fetch(base + '/stats/commit_activity').then(function (r) { return r.status === 200 ? r.json() : null; }),
+        svFetchStats(base, 0).then(function (s) { return s || svSparkFromCommits(base); }),
         fetch(base + '/commits?until=' + encodeURIComponent(weekAgo) + '&per_page=1').then(function (r) { return r.ok ? r.json() : null; })
       ]).then(function (res) {
         SV_GH.repo = res[0]; SV_GH.commits = res[1];
@@ -324,12 +360,9 @@
           n.cats = Object.keys(catSet).length;
           SV_GH.counts = n; SV_GH.gpaths = gp;
         }
-        if (res[3] && res[3].length) { SV_GH.spark = res[3].map(function (w) { return w.total; }); }
+        if (res[3] && res[3].length) { SV_GH.spark = res[3]; }
         var baseCommit = res[4] && res[4].length ? res[4][0].sha : null;
-        var finish = function () {
-          try { localStorage.setItem('sv-gh-v2', JSON.stringify({ t: Date.now(), d: SV_GH })); } catch (e) {}
-          svFill();
-        };
+        var finish = function () { svSaveCache(); svFill(); };
         if (baseCommit) {
           fetch(base + '/compare/' + baseCommit + '...main').then(function (r) { return r.ok ? r.json() : null; })
             .then(function (cmp) {
