@@ -47,6 +47,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [Usage reports are CORS-blocked in the browser](gotchas/graph/usage-reports-cors-blocked-in-browser.md) — fetch server-side; browser inventory = SP Search + `/_api/site/usage`
     - [Tenant-wide enumeration is app-only](gotchas/graph/tenant-wide-enumeration-is-app-only.md) — `getAllSites` rejects delegated tokens; check the Permissions table first
     - [`PATCH /me`: directory vs profile fields](gotchas/graph/patch-me-directory-vs-profile-fields.md) — mixed field groups fail whole; two PATCHes, profile best-effort
+    - [`MSGraphClient` calls bypass DevTools Network](gotchas/graph/msgraphclient-calls-bypass-devtools-network.md) — SPFx Graph traffic invisible in Network; diagnose via `performance` entries, `currentuser`, DOM, user's response
   - **azure-functions/**
     - [Windows zip deploy breaks the running app](gotchas/azure-functions/windows-zip-deploy-breaks-running-app.md) — live `wwwroot` file locks → whole app 503; re-run the deploy, prevent with `WEBSITE_RUN_FROM_PACKAGE=1`
     - [Rate limit counts the capability probe](gotchas/azure-functions/rate-limit-counts-capability-probe-corporate-nat.md) — corporate NAT makes per-IP per-company; metered probes silently hide the feature
