@@ -54,6 +54,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [ViewsX properties sort only by `ViewsLifeTime`](gotchas/search/viewsx-properties-sort-only-by-viewslifetime.md) — windowed counts select but don't sort; re-rank client-side
     - [Compare SharePoint paths decode-first](gotchas/search/compare-sharepoint-paths-decode-first.md) — normalize encoding + boundary-aware prefix, or matches never fire
     - [Don't trust the parsed-file-types table: SPO does index `.md`](gotchas/search/md-is-fulltext-indexed-despite-the-docs.md) — the official table omits Markdown, yet live SPO full-text indexes it; probe before architecting
+    - [Graph Search returns 0 hits — you passed the question as the `queryString`](gotchas/search/graph-search-raw-question-returns-nothing.md) — translate question→keywords; "what's new" is a listing (`*` + default date sort, custom sort = 400); per-entity KQL only as documented
   - **powershell/**
     - [PS 5.1 `Get-Content` mangles UTF-8](gotchas/powershell/get-content-mangles-utf8.md) — ANSI default double-encodes diacritics; use `System.IO.File` + BOM-less `UTF8Encoding`
     - [Smart quotes are string delimiters](gotchas/powershell/smart-quotes-are-string-delimiters.md) — `„`/`"` parse like `"`; localized text in single-quoted here-strings
