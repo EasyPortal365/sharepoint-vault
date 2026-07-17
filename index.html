@@ -398,6 +398,10 @@
           hook.beforeEach(function (md) {
             /* /README je tatáž stránka jako / — drž jedinou homepage */
             if (vm.route.path === '/README') { window.location.replace(window.location.pathname + '#/'); }
+            /* přímé routy na soubory s kódem → GitHub view (docsify je neumí renderovat) */
+            if (/\.(ps1|psm1|json|xml|txt)$/i.test(vm.route.path)) {
+              window.location.replace('https://github.com/EasyPortal365/sharepoint-vault/blob/main' + vm.route.path);
+            }
             return md;
           });
           hook.afterEach(function (html, next) {
@@ -457,6 +461,17 @@
                       try { localStorage.setItem(ck, JSON.stringify({ t: Date.now(), d: d, r: data.rev })); } catch (e) {}
                     } else { updEl.textContent = ''; }
                   }).catch(function () { updEl.textContent = ''; });
+              }
+            }
+            // odkazy na soubory s kódem (.ps1, .json…) → GitHub view místo docsify routy
+            var codeLinks = document.querySelectorAll('.markdown-section a[href]');
+            for (var cl = 0; cl < codeLinks.length; cl++) {
+              var chref = codeLinks[cl].getAttribute('href') || '';
+              if (/\.(ps1|psm1|json|xml|txt)$/i.test(chref) && chref.indexOf('//') === -1) {
+                var cpath = chref.replace(/^#\//, '').replace(/^\.?\//, '');
+                codeLinks[cl].setAttribute('href', 'https://github.com/EasyPortal365/sharepoint-vault/blob/main/' + cpath);
+                codeLinks[cl].setAttribute('target', '_blank');
+                codeLinks[cl].setAttribute('rel', 'noopener');
               }
             }
             // klasifikace seznamů: položky začínající odkazem → terminal tree místo wiki bulletů
