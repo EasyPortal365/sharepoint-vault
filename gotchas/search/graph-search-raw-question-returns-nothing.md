@@ -130,6 +130,30 @@ Since `event` has no documented date filter, time-bounded calendar questions ("m
 are better served by `/me/calendarView?startDateTime=…&endDateTime=…` than by Search. Different data,
 though: `calendarView` covers the future, Search mostly the past.
 
+### 5. Four traps waiting in `/me/chats` (all verified live)
+
+Once you go native for Teams recency, `GET /me/chats?$expand=lastMessagePreview&$orderby=lastMessagePreview/createdDateTime desc`
+works (that combination is fine, even though the docs only show `$expand` and `$orderby` separately) —
+but four things will bite you:
+
+1. **Name the chat after the OTHER person, not the sender.** `lastMessagePreview.from` is whoever
+   wrote the last message — for your own messages, that's *you*. Chats then read "Chat with
+   \<your own name\>". This is not cosmetic: an assistant asked *"what did I discuss with Megan?"*
+   answers *"I have no information"* while citing that very message as its source — Megan's name
+   never entered the context. Fix: `$expand=lastMessagePreview,members` (both are documented for
+   list-chats) plus a cached `GET /me?$select=id`, then build the title from members minus yourself.
+   Keep `from` for a "who wrote it" line.
+2. **`Prefer: include-unknown-enum-members`** — without this header, evolvable enums come back as the
+   sentinel `unknownFutureValue` instead of the real value (`systemEventMessage`). Any filter you
+   write on `messageType` then passes by luck, not intent.
+3. **Self-chat ("message yourself") is NOT returned by `/me/chats`.** If your test plan is "I'll
+   message myself and ask about it", the test cannot pass no matter what your code does. Test against
+   a real chat with another person.
+4. **`lastMessagePreview` is only the LAST message.** When that happens to be a system notice — e.g.
+   a call-recording event, which arrives with `from: null` and a body of `<systemEventMessage/>` —
+   the whole chat disappears from your results even though it contains real conversation. Covering
+   that needs `/chats/{id}/messages` per chat.
+
 ## Why this bites specifically in AI/RAG code
 
 Retrieval pipelines built on SharePoint Search usually already have the "question → keywords" step.
