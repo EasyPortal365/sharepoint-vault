@@ -60,8 +60,16 @@ rarely need `from:`.
 
 ### 2. For recency, lean on the default sort — don't sort yourself
 
-`*` matches everything and is documented (see the interleaving example that combines `chatMessage`
-and `message`). It works for "what's new" because of a detail that's easy to miss:
+> ⚠️ **Correction (2026-07-17, verified live): `queryString: "*"` does NOT work for `chatMessage`
+> alone.** The response comes back `200 OK` with **`"searchTerms": []`** and `"total": 0` — Graph
+> discarded the wildcard, had nothing to match, and returned nothing. The `*` example in the docs is
+> for `entityTypes: ["chatMessage", "message"]` (**the interleaving combination**), and it does not
+> generalize to a single entity type. Treat the rest of this section as the *goal* (lean on the
+> default date sort), not as a working recipe for `*` — and **check `searchTerms` in the response**:
+> if it's empty, your query never became a query, no matter what the docs example shows.
+
+`*` is documented (see the interleaving example that combines `chatMessage` and `message`) and the
+default sort is what makes recency work at all — a detail that's easy to miss:
 
 > **`message` and `event` are sorted by date**, all SharePoint/OneDrive/person types by relevance.
 > — *Microsoft Search API overview*
