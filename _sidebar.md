@@ -1,25 +1,25 @@
 - [🗝️ Welcome](/)
-- [🗂️ Full index](INDEX.md)
+- [🗂️ Full index](/INDEX.md)
 
 - **🧭 Guides**
-  - [SharePoint REST like a pro](guides/calling-sharepoint-rest-like-a-pro.md)
-  - [Search queries that work](guides/search-queries-that-actually-work.md)
-  - [REST vs Microsoft Graph](guides/sharepoint-rest-vs-microsoft-graph.md)
-  - [Knowledge formats for RAG](guides/choosing-a-knowledge-format-for-sharepoint-rag.md)
+  - [SharePoint REST like a pro](/guides/calling-sharepoint-rest-like-a-pro.md)
+  - [Search queries that work](/guides/search-queries-that-actually-work.md)
+  - [REST vs Microsoft Graph](/guides/sharepoint-rest-vs-microsoft-graph.md)
+  - [Knowledge formats for RAG](/guides/choosing-a-knowledge-format-for-sharepoint-rag.md)
 
 - **💥 Gotchas**
-  - [All gotchas](gotchas/README.md)
+  - [All gotchas](/gotchas/README.md)
 
 - **🧰 Scripts**
-  - [All scripts](scripts/README.md)
+  - [All scripts](/scripts/README.md)
 
 - **✂️ Snippets**
-  - [All snippets](snippets/README.md)
+  - [All snippets](/snippets/README.md)
 
 - **📦 Templates**
-  - [Overview](templates/README.md)
+  - [Overview](/templates/README.md)
 
 - **🔗 Resources**
-  - [Curated links](resources/README.md)
+  - [Curated links](/resources/README.md)
 
-- [🤝 Contributing](CONTRIBUTING.md)
+- [🤝 Contributing](/CONTRIBUTING.md)

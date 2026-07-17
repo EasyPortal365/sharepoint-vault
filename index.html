@@ -399,6 +399,10 @@
       repo: 'EasyPortal365/sharepoint-vault',
       homepage: 'README.md',
       loadSidebar: '_sidebar.md',
+      relativePath: true,
+      alias: {
+        '/.*\\.(ps1|psm1|json|xml|txt)': '/_file.md'
+      },
       subMaxLevel: 2,
       auto2top: true,
       maxLevel: 3,
@@ -417,7 +421,16 @@
             var m = vm.route.path.match(/\.(ps1|psm1|json|xml|txt)$/i);
             if (m) {
               var rel = vm.route.path.replace(/^\//, '');
-              fetch(rel).then(function (r) { return r.ok ? r.text() : null; }).then(function (code) {
+              /* zkusit cestu, pak běžné prefixy (staré odkazy bez scripts/ apod.) */
+              var tryFetch = function (cands, ix) {
+                if (ix >= cands.length) { return Promise.resolve({ code: null, rel: rel }); }
+                return fetch(cands[ix]).then(function (r) {
+                  if (r.ok) { return r.text().then(function (t) { return { code: t, rel: cands[ix] }; }); }
+                  return tryFetch(cands, ix + 1);
+                }).catch(function () { return tryFetch(cands, ix + 1); });
+              };
+              tryFetch([rel, 'scripts/' + rel, 'snippets/' + rel, 'templates/' + rel], 0).then(function (got) {
+                var code = got.code; rel = got.rel;
                 if (code === null) { next('# file not found\n\n`' + rel + '` is not in the vault.'); return; }
                 SV_CODE[vm.route.path] = code;
                 var langMap = { ps1: 'powershell', psm1: 'powershell', json: 'json', xml: 'xml', txt: 'text' };
