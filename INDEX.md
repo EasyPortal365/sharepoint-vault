@@ -71,8 +71,9 @@ Every single thing in the vault, on one page. Section names link to folder READM
   - [Choosing a knowledge format for RAG](guides/choosing-a-knowledge-format-for-sharepoint-rag.md) — Markdown vs DOCX vs site pages vs list items; extraction quality, token economics, and why Markdown wins the machine channel
 - 🎓 **[course/](course/)** — *SharePoint Online – administrace od A do Z* (CZ course materials)
   - [Course overview](course/README.md) — 9 chapters, what you'll learn, lecturer
+  - [01 · Představení SharePointu](course/01-predstaveni-sharepoint.md) — positioning, scenarios, editions, SP Online vs Server, governance, roadmap
   - [08 · SharePoint reporting](course/08-reporting.md) — Admin Center reports, usage, Microsoft Purview auditing, alert policies
-  - *chapters 01–07, 09 being added*
+  - *chapters 03–07, 09 being added*
 - ✂️ **[snippets/](snippets/)** — small copy-paste fragments
   - **rest/**
     - [Read all items from a large list — paging done right](snippets/rest/get-all-list-items-paged.md) — `$top` caps at 5,000, `$skip` is ignored; follow `odata.nextLink`
