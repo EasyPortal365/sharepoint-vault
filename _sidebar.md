@@ -9,6 +9,7 @@
 
 - **🎓 Course (CZ)**
   - [SharePoint od A do Z](/course/README.md)
+  - [01 · Představení SharePointu](/course/01-predstaveni-sharepoint.md)
   - [08 · Reporting](/course/08-reporting.md)
 
 - **💥 Gotchas**
