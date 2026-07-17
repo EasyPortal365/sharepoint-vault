@@ -122,6 +122,20 @@
     .markdown-section tr:last-child td { border-bottom:none; }
     .markdown-section tr:nth-child(2n) { background:rgba(244,247,251,.5); }
 
+    /* ── course = čtecí typografie (proporcionální nadpisy, ne terminál) ── */
+    body.is-course .markdown-section { font-size:16px; line-height:1.8; color:#2a3550; }
+    body.is-course .markdown-section h1 { font-family:var(--sans); font-weight:800; font-size:33px; letter-spacing:-.025em; color:var(--navy); margin-bottom:.5em; }
+    body.is-course .markdown-section h2 { font-family:var(--sans); font-weight:800; font-size:23px; letter-spacing:-.02em; color:var(--navy); margin-top:1.9em; padding-top:0; border-top:none; }
+    body.is-course .markdown-section h2::before { content:''; display:block; width:38px; height:3px; background:var(--teal); border-radius:2px; margin-bottom:.55em; }
+    body.is-course .markdown-section h3 { font-family:var(--sans); font-weight:700; font-size:18px; letter-spacing:-.015em; color:var(--navy7); margin-top:1.5em; }
+    body.is-course .markdown-section h3::before { content:''; }
+    body.is-course .markdown-section h4 { font-family:var(--sans); font-weight:700; font-size:15px; color:var(--navy6); }
+    body.is-course .markdown-section > blockquote:first-of-type { font-size:16px; }
+    body.is-course .markdown-section p { margin:.7em 0; }
+    body.is-course .markdown-section li { margin:.3em 0; }
+    body.is-course .markdown-section table { font-size:14px; }
+    body.is-course .markdown-section th { text-transform:none; letter-spacing:0; font-family:var(--sans); font-weight:700; font-size:12.5px; }
+
     /* ── link lists → terminal tree (méně wiki) ── */
     .markdown-section ul:not(.sv-links) > li::marker { color:var(--teal7); }
     .markdown-section ul.sv-links { list-style:none; padding-left:2px; }
@@ -461,6 +475,7 @@
           });
           hook.doneEach(function () {
             document.body.classList.toggle('is-home', vm.route.path === '/');
+            document.body.classList.toggle('is-course', vm.route.path.indexOf('/course') === 0);
             /* badge pilulky z README přestěhovat do hero terminálu */
             if (vm.route.path === '/') {
               var heroBody = document.querySelector('.sv-hero .body');
