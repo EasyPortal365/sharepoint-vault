@@ -35,6 +35,7 @@ It is **not** another copy of Microsoft's documentation. Everything in the vault
 | [`scripts/`](scripts/) | PowerShell scripts — reporting, lists & libraries, permissions, provisioning |
 | [`gotchas/`](gotchas/) | Real-world traps, documented as *symptom → cause → fix* |
 | [`guides/`](guides/) | End-to-end guides — REST API, Microsoft Graph, SPFx, search |
+| [`course/`](course/) | *SharePoint Online – administrace od A do Z* — full CZ course materials (IT Pro admin) |
 | [`snippets/`](snippets/) | Small copy-paste fragments for daily work |
 | [`templates/`](templates/) | Reusable templates — site scripts, list formatting, schemas |
 | [`resources/`](resources/) | Curated links — tools, docs, community sources |
