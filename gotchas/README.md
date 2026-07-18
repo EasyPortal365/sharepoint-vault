@@ -45,6 +45,7 @@ Every article carries frontmatter with `tags` and `applies-to`, so repo search g
 | [Centered flex clips on mobile](spfx/centered-flex-clips-on-mobile.md) | `justify-content:center` + overflow = content cut off above the scroll — use flex "springs" instead |
 | [JSX attributes and smart quotes](spfx/jsx-attributes-and-smart-quotes.md) | Typographic quotes in `"…"` attributes = TS1003 — wrap localized strings as `{'…'}` |
 | [Portaled overlays miss your CSS reset](spfx/portaled-overlays-miss-your-css-reset.md) | `createPortal` to `body` escapes `.app-root` — fields inherit `content-box`, overflow by 26px, panel grows a scrollbar |
+| [Auto-save must wait for async inputs](spfx/autosave-effect-must-wait-for-async-inputs.md) | An effect saving a value computed from async-loaded state fires on mount with empty inputs — gate on a loaded flag, read inputs strictly |
 
 ### app-catalog/
 
@@ -101,6 +102,7 @@ The standard server-side companion of an SPFx solution — and its own set of tr
 |---|---|
 | [Git Bash mangles backslashes for native exes](tooling/git-bash-mangles-backslashes-for-native-exes.md) | `[\\/]` arrives as `[/]` — Windows-path regexes silently under-match; use `.{1,4}` or run from PowerShell |
 | [GitHub Pages certificate stuck](tooling/github-pages-certificate-stuck.md) | Domain added before DNS existed → cert never arrives — remove & re-add the domain to restart provisioning |
+| [NUL byte makes grep treat a file as binary](tooling/nul-byte-makes-grep-treat-file-as-binary.md) | One raw U+0000 in a literal and every grep-based sweep silently skips the file — write the escape, detect with `file` |
 
 ## Writing your own
 
