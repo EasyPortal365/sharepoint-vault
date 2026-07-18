@@ -12,6 +12,7 @@
   - [01 · Představení SharePointu](/course/01-predstaveni-sharepoint.md)
   - [03 · Informační architektura](/course/03-informacni-architektura.md)
   - [04 · Správa podnikového obsahu](/course/04-sprava-podnikoveho-obsahu.md)
+  - [05 · Řízení oprávnění](/course/05-rizeni-opravneni.md)
   - [08 · Reporting](/course/08-reporting.md)
 
 - **💥 Gotchas**

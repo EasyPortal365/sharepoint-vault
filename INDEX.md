@@ -74,8 +74,9 @@ Every single thing in the vault, on one page. Section names link to folder READM
   - [01 · Představení SharePointu](course/01-predstaveni-sharepoint.md) — positioning, scenarios, editions, SP Online vs Server, governance, roadmap
   - [03 · Informační architektura](course/03-informacni-architektura.md) — terminology, sites vs subsites, hub sites, site types, templates
   - [04 · Správa podnikového obsahu](course/04-sprava-podnikoveho-obsahu.md) — lists & libraries, content types, Content Type Hub, managed metadata, retention
+  - [05 · Řízení oprávnění](course/05-rizeni-opravneni.md) — object model, security scopes, SP vs Entra groups, Everyone claims, Check Permissions, external sharing
   - [08 · SharePoint reporting](course/08-reporting.md) — Admin Center reports, usage, Microsoft Purview auditing, alert policies
-  - *chapters 05, 06, 07, 09 being added*
+  - *chapters 06, 07, 09 being added*
 - ✂️ **[snippets/](snippets/)** — small copy-paste fragments
   - **rest/**
     - [Read all items from a large list — paging done right](snippets/rest/get-all-list-items-paged.md) — `$top` caps at 5,000, `$skip` is ignored; follow `odata.nextLink`
