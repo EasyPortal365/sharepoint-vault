@@ -13,6 +13,7 @@
   - [03 · Informační architektura](/course/03-informacni-architektura.md)
   - [04 · Správa podnikového obsahu](/course/04-sprava-podnikoveho-obsahu.md)
   - [05 · Řízení oprávnění](/course/05-rizeni-opravneni.md)
+  - [06 · Vyhledávání obsahu](/course/06-vyhledavani-obsahu.md)
   - [08 · Reporting](/course/08-reporting.md)
 
 - **💥 Gotchas**
