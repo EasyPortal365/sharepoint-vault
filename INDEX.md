@@ -78,7 +78,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
   - [06 · Vyhledávání obsahu](course/06-vyhledavani-obsahu.md) — indexing/crawl, KQL query syntax table, Modern Search, disabling indexing
   - [07 · Zálohování a obnova](course/07-zalohovani-obnova.md) — versioning, recycle bins (93 days), Microsoft 365 Backup, third-party tools
   - [08 · SharePoint reporting](course/08-reporting.md) — Admin Center reports, usage, Microsoft Purview auditing, alert policies
-  - *chapter 09 being added*
+  - [09 · PowerShell](course/09-powershell.md) — SPO Management Shell + PnP PowerShell, admin/reporting scripts (storage, guests, duplicates, long URLs, provisioning)
 - ✂️ **[snippets/](snippets/)** — small copy-paste fragments
   - **rest/**
     - [Read all items from a large list — paging done right](snippets/rest/get-all-list-items-paged.md) — `$top` caps at 5,000, `$skip` is ignored; follow `odata.nextLink`
