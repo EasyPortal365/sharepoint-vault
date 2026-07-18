@@ -14,6 +14,7 @@
   - [04 · Správa podnikového obsahu](/course/04-sprava-podnikoveho-obsahu.md)
   - [05 · Řízení oprávnění](/course/05-rizeni-opravneni.md)
   - [06 · Vyhledávání obsahu](/course/06-vyhledavani-obsahu.md)
+  - [07 · Zálohování a obnova](/course/07-zalohovani-obnova.md)
   - [08 · Reporting](/course/08-reporting.md)
 
 - **💥 Gotchas**

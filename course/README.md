@@ -22,7 +22,7 @@ Tohle jsou doprovodné materiály k živému kurzu, který vedu v OK System (3 d
 | **04** | **[Správa podnikového obsahu (ECM)](04-sprava-podnikoveho-obsahu.md)** | Seznamy a knihovny, typy obsahu, Content Type Hub, spravovaná metadata (Term Store), zásady uchování |
 | **05** | **[Řízení a správa oprávnění](05-rizeni-opravneni.md)** | Objektový model, security scopes, SP vs. Entra ID skupiny, Everyone claimy, Check Permissions, externí sdílení, Guest Inviter |
 | **06** | **[Vyhledávání obsahu](06-vyhledavani-obsahu.md)** | Indexace (crawl), KQL syntaxe dotazů, odkud se vrací data, Modern Search, vypnutí indexace |
-| 07 | Zálohování a obnova dat | Verzování, odpadkové koše, zálohy webů a tenantů, Microsoft 365 Backup, řešení třetích stran |
+| **07** | **[Zálohování a obnova dat](07-zalohovani-obnova.md)** | Verzování, odpadkové koše (93 dnů), Microsoft 365 Backup, řešení třetích stran |
 | **08** | **[SharePoint reporting](08-reporting.md)** | Reporty v Admin Center, přehledy využití, Microsoft Purview (auditování), zásady upozornění |
 | 09 | SharePoint Online a PowerShell | SharePoint Online Management Shell, PnP PowerShell, vybrané příklady užití |
 
