@@ -35,6 +35,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [`SP.WebProxy` is add-in-only](gotchas/spfx/webproxy-is-add-in-only.md) — no SharePoint-native CORS proxy for SPFx; the 403 hides inside an HTTP 200
     - [Teams personal app needs global deploy](gotchas/spfx/teams-personal-app-needs-global-deploy.md) — `skipFeatureDeployment: true` + "all sites"; the `teams/` icon-folder convention
     - [Teams mobile webview renders desktop width](gotchas/spfx/teams-mobile-webview-renders-desktop-width.md) — ~980px layout; fix the viewport meta in Teams first
+    - [Office file extraction needs a decompressed-size cap](gotchas/spfx/office-file-extraction-needs-a-decompressed-size-cap.md) — an upload-size limit only bounds the compressed archive; a crafted `!ref` still OOMs the tab
     - [Centered flex clips on mobile](gotchas/spfx/centered-flex-clips-on-mobile.md) — centering + overflow cuts content above the scroll; flex "springs"
     - [JSX attributes and smart quotes](gotchas/spfx/jsx-attributes-and-smart-quotes.md) — typographic quotes in attributes = TS1003; wrap as `{'…'}`
     - [Portaled overlays miss your CSS reset](gotchas/spfx/portaled-overlays-miss-your-css-reset.md) — portal to `body` escapes the scoped reset; `content-box` fields overflow and grow a scrollbar
