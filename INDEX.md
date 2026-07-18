@@ -38,6 +38,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [Centered flex clips on mobile](gotchas/spfx/centered-flex-clips-on-mobile.md) — centering + overflow cuts content above the scroll; flex "springs"
     - [JSX attributes and smart quotes](gotchas/spfx/jsx-attributes-and-smart-quotes.md) — typographic quotes in attributes = TS1003; wrap as `{'…'}`
     - [Portaled overlays miss your CSS reset](gotchas/spfx/portaled-overlays-miss-your-css-reset.md) — portal to `body` escapes the scoped reset; `content-box` fields overflow and grow a scrollbar
+    - [Auto-save must wait for async inputs](gotchas/spfx/autosave-effect-must-wait-for-async-inputs.md) — computed-from-async auto-save fires on mount with empty inputs and persists garbage; gate on a loaded flag
   - **app-catalog/**
     - [Three `.sppkg` packaging pitfalls](gotchas/app-catalog/sppkg-packaging-pitfalls.md) — ASCII-only solution name, icon exactly 96×96, Publisher column is AppSource-only
   - **graph/**
@@ -65,6 +66,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
   - **tooling/**
     - [Git Bash mangles backslashes for native exes](gotchas/tooling/git-bash-mangles-backslashes-for-native-exes.md) — `[\\/]` arrives as `[/]`; Windows-path regexes silently under-match
     - [GitHub Pages certificate stuck](gotchas/tooling/github-pages-certificate-stuck.md) — domain added before DNS existed; remove & re-add restarts provisioning
+    - [NUL byte makes grep treat a file as binary](gotchas/tooling/nul-byte-makes-grep-treat-file-as-binary.md) — one raw U+0000 and every grep-based sweep silently skips the file; write the escape, detect with `file`
 - 🧭 **[guides/](guides/)** — end-to-end walkthroughs
   - [Calling SharePoint REST like a pro](guides/calling-sharepoint-rest-like-a-pro.md) — clients, headers, safe writes, reading well, and the ten-minute diagnosis routine
   - [Search queries that actually work](guides/search-queries-that-actually-work.md) — the mandatory header, practical KQL, managed properties, paging, freshness traps
