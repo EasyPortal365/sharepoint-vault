@@ -76,8 +76,9 @@ Every single thing in the vault, on one page. Section names link to folder READM
   - [04 · Správa podnikového obsahu](course/04-sprava-podnikoveho-obsahu.md) — lists & libraries, content types, Content Type Hub, managed metadata, retention
   - [05 · Řízení oprávnění](course/05-rizeni-opravneni.md) — object model, security scopes, SP vs Entra groups, Everyone claims, Check Permissions, external sharing
   - [06 · Vyhledávání obsahu](course/06-vyhledavani-obsahu.md) — indexing/crawl, KQL query syntax table, Modern Search, disabling indexing
+  - [07 · Zálohování a obnova](course/07-zalohovani-obnova.md) — versioning, recycle bins (93 days), Microsoft 365 Backup, third-party tools
   - [08 · SharePoint reporting](course/08-reporting.md) — Admin Center reports, usage, Microsoft Purview auditing, alert policies
-  - *chapters 07, 09 being added*
+  - *chapter 09 being added*
 - ✂️ **[snippets/](snippets/)** — small copy-paste fragments
   - **rest/**
     - [Read all items from a large list — paging done right](snippets/rest/get-all-list-items-paged.md) — `$top` caps at 5,000, `$skip` is ignored; follow `odata.nextLink`
