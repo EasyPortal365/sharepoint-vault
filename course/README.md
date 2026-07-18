@@ -18,7 +18,7 @@ Tohle jsou doprovodné materiály k živému kurzu, který vedu v OK System (3 d
 | # | Kapitola | O čem to je |
 |---|---|---|
 | **01** | **[Představení Microsoft SharePoint](01-predstaveni-sharepoint.md)** | Pozicování produktu, scénáře využití, edice, rozdíly oproti SharePoint Serveru, governance, roadmap |
-| 03 | Informační architektura | Terminologie, weby vs. podřízené weby, šablony webů, URL adresace a struktura |
+| **03** | **[Informační architektura](03-informacni-architektura.md)** | Terminologie, weby vs. podřízené weby, hub sites, typy webů, šablony, URL adresace a struktura |
 | 04 | Správa podnikového obsahu (ECM) | Seznamy a knihovny, jejich nastavení, typy obsahu, metadata, správa dokumentů |
 | 05 | Řízení a správa oprávnění | Hierarchie oprávnění v objektovém modelu, úrovně oprávnění, individuální oprávnění, zásady sdílení |
 | 06 | Vyhledávání obsahu | Jak rychle SharePoint indexuje data, co indexaci brzdí, vyhledávací dotazy, Modern Search |
