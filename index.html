@@ -65,6 +65,10 @@
     .sidebar-nav ul li { margin:0; }
     .sidebar-nav ul ul { margin:.1em 0 .3em; }
     .sidebar-nav > ul > li > p { margin:.15em 0; }
+    /* pod-položky (page TOC pod aktivní stránkou) — ploché jednotné odsazení; docsify dash marker se kaskádovitě rozšiřoval, proto vlastní */
+    .sidebar-nav .app-sub-sidebar { padding-left:14px; }
+    .sidebar-nav .app-sub-sidebar li::before { content:'' !important; padding:0 !important; margin:0 !important; }
+    .sidebar-nav .app-sub-sidebar li a::before { content:'· '; color:var(--soft); }
     .sidebar-nav li > p > strong { font-family:var(--mono); font-size:10.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--soft); font-weight:700; display:block; margin-top:.9em; margin-bottom:.15em; }
     .sidebar::-webkit-scrollbar { width:4px; } .sidebar::-webkit-scrollbar-thumb { background:var(--line2); }
     .sidebar-toggle { background:transparent; }
