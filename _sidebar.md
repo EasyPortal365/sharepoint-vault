@@ -16,6 +16,7 @@
   - [06 · Vyhledávání obsahu](/course/06-vyhledavani-obsahu.md)
   - [07 · Zálohování a obnova](/course/07-zalohovani-obnova.md)
   - [08 · Reporting](/course/08-reporting.md)
+  - [09 · PowerShell](/course/09-powershell.md)
 
 - **💥 Gotchas**
   - [All gotchas](/gotchas/README.md)

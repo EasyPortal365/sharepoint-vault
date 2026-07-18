@@ -24,9 +24,9 @@ Tohle jsou doprovodné materiály k živému kurzu, který vedu v OK System (3 d
 | **06** | **[Vyhledávání obsahu](06-vyhledavani-obsahu.md)** | Indexace (crawl), KQL syntaxe dotazů, odkud se vrací data, Modern Search, vypnutí indexace |
 | **07** | **[Zálohování a obnova dat](07-zalohovani-obnova.md)** | Verzování, odpadkové koše (93 dnů), Microsoft 365 Backup, řešení třetích stran |
 | **08** | **[SharePoint reporting](08-reporting.md)** | Reporty v Admin Center, přehledy využití, Microsoft Purview (auditování), zásady upozornění |
-| 09 | SharePoint Online a PowerShell | SharePoint Online Management Shell, PnP PowerShell, vybrané příklady užití |
+| **09** | **[SharePoint Online a PowerShell](09-powershell.md)** | SPO Management Shell, PnP PowerShell, sada skriptů (storage, guesti, duplicity, dlouhé cesty, provisioning) |
 
-> Sekce se plní – hotové kapitoly jsou prolinkované, zbývající doplňuji. Kapitola 02 je součástí bloku „tenanty z pohledu správce" v kapitole 01.
+> Kapitola 02 (tenanty z pohledu správce) je součástí bloku v kapitole 01.
 
 ## Co se v kurzu naučíte
 
