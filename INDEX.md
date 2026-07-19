@@ -52,6 +52,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [Usage reports are CORS-blocked in the browser](gotchas/graph/usage-reports-cors-blocked-in-browser.md) — fetch server-side; browser inventory = SP Search + `/_api/site/usage`
     - [Tenant-wide enumeration is app-only](gotchas/graph/tenant-wide-enumeration-is-app-only.md) — `getAllSites` rejects delegated tokens; check the Permissions table first
     - [`PATCH /me`: directory vs profile fields](gotchas/graph/patch-me-directory-vs-profile-fields.md) — mixed field groups fail whole; two PATCHes, profile best-effort
+    - [az CLI can't grant Sites.Selected](gotchas/graph/az-cli-cannot-grant-sites-selected.md) — `sites/{id}/permissions` needs `Sites.FullControl.All`; the CLI client can't request it (`AADSTS65002`), use the Graph PowerShell SDK
     - [`MSGraphClient` calls bypass DevTools Network](gotchas/graph/msgraphclient-calls-bypass-devtools-network.md) — SPFx Graph traffic invisible in Network; diagnose via `performance` entries, `currentuser`, DOM, user's response
   - **azure-functions/**
     - [Windows zip deploy breaks the running app](gotchas/azure-functions/windows-zip-deploy-breaks-running-app.md) — live `wwwroot` file locks → whole app 503; re-run the deploy, prevent with `WEBSITE_RUN_FROM_PACKAGE=1`
@@ -66,6 +67,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
   - **powershell/**
     - [PS 5.1 `Get-Content` mangles UTF-8](gotchas/powershell/get-content-mangles-utf8.md) — ANSI default double-encodes diacritics; use `System.IO.File` + BOM-less `UTF8Encoding`
     - [Smart quotes are string delimiters](gotchas/powershell/smart-quotes-are-string-delimiters.md) — `„`/`"` parse like `"`; localized text in single-quoted here-strings
+    - [`'Stop'` + a native stderr warning = terminating error](gotchas/powershell/erroractionpreference-stop-native-stderr.md) — `$ErrorActionPreference='Stop'` escalates a benign stderr warning (exit 0) to a script-killer; wrap in `'Continue'`, judge by `$LASTEXITCODE`
   - **security/**
     - [Stored XSS via list content](gotchas/security/stored-xss-from-list-content.md) — React doesn't block `javascript:` hrefs; allowlist `safeHref` with C0-strip at every sink
   - **tooling/**
