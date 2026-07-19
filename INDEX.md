@@ -2,7 +2,7 @@
 
 Every single thing in the vault, on one page. Section names link to folder READMEs; leaves link straight to the content.
 
-*Last updated: 2026-07-19*
+*Last updated: 2026-07-20*
 
 - 🧰 **[scripts/](scripts/)** — PowerShell scripts with comment-based help, read-only unless stated
   - **reporting/**
@@ -37,6 +37,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [Teams personal app needs global deploy](gotchas/spfx/teams-personal-app-needs-global-deploy.md) — `skipFeatureDeployment: true` + "all sites"; the `teams/` icon-folder convention
     - [Teams mobile webview renders desktop width](gotchas/spfx/teams-mobile-webview-renders-desktop-width.md) — ~980px layout; fix the viewport meta in Teams first
     - [Office file extraction needs a decompressed-size cap](gotchas/spfx/office-file-extraction-needs-a-decompressed-size-cap.md) — an upload-size limit only bounds the compressed archive; a crafted `!ref` still OOMs the tab
+    - [Shared package's dynamic import ships inlined](gotchas/spfx/shared-package-dynamic-import-inlines-with-commonjs.md) — a linked TS package built with module:commonjs turns import() into require(), so webpack can't lazy-chunk the lib into a separate file; set the package's module:esnext
     - [Centered flex clips on mobile](gotchas/spfx/centered-flex-clips-on-mobile.md) — centering + overflow cuts content above the scroll; flex "springs"
     - [JSX attributes and smart quotes](gotchas/spfx/jsx-attributes-and-smart-quotes.md) — typographic quotes in attributes = TS1003; wrap as `{'…'}`
     - [Portaled overlays miss your CSS reset](gotchas/spfx/portaled-overlays-miss-your-css-reset.md) — portal to `body` escapes the scoped reset; `content-box` fields overflow and grow a scrollbar
