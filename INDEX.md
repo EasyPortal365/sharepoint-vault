@@ -76,6 +76,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
   - [Search queries that actually work](guides/search-queries-that-actually-work.md) — the mandatory header, practical KQL, managed properties, paging, freshness traps
   - [SharePoint REST vs Microsoft Graph](guides/sharepoint-rest-vs-microsoft-graph.md) — decision table by capability, SPFx auth difference, throttling budgets
   - [Choosing a knowledge format for RAG](guides/choosing-a-knowledge-format-for-sharepoint-rag.md) — Markdown vs DOCX vs site pages vs list items; extraction quality, token economics, and why Markdown wins the machine channel
+  - [Token cost of content formats (measured)](guides/token-cost-of-sharepoint-content-formats.md) — real tokens for the same article as `.md`/`.docx`/`.pdf`/a SharePoint page; extraction beats format, a CZ-vs-EN language tax, and a reproducible harness
 - 🎓 **[course/](course/)** — *SharePoint Online – administrace od A do Z* (CZ course materials)
   - [Course overview](course/README.md) — 9 chapters, what you'll learn, lecturer
   - [01 · Představení SharePointu](course/01-predstaveni-sharepoint.md) — positioning, scenarios, editions, SP Online vs Server, governance, roadmap
