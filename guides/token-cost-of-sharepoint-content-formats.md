@@ -70,7 +70,7 @@ markdown          →  4 tokens    # External Sharing Policy
 
 That one line *is* the whole DOCX range:
 
-- **Raw XML = 46 tokens**, because every heading and paragraph is wrapped in `<w:p><w:r><w:t>` scaffolding (headings get an extra `<w:pStyle>`). Multiply that across the document and you get the **3,213** — the *top* of the range, where nobody parsed it.
+- **Raw XML = 46 tokens**, because every heading and paragraph is wrapped in `<w:p><w:r><w:t>` scaffolding (headings get an extra `<w:pStyle>`). The blow-up is worst on short blocks like this heading (15× here) and milder on long paragraphs; averaged across the whole document — headings, lists, a table, prose — it lands at **3,213**, a 5.6× tax. That's the *top* of the range, where nobody parsed it.
 - **mammoth = 3 tokens** — the *bottom* of the range (541): cheapest, but the heading is now indistinguishable from body text. The `Heading1` style that said "this is a title" was thrown away.
 - **markdown = 4 tokens** — one token more than the flattened text, and that one token (`#`) *is* the heading. You keep the structure for the price of a single character — which is exactly why Markdown's 573 total beats a structure-blind 541.
 
