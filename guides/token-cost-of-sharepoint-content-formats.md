@@ -76,6 +76,8 @@ That one line *is* the whole DOCX range:
 
 So **the DOCX range 541–3,213 is entirely "did anyone run a parser?"** A `.docx` is a zip of XML; a heading is 46 tokens of tags or 3 tokens of text depending on whether the pipeline unzipped-and-*dumped* or unzipped-and-*parsed*. Markdown has no such fork — it's the same handful of tokens either way, structure included.
 
+**To be fair to Word: 541 is the normal case, not 3,213.** Every mainstream extractor — `mammoth`, Apache Tika, `python-docx`, `textract` — parses by default and throws the tags away, so any competent pipeline lands at the *bottom* of the range. The `<w:p><w:r><w:t>` scaffolding lives *inside the file*, but it never reaches the model once you parse it. The **3,213 is the cost of a mistake** — a "just hand the model the file" integration that ships the raw XML — not what you pay day to day. It's a real ceiling worth knowing (that mistake does ship), but it isn't the default. So the honest cost of DOCX isn't a number, it's a **dependency**: you only reach 541 by adding a download-and-parse step Markdown never needs — and you inherit the risk that someone, someday, skips it. Markdown is 573 with no step and nothing to skip.
+
 Note the bytes, too: 10 KB on disk for 541 tokens of text — and that's a *minimal* generated file. Real Word documents carry embedded fonts, themes, and revision data and routinely run to **megabytes for a page of text**. That weight is transfer-and-parse cost, not token cost — but it's why "just download and send the docs" doesn't scale.
 
 ### PDF — the tax is invisible until you read the extract
