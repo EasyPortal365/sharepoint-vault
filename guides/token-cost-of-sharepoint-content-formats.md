@@ -7,6 +7,10 @@ last-reviewed: 2026-07-19
 
 # What each format costs the model: tokens for the same content as `.md`, `.docx`, `.pdf` and a SharePoint page
 
+> **Bottom line.** In SharePoint RAG the token count is practically the same across formats, so it doesn't decide anything. What decides is how much *structure* survives extraction — and there Markdown (or a published Markdown derivative) is measurably better for anything with tables, at the same token count. For plain paragraph text, parsed DOCX really is equivalent.
+>
+> **Ve zkratce.** Token count formátů je v RAG nad SharePointem prakticky jedno – nerozhoduje. Co rozhoduje, je kolik struktury přežije extrakci – a tam je Markdown (nebo publikovaný MD derivát) měřitelně lepší pro cokoli s tabulkami, při stejném počtu tokenů. Pro prostý odstavcový text je parsovaný DOCX opravdu ekvivalent.
+
 You're feeding SharePoint content to an LLM — a RAG pipeline, a Copilot-adjacent tool, your own agent. Tokens are the meter: they cost money, they cost latency, and they cost context-window headroom you'd rather spend on *more sources* than on scaffolding around one. So a fair question before you design the pipeline: **does the source format change the bill?**
 
 The companion guide, [choosing a knowledge format for RAG](choosing-a-knowledge-format-for-sharepoint-rag.md), answers this qualitatively. This one puts **measured numbers** on it. One representative intranet article — a ~500-word external-sharing policy with headings, two lists, and a table — rendered into Markdown, a Word document, a PDF, and a SharePoint page, then tokenized with the real tokenizers and extracted with the real tools a pipeline actually uses.
