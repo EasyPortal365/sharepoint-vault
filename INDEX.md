@@ -2,7 +2,7 @@
 
 Every single thing in the vault, on one page. Section names link to folder READMEs; leaves link straight to the content.
 
-*Last updated: 2026-07-18*
+*Last updated: 2026-07-19*
 
 - 🧰 **[scripts/](scripts/)** — PowerShell scripts with comment-based help, read-only unless stated
   - **reporting/**
@@ -23,6 +23,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [Create a modern page via REST (3-step)](gotchas/rest-api/create-modern-page-via-rest-sitepages.md) — `CanvasContent1` won't stick on create; create → SavePageAsDraft → Publish, canvas is JSON
     - [`$filter` on multi-value person fields 400s](gotchas/rest-api/filter-on-multivalue-person-field-400.md) — fall back to client filtering, but only on HTTP 400
     - [Silent fallbacks poison destructive writes](gotchas/rest-api/silent-fallbacks-poison-destructive-writes.md) — `catch → []` + delete-then-insert = data loss; strict and safe reads
+    - [Check-then-insert races produce duplicate rows](gotchas/rest-api/check-then-insert-races-duplicate-rows.md) — no unique constraint + eventual consistency = double insert; dedup on read by version, never delete "lowest Id"
   - **lists/**
     - [The 5,000-item view threshold](gotchas/lists/list-view-threshold-and-indexes.md) — it's scanned rows, not returned rows; index early, page always
   - **spfx/**
