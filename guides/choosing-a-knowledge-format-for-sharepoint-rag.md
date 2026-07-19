@@ -67,9 +67,11 @@ Rich-text stored in multiline columns is indexed for search *in general*, but do
 
 If your knowledge base is an app backed by lists (a common and perfectly good design for the *human* experience), treat AI as a second consumer: **publish a file derivative** of each approved article into a document library.
 
-## Token economics in one paragraph
+## Token economics — with the numbers
 
-Deep-read budgets are finite (thousands of characters per source, not millions). Every character of wrapper markup displaces a character of content. A rendered page spends the overwhelming majority of its bytes on non-content before stripping; extracted DOCX text is clean but structure-blind; Markdown spends a few percent on markup that is itself meaningful to the model. Same budget, three very different amounts of usable knowledge — and retrieval quality follows.
+Deep-read budgets are finite (thousands of characters per source, not millions), and every character of wrapper markup displaces a character of content. The measured version: the **same ~500-word article** costs **573 tokens as Markdown, ~541 as clean-extracted DOCX, 612 as extracted PDF** (page furniture, re-tokenized per page) — but **3,213 tokens** if you dump the raw `document.xml`, and **1,236** if you feed a page's `CanvasContent1` field verbatim instead of stripping it. Same budget, wildly different amounts of usable knowledge — and retrieval quality follows.
+
+The lesson isn't "pick a format", it's "**extract cleanly, whatever the format**". Full method, per-format breakdown, a Czech-vs-English language tax, and a reproducible harness: **[What each format costs the model](token-cost-of-sharepoint-content-formats.md)**.
 
 ## A pragmatic architecture
 
