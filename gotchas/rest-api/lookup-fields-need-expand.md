@@ -7,6 +7,10 @@ last-reviewed: 2026-07-15
 
 # Lookup and person fields: read with `$expand`, write with `<Name>Id`
 
+> **Bottom line.** Lookup and person fields are relations, not values — read them with `$expand` plus `<Name>/<Field>`, and write them through the `<Name>Id` foreign key.
+>
+> **Ve zkratce.** Lookup a person pole jsou relace, ne hodnoty – čti je přes `$expand` a `<Name>/<Field>` a zapisuj přes cizí klíč `<Name>Id`.
+
 ## Symptom
 
 Two flavours of the same confusion:

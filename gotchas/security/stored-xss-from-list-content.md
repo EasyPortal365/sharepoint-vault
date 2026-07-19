@@ -7,6 +7,10 @@ last-reviewed: 2026-07-16
 
 # Stored XSS via SharePoint list content — React won't save you
 
+> **Bottom line.** React won't block a `javascript:` href, `dangerouslySetInnerHTML`, or a CSS `url()` breakout, so list content any member can write is a stored-XSS vehicle — run every sink through an allowlist `safeHref` (strip C0 control characters first) plus a DOMParser-based sanitizer for SVG/HTML.
+>
+> **Ve zkratce.** React nezablokuje `javascript:` v href, `dangerouslySetInnerHTML` ani únik z CSS `url()`, takže obsah listu, který může zapsat kterýkoli člen, je nástroj pro stored XSS – každý výstupní bod prožeň přes allowlist `safeHref` (nejdřív strhni řídicí znaky C0) a SVG/HTML přes sanitizér nad DOMParserem.
+
 ## Symptom
 
 None — that's the problem. The app works perfectly until a security review (or an attacker) notices that values written into a list by **any member or content editor** flow into the page as URLs, SVG icons, or HTML.

@@ -7,6 +7,10 @@ last-reviewed: 2026-07-16
 
 # SharePoint REST vs Microsoft Graph — which API for which job
 
+> **Bottom line.** SharePoint REST and Microsoft Graph aren't interchangeable — they overlap on maybe a third of their surface, and each owns territory the other can't reach. Pick by capability, not habit; this is the decision map.
+>
+> **Ve zkratce.** SharePoint REST a Microsoft Graph nejsou zaměnitelné – překrývají se zhruba třetinou plochy a každé vládne území, kam to druhé nedosáhne. Vybírej podle schopnosti, ne ze zvyku – tohle je rozhodovací mapa.
+
 Every SharePoint solution eventually talks to both APIs. The mistake is treating them as interchangeable — they overlap on maybe a third of their surface, and each owns territory the other can't reach. This is the decision map we actually use.
 
 ## 1. The one-table answer

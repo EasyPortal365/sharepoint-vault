@@ -7,6 +7,10 @@ last-reviewed: 2026-07-17
 
 # SPFx `MSGraphClient` calls don't show in DevTools Network — and how to diagnose them anyway
 
+> **Bottom line.** `MSGraphClient` traffic never appears in the DevTools Network tab, so its absence there is no proof the call didn't fire — diagnose from `performance` resource entries, `currentuser`, the rendered DOM, and the user's own response body instead.
+>
+> **Ve zkratce.** Provoz `MSGraphClient` se v záložce Network nikdy neobjeví, takže jeho nepřítomnost není důkaz, že volání neproběhlo – diagnostikuj místo toho z `performance` entries, `currentuser`, vykresleného DOM a odpovědi od samotného uživatele.
+
 ## Symptom
 
 You're debugging an SPFx web part that calls Microsoft Graph through

@@ -7,6 +7,10 @@ last-reviewed: 2026-07-15
 
 # Graph `/me/sendMail`: From is always the signed-in user
 
+> **Bottom line.** Delegated `/me/sendMail` always sends as the signed-in user — you can't override From, so route any "sender" setting to Reply-To and reach for app-only permissions plus a shared mailbox only if you genuinely need a service address.
+>
+> **Ve zkratce.** Delegované `/me/sendMail` odesílá vždy jménem přihlášeného uživatele – From nepřepíšeš, takže jakékoli nastavení „odesílatele" směřuj na Reply-To a po app-only oprávněních se sdílenou schránkou sáhni jen tehdy, když opravdu potřebuješ servisní adresu.
+
 ## Symptom
 
 Your app sends notification e-mails via `POST /me/sendMail` with delegated `Mail.Send`. The customer asks for them to come from `noreply@contoso.com` — you set `message.from` accordingly, and Graph rejects the call (SendAs denied), or you're tempted to "just make it configurable" and it never works.

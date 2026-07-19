@@ -7,6 +7,10 @@ last-reviewed: 2026-07-16
 
 # Typographic quotes in JSX attributes break the parser (TS1003)
 
+> **Bottom line.** Typographic quotes inside a double-quoted JSX attribute end the attribute early and break the parser (TS1003) — put any quoted string into a JSX expression with single quotes: `{'…'}`.
+>
+> **Ve zkratce.** Typografické uvozovky v JSX atributu s dvojitými uvozovkami ukončí atribut předčasně a rozbijí parser (TS1003) – jakýkoli řetězec s uvozovkami dej do JSX výrazu se single-quote: `{'…'}`.
+
 ## Symptom
 
 You paste properly typeset copy (German „…", Czech „…", French «…», or curly English "…") into a JSX attribute:

@@ -7,6 +7,10 @@ last-reviewed: 2026-07-16
 
 # `justify-content: center` inside `overflow: hidden` clips content you can never scroll to
 
+> **Bottom line.** Center with flexible spacer pseudo-elements on a scrollable container, not `justify-content: center` — centering splits the overflow upward too, where no scroll can reach, so short screens clip the bottom control.
+>
+> **Ve zkratce.** Centruj přes pružné mezerníky (pseudo-elementy) ve scrollovatelném kontejneru, ne přes `justify-content: center` – centrování rozdělí přetečení i nahoru, kam scroll nedosáhne, takže nízké displeje oříznou spodní tlačítko.
+
 ## Symptom
 
 A centered landing/empty-state screen (logo, welcome text, action buttons stacked vertically) looks great on desktop. On a phone, the bottom of the stack — typically the most important control — is **cut off, and no amount of scrolling brings it back**. It reads like "the app's height is broken", and no height fix helps.

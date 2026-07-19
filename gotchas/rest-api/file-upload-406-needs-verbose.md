@@ -7,6 +7,10 @@ last-reviewed: 2026-07-15
 
 # File upload via `/Files/add` returns 406 unless you `Accept: odata=verbose`
 
+> **Bottom line.** `/Files/add` is a classic OData-3 endpoint that rejects `nometadata` — send `Accept: application/json;odata=verbose` plus `OData-Version: 3.0`.
+>
+> **Ve zkratce.** `/Files/add` je klasický OData 3 endpoint, který `nometadata` odmítá – posílej `Accept: application/json;odata=verbose` a `OData-Version: 3.0`.
+
 ## Symptom
 
 Uploading a file:

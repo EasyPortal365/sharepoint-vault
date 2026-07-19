@@ -8,6 +8,10 @@ last-reviewed: 2026-07-18
 
 # Kapitola 07 – Zálohování a obnova dat
 
+> **Bottom line.** SharePoint's built-in safety net — versioning and the two-stage recycle bins (93 days) — is recovery, not backup; know where it ends and where Microsoft 365 Backup or a third-party tool begins.
+>
+> **Ve zkratce.** Vestavěná záchranná síť SharePointu – verzování a dvoustupňové koše (93 dnů) – je obnova, ne záloha; věz, kde končí a kde začíná Microsoft 365 Backup nebo řešení třetí strany.
+
 Verzování, odpadkové koše, Microsoft 365 Backup a zálohovací řešení třetích stran.
 
 ## Nastavení verzování

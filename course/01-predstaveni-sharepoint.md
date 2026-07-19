@@ -8,6 +8,10 @@ last-reviewed: 2026-07-18
 
 # Kapitola 01 – Představení Microsoft SharePoint
 
+> **Bottom line.** What SharePoint Online actually is from an admin's chair — its role, editions, the key differences from SharePoint Server, and why governance is a day-one concern, not an afterthought.
+>
+> **Ve zkratce.** Co je SharePoint Online z pohledu správce – jeho role, edice, klíčové rozdíly oproti SharePoint Serveru a proč je governance věc prvního dne, ne dodatečná záležitost.
+
 Pozicování produktu, klíčové scénáře využití, edice, rozdíly oproti SharePoint Serveru z pohledu správce a přehled SharePoint Governance.
 
 ## Pozicování produktu a klíčové scénáře využití

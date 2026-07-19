@@ -7,6 +7,10 @@ last-reviewed: 2026-07-16
 
 # The 5,000-item list view threshold — and why indexes must come early
 
+> **Bottom line.** The 5,000-item threshold caps rows *scanned*, not returned — a filter or sort on a non-indexed column scans the whole list and gets rejected, so index the columns you filter and sort by, ideally before the list grows large.
+>
+> **Ve zkratce.** Limit 5 000 položek omezuje počet prohledávaných řádků, ne vrácených – filtr nebo řazení nad neindexovaným sloupcem projde celý seznam a skončí odmítnutím, takže indexuj sloupce, podle kterých filtruješ a řadíš, ideálně dřív, než seznam naroste.
+
 ## Symptom
 
 A list quietly grows past 5,000 items and previously fine queries start failing:

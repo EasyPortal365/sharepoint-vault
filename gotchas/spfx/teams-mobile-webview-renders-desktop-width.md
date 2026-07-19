@@ -7,6 +7,10 @@ last-reviewed: 2026-07-16
 
 # Teams mobile webview renders your tab at ~980 px — and you can't reproduce it in a browser
 
+> **Bottom line.** The Teams mobile webview lays your tab out at a legacy ~980 px because it never applies the `width=device-width` viewport, so set the viewport meta yourself in `onInit` — but gate it strictly on running inside Teams.
+>
+> **Ve zkratce.** Mobilní webview Teams vykreslí tvůj tab na legacy šířce ~980 px, protože nikdy neaplikuje viewport `width=device-width` – nastav si meta viewport sám v `onInit`, ale striktně jen když appka běží uvnitř Teams.
+
 ## Symptom
 
 On phones, your Teams tab looks like a desktop page shrunk to fit: content overflows to the right, paddings look ignored, your responsive breakpoints never kick in. In a desktop browser — even resized to phone width, even in DevTools device emulation — everything is fine.

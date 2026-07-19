@@ -8,6 +8,10 @@ last-reviewed: 2026-07-18
 
 # Kapitola 06 – Vyhledávání obsahu
 
+> **Bottom line.** How SharePoint search really works — what the crawler indexes and how fast, where results come from, enough KQL to query deliberately, and how to exclude a library from the index.
+>
+> **Ve zkratce.** Jak vyhledávání v SharePointu doopravdy funguje – co a jak rychle prochází crawler, odkud se berou výsledky, tolik KQL, abys dotazoval cíleně, a jak knihovnu z indexu vyřadit.
+
 Jak SharePoint indexuje data, jak fungují vyhledávací dotazy (včetně KQL syntaxe), odkud se vrací výsledky a jak indexaci u konkrétní knihovny vypnout.
 
 ## Jak rychle SharePoint indexuje data a co to zpomaluje

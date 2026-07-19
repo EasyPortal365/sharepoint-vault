@@ -7,6 +7,10 @@ last-reviewed: 2026-07-18
 
 # A literal NUL byte in a source file makes ripgrep treat it as binary — and every grep-based sweep silently skips it
 
+> **Bottom line.** A real U+0000 byte inside a string literal makes ripgrep and grep treat the whole source file as binary, so every grep-based sweep silently skips it — replace the raw byte with the escape sequence `\u0000`, which is identical at runtime but plain text on disk.
+>
+> **Ve zkratce.** Skutečný bajt U+0000 uvnitř řetězcového literálu způsobí, že ripgrep i grep považují celý zdrojový soubor za binárku, takže ho každý grep sweep tiše přeskočí – nahraď syrový bajt escape sekvencí `\u0000`, která je za běhu identická, ale na disku je to čistý text.
+
 ## Symptom
 
 - `grep`/`rg` on one specific `.ts` file prints `Binary file ... matches` instead of matching lines.

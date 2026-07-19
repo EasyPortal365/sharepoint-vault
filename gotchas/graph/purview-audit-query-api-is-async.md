@@ -7,6 +7,10 @@ last-reviewed: 2026-07-15
 
 # The Purview Audit Query API is asynchronous — think in *hours*, not seconds
 
+> **Bottom line.** The Purview audit query API is an asynchronous background job that can sit in `running` for over an hour (and `v1.0` may 404 while `beta` works), so build the UI to show the last `succeeded` query first and create new ones in the background.
+>
+> **Ve zkratce.** Purview audit query API je asynchronní úloha na pozadí, která může zůstat ve stavu `running` přes hodinu (a `v1.0` může vracet 404, zatímco `beta` funguje), takže UI postav tak, aby nejdřív ukázalo poslední `succeeded` dotaz a nové vytvářelo na pozadí.
+
 ## Symptom
 
 You build the obvious flow against the audit log query API (`/security/auditLog/queries`): create a query, poll for a bit, show the records. In testing it never finishes "for a bit" — a query can sit in `running` for **over an hour** even on a small tenant. Bonus confusion: the same endpoints may **404 with `UnknownError` on `v1.0`** while working fine on `beta`.

@@ -7,6 +7,10 @@ last-reviewed: 2026-07-19
 
 # Check-then-insert races produce duplicate rows — and "keep the lowest Id" dedup deletes the wrong one
 
+> **Bottom line.** A GET-check-then-POST-insert on a constraint-less SharePoint list races into duplicate rows, and "keep the lowest Id" deletes the wrong one — upsert with a normalized key on write, resolve duplicates on read by version or `Modified` (never by `Id`), and leave deletion to a human.
+>
+> **Ve zkratce.** GET-kontrola a následné POST-vložení do SharePointového seznamu bez unikátního omezení v souběhu vytvoří duplicity a „nech nejnižší Id" smaže tu špatnou – při zápisu dělej upsert s normalizovaným klíčem, duplicity řeš až při čtení podle verze nebo `Modified` (nikdy podle `Id`) a mazání nech na člověku.
+
 A SharePoint list has no unique constraint. Any "register once" pattern built as *GET-to-check → POST-to-create* is a classic time-of-check-to-time-of-use (TOCTOU) race, and the obvious cleanup makes it worse.
 
 ## Symptom

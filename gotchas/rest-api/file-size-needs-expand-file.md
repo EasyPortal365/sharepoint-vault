@@ -7,6 +7,10 @@ last-reviewed: 2026-07-15
 
 # File size in a document library: `File_x0020_Size` 400s — use `$expand=File`
 
+> **Bottom line.** `File_x0020_Size` is a computed column that 400s in `$select` — read the size from the `File` relation instead via `$expand=File` and `File/Length`.
+>
+> **Ve zkratce.** `File_x0020_Size` je počítaný sloupec, který v `$select` spadne na 400 – velikost čti z relace `File` přes `$expand=File` a `File/Length`.
+
 ## Symptom
 
 Listing documents with their size:

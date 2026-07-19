@@ -7,6 +7,10 @@ last-reviewed: 2026-07-15
 
 # Building a people picker in SPFx — the endpoints that actually work
 
+> **Bottom line.** For an org-wide people picker in SPFx, skip `clientPeoplePickerSearchUser` (empty via SPHttpClient) and `/web/siteusers` (only the site's user list) — query the SP Search People result source, then resolve the integer user ID with `ensureuser`.
+>
+> **Ve zkratce.** Pro celofiremní people picker v SPFx vynech `clientPeoplePickerSearchUser` (přes SPHttpClient vrací prázdno) i `/web/siteusers` (jen uživatelé webu) – dotazuj se na People result source v SP Search a číselné user ID dořeš přes `ensureuser`.
+
 ## Symptom
 
 You're building a custom people picker and the obvious endpoints let you down one by one:

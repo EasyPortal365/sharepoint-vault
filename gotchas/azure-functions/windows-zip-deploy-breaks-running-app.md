@@ -7,6 +7,10 @@ last-reviewed: 2026-07-16
 
 # Windows Functions: zip deploy onto a running app corrupts it (whole app 503)
 
+> **Bottom line.** On Windows plans, zip-deploying many files onto a live app corrupts it through file locks (the whole app 503s) — re-run the deploy to recover, and set `WEBSITE_RUN_FROM_PACKAGE = 1` so the zip mounts atomically.
+>
+> **Ve zkratce.** Na Windows plánech poškodí zip deploy mnoha souborů na běžící appku zámky souborů (503 celé instance) – oprav ho opětovným spuštěním deploye a nastav `WEBSITE_RUN_FROM_PACKAGE = 1`, aby se zip připojil atomicky.
+
 SPFx has no server side, so a small Azure Function app is the standard companion for anything
 a web part can't do in the browser (CORS-blocked fetches, secrets, OpenAI calls). This trap is
 about **deploying** that companion.

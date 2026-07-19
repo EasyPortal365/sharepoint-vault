@@ -8,6 +8,10 @@ last-reviewed: 2026-07-18
 
 # Kapitola 08 – SharePoint reporting
 
+> **Bottom line.** Where an admin finds operational and security data on SharePoint — Microsoft 365 Admin Center reports, site usage, the Microsoft Purview audit trail, and alert policies — and what each one can and can't tell you.
+>
+> **Ve zkratce.** Kde správce najde provozní a bezpečnostní data o SharePointu – reporty v Microsoft 365 Admin Center, využití webů, auditní stopa v Microsoft Purview a zásady upozornění – a co každý zdroj prozradí a co ne.
+
 Přehled toho, kde správce SharePoint Online najde provozní a bezpečnostní data: reporty v Microsoft 365 Admin Center, přehledy využití webů, auditní stopu v Microsoft Purview a zásady upozornění.
 
 ## Reporting v Microsoft 365 Admin Center

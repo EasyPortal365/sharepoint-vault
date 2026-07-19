@@ -7,6 +7,10 @@ last-reviewed: 2026-07-16
 
 # Tenant-wide enumeration in Graph is **app-only** — check Delegated vs Application *before* you build
 
+> **Bottom line.** Tenant-wide enumeration like `getAllSites` is Application-only — a delegated token just returns 403 (and a `catch → []` hides it), so check the permissions table for your token type before building, and substitute an admin PowerShell export when you're delegated-only.
+>
+> **Ve zkratce.** Enumerace celého tenantu typu `getAllSites` je jen pro Application oprávnění – delegovaný token vrátí 403 (a `catch → []` ho skryje), takže před stavbou ověř v tabulce oprávnění řádek pro svůj typ tokenu a při delegated-only nasazení volání nahraď exportem z admin PowerShellu.
+
 ## Symptom
 
 You add `GET /sites/getAllSites` (or `GET /sites` list-all) to a delegated-auth app to enumerate every site collection. The `Sites.Read.All` scope exists, admin consent is granted, the new build is verifiably running — and the feature silently does nothing.

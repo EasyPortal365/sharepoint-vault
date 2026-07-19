@@ -7,6 +7,10 @@ last-reviewed: 2026-07-16
 
 # Comparing SharePoint URLs: decode both sides first, then prefix-match on boundaries
 
+> **Bottom line.** Browser URLs are percent-encoded while the search `Path` comes back decoded, so decode and lowercase both sides first, then prefix-match on a `/` boundary so `/sites/hr` can't swallow `/sites/hr2`.
+>
+> **Ve zkratce.** URL z prohlížeče je procentně kódovaná, ale `Path` z vyhledávání se vrací dekódovaný – nejdřív obě strany dekóduj a převeď na malá písmena, pak porovnávej prefix na hranici `/`, aby `/sites/hr` nepohltilo `/sites/hr2`.
+
 ## Symptom
 
 You match search results (or list items) against configured site/library URLs — "is this document under one of the allowed paths?" — and the match **never fires**, even though the paths are visibly identical on screen.

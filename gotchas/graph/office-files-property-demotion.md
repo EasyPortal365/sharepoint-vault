@@ -7,6 +7,10 @@ last-reviewed: 2026-07-16
 
 # Office files change their *content hash* when you PATCH metadata — property demotion
 
+> **Bottom line.** Your own metadata PATCH changes an Office file's `cTag` and even its content hash (property demotion writes properties into the bytes), so hash/cTag skip checks reprocess forever — key the skip on `lastModifiedBy.application.id` instead.
+>
+> **Ve zkratce.** Tvůj vlastní PATCH metadat změní u Office souboru `cTag` i content hash (property demotion zapíše vlastnosti přímo do bajtů), takže přeskakování podle hashe/cTagu zpracuje soubor pořád dokola – klíčuj přeskočení podle `lastModifiedBy.application.id`.
+
 ## Symptom
 
 A scheduled job processes documents and stamps a result into their metadata (a column, a marker). To skip unchanged files it compares `cTag` — or, being clever, the content hash (`file.hashes.quickXorHash`). Either way, the same documents get reprocessed **every single run, forever**.

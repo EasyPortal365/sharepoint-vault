@@ -7,6 +7,10 @@ last-reviewed: 2026-07-15
 
 # Choice fields accept *any* value over REST — validation is a form-only illusion
 
+> **Bottom line.** A Choice field's allowed values are enforced only by SharePoint's browser forms — REST and CSOM write any raw string unchecked, so validate the vocabulary in your app layer and expect drift in existing data.
+>
+> **Ve zkratce.** Povolené hodnoty Choice pole vynucují jen prohlížečové formuláře SharePointu – REST a CSOM zapíšou jakýkoli řetězec bez kontroly, takže slovník validuj ve své aplikační vrstvě a počítej s rozjetými hodnotami ve stávajících datech.
+
 ## Symptom
 
 You assume writing a value outside a Choice field's list will fail with 400 — so either you build defensive code for an error that never comes, or (worse) you discover months later that one column quietly holds **three different vocabularies**: the form wrote `In progress`, an import wrote `InProgress`, an old script wrote `Running`.

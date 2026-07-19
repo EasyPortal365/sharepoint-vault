@@ -7,6 +7,10 @@ last-reviewed: 2026-07-16
 
 # SPFx in Teams: a personal app needs **global deployment**, not a root-site install
 
+> **Bottom line.** A Teams personal app hosts your web part on the tenant root site, so it needs global deployment (`skipFeatureDeployment: true` plus make available to all sites) and a `teams/` folder with correctly named icons — miss either and you get the `componentType` crash or no Teams app at all.
+>
+> **Ve zkratce.** Osobní Teams appka hostuje tvůj webpart na kořenovém webu tenantu, takže potřebuje globální nasazení (`skipFeatureDeployment: true` a zpřístupnění všem webům) a složku `teams/` se správně pojmenovanými ikonami – bez jednoho z toho dostaneš pád na `componentType`, nebo se Teams appka vůbec neobjeví.
+
 ## Symptom
 
 Your SPFx web part works as a Teams *channel tab* but the *personal app* crashes on load:

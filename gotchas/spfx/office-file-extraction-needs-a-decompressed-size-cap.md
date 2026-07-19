@@ -7,6 +7,10 @@ last-reviewed: 2026-07-18
 
 # A file-size limit doesn't stop a zip bomb — Office extraction needs a decompressed cap
 
+> **Bottom line.** An upload-size cap bounds only the compressed archive — Office files are ZIPs that decompress enormously, so cap the decompressed work: estimate xlsx cells from `!ref` before building the CSV, and bound produced-text length for pptx/docx.
+>
+> **Ve zkratce.** Limit velikosti nahrávaného souboru hlídá jen zabalený archiv – Office soubory jsou ZIPy s obřím rozbalovacím poměrem, takže omez rozbalenou práci: u xlsx odhadni počet buněk z `!ref` před stavbou CSV a u pptx/docx omez délku vyprodukovaného textu.
+
 ## Symptom
 
 Your web part lets users attach `.xlsx` / `.docx` / `.pptx` and extracts the text in the browser

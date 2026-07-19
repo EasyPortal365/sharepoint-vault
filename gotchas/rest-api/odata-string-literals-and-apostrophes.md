@@ -7,6 +7,10 @@ last-reviewed: 2026-07-15
 
 # `encodeURIComponent` won't save you from apostrophes in OData literals
 
+> **Bottom line.** `encodeURIComponent` doesn't escape the apostrophe, so an apostrophe inside an OData literal must be doubled (`''`) first — otherwise names like O'Brien and labels like Q1'26 400 the request.
+>
+> **Ve zkratce.** `encodeURIComponent` apostrof neescapuje, takže apostrof uvnitř OData literálu musíš nejdřív zdvojit (`''`) – jinak jména jako O'Brien a označení jako Q1'26 shodí požadavek na 400.
+
 ## Symptom
 
 REST calls work for months, then fail with **HTTP 400** for *some* inputs:

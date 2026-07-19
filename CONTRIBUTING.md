@@ -22,6 +22,20 @@ This is a public repository. Before committing, replace:
 
 ## Formats
 
+### Every article opens with a bilingual bottom line
+
+Guides, gotchas, and course chapters start with a **bottom-line-up-front** statement immediately after the H1 — the single most important takeaway, stated before any detail — in **English and Czech**:
+
+````markdown
+# Title
+
+> **Bottom line.** The one thing to remember, in a sentence or two.
+>
+> **Ve zkratce.** Totéž česky.
+````
+
+Keep it to the *takeaway*, not a summary of the whole article. English may use the em-dash "—"; **Czech must use the en-dash "–"** with spaces around it, never the em-dash. (Section READMEs and PowerShell scripts, which already carry comment-based help, are exempt.)
+
 ### Gotchas (`gotchas/`)
 
 One trap per file, named `kebab-case.md`, placed in a category subfolder. Use this skeleton:

@@ -7,6 +7,10 @@ last-reviewed: 2026-07-18
 
 # An unparenthesized `OR` in your KQL query silently escapes the scope filter
 
+> **Bottom line.** In KQL `AND` binds tighter than `OR`, so an unparenthesized user query lets its first `OR` branch escape the scope filter you appended — wrap the whole user/AI query in parentheses before adding `Path:` and `IsDocument:1`.
+>
+> **Ve zkratce.** V KQL váže `AND` silněji než `OR`, takže neuzávorkovaný dotaz uživatele nechá svou první větev `OR` uniknout z přidaného scope filtru – celý dotaz uživatele/AI obal závorkami dřív, než přidáš `Path:` a `IsDocument:1`.
+
 ## Symptom
 
 You build a search-backed assistant (RAG). An admin confines it to a scope — one site,

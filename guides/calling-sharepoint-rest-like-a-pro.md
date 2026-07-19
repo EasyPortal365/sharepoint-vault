@@ -7,6 +7,10 @@ last-reviewed: 2026-07-15
 
 # Calling SharePoint REST like a pro
 
+> **Bottom line.** Most SharePoint REST pain comes from three things the docs gloss over: which of the two clients (and OData worlds) you're in, the headers that actually matter, and how to write data safely. Get those right and the sharp edges mostly disappear.
+>
+> **Ve zkratce.** Většina bolesti se SharePoint REST pramení ze tří věcí, které dokumentace obchází: ve kterém ze dvou klientů (a OData světů) jste, které hlavičky doopravdy rozhodují, a jak bezpečně zapisovat data. Zvládněte je a ostré hrany z velké části zmizí.
+
 SharePoint's REST API is powerful, well-documented in the happy path — and full of sharp edges the docs don't mention. This guide is the map we wish we'd had: which client to use, which headers actually matter, how to write data without surprises, and how to diagnose the inevitable 400.
 
 ## 1. Two clients, two OData worlds

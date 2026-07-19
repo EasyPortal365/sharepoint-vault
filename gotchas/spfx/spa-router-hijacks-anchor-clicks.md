@@ -7,6 +7,10 @@ last-reviewed: 2026-07-16
 
 # SharePoint's SPA router hijacks `<a href>` clicks — your `onClick` never fires
 
+> **Bottom line.** Modern SharePoint's SPA router grabs `<a href>` clicks in the capture phase before your React `onClick` ever runs, so use a `<button>` or a `role="link"` element for in-app actions and keep anchors for real navigation.
+>
+> **Ve zkratce.** SPA router moderního SharePointu zachytí kliknutí na `<a href>` v capture fázi dřív, než se vůbec spustí tvůj React `onClick` – pro akce uvnitř aplikace použij `<button>` nebo prvek s `role="link"` a `<a href>` nech jen pro skutečnou navigaci.
+
 ## Symptom
 
 A clickable card in an SPFx web part is built the classic way:

@@ -8,6 +8,10 @@ last-reviewed: 2026-07-18
 
 # Kapitola 05 – Řízení a správa oprávnění
 
+> **Bottom line.** SharePoint permissions are an inheritance model with sharp corners — break inheritance sparingly, know SharePoint groups from Entra ID groups, watch the Everyone claims, and always verify effective permissions rather than assuming.
+>
+> **Ve zkratce.** Oprávnění v SharePointu jsou dědičný model s ostrými rohy – dědičnost přerušuj střídmě, rozeznávej SharePoint a Entra ID skupiny, hlídej claimy Everyone a efektivní oprávnění vždy ověř, nespoléhej na domněnku.
+
 Objektový model oprávnění, security scopes, SharePoint vs. Entra ID skupiny, speciální claimy (Everyone), kontrola efektivních oprávnění a zásady externího sdílení.
 
 ## Hierarchie oprávnění z pohledu objektového modelu

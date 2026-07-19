@@ -7,6 +7,10 @@ last-reviewed: 2026-07-15
 
 # DateTime fields: write full ISO with a time zone, derive the day locally
 
+> **Bottom line.** Write DateTime as a full ISO string via `toISOString()`, and derive the calendar day with local getters — slicing the UTC value SharePoint returns silently shifts the day for off-UTC users.
+>
+> **Ve zkratce.** DateTime zapisuj jako plné ISO přes `toISOString()` a kalendářní den odvozuj lokálními gettery – slice UTC hodnoty, kterou SharePoint vrací, den uživatelům mimo UTC tiše posune.
+
 Two traps, one column type — one bites on write, the other on read.
 
 ## Trap 1: writing without a time zone → HTTP 400

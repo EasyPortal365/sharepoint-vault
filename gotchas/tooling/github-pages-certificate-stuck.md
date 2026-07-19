@@ -7,6 +7,10 @@ last-reviewed: 2026-07-16
 
 # GitHub Pages HTTPS certificate never arrives when the domain was added *before* DNS existed
 
+> **Bottom line.** GitHub Pages provisions the HTTPS certificate only at the moment you save the custom domain and never conspicuously retries if DNS wasn't resolving yet — remove the domain and add it back to restart provisioning once DNS is live.
+>
+> **Ve zkratce.** GitHub Pages vystaví HTTPS certifikát jen ve chvíli, kdy uložíš vlastní doménu, a pokud DNS tehdy ještě neodpovídalo, už to nápadně nezkouší znovu – odeber doménu a přidej ji zpět, aby se provisioning po naběhnutí DNS restartoval.
+
 ## Symptom
 
 You set a custom domain on GitHub Pages, point DNS at it (or DNS goes live later — a freshly registered domain, say), the site serves fine over **HTTP** — but HTTPS never starts working. Hours pass. Enabling *Enforce HTTPS* via API fails with:
