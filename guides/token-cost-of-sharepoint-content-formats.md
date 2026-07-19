@@ -93,6 +93,21 @@ Token count is one column. The real cost of getting a source in front of the mod
 
 Read it across, not down. **Markdown is the only row that's cheap on *every* axis** — no binary to move, no parser to run, no structure lost, nothing to get wrong. It "pays" for that with the one thing the token column frames as a loss: ~30 tokens of markup that are, in fact, the outline. Every other format buys a similar-or-lower token count with a real cost somewhere else in the row — a download, a parser, a flattened table, a 2–6× multiplier one wrong turn away.
 
+### The only "total" that's actually in tokens
+
+A fair question is "so what's the *total* token cost, fetch and extraction included?" The honest answer: **fetch and extraction don't cost tokens at all.** Downloading a `.docx` is I/O (bytes, latency); parsing it with `mammoth` is CPU (milliseconds). Neither spends a single LLM token — only the resulting text does. Summing "541 tokens + the download + the parse" is adding apples to oranges; those are a different currency (time, CPU, fragility), shown on the left of the scorecard.
+
+So the one number you *can* legitimately call the token total is **what actually lands in the model's context** — and it depends on the path:
+
+| Source | Clean extraction | Naive (as the connector hands it over) |
+|---|--:|--:|
+| **Markdown** | **573** | 573 — no naive path to get wrong |
+| **DOCX** | **541** | **3,213** (raw `document.xml`) |
+| **PDF** | **612** | 612 is the floor — you must always parse |
+| **SP page** | **514** | **1,236** (`CanvasContent1`) → far more (rendered `.aspx`) |
+
+Read the *shape*, not just the low number. **Markdown's total is a single, stable figure (573). DOCX's is a range — 541 to 3,213** — running from cheapest to worst-on-the-page depending entirely on whether whoever built the pipeline extracts properly. **That spread, not the 541, is the honest total cost of choosing DOCX**: you're not buying 541 tokens, you're buying "541 if we do it right, 3,213 if someone doesn't." Markdown has no wrong way to read it.
+
 And don't conflate the two size columns while you're here:
 
 - **Bytes** = storage, transfer, parse cost. DOCX and PDF inflate here (ZIP containers, embedded fonts, binary structure) — "DOCX is 10 KB, Markdown is 3 KB" says *nothing* about tokens; both are ~540–570 once extracted.
