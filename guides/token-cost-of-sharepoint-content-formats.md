@@ -58,6 +58,24 @@ The file is the payload: `fetch`, read, done. No parser, no server round-trip, n
 
 Run it through a parser and it's the *cheapest* row (541) — because extraction flattens headings, lists, and the table into undifferentiated paragraphs. You keep the words and lose the skeleton; tables especially tend to melt into word-soup. The number to fear is the naive one: unzip the `.docx`, feed `word/document.xml` to the model, and the same 500 words become **3,213 tokens** — nearly all of it `<w:p><w:r><w:t>` OOXML wrapping. Some "just send it the document" integrations do exactly this.
 
+**Watch it happen on a single heading.** The line *"External Sharing Policy"* reaches the model as one of three things, and the token counts are measured:
+
+```
+raw document.xml  → 46 tokens
+  <w:p><w:pPr><w:pStyle w:val="Heading1"/></w:pPr><w:r><w:t xml:space="preserve">External Sharing Policy</w:t></w:r></w:p>
+
+mammoth (parsed)  →  3 tokens    External Sharing Policy
+markdown          →  4 tokens    # External Sharing Policy
+```
+
+That one line *is* the whole DOCX range:
+
+- **Raw XML = 46 tokens**, because every heading and paragraph is wrapped in `<w:p><w:r><w:t>` scaffolding (headings get an extra `<w:pStyle>`). Multiply that across the document and you get the **3,213** — the *top* of the range, where nobody parsed it.
+- **mammoth = 3 tokens** — the *bottom* of the range (541): cheapest, but the heading is now indistinguishable from body text. The `Heading1` style that said "this is a title" was thrown away.
+- **markdown = 4 tokens** — one token more than the flattened text, and that one token (`#`) *is* the heading. You keep the structure for the price of a single character — which is exactly why Markdown's 573 total beats a structure-blind 541.
+
+So **the DOCX range 541–3,213 is entirely "did anyone run a parser?"** A `.docx` is a zip of XML; a heading is 46 tokens of tags or 3 tokens of text depending on whether the pipeline unzipped-and-*dumped* or unzipped-and-*parsed*. Markdown has no such fork — it's the same handful of tokens either way, structure included.
+
 Note the bytes, too: 10 KB on disk for 541 tokens of text — and that's a *minimal* generated file. Real Word documents carry embedded fonts, themes, and revision data and routinely run to **megabytes for a page of text**. That weight is transfer-and-parse cost, not token cost — but it's why "just download and send the docs" doesn't scale.
 
 ### PDF — the tax is invisible until you read the extract
@@ -106,7 +124,7 @@ So the one number you *can* legitimately call the token total is **what actually
 | **PDF** | **612** | 612 is the floor — you must always parse |
 | **SP page** | **514** | **1,236** (`CanvasContent1`) → far more (rendered `.aspx`) |
 
-Read the *shape*, not just the low number. **Markdown's total is a single, stable figure (573). DOCX's is a range — 541 to 3,213** — running from cheapest to worst-on-the-page depending entirely on whether whoever built the pipeline extracts properly. **That spread, not the 541, is the honest total cost of choosing DOCX**: you're not buying 541 tokens, you're buying "541 if we do it right, 3,213 if someone doesn't." Markdown has no wrong way to read it.
+Read the *shape*, not just the low number. **Markdown's total is a single, stable figure (573). DOCX's is a range — 541 to 3,213** — running from cheapest to worst-on-the-page depending entirely on whether whoever built the pipeline parses the file or dumps its raw XML (a heading alone is **3 tokens parsed vs 46 raw**, as the DOCX section shows). **That spread, not the 541, is the honest total cost of choosing DOCX**: you're not buying 541 tokens, you're buying "541 if we parse it, 3,213 if someone doesn't." Markdown has no such fork — it reads the same either way.
 
 And don't conflate the two size columns while you're here:
 
