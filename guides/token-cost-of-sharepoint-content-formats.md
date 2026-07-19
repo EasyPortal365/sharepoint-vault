@@ -135,6 +135,34 @@ And don't conflate the two size columns while you're here:
 
 So the decision was never "which format has the fewest tokens" — they're all in the same range. It's "which format costs the least to turn into *good* input." Once fetch, extraction, lost structure, and naive-path risk are on the bill, Markdown wins the machine channel outright — and the others win the **human** channel, where people actually write. Which is the whole reason the pattern is *author where the UX is, publish a Markdown derivative for the machine.*
 
+## "But my pipeline always parses — isn't DOCX ≈ Markdown then?"
+
+The sharpest objection, and half right: a production RAG pipeline over SharePoint *does* always parse — nobody ships raw `document.xml` on purpose — so the 3,213 is off the table, and 541 vs 573 is within noise. **On token count, DOCX and Markdown are a tie.** That isn't a loophole in this guide; it *is* the guide's point — token count was never the axis.
+
+But that tie was bought by **throwing structure away**, and *that* cost doesn't show up in the token column — it shows up in retrieval quality. Here's the sample's "Approval matrix" table after the parser everyone runs:
+
+```
+DOCX → mammoth extractRawText → the model sees:
+  Content class ⏎ Named guest ⏎ Anonymous link ⏎ Approval needed ⏎
+  Public ⏎ Allowed ⏎ Allowed ⏎ None ⏎
+  Confidential ⏎ With approval ⏎ Never ⏎ Data owner ⏎ …
+  — every cell on its own line; rows and columns gone
+
+Markdown → the model sees:
+  | Content class | Named guest | Anonymous link | Approval needed |
+  | Confidential  | With approval | Never          | Data owner      |
+```
+
+Ask both *"can Confidential be shared via an anonymous link?"* Markdown answers unambiguously — the *Anonymous link* column for the *Confidential* row is **Never**. The flattened version is a bag of words: which "Never" goes with which column? The model guesses from order. Same token count, worse answer — and worse *chunking* and *embedding* upstream too, because the structure that told the retriever where one idea ends and the next begins is gone.
+
+So the honest scope of "negligible":
+
+- **Plain prose** — paragraphs, few headings, no tables: you're right, parsed DOCX ≈ Markdown. Use whatever authors prefer.
+- **Structured content** — tables, matrices, deep hierarchy (permission grids, price lists, specs — SharePoint's bread and butter): the gap is real, and it's *not* in the tokens, it's in how well the model can read what it got. Markdown keeps that structure for a few percent of markup; raw-text DOCX loses it for free.
+- **The escape hatch** — `mammoth.convertToHtml` — keeps the table (`<table><tr><td>`), but now you're paying HTML tokens and `<td><p>` cruft, spending the very token parity that made DOCX look equal.
+
+Bottom line: **you were right that the token cost is a wash — which is exactly why the decision isn't about tokens.** It's about whether extraction keeps the structure, and for anything table-heavy, that's where DOCX and Markdown stop being equal.
+
 ## One more axis: language
 
 Same article, English vs Czech, Markdown, so language is the only variable (same harness, with the blocks translated):
