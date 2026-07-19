@@ -64,6 +64,7 @@ Every article carries frontmatter with `tags` and `applies-to`, so repo search g
 | [Tenant-wide enumeration is app-only](graph/tenant-wide-enumeration-is-app-only.md) | `getAllSites` & friends reject delegated tokens with a silent 403 — check the Permissions table *before* building |
 | [`MSGraphClient` calls bypass DevTools Network](graph/msgraphclient-calls-bypass-devtools-network.md) | SPFx Graph traffic doesn't show in the Network tab — diagnose with `performance` entries, `currentuser`, the DOM, and the user's own response |
 | [`PATCH /me`: directory vs profile fields](graph/patch-me-directory-vs-profile-fields.md) | Mixing `jobTitle` with `aboutMe` fails the whole request — two PATCHes, profile one best-effort |
+| [az CLI can't grant Sites.Selected](graph/az-cli-cannot-grant-sites-selected.md) | `sites/{id}/permissions` needs `Sites.FullControl.All`, which the CLI client can't request (`AADSTS65002`) — use the Graph PowerShell SDK |
 
 ### azure-functions/
 
@@ -89,6 +90,7 @@ The standard server-side companion of an SPFx solution — and its own set of tr
 |---|---|
 | [PS 5.1 `Get-Content` mangles UTF-8](powershell/get-content-mangles-utf8.md) | ANSI-default reads double-encode diacritics (`á`→`Ã¡`) — go through `System.IO.File` with BOM-less `UTF8Encoding` |
 | [Smart quotes are string delimiters](powershell/smart-quotes-are-string-delimiters.md) | PS parses `„` and `"` like ASCII `"` — localized text belongs in single-quoted here-strings |
+| [`'Stop'` + a native stderr warning = terminating error](powershell/erroractionpreference-stop-native-stderr.md) | `$ErrorActionPreference='Stop'` escalates a benign stderr warning (exit 0) to a script-killer — wrap in `'Continue'`, judge by `$LASTEXITCODE` |
 
 ### security/
 
