@@ -27,12 +27,19 @@ The companion guide, [choosing a knowledge format for RAG](choosing-a-knowledge-
 
 *o200k_base tokenizer (GPT-4o / 4.1 / 5, and Copilot). cl100k_base (GPT-4 classic) is within ~1 % on this English text; Claude's tokenizer is proprietary but lands in the same ballpark. Reproduce every number in this table with the [script below](#reproduce-it-yourself) — same script, same numbers, no randomness.*
 
-## The one-sentence version
+> **Don't read this as a price list.** The cheapest-looking row — DOCX at 541, *below* Markdown — is cheapest **because extraction threw the structure away**, not because it's a better format. Token count is one line of the bill. The next two sections are why the lower number is the *lossier* one, and what the whole bill actually looks like.
 
-After clean extraction, DOCX (541), the SharePoint page (514), Markdown (573) and PDF (612) are **the same article in the same ballpark** — because they *are* the same words. Two things move the needle, and neither is "the format":
+## The "DOCX is cheaper" trap
 
-1. **How you extract.** The gap between DOCX-done-right (541 tokens) and DOCX-done-naively (3,213) is **6×**, on identical content. That gap is the whole game.
-2. **What structure survives.** Markdown costs a few tokens more than stripped text (573 vs 514) — and that's a *feature*: those tokens are the `#` headings, the `|` table, the list markers. Stripped text is cheaper because it threw the outline away. The model reads word-soup for less, and answers worse.
+After clean extraction, DOCX (541), the SharePoint page (514), Markdown (573) and PDF (612) are **the same article in the same ballpark** — because they *are* the same words. DOCX even lands *below* Markdown. **Don't conclude "so DOCX is cheaper — use DOCX." That number is a trap:**
+
+- **The lower count is lossier, not cheaper.** DOCX comes out under Markdown *because `mammoth` flattened the structure to get there*: headings merge into paragraphs, the table dissolves into word-soup. Markdown's ~30 extra tokens aren't waste — they're the `#` headings, the `|` table, the list markers the model reads *as* structure. You didn't save tokens; you deleted the outline, and the model answers worse from the flatter input. It's like weighing a book after tearing out the table of contents and the index — lighter, sure, but you threw away the navigation.
+- **Token count is only the text line of the bill.** Everything else in the DOCX chain — downloading the binary, running a parser, the lossy tables, and the **5.6×** you pay if anyone skips the parser — is cost the token column never shows. [The whole bill is below.](#the-whole-bill-total-cost-not-just-tokens)
+
+Two things actually move the needle, and neither is "the format":
+
+1. **How you extract.** DOCX-done-right (541) vs DOCX-done-naively (3,213) is **6×** on identical content. That gap is the whole game.
+2. **What structure survives.** The reason to prefer Markdown isn't its token count — that's *higher* — it's that the structure is still in the text, for a few percent over stripped word-soup.
 
 ## Method (so you can trust — or break — the numbers)
 
@@ -73,14 +80,25 @@ new Blob([document.documentElement.outerHTML]).size  // bytes of rendered HTML; 
 
 If a pipeline fetches the rendered page and truncates to a token budget, the real content can fall *behind* the cutoff entirely — you pay top dollar and answer from the chrome. Read `CanvasContent1` and strip it instead.
 
-## Bytes are not tokens
+## The whole bill: total cost, not just tokens
 
-The two columns tell different stories, and conflating them leads to wrong decisions:
+Token count is one column. The real cost of getting a source in front of the model is the whole row — fetch it, parse it, what structure you lose, and what it costs if someone takes the naive path — and that's where the formats stop looking alike:
 
-- **Bytes** = storage, transfer, and parse cost. DOCX and PDF inflate here (ZIP containers, embedded fonts, binary structure).
+| | Fetch | Extract | Tokens (clean) | Structure after extract | Naive-path risk | Wins at |
+|---|---|---|---:|---|---|---|
+| **Markdown** | `fetch` + read | none | **573** | intact, in-band | none — nothing to get wrong | the machine |
+| **DOCX** | download binary (KB–MB) | real parser (`mammoth`) | 541 | lossy — headings flatten, tables → soup | **5.6×** if raw `document.xml` is sent | human authoring |
+| **PDF** | download binary (+ embedded fonts) | parser; **OCR** if scanned | 612 | lossy + repeated page furniture | must always parse; multi-column interleaves | print / hand-off |
+| **SP page** | REST call | strip HTML from `CanvasContent1` | 514 | intact *if* you strip | **2.2×** verbatim; rendered `.aspx` far worse | in-browser editing |
+
+Read it across, not down. **Markdown is the only row that's cheap on *every* axis** — no binary to move, no parser to run, no structure lost, nothing to get wrong. It "pays" for that with the one thing the token column frames as a loss: ~30 tokens of markup that are, in fact, the outline. Every other format buys a similar-or-lower token count with a real cost somewhere else in the row — a download, a parser, a flattened table, a 2–6× multiplier one wrong turn away.
+
+And don't conflate the two size columns while you're here:
+
+- **Bytes** = storage, transfer, parse cost. DOCX and PDF inflate here (ZIP containers, embedded fonts, binary structure) — "DOCX is 10 KB, Markdown is 3 KB" says *nothing* about tokens; both are ~540–570 once extracted.
 - **Tokens** = the LLM bill. Only the *extracted* content counts; fonts and ZIP overhead never reach the model.
 
-So "DOCX is 10 KB and Markdown is 3 KB" tells you nothing about the token cost — both are ~540–570 tokens once extracted. Optimize bytes for your I/O and storage; optimize tokens for your model budget. They are not the same axis.
+So the decision was never "which format has the fewest tokens" — they're all in the same range. It's "which format costs the least to turn into *good* input." Once fetch, extraction, lost structure, and naive-path risk are on the bill, Markdown wins the machine channel outright — and the others win the **human** channel, where people actually write. Which is the whole reason the pattern is *author where the UX is, publish a Markdown derivative for the machine.*
 
 ## One more axis: language
 
