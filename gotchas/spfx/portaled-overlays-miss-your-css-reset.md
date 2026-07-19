@@ -7,6 +7,10 @@ last-reviewed: 2026-07-16
 
 # Portaled overlays sit outside your CSS reset — hello, phantom scrollbar
 
+> **Bottom line.** A React portal mounts on `document.body`, outside your `.app-root`-scoped CSS reset, so it inherits `content-box` and grows a phantom scrollbar — give every portaled root its own class and reset `box-sizing` on it.
+>
+> **Ve zkratce.** React portál se montuje na `document.body`, mimo tvůj CSS reset navázaný na `.app-root`, takže zdědí `content-box` a naroste mu fantomový posuvník – dej každému kořeni portálu vlastní třídu a nastav mu `box-sizing`.
+
 ## Symptom
 
 A side panel (blade/drawer/dialog) rendered with `ReactDOM.createPortal(node, document.body)` shows a **horizontal scrollbar**, and its form fields overflow the panel edge by a couple of dozen pixels — even though the widths add up perfectly on paper. The same fields inside the web part's own markup are fine.

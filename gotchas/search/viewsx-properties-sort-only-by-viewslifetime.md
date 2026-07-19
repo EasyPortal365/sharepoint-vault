@@ -7,6 +7,10 @@ last-reviewed: 2026-07-16
 
 # ViewsX managed properties: sortable only by `ViewsLifeTime`
 
+> **Bottom line.** Of the ViewsX analytics properties only `ViewsLifeTime` sorts reliably, so sort by it and do the time-windowing client-side — the windowed variants like `ViewsLast7Days` select fine but break in `sortlist`.
+>
+> **Ve zkratce.** Z analytických vlastností ViewsX řadí spolehlivě jen `ViewsLifeTime`, takže řaď podle ní a časové okno dopočítej na klientu – okenní varianty jako `ViewsLast7Days` se dají vybrat, ale v `sortlist` selhávají.
+
 ## Symptom
 
 Building a "most read this week" widget on SP Search, you sort by the obvious property:

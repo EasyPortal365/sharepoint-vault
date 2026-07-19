@@ -8,6 +8,10 @@ last-reviewed: 2026-07-18
 
 # Kapitola 04 – Správa podnikového obsahu
 
+> **Bottom line.** The building blocks of content management in SharePoint — lists and libraries, content types, managed metadata, and retention — and how they fit together into governable ECM.
+>
+> **Ve zkratce.** Stavební kameny správy obsahu v SharePointu – seznamy a knihovny, typy obsahu, spravovaná metadata a uchování – a jak z nich složit řiditelný ECM.
+
 Enterprise Content Management v SharePoint Online: seznamy a knihovny, typy obsahů (content types), spravovaná metadata a zásady uchování.
 
 ## Seznamy a knihovny

@@ -7,6 +7,10 @@ last-reviewed: 2026-07-15
 
 # Get lists by URL, not by title
 
+> **Bottom line.** `getbytitle()` breaks the moment anyone renames the list (or switches UI language) — resolve lists by their fixed server-relative URL via `GetList(@u)` instead.
+>
+> **Ve zkratce.** `getbytitle()` přestane fungovat, jakmile někdo seznam přejmenuje (nebo přepne jazyk UI) – řeš seznamy přes jejich neměnnou server-relativní URL pomocí `GetList(@u)`.
+
 ## Symptom
 
 REST calls that worked for months suddenly return **404 Not Found**:

@@ -7,6 +7,10 @@ last-reviewed: 2026-07-16
 
 # Silent `catch → []` fallbacks + destructive writes = data loss
 
+> **Bottom line.** A `catch → []` read wrapper is fine for rendering but catastrophic as the input to a write — give the data layer both a strict and a safe mood, and make every destructive or accounting operation read strict and fresh.
+>
+> **Ve zkratce.** Wrapper `catch → []` je v pořádku pro zobrazení, ale jako vstup do zápisu je katastrofa – dej datové vrstvě strict i safe režim a každou destruktivní či účetní operaci nech číst strict a čerstvě.
+
 ## Symptom
 
 A monthly closing job syncs records with a *delete-all-then-insert-all* pattern. One day — a throttling burst, a network blip — it **deletes everything and inserts nothing**, then cheerfully reports "0 records synced" as success. Variants of the same accident: a read-merge-write config save wipes the config down to the last patch; a carry-over computed "from zero" writes a full unspent balance.

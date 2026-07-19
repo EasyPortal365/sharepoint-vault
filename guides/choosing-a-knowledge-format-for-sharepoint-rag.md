@@ -7,6 +7,10 @@ last-reviewed: 2026-07-16
 
 # Markdown vs DOCX vs site pages: choosing a knowledge format for RAG on SharePoint
 
+> **Bottom line.** For the machine half of a SharePoint RAG pipeline, Markdown wins outright — best extraction, best token efficiency, and it's full-text indexed despite what the docs imply. Pages and Word win authoring. So author where the UX is, and publish a Markdown derivative for the machine.
+>
+> **Ve zkratce.** Pro strojovou půlku RAG pipeline nad SharePointem vyhrává Markdown na celé čáře – nejlepší extrakce, nejlepší efektivita tokenů, a přes tvrzení dokumentace je fulltextově indexovaný. Stránky a Word vyhrávají v psaní. Piš tedy tam, kde to vyhovuje lidem, a pro stroj publikuj Markdown derivát.
+
 You're building (or feeding) an AI assistant that answers questions from organizational knowledge stored in SharePoint — a query-time RAG pipeline over SharePoint Search, a Copilot-adjacent tool, or your own agent. The question this guide answers: **in what format should that knowledge live?**
 
 The candidates people actually consider: **site pages** (modern .aspx), **Word documents** (.docx), **Markdown files** (.md), and — often by accident — **list items** with rich-text columns.

@@ -7,6 +7,10 @@ last-reviewed: 2026-07-16
 
 # Git Bash on Windows mangles backslashes passed to native tools — regexes silently stop matching
 
+> **Bottom line.** Git Bash's MSYS layer rewrites `[\\/]` to `[/]` on the way into a native tool like ripgrep, so Windows backslash paths silently stop matching — match the separator with `.{1,4}`, or run the tool from PowerShell, and always verify with a counter-example.
+>
+> **Ve zkratce.** MSYS vrstva Git Bash přepíše `[\\/]` na `[/]` cestou do nativního nástroje jako ripgrep, takže Windows cesty s backslashem tiše přestanou matchovat – oddělovač zapiš jako `.{1,4}`, nebo nástroj spusť z PowerShellu, a vždy ověř protipříkladem.
+
 ## Symptom
 
 From Git Bash you run a native Windows tool (ripgrep, findstr, anything not MSYS-built) with a regex that handles both path separators:

@@ -7,6 +7,10 @@ last-reviewed: 2026-07-16
 
 # `PATCH /me`: directory and profile fields cannot share one request
 
+> **Bottom line.** `PATCH /me` fronts two stores — Entra directory fields and profile-service fields — and one request mixing both groups is rejected wholesale, so split it into two PATCHes by field group.
+>
+> **Ve zkratce.** `PATCH /me` zastřešuje dvě úložiště – adresářová pole Entra a pole profilové služby – a jeden request, který obě skupiny míchá, se odmítne celý, takže ho rozděl na dva PATCHe podle skupiny polí.
+
 ## Symptom
 
 A "My profile" form saves several fields at once:

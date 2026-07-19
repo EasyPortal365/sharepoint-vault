@@ -7,6 +7,10 @@ last-reviewed: 2026-07-16
 
 # Graph usage reports can't be called from the browser — CORS blocks the redirect
 
+> **Bottom line.** Graph usage reports redirect to a CORS-less download host, so the browser blocks them regardless of permissions — fetch reports server-side and build any browser-side site inventory from SP Search or `/_api/site/usage` instead.
+>
+> **Ve zkratce.** Graph usage reporty přesměrují na download host bez CORS hlaviček, takže je prohlížeč zablokuje bez ohledu na oprávnění – reporty tahej serverově a inventuru webů v prohlížeči postav na SP Search nebo `/_api/site/usage`.
+
 ## Symptom
 
 You build an admin dashboard in SPFx and call the usage reports, e.g. `GET /reports/getSharePointSiteUsageDetail(period='D30')` with `Reports.Read.All` granted. The request dies in the browser with a CORS error — no matter which permissions you add.

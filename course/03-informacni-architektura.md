@@ -8,6 +8,10 @@ last-reviewed: 2026-07-18
 
 # Kapitola 03 – SharePoint Online a informační architektura
 
+> **Bottom line.** Modern SharePoint architecture is flat, not nested: prefer separate sites joined by hubs over subsites, and know how site types and templates shape the structure.
+>
+> **Ve zkratce.** Moderní architektura SharePointu je plochá, ne vnořená: dávej přednost samostatným webům spojeným huby před podřízenými weby a znej, jak typy webů a šablony utvářejí strukturu.
+
 Terminologie a struktura SharePointu, weby vs. podřízené weby, hub sites, typy webů a šablony.
 
 ## Informační architektura a terminologie

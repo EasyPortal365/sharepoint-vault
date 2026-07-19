@@ -7,6 +7,10 @@ last-reviewed: 2026-07-15
 
 # Minified React error #310 (and friends) — the SPFx debugging cheatsheet
 
+> **Bottom line.** SPFx ships production React, so errors arrive as bare numbers — #310/#300 almost always mean a hook placed after an early return; decode by the number and let the `rules-of-hooks` ESLint rule catch them at build time.
+>
+> **Ve zkratce.** SPFx dodává produkční React, takže chyby přijdou jako holá čísla – #310/#300 skoro vždy znamenají hook umístěný za early returnem; dekóduj podle čísla a nech je odchytit ESLint pravidlo `rules-of-hooks` už při buildu.
+
 ## Symptom
 
 A web part renders blank, or a click does nothing. The console says only:

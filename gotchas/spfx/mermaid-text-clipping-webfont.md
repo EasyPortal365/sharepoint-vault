@@ -7,6 +7,10 @@ last-reviewed: 2026-07-19
 
 # Mermaid clips node text when you set a web font (measure-before-load)
 
+> **Bottom line.** Mermaid sizes each node box by measuring text at render time, so a not-yet-loaded web font measures narrow and clips the label after FOUT — give Mermaid a system font (keep your brand colours) or gate the render on `document.fonts.ready`.
+>
+> **Ve zkratce.** Mermaid velikost každého uzlu počítá měřením textu při renderu, takže ještě nenačtený web font změří moc úzce a po FOUT ořízne popisek – dej Mermaidu systémový font (brand barvy nech), nebo render podmiň `document.fonts.ready`.
+
 ## Symptom
 
 You render Mermaid diagrams client-side and style them with a brand **web font** (via `themeVariables.fontFamily` and/or the top-level `fontFamily`). Node boxes come out **too narrow** — the last few characters of a label are cut off at the box border (e.g. `Return request to employ` instead of `…employee`). It looks fine with Mermaid's default font.

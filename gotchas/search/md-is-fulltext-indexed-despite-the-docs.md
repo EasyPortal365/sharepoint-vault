@@ -7,6 +7,10 @@ last-reviewed: 2026-07-16
 
 # Don't trust the parsed-file-types table: SharePoint Online full-text indexes `.md`
 
+> **Bottom line.** The official parsed-file-types table omits `.md`, but live SharePoint Online full-text indexes Markdown bodies anyway — treat `.md` as fully searchable, and run a two-minute live probe before you architect around any capability table.
+>
+> **Ve zkratce.** Oficiální tabulka parsovaných formátů `.md` neuvádí, ale živý SharePoint Online těla Markdownu stejně plnotextově indexuje – ber `.md` jako plně prohledávatelný a než na nějaké tabulce schopností postavíš návrh, ověř to dvouminutovou živou zkouškou.
+
 ## Symptom
 
 You design a knowledge base or RAG architecture around the assumption that **Markdown bodies are invisible to SharePoint Search**, because the official [table of default crawled extensions and parsed file types](https://learn.microsoft.com/sharepoint/technical-reference/default-crawled-file-name-extensions-and-parsed-file-types) doesn't list `.md` anywhere — the Text handler covers `.txt`/`.csv`, the HTML handler covers `.aspx`/`.html`, and Markdown appears in neither. Docs read, conclusion drawn, mitigations planned.

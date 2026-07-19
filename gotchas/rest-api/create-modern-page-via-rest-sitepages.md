@@ -7,6 +7,10 @@ last-reviewed: 2026-07-15
 
 # Creating a modern page via REST is a three-step dance, not one POST
 
+> **Bottom line.** Creating a modern page is a three-call sequence — create, `SavePageAsDraft` (where `CanvasContent1` actually lands, as a JSON canvas-control string), then `Publish` — not a single POST.
+>
+> **Ve zkratce.** Moderní stránka vzniká sekvencí tří volání – create, `SavePageAsDraft` (sem `CanvasContent1` reálně patří, jako JSON řetězec s canvas prvky) a `Publish` – ne jedním POSTem.
+
 ## Symptom
 
 You POST a new modern page and expect content plus a published page from one call:

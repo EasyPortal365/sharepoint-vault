@@ -7,6 +7,10 @@ last-reviewed: 2026-07-15
 
 # Importing third-party CSS with `url(images/...)` breaks the SPFx build
 
+> **Bottom line.** Don't `import` third-party CSS whose `url()` refs lack a `./` prefix — SPFx's css-loader reads them as module requests and the build dies; inject a `<link>` at runtime with an id-guard instead.
+>
+> **Ve zkratce.** Neimportuj cizí CSS, jehož `url()` odkazy nemají prefix `./` – SPFx css-loader je bere jako modulové požadavky a build spadne; místo toho injektuj `<link>` za běhu s ID-guardem.
+
 ## Symptom
 
 You add a mapping or charting library and import its stylesheet the documented way:

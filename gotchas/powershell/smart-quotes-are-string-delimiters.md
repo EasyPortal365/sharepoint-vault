@@ -7,6 +7,10 @@ last-reviewed: 2026-07-16
 
 # PowerShell 7 treats typographic quotes as string *delimiters*
 
+> **Bottom line.** PowerShell's parser treats typographic quotes (`„ " ' '`) as string delimiters, so localized text ends the string mid-sentence and breaks the parse — put any prose with curly quotes into a single-quoted here-string `@'…'@`.
+>
+> **Ve zkratce.** Parser PowerShellu bere typografické uvozovky (`„ " ' '`) jako oddělovače řetězců, takže lokalizovaný text ukončí řetězec uprostřed věty a rozbije parsování – jakoukoli prózu s kudrnatými uvozovkami vlož do single-quoted here-stringu `@'…'@`.
+
 ## Symptom
 
 A script assembles localized text (release notes, issue bodies, e-mail copy):

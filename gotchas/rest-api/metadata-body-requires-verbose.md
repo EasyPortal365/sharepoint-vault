@@ -7,6 +7,10 @@ last-reviewed: 2026-07-15
 
 # A request body with `__metadata` must be sent as `odata=verbose`
 
+> **Bottom line.** `__metadata` only exists in the OData verbose format — either drop it and stay in the modern `nometadata` default, or set both `Accept` and `Content-Type` to `odata=verbose`.
+>
+> **Ve zkratce.** `__metadata` existuje jen ve formátu OData verbose – buď ho vynech a zůstaň v moderním defaultu `nometadata`, nebo nastav `Accept` i `Content-Type` na `odata=verbose`.
+
 ## Symptom
 
 A POST or MERGE copied from an older tutorial — the kind that includes a type hint:

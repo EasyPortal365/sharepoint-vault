@@ -7,6 +7,10 @@ last-reviewed: 2026-07-15
 
 # `position: fixed` dropdowns go off-screen inside animated panels — the CSS transform trap
 
+> **Bottom line.** A `transform` on any ancestor (even a settled `translateX(0)`) becomes the containing block for `position: fixed`, so a dropdown in a slide-in panel lands off-screen — render floating elements through a portal to `document.body`.
+>
+> **Ve zkratce.** `transform` na jakémkoli předku (i doběhlý `translateX(0)`) se stane containing blockem pro `position: fixed`, takže dropdown v zasouvacím panelu skončí mimo obrazovku – plovoucí prvky renderuj přes portál do `document.body`.
+
 ## Symptom
 
 An autocomplete/people-picker dropdown works perfectly in a normal page — then you mount the same component inside a slide-in side panel and the dropdown **vanishes**. The search works (network tab full of results, state updates firing), but nothing visible appears. Sometimes it renders in a bizarre corner instead.

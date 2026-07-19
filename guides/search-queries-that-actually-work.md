@@ -7,6 +7,10 @@ last-reviewed: 2026-07-16
 
 # Search queries that actually work
 
+> **Bottom line.** SP Search is the most powerful data source in SharePoint — cross-site and security-trimmed — and the most quietly hostile: it needs one non-negotiable header, KQL that bites, and awareness of the freshness and trimming traps.
+>
+> **Ve zkratce.** SP Search je nejmocnější zdroj dat v SharePointu – napříč weby a s ořezem podle oprávnění – a zároveň nejzákeřnější: vyžaduje jednu nepominutelnou hlavičku, KQL, které kouše, a znalost pastí kolem aktuálnosti a ořezu výsledků.
+
 SP Search is the most underrated data source in SharePoint — cross-site, security-trimmed, fast — and the most quietly hostile API in the stack. This guide covers the REST endpoint, enough KQL to be dangerous, and the traps between you and useful results.
 
 ## 1. The endpoint and its one non-negotiable header

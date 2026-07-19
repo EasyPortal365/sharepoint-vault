@@ -7,6 +7,10 @@ last-reviewed: 2026-07-15
 
 # SPFx build fails on `padStart`, `includes`, `Object.values` — the ES2015 `lib` trap
 
+> **Bottom line.** SPFx ships `lib: ES2015`, so post-2015 APIs like `padStart`/`includes`/`Object.values` fail type-checking with TS2550 — use ES2015 equivalents (safe on every runtime) or raise `lib`, which fixes the check but polyfills nothing.
+>
+> **Ve zkratce.** SPFx má `lib: ES2015`, takže novější API jako `padStart`/`includes`/`Object.values` neprojdou typovou kontrolou (TS2550) – použij ES2015 náhrady (bezpečné na každém runtime), nebo zvedni `lib`, což opraví kontrolu, ale nic nepolyfilluje.
+
 ## Symptom
 
 Code runs fine in the browser during development, then the build fails:

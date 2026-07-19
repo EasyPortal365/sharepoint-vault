@@ -7,6 +7,10 @@ last-reviewed: 2026-07-16
 
 # Per-IP rate limit counts the capability probe — corporate NAT kills the feature silently
 
+> **Bottom line.** A per-IP rate limit that also counts the cheap capability probe turns corporate NAT (one IP per office) into a silent feature kill switch — answer probes *before* the limiter and meter only expensive work.
+>
+> **Ve zkratce.** Per-IP rate limit, který započítává i levný capability probe, promění firemní NAT (jedna IP na celou kancelář) v tichý vypínač funkce – na probe odpověz *před* limiterem a měř jen drahou práci.
+
 A pattern trap for SPFx web parts backed by an anonymous Azure Function: the web part ships to
 everyone (CDN), but a given backend instance may or may not have a feature deployed/configured.
 So the client sends a cheap **capability probe** on load — "what can you do?" — and hides the

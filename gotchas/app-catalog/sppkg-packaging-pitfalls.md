@@ -7,6 +7,10 @@ last-reviewed: 2026-07-15
 
 # Three `.sppkg` packaging pitfalls: diacritics, icon size, the Publisher column
 
+> **Bottom line.** Three unrelated upload-time traps — keep `solution.name` ASCII, size `AppIcon.png` to exactly 96 × 96, and accept that the Publisher column stays empty for tenant-uploaded packages.
+>
+> **Ve zkratce.** Tři nesouvisející pasti při nahrávání – `solution.name` bez diakritiky, `AppIcon.png` přesně 96 × 96 a smiř se s tím, že sloupec Publisher zůstane u tenantních balíčků prázdný.
+
 Three unrelated traps that all strike at the same moment — packaging or uploading your solution.
 
 ## 1. `solution.name` must be ASCII (no diacritics)

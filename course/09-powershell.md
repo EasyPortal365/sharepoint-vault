@@ -8,6 +8,10 @@ last-reviewed: 2026-07-18
 
 # Kapitola 09 – SharePoint Online a PowerShell
 
+> **Bottom line.** Two modules run SharePoint Online from the command line — the official SharePoint Online Management Shell and community PnP PowerShell — and this chapter pairs them with practical reporting and admin scripts.
+>
+> **Ve zkratce.** SharePoint Online se z příkazové řádky spravuje dvěma moduly – oficiálním SharePoint Online Management Shell a komunitním PnP PowerShell – a tato kapitola je doplňuje sadou praktických skriptů pro reporting a správu.
+
 Dva moduly pro správu SharePoint Online z příkazové řádky – oficiální **SharePoint Online Management Shell** a komunitní **PnP PowerShell** – a sada praktických skriptů pro reporting a správu.
 
 ## SharePoint Online Management Shell a PnP PowerShell

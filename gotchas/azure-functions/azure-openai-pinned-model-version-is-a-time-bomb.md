@@ -7,6 +7,10 @@ last-reviewed: 2026-07-18
 
 # Azure OpenAI: a pinned model+version in your deploy script is a time bomb
 
+> **Bottom line.** A deploy script that hardcodes an Azure OpenAI model version is a time bomb — Azure's "Deprecating" state blocks *new* deployments long before retirement, so resolve the newest GA version at deploy time instead of pinning it.
+>
+> **Ve zkratce.** Deploy skript s napevno zadanou verzí modelu Azure OpenAI je časovaná bomba – stav „Deprecating" blokuje *nová* nasazení dávno před retirementem, takže verzi nepinuj a nejnovější GA vyhledej až při nasazení.
+
 SPFx (and plenty of other front-ends) have no server side, so a small Azure Function app is the
 standard companion for OpenAI calls. This trap is about the **model deployment** that companion
 depends on — and why a deploy script that worked for a year suddenly refuses to run.

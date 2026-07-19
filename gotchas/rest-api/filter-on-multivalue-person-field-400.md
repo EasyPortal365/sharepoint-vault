@@ -7,6 +7,10 @@ last-reviewed: 2026-07-16
 
 # `$filter` on a multi-value person field can return 400 — filter those client-side
 
+> **Bottom line.** `$filter` on a multi-value person/lookup field can 400 — try the server filter, then fall back to client-side filtering only on HTTP 400, so real errors still surface.
+>
+> **Ve zkratce.** `$filter` nad vícehodnotovým person/lookup polem může vrátit 400 – zkus serverový filtr a jen při HTTP 400 se vrať k filtrování na klientu, aby skutečné chyby nezmizely.
+
 ## Symptom
 
 A query like

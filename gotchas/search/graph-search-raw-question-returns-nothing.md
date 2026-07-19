@@ -7,6 +7,10 @@ last-reviewed: 2026-07-17
 
 # Graph Search returns 0 hits — you passed the user's question as the `queryString`
 
+> **Bottom line.** Graph Search treats `queryString` as full text, so a user's raw question matches nothing and fails silently — translate the question into keywords first, and answer "what's new" with a date-sorted listing rather than a keyword search.
+>
+> **Ve zkratce.** Graph Search bere `queryString` jako plný text, takže syrová otázka uživatele nenajde nic a selže potichu – nejdřív otázku přelož na klíčová slova a „co je nového" řeš výpisem řazeným podle data, ne hledáním klíčových slov.
+
 ## Symptom
 
 You wire `POST /search/query` into an assistant so it can answer from the user's own mail,

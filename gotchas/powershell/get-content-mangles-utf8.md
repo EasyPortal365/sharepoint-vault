@@ -7,6 +7,10 @@ last-reviewed: 2026-07-16
 
 # Windows PowerShell 5.1 `Get-Content`/`Set-Content` mangles UTF-8 — `á` becomes `Ã¡`
 
+> **Bottom line.** Windows PowerShell 5.1 reads files as ANSI and writes UTF-8 with a BOM, corrupting diacritics — go through .NET `[System.IO.File]::ReadAllText/WriteAllText` with an explicit BOM-less `UTF8Encoding($false)` instead.
+>
+> **Ve zkratce.** Windows PowerShell 5.1 čte soubory jako ANSI a zapisuje UTF-8 s BOM, čímž rozbije diakritiku – místo toho jdi přes .NET `[System.IO.File]::ReadAllText/WriteAllText` s explicitním `UTF8Encoding($false)` bez BOM.
+
 ## Symptom
 
 A bulk find-and-replace over source files (SPFx resources, localized strings, markdown):

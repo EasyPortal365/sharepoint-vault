@@ -7,6 +7,10 @@ last-reviewed: 2026-07-16
 
 # `SP.WebProxy` is add-in-only — from SPFx it 403s with "without an app context"
 
+> **Bottom line.** `SP.WebProxy` is legacy add-in-only, so from SPFx it returns a fake HTTP 200 whose body is really a 403 — there is no SharePoint-native CORS proxy for SPFx, so make the target send the CORS header or fetch through your own backend.
+>
+> **Ve zkratce.** `SP.WebProxy` patří jen do starého add-in modelu, takže ze SPFx vrátí falešnou HTTP 200, jejíž tělo je ve skutečnosti 403 – žádná nativní SharePoint CORS proxy pro SPFx neexistuje, takže ať cíl pošle CORS hlavičku, nebo načítej přes vlastní backend.
+
 ## Symptom
 
 You need to read a cross-origin page or API from an SPFx web part. The browser blocks the
