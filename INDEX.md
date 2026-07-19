@@ -41,6 +41,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [JSX attributes and smart quotes](gotchas/spfx/jsx-attributes-and-smart-quotes.md) — typographic quotes in attributes = TS1003; wrap as `{'…'}`
     - [Portaled overlays miss your CSS reset](gotchas/spfx/portaled-overlays-miss-your-css-reset.md) — portal to `body` escapes the scoped reset; `content-box` fields overflow and grow a scrollbar
     - [Auto-save must wait for async inputs](gotchas/spfx/autosave-effect-must-wait-for-async-inputs.md) — computed-from-async auto-save fires on mount with empty inputs and persists garbage; gate on a loaded flag
+    - [Mermaid clips node text with a web font](gotchas/spfx/mermaid-text-clipping-webfont.md) — measure-before-load (FOUT) sizes boxes for the fallback font; use a system font stack
   - **app-catalog/**
     - [Three `.sppkg` packaging pitfalls](gotchas/app-catalog/sppkg-packaging-pitfalls.md) — ASCII-only solution name, icon exactly 96×96, Publisher column is AppSource-only
   - **graph/**
