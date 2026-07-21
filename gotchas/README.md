@@ -22,6 +22,7 @@ Every article carries frontmatter with `tags` and `applies-to`, so repo search g
 | [Create a modern page via REST (3-step)](rest-api/create-modern-page-via-rest-sitepages.md) | `CanvasContent1` won't stick on create — it's create → SavePageAsDraft → Publish, and the canvas is JSON, not HTML |
 | [`$filter` on multi-value person fields 400s](rest-api/filter-on-multivalue-person-field-400.md) | UserMulti projections don't filter server-side — fall back to client filtering, but only on HTTP 400 |
 | [Silent fallbacks poison destructive writes](rest-api/silent-fallbacks-poison-destructive-writes.md) | `catch → []` is great for rendering and catastrophic for delete-then-insert syncs — offer strict and safe reads |
+| [Provisioning skips schema changes to existing fields](rest-api/provisioning-skips-schema-changes-to-existing-fields.md) | "Create field if missing" never updates an existing field — a new Choice value in your manifest no-ops on deployed sites; reconcile with a verbose `SP.FieldChoice` MERGE |
 
 ### lists/
 
