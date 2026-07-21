@@ -2,7 +2,7 @@
 
 Every single thing in the vault, on one page. Section names link to folder READMEs; leaves link straight to the content.
 
-*Last updated: 2026-07-20*
+*Last updated: 2026-07-21*
 
 - 🧰 **[scripts/](scripts/)** — PowerShell scripts with comment-based help, read-only unless stated
   - **reporting/**
@@ -24,6 +24,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [`$filter` on multi-value person fields 400s](gotchas/rest-api/filter-on-multivalue-person-field-400.md) — fall back to client filtering, but only on HTTP 400
     - [Silent fallbacks poison destructive writes](gotchas/rest-api/silent-fallbacks-poison-destructive-writes.md) — `catch → []` + delete-then-insert = data loss; strict and safe reads
     - [Check-then-insert races produce duplicate rows](gotchas/rest-api/check-then-insert-races-duplicate-rows.md) — no unique constraint + eventual consistency = double insert; dedup on read by version, never delete "lowest Id"
+    - [Provisioning skips schema changes to existing fields](gotchas/rest-api/provisioning-skips-schema-changes-to-existing-fields.md) — create-if-missing never updates an existing field; a new Choice value in the manifest no-ops on deployed sites; reconcile with a post-hook verbose `SP.FieldChoice` MERGE
   - **lists/**
     - [The 5,000-item view threshold](gotchas/lists/list-view-threshold-and-indexes.md) — it's scanned rows, not returned rows; index early, page always
   - **spfx/**
