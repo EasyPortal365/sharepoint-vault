@@ -2,7 +2,7 @@
 title: A request body with __metadata must be sent as odata=verbose
 tags: [rest-api, odata, spfx]
 applies-to: SharePoint Online, SharePoint Server
-last-reviewed: 2026-07-15
+last-reviewed: 2026-07-22
 ---
 
 # A request body with `__metadata` must be sent as `odata=verbose`
@@ -51,6 +51,8 @@ headers: {
 },
 body: JSON.stringify({ __metadata: { type: 'SP.Data.TasksListItem' }, Title: 'Hello' })
 ```
+
+> ⚠️ **SPFx caveat — under `SPHttpClient`, option B still 400s.** `SPHttpClient.configurations.v1` injects an `odata-version: 4.0` request header you cannot easily strip. Paired with a verbose (`__metadata`) body, SharePoint reads it as OData v4 JSON Light and rejects it — **HTTP 400: *"Parsing JSON Light feeds or entries in requests without entity set is not supported"*** — regardless of the list's age. So inside SPFx, **always take option A** (`nometadata`, no `__metadata`). Verified live A/B 2026-07-22: an identical body returns **201** via plain `fetch` but **400** the moment `odata-version: 4.0` is present; `nometadata` without `__metadata` returns **201/204** either way. Note the two different 400 messages — the `InvalidClientQueryException` above (mode mismatch, no version header) vs. this JSON-Light parse error (verbose body + v4 header) — both point to the same fix.
 
 If your codebase mixes both styles, the robust move is a tiny helper that inspects the body and sets the headers accordingly — then nobody has to remember.
 
