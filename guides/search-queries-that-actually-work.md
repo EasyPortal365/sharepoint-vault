@@ -64,6 +64,7 @@ Search doesn't see your columns; it sees **managed properties** mapped from craw
 - Out of the box, a custom column `ProjectCode` becomes crawled `ows_ProjectCode` — **queryable via a `RefinableString*` alias**, not by its own name. Map it (site collection or tenant search schema → pick a free `RefinableString00`–`199`, add the crawled property as mapping) and query `RefinableString00:PRJ-042`.
 - Mapping changes need a **re-crawl** to take effect — on SPO that means waiting (minutes to hours); "reindex site" in site settings nudges it.
 - Property names in KQL are case-insensitive; values are not stemmed for `Refinable*` (exact-ish matching).
+- Useful **built-in** ones you don't have to map: `ViewableByExternalUsers` / `ViewableByAnonymousUsers` (sharing exposure — [see snippet](../snippets/rest/find-externally-shared-content-search.md)), `GroupId` (the connected Microsoft 365 group's id on `STS_Site` rows — non-empty for group/Team-connected sites, empty for classic/communication sites, so it pairs a site to its group/Team with no extra Graph call; verified live 2026-07-24), `LastModifiedTime` (freshness ranges: `LastModifiedTime<2024-07-01`), `IsDocument`, `contentclass`. All return **strings**.
 
 ## 5. The traps, concentrated
 
