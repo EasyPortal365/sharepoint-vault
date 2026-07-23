@@ -99,6 +99,7 @@ The standard server-side companion of an SPFx solution — and its own set of tr
 | Gotcha | TL;DR |
 |---|---|
 | [Stored XSS via list content](security/stored-xss-from-list-content.md) | React doesn't block `javascript:` hrefs or sanitize SVG — allowlist `safeHref` with C0-strip at every sink |
+| [Field hiding is not a permission](security/field-hiding-is-not-a-permission.md) | Role-based UI field hiding is cosmetic — Read on the list means REST/Export/other web parts see it; confidentiality needs a separate list, item perms, or a server tier |
 
 ### tooling/
 
