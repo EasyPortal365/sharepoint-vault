@@ -56,6 +56,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [`PATCH /me`: directory vs profile fields](gotchas/graph/patch-me-directory-vs-profile-fields.md) — mixed field groups fail whole; two PATCHes, profile best-effort
     - [az CLI can't grant Sites.Selected](gotchas/graph/az-cli-cannot-grant-sites-selected.md) — `sites/{id}/permissions` needs `Sites.FullControl.All`; the CLI client can't request it (`AADSTS65002`), use the Graph PowerShell SDK
     - [`MSGraphClient` calls bypass DevTools Network](gotchas/graph/msgraphclient-calls-bypass-devtools-network.md) — SPFx Graph traffic invisible in Network; diagnose via `performance` entries, `currentuser`, DOM, user's response
+    - [Re-read fresh before bulk-removing members](gotchas/graph/reread-fresh-before-bulk-membership-removal.md) — the roster you showed is a preview; strict fresh re-read before a `removeMember` loop, read-error aborts, vanished member = idempotent skip
   - **azure-functions/**
     - [Windows zip deploy breaks the running app](gotchas/azure-functions/windows-zip-deploy-breaks-running-app.md) — live `wwwroot` file locks → whole app 503; re-run the deploy, prevent with `WEBSITE_RUN_FROM_PACKAGE=1`
     - [Rate limit counts the capability probe](gotchas/azure-functions/rate-limit-counts-capability-probe-corporate-nat.md) — corporate NAT makes per-IP per-company; metered probes silently hide the feature
@@ -95,6 +96,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
 - ✂️ **[snippets/](snippets/)** — small copy-paste fragments
   - **rest/**
     - [Read all items from a large list — paging done right](snippets/rest/get-all-list-items-paged.md) — `$top` caps at 5,000, `$skip` is ignored; follow `odata.nextLink`
+    - [Find externally / anonymously shared content via Search](snippets/rest/find-externally-shared-content-search.md) — `ViewableByExternalUsers:1` is a queryable managed property; oversharing audit in one line, values are strings not booleans
   - **cli/**
     - [SPO Management Shell one-liners](snippets/cli/spo-management-shell-one-liners.md) — storage top 20, external sharing, deleted sites, lock state
 - 📦 **[templates/](templates/)** — reusable artifacts to adapt, not rewrite
