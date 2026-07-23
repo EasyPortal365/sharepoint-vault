@@ -66,6 +66,7 @@ Every article carries frontmatter with `tags` and `applies-to`, so repo search g
 | [`MSGraphClient` calls bypass DevTools Network](graph/msgraphclient-calls-bypass-devtools-network.md) | SPFx Graph traffic doesn't show in the Network tab — diagnose with `performance` entries, `currentuser`, the DOM, and the user's own response |
 | [`PATCH /me`: directory vs profile fields](graph/patch-me-directory-vs-profile-fields.md) | Mixing `jobTitle` with `aboutMe` fails the whole request — two PATCHes, profile one best-effort |
 | [az CLI can't grant Sites.Selected](graph/az-cli-cannot-grant-sites-selected.md) | `sites/{id}/permissions` needs `Sites.FullControl.All`, which the CLI client can't request (`AADSTS65002`) — use the Graph PowerShell SDK |
+| [Re-read fresh before bulk-removing members](graph/reread-fresh-before-bulk-membership-removal.md) | The roster you showed is a preview, not truth — re-read strict & fresh before a `removeMember` loop; read error aborts, a vanished member is an idempotent skip, guard each delete |
 
 ### azure-functions/
 
