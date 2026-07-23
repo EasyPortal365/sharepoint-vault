@@ -24,6 +24,7 @@ Every article carries frontmatter with `tags` and `applies-to`, so repo search g
 | [Silent fallbacks poison destructive writes](rest-api/silent-fallbacks-poison-destructive-writes.md) | `catch → []` is great for rendering and catastrophic for delete-then-insert syncs — offer strict and safe reads |
 | [Provisioning skips schema changes to existing fields](rest-api/provisioning-skips-schema-changes-to-existing-fields.md) | "Create field if missing" never updates an existing field — a new Choice value in your manifest no-ops on deployed sites; reconcile with a verbose `SP.FieldChoice` MERGE |
 | [`X-RequestDigest` expires mid-session](rest-api/request-digest-expires-mid-session.md) | Writes 403 "security validation is invalid" on a long-open page — the page digest times out (~30 min); fetch a fresh one from `/_api/contextinfo` per write |
+| [Don't cache a throttled permission probe](rest-api/dont-cache-a-throttled-permission-probe.md) | A 429/403 on `currentuser/groups` resolves to the lowest role — cache it and the user is stuck read-only for the TTL; only persist a confirmed (200) result |
 
 ### lists/
 
