@@ -73,6 +73,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [`'Stop'` + a native stderr warning = terminating error](gotchas/powershell/erroractionpreference-stop-native-stderr.md) — `$ErrorActionPreference='Stop'` escalates a benign stderr warning (exit 0) to a script-killer; wrap in `'Continue'`, judge by `$LASTEXITCODE`
   - **security/**
     - [Stored XSS via list content](gotchas/security/stored-xss-from-list-content.md) — React doesn't block `javascript:` hrefs; allowlist `safeHref` with C0-strip at every sink
+    - [Field hiding is not a permission](gotchas/security/field-hiding-is-not-a-permission.md) — role-based UI field hiding is cosmetic; Read on the list = REST/Export/other web parts see it; confidentiality needs a separate list, item perms, or a server tier
   - **tooling/**
     - [Git Bash mangles backslashes for native exes](gotchas/tooling/git-bash-mangles-backslashes-for-native-exes.md) — `[\\/]` arrives as `[/]`; Windows-path regexes silently under-match
     - [GitHub Pages certificate stuck](gotchas/tooling/github-pages-certificate-stuck.md) — domain added before DNS existed; remove & re-add restarts provisioning
