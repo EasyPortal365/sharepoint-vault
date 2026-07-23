@@ -9,6 +9,7 @@ Small, self-contained fragments to copy straight into your solution — each wit
 | Snippet | When to reach for it |
 |---|---|
 | [Read all items from a large list — paging done right](rest/get-all-list-items-paged.md) | Any list past a few thousand items: `$top` caps at 5,000, `$skip` is ignored — follow `odata.nextLink` |
+| [Find externally / anonymously shared content via Search](rest/find-externally-shared-content-search.md) | Oversharing / Copilot-readiness audit: `ViewableByExternalUsers:1` surfaces files shared out, security-trimmed, one query |
 
 ### cli/
 
