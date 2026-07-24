@@ -2,7 +2,7 @@
 title: encodeURIComponent won't save you from apostrophes in OData literals
 tags: [rest-api, odata, files]
 applies-to: SharePoint Online, SharePoint Server
-last-reviewed: 2026-07-15
+last-reviewed: 2026-07-24
 ---
 
 # `encodeURIComponent` won't save you from apostrophes in OData literals
@@ -44,7 +44,7 @@ const url = `${webUrl}/_api/web/GetFolderByServerRelativeUrl('Documents')` +
 const filter = `$filter=Title eq '${encodeURIComponent(odataString(userInput))}'`;
 ```
 
-Run `odataString()` on **every** dynamic value that lands between OData quotes: `getbytitle(…)`, `GetList(@u)` parameter aliases, `$filter`, `Files/add(url=…)`, `getFileByServerRelativeUrl(…)`.
+Run `odataString()` on **every** dynamic value that lands between OData quotes: `getbytitle(…)`, `GetList(@u)` parameter aliases, `$filter`, `Files/add(url=…)`, `GetFileByServerRelativeUrl(…)`, `GetFolderByServerRelativeUrl(…)`, `sitegroups/getbyname(…)`, and `AttachmentFiles/getByFileName(…)`. A convenient wrapper that does both layers at once: `const spLit = (p) => encodeURIComponent(p.replace(/'/g, "''"));`.
 
 ## Notes
 

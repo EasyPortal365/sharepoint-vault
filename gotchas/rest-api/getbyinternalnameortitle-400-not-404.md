@@ -34,6 +34,8 @@ server-side and, when the name matches nothing, raises `ArgumentException`, whic
 **HTTP 400** (`-2147024809` = `0x80070057`, E_INVALIDARG). Several other `GetByX` endpoints behave the same
 way (they throw rather than 404 on a miss). So "404 means missing" is an unsafe assumption here.
 
+Concrete sibling: **`sitegroups/getbyname('Missing')` returns HTTP 500** (`Group cannot be found`), not 404, for a nonexistent group. A provisioning existence-check written as `if (status !== 404) { skip }` therefore *never* reaches the create branch on a fresh web (missing group → 500 → skipped forever), so the groups are silently never created. Same rule, different status code: don't branch a `getby*` existence-check on a specific non-OK status — treat only 200 as "exists" and let the create decide.
+
 ## Fix
 
 Treat **only `chk.ok` (200) as "exists"**; on *any* non-OK status, fall through to the create. Let the
