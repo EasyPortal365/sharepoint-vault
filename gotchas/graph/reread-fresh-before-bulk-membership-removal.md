@@ -2,7 +2,7 @@
 title: Re-read fresh right before you bulk-remove group members
 tags: [graph, groups, data-safety]
 applies-to: Microsoft Graph (delegated), SPFx
-last-reviewed: 2026-07-23
+last-reviewed: 2026-07-24
 ---
 
 # Re-read fresh right before you bulk-remove group members
@@ -78,3 +78,4 @@ Rules that keep it safe:
 - This is the Microsoft Graph / membership face of the general data-safety rule in [Silent fallbacks poison destructive writes](../rest-api/silent-fallbacks-poison-destructive-writes.md) — same principle (strict-and-fresh before a write), specialized for `removeMember` loops and the preview-then-act timing gap.
 - The gap is a genuine TOCTOU (time-of-check to time-of-use): the fresh re-read shrinks the window to milliseconds but can't eliminate it, which is exactly why per-item guards and an honest result count matter.
 - `getMembers`/`getGuests` should page all results (`$top=999`, follow `@odata.nextLink`) — a strict read that silently stops at 100 is its own quiet bug.
+- **Don't let a `Promise.all` couple a *critical* read to a *nice-to-have* one.** A panel that loads the roster with `Promise.all([getMembers, getGuests])` — where `getMembers` authorizes the removal and `getGuests` only *labels* who's a guest — rejects the whole thing when `getGuests` blips, blocking a removal that `getMembers` alone could safely drive. Keep the critical read strict and make the decorative one best-effort: `Promise.all([getMembers, getGuests.catch(() => null)])`, then degrade gracefully (show the roster, disable the "guests only" filter) when the optional read came back null. Only the read that *gates the write* should be able to abort it.
