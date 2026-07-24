@@ -87,6 +87,8 @@ The standard server-side companion of an SPFx solution — and its own set of tr
 | [Compare SharePoint paths decode-first](search/compare-sharepoint-paths-decode-first.md) | Browser URLs are %-encoded, search `Path` is decoded — normalize both, then boundary-aware prefix match |
 | [Don't trust the parsed-file-types table: SPO does index `.md`](search/md-is-fulltext-indexed-despite-the-docs.md) | The official table omits Markdown, yet live SPO full-text indexes it — probe capability tables before you architect around them |
 | [Graph Search returns 0 hits — you passed the question as the `queryString`](search/graph-search-raw-question-returns-nothing.md) | A question isn't a query and "what's new" isn't a search — translate to keywords, use `*` + the default date sort, and only documented per-entity KQL |
+| [An unparenthesized `OR` silently escapes your scope filter](search/kql-or-escapes-your-scope-filter.md) | KQL `AND` binds tighter than `OR` — `a OR b Path:"…"` = `a OR (b AND Path)`; wrap the whole user/AI query in parentheses |
+| [Sensitivity labels in Search — property works, licensing gates it](search/sensitivity-labels-in-search-and-licensing.md) | `InformationProtectionLabelId` returns a GUID only after AIP-enable + label + crawl; unlicensed tenants can't even create a label (`InvalidLicenseException`) |
 
 ### powershell/
 

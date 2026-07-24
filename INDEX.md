@@ -70,6 +70,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [Don't trust the parsed-file-types table: SPO does index `.md`](gotchas/search/md-is-fulltext-indexed-despite-the-docs.md) — the official table omits Markdown, yet live SPO full-text indexes it; probe before architecting
     - [Graph Search returns 0 hits — you passed the question as the `queryString`](gotchas/search/graph-search-raw-question-returns-nothing.md) — translate question→keywords; "what's new" is a listing (`*` + default date sort, custom sort = 400); per-entity KQL only as documented
     - [An unparenthesized `OR` silently escapes your scope filter](gotchas/search/kql-or-escapes-your-scope-filter.md) — KQL AND binds tighter than OR, so `a OR b Path:"…"` = `a OR (b AND Path)`; wrap the query in parens
+    - [Sensitivity labels in Search — property works, licensing gates it](gotchas/search/sensitivity-labels-in-search-and-licensing.md) — `InformationProtectionLabelId` returns a GUID only after AIP-enable + label + crawl; unlicensed tenants can't even create a label (`InvalidLicenseException`)
   - **powershell/**
     - [PS 5.1 `Get-Content` mangles UTF-8](gotchas/powershell/get-content-mangles-utf8.md) — ANSI default double-encodes diacritics; use `System.IO.File` + BOM-less `UTF8Encoding`
     - [Smart quotes are string delimiters](gotchas/powershell/smart-quotes-are-string-delimiters.md) — `„`/`"` parse like `"`; localized text in single-quoted here-strings
