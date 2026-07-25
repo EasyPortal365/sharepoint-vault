@@ -22,6 +22,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [File size needs `$expand=File`](gotchas/rest-api/file-size-needs-expand-file.md) — `File_x0020_Size` 400s in `$select`; use `File/Length`
     - [Create a modern page via REST (3-step)](gotchas/rest-api/create-modern-page-via-rest-sitepages.md) — `CanvasContent1` won't stick on create; create → SavePageAsDraft → Publish, canvas is JSON
     - [`$filter` on multi-value person fields 400s](gotchas/rest-api/filter-on-multivalue-person-field-400.md) — fall back to client filtering, but only on HTTP 400
+    - [App page properties are not in CanvasContent1](gotchas/rest-api/app-page-webpart-properties-not-in-canvascontent.md) — single-part app pages store web part config elsewhere; do not diagnose "not set" from page fields
     - [Silent fallbacks poison destructive writes](gotchas/rest-api/silent-fallbacks-poison-destructive-writes.md) — `catch → []` + delete-then-insert = data loss; strict and safe reads
     - [Check-then-insert races produce duplicate rows](gotchas/rest-api/check-then-insert-races-duplicate-rows.md) — no unique constraint + eventual consistency = double insert; dedup on read by version, never delete "lowest Id"
     - [Provisioning skips schema changes to existing fields](gotchas/rest-api/provisioning-skips-schema-changes-to-existing-fields.md) — create-if-missing never updates an existing field; a new Choice value in the manifest no-ops on deployed sites; reconcile with a post-hook verbose `SP.FieldChoice` MERGE
