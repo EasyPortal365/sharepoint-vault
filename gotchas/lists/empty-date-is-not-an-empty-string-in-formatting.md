@@ -7,9 +7,9 @@ last-reviewed: 2026-07-25
 
 # An empty Date field is not `''` — blank dates render as overdue
 
-> **Bottom line.** `@currentField == ''` does not detect an empty Date/Time field, so every item without a date falls through to the "past due" branch and lights up red — test emptiness with `[$FieldName.displayValue] == ''` instead.
+> **Bottom line.** `@currentField == ''` does not detect an empty Date/Time field, so every item without a date falls through to the "past due" branch and lights up red — test emptiness with `.displayValue`, written as `@currentField.displayValue` in column formatting and `[$FieldName.displayValue]` in row formatting.
 >
-> **Ve zkratce.** `@currentField == ''` u prázdného pole typu Datum neplatí, takže každá položka bez data propadne do větve „po termínu" a zčervená – prázdnotu testuj přes `[$FieldName.displayValue] == ''`.
+> **Ve zkratce.** `@currentField == ''` u prázdného pole typu Datum neplatí, takže každá položka bez data propadne do větve „po termínu" a zčervená – prázdnotu testuj přes `.displayValue`, a to zápisem `@currentField.displayValue` v column formattingu a `[$FieldName.displayValue]` v row formattingu.
 
 ## Symptom
 
@@ -32,27 +32,32 @@ This bites hardest on optional deadline columns, where "no date" is a normal, co
 
 ## Fix
 
-Test emptiness on `.displayValue`, which *is* reliably `''` when the field is empty:
+Test emptiness on `.displayValue`, which *is* reliably `''` when the field is empty — but **reach for it differently in column and row formatting**, because the two contexts don't accept the same syntax.
+
+**Column formatting** — use `@currentField.displayValue`:
 
 ```jsonc
-"iconName":   "=if([$ReviewDate.displayValue] == '', '', if(@now > @currentField, 'Warning', 'Accept'))",
-"txtContent": "=if([$ReviewDate.displayValue] == '', '—', toLocaleDateString(@currentField))",
+"iconName":   "=if(@currentField.displayValue == '', '', if(@now > @currentField, 'Warning', 'Accept'))",
+"txtContent": "=if(@currentField.displayValue == '', '—', toLocaleDateString(@currentField))",
 "style": {
-  "display": "=if([$ReviewDate.displayValue] == '', 'none', 'inline')"
+  "display": "=if(@currentField.displayValue == '', 'none', 'inline')"
 }
 ```
 
-The same guard belongs in row formatting, or blank-dated rows keep their red background:
+`[$ReviewDate.displayValue]` — the bracket form — **does not resolve here**, even for the column's own field. It yields no value, `== ''` is `false`, and you land back in the "overdue" branch with the bug apparently unfixed.
+
+**Row / view formatting** — the bracket form is the one that works, since there is no "current field":
 
 ```jsonc
 "additionalRowClass": "=if([$ReviewDate.displayValue] == '', '', if(@now > [$ReviewDate], 'sp-css-backgroundColor-errorBackground', ''))"
 ```
 
-Note that `[$Field.displayValue]` is used for the *emptiness test* while `@currentField` stays for the *date arithmetic* — `.displayValue` is a locale-formatted string and is useless for comparison.
+In both contexts `.displayValue` is only for the *emptiness test* — keep the raw field reference for the *date arithmetic*, because `.displayValue` is a locale-formatted string and useless for comparison.
 
 ## Notes
 
-- Reference the field by internal name (`[$ReviewDate.displayValue]`), not display name — a rename otherwise silently reverts the fix.
+- Bracket references use the **internal** name (`[$ReviewDate…]`), not the display name — a rename otherwise silently reverts the fix.
+- The column/row syntax split is the easy half-fix to miss: patch the row formatter alone and the rows stop turning red while the column keeps showing a warning icon, which reads like a caching problem rather than a second bug.
 - Verify with a deliberately blank item. A test set where every row has a date will never surface this, and it is invisible in the formatting pane's preview.
 - The same "empty is not `''`" caution applies to Person and Lookup fields, where `.displayValue`/`.title` are likewise the dependable emptiness tests.
 - In **view** formatting, mind that `<` and `&` can't be used at all — see [View formatting JSON can't contain `<` or `&`](view-formatter-rejects-angle-bracket-and-ampersand.md). The reversed comparisons above are written that way on purpose.
