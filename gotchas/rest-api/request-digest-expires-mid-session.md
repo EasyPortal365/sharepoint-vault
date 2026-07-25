@@ -1,8 +1,8 @@
 ---
 title: X-RequestDigest expires ~30 min after page load
 tags: [rest-api, spfx, writes]
-applies-to: SharePoint Online (REST writes from a long-lived page)
-last-reviewed: 2026-07-23
+applies-to: SharePoint Online (REST writes from a long-lived page; cross-site-collection writes)
+last-reviewed: 2026-07-25
 ---
 
 # X-RequestDigest expires ~30 min after page load
@@ -46,3 +46,4 @@ async function getDigest(spHttpClient: SPHttpClient, webUrl: string): Promise<st
 
 - The related failure-messaging trap: catching this 403 and rendering "check your permissions" sends the user chasing a permissions ghost. Surface validation/digest errors distinctly — or just always send a fresh digest so the state can't arise.
 - Same digest requirement applies to `validateUpdateListItem`, file uploads (`/Files/add`), and site-group membership changes (`/sitegroups(..)/users`).
+- **Cross-site writes need the *target* site's digest, and they fail immediately.** When you write to a different site collection than the one hosting your page (`{otherSite}/_api/web/lists(..)/fields`, etc.), the auto/page digest belongs to your *current* site and is invalid for the target — so the write 403s on the **very first attempt**, not after 30 minutes. Fetch the digest from `{otherSite}/_api/contextinfo` (the site you're writing to, not your own) and send it on that write. This is easy to misread as "the user lacks permission on the other site" even when they're a full-control owner there.
