@@ -87,6 +87,7 @@ The standard server-side companion of an SPFx solution — and its own set of tr
 
 | Gotcha | TL;DR |
 |---|---|
+| [Search ignores unknown managed properties — silently](search/unknown-managed-properties-fail-silently.md) | A fake property name returns HTTP 200 and full results — auto-created `*OWSCHCS`/`ows_*` are not queryable; probe with a deliberately invalid name, then map to `RefinableString` |
 | [ViewsX properties sort only by `ViewsLifeTime`](search/viewsx-properties-sort-only-by-viewslifetime.md) | Windowed view counts select fine but don't sort — one lifetime-sorted query, re-rank client-side |
 | [Compare SharePoint paths decode-first](search/compare-sharepoint-paths-decode-first.md) | Browser URLs are %-encoded, search `Path` is decoded — normalize both, then boundary-aware prefix match |
 | [Don't trust the parsed-file-types table: SPO does index `.md`](search/md-is-fulltext-indexed-despite-the-docs.md) | The official table omits Markdown, yet live SPO full-text indexes it — probe capability tables before you architect around them |

@@ -72,6 +72,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [Rate limit counts the capability probe](gotchas/azure-functions/rate-limit-counts-capability-probe-corporate-nat.md) — corporate NAT makes per-IP per-company; metered probes silently hide the feature
     - [A pinned Azure OpenAI model+version is a time bomb](gotchas/azure-functions/azure-openai-pinned-model-version-is-a-time-bomb.md) — "Deprecating" blocks NEW deployments well before retirement; resolve the newest GA version at deploy time, and match the deployment name to the model family
   - **search/**
+    - [Search ignores unknown managed properties](gotchas/search/unknown-managed-properties-fail-silently.md) — a made-up property name returns HTTP 200 with full results; auto-created Choice properties are not queryable; probe with a fake name, map to RefinableString
     - [ViewsX properties sort only by `ViewsLifeTime`](gotchas/search/viewsx-properties-sort-only-by-viewslifetime.md) — windowed counts select but don't sort; re-rank client-side
     - [Compare SharePoint paths decode-first](gotchas/search/compare-sharepoint-paths-decode-first.md) — normalize encoding + boundary-aware prefix, or matches never fire
     - [Don't trust the parsed-file-types table: SPO does index `.md`](gotchas/search/md-is-fulltext-indexed-despite-the-docs.md) — the official table omits Markdown, yet live SPO full-text indexes it; probe before architecting
