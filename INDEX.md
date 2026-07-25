@@ -34,6 +34,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [The 5,000-item view threshold](gotchas/lists/list-view-threshold-and-indexes.md) — it's scanned rows, not returned rows; index early, page always
     - [View formatting JSON can't contain `<` or `&`](gotchas/lists/view-formatter-rejects-angle-bracket-and-ampersand.md) — it's stored inside the view's schema XML; reverse the comparison and nest `if()`
     - [An empty Date field is not `''`](gotchas/lists/empty-date-is-not-an-empty-string-in-formatting.md) — blank dates fall through to "overdue" and turn rows red; test `.displayValue`
+    - [Gallery cards render from `tileProps`](gotchas/lists/gallery-cards-render-from-tileprops.md) — the documented top-level `formatter` is ignored; the card lives in a nested, undocumented `tileProps.formatter`
   - **spfx/**
     - [The ES2015 `lib` trap](gotchas/spfx/es2015-lib-forbidden-apis.md) — TS2550 on `padStart` & friends, and the safe equivalents
     - [SPA router hijacks anchor clicks](gotchas/spfx/spa-router-hijacks-anchor-clicks.md) — `<a href>` navigates before React `onClick` runs; use buttons for in-app actions
