@@ -32,6 +32,8 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [`fields/getbyinternalnameortitle` 400s for a missing field](gotchas/rest-api/getbyinternalnameortitle-400-not-404.md) — it throws `ArgumentException` (HTTP 400), not 404; an existence-check that hard-fails on non-404 breaks the "field missing → create" path
   - **lists/**
     - [The 5,000-item view threshold](gotchas/lists/list-view-threshold-and-indexes.md) — it's scanned rows, not returned rows; index early, page always
+    - [View formatting JSON can't contain `<` or `&`](gotchas/lists/view-formatter-rejects-angle-bracket-and-ampersand.md) — it's stored inside the view's schema XML; reverse the comparison and nest `if()`
+    - [An empty Date field is not `''`](gotchas/lists/empty-date-is-not-an-empty-string-in-formatting.md) — blank dates fall through to "overdue" and turn rows red; test `.displayValue`
   - **spfx/**
     - [The ES2015 `lib` trap](gotchas/spfx/es2015-lib-forbidden-apis.md) — TS2550 on `padStart` & friends, and the safe equivalents
     - [SPA router hijacks anchor clicks](gotchas/spfx/spa-router-hijacks-anchor-clicks.md) — `<a href>` navigates before React `onClick` runs; use buttons for in-app actions
