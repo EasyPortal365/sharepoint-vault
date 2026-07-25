@@ -49,6 +49,7 @@ Every article carries frontmatter with `tags` and `applies-to`, so repo search g
 | [Centered flex clips on mobile](spfx/centered-flex-clips-on-mobile.md) | `justify-content:center` + overflow = content cut off above the scroll — use flex "springs" instead |
 | [JSX attributes and smart quotes](spfx/jsx-attributes-and-smart-quotes.md) | Typographic quotes in `"…"` attributes = TS1003 — wrap localized strings as `{'…'}` |
 | [Portaled overlays miss your CSS reset](spfx/portaled-overlays-miss-your-css-reset.md) | `createPortal` to `body` escapes `.app-root` — fields inherit `content-box`, overflow by 26px, panel grows a scrollbar |
+| [`behavior: 'smooth'` is silently ignored inside a portaled overlay](spfx/smooth-scroll-ignored-in-portaled-overlay.md) | Clicking a table-of-contents entry in a modal does nothing — smooth scroll never runs over a scroll-locked `body`; set `scrollTop` directly |
 | [Auto-save must wait for async inputs](spfx/autosave-effect-must-wait-for-async-inputs.md) | An effect saving a value computed from async-loaded state fires on mount with empty inputs — gate on a loaded flag, read inputs strictly |
 
 ### app-catalog/

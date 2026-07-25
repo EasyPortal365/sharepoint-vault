@@ -2,7 +2,7 @@
 
 Every single thing in the vault, on one page. Section names link to folder READMEs; leaves link straight to the content.
 
-*Last updated: 2026-07-24*
+*Last updated: 2026-07-25*
 
 - 🧰 **[scripts/](scripts/)** — PowerShell scripts with comment-based help, read-only unless stated
   - **reporting/**
@@ -46,6 +46,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [Centered flex clips on mobile](gotchas/spfx/centered-flex-clips-on-mobile.md) — centering + overflow cuts content above the scroll; flex "springs"
     - [JSX attributes and smart quotes](gotchas/spfx/jsx-attributes-and-smart-quotes.md) — typographic quotes in attributes = TS1003; wrap as `{'…'}`
     - [Portaled overlays miss your CSS reset](gotchas/spfx/portaled-overlays-miss-your-css-reset.md) — portal to `body` escapes the scoped reset; `content-box` fields overflow and grow a scrollbar
+    - [`behavior: 'smooth'` is silently ignored inside a portaled overlay](gotchas/spfx/smooth-scroll-ignored-in-portaled-overlay.md) — jump-to-section does nothing in a modal/reader; drop the flag and set `scrollTop` directly
     - [Auto-save must wait for async inputs](gotchas/spfx/autosave-effect-must-wait-for-async-inputs.md) — computed-from-async auto-save fires on mount with empty inputs and persists garbage; gate on a loaded flag
     - [Mermaid clips node text with a web font](gotchas/spfx/mermaid-text-clipping-webfont.md) — measure-before-load (FOUT) sizes boxes for the fallback font; use a system font stack
     - [rules-of-hooks false-positive from a JSX `&&` chain](gotchas/spfx/rules-of-hooks-false-positive-from-jsx-chain.md) — a complex conditional in your render blames the *wrong* hook; extract it to a `const`
