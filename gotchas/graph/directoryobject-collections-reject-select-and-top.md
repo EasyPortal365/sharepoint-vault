@@ -2,7 +2,7 @@
 title: directoryObject collections reject `$select` of user fields — and `$top` is a separate, per-endpoint trap
 tags: [graph, odata, directory, paging, troubleshooting]
 applies-to: Microsoft Graph (v1.0 and beta)
-last-reviewed: 2026-07-24
+last-reviewed: 2026-07-25
 ---
 
 # directoryObject collections reject `$select` of user fields — and `$top` is a **separate**, per-endpoint trap
@@ -56,6 +56,24 @@ The two traps are independent, so verifying one tells you nothing about the othe
 | `/directoryRoles/{id}/members` → `/microsoft.graph.user` | ✅ | ✅ | **❌ 400** |
 
 So: **cast cures `$select` everywhere; `$top` is a property of the individual endpoint.** Do not generalise from one endpoint to its neighbours — run the probe.
+
+### `$top` has a third behaviour — and it's the dangerous one
+
+An endpoint can do one of three things with your page size, and only two of them are loud:
+
+| Behaviour | Endpoint seen doing it | How you find out |
+|---|---|---|
+| Honours it | `/groups/{id}/transitiveMembers` | Works |
+| Rejects it | `/directoryRoles/{id}/members` | `400 Request_UnsupportedQuery` |
+| **Silently ignores it** | **`/servicePrincipals`** | **Nothing. You get 100 rows + `@odata.nextLink` and no error at all.** |
+
+`GET /servicePrincipals?$select=id,displayName&$top=999` returns **100** items on a tenant that has more, with a `@odata.nextLink` you have to notice. Code that treats one page as the whole set builds an incomplete lookup map and then quietly mislabels data — in the case that produced this note, an app holding 19 sensitive delegated permissions rendered as a raw GUID instead of its name, precisely because it sat past the first page.
+
+**Rules that follow:**
+
+- **`$top` is a hint, never a guarantee.** The only contract is `@odata.nextLink` — always loop on it.
+- **Prefer a targeted lookup over enumerate-and-filter** when you need names for a handful of ids: `GET /servicePrincipals/{id}` per id (bounded concurrency) scales with *your* result count, not with tenant size. Listing everything to build a map is both slower and the thing that breaks at scale.
+- A missing-name fallback should be **visibly** degraded (show the raw id) — never silently drop the row, or the gap becomes invisible.
 
 ## Notes
 
