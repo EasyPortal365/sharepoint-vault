@@ -35,6 +35,8 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [View formatting JSON can't contain `<` or `&`](gotchas/lists/view-formatter-rejects-angle-bracket-and-ampersand.md) — it's stored inside the view's schema XML; reverse the comparison and nest `if()`
     - [An empty Date field is not `''`](gotchas/lists/empty-date-is-not-an-empty-string-in-formatting.md) — blank dates fall through to "overdue" and turn rows red; test `.displayValue`
     - [Gallery cards render from `tileProps`](gotchas/lists/gallery-cards-render-from-tileprops.md) — the documented top-level `formatter` is ignored; the card lives in a nested, undocumented `tileProps.formatter`
+    - [Non-web protocol in `href` drops the whole element](gotchas/lists/formatter-href-non-web-protocol-drops-element.md) — `ms-word:` in a formatter link removes the element with all children, per item, no error; open-in-app = `openContextMenu`
+    - [`length()` is for arrays, not strings](gotchas/lists/formatting-length-is-for-arrays-not-strings.md) — string length via `indexOf(str + '^', '^')`, or the expression collapses to empty
   - **spfx/**
     - [The ES2015 `lib` trap](gotchas/spfx/es2015-lib-forbidden-apis.md) — TS2550 on `padStart` & friends, and the safe equivalents
     - [SPA router hijacks anchor clicks](gotchas/spfx/spa-router-hijacks-anchor-clicks.md) — `<a href>` navigates before React `onClick` runs; use buttons for in-app actions
@@ -87,6 +89,8 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [PS 5.1 `Get-Content` mangles UTF-8](gotchas/powershell/get-content-mangles-utf8.md) — ANSI default double-encodes diacritics; use `System.IO.File` + BOM-less `UTF8Encoding`
     - [Smart quotes are string delimiters](gotchas/powershell/smart-quotes-are-string-delimiters.md) — `„`/`"` parse like `"`; localized text in single-quoted here-strings
     - [`'Stop'` + a native stderr warning = terminating error](gotchas/powershell/erroractionpreference-stop-native-stderr.md) — `$ErrorActionPreference='Stop'` escalates a benign stderr warning (exit 0) to a script-killer; wrap in `'Continue'`, judge by `$LASTEXITCODE`
+    - [`Get-PnPList -Identity` rejects server-relative URLs](gotchas/powershell/get-pnplist-identity-rejects-server-relative-url.md) — title/GUID/web-relative only; `/sites/team/shared` fails as "List does not exist"
+    - [PS7 `[ref]` arguments break Office COM calls](gotchas/powershell/ps7-ref-arguments-break-com-calls.md) — `SaveAs2([ref]$x)` dies on "psobject to Object"; pass values directly
   - **security/**
     - [Stored XSS via list content](gotchas/security/stored-xss-from-list-content.md) — React doesn't block `javascript:` hrefs; allowlist `safeHref` with C0-strip at every sink
     - [Field hiding is not a permission](gotchas/security/field-hiding-is-not-a-permission.md) — role-based UI field hiding is cosmetic; Read on the list = REST/Export/other web parts see it; confidentiality needs a separate list, item perms, or a server tier

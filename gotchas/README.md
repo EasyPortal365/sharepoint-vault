@@ -36,6 +36,8 @@ Every article carries frontmatter with `tags` and `applies-to`, so repo search g
 | [View formatting JSON can't contain `<` or `&`](lists/view-formatter-rejects-angle-bracket-and-ampersand.md) | The formatter lives inside the view's schema XML — `XmlException` on save via PnP, CSOM *and* REST; reverse the comparison, nest `if()` instead of `&&` |
 | [An empty Date field is not `''`](lists/empty-date-is-not-an-empty-string-in-formatting.md) | `@currentField == ''` misses blank dates, so they coerce to the epoch and render as overdue — test `.displayValue`, and mind that column and row formatting want different syntax |
 | [Gallery cards render from `tileProps`](lists/gallery-cards-render-from-tileprops.md) | The documented top-level `formatter` is ignored in a library's Gallery view — the card lives in an undocumented nested `tileProps.formatter`, and `ViewType2 = "TILES"` is what switches the layout |
+| [Non-web protocol in `href` drops the whole element](lists/formatter-href-non-web-protocol-drops-element.md) | An `ms-word:` link doesn't render as broken — the element vanishes with all children, per item, no error; open-in-app belongs to `customRowAction: "openContextMenu"` |
+| [`length()` is for arrays, not strings](lists/formatting-length-is-for-arrays-not-strings.md) | On a string the arithmetic collapses and `substring` renders empty — get string length as `indexOf(str + '^', '^')` |
 
 ### spfx/
 
@@ -106,6 +108,8 @@ The standard server-side companion of an SPFx solution — and its own set of tr
 | [PS 5.1 `Get-Content` mangles UTF-8](powershell/get-content-mangles-utf8.md) | ANSI-default reads double-encode diacritics (`á`→`Ã¡`) — go through `System.IO.File` with BOM-less `UTF8Encoding` |
 | [Smart quotes are string delimiters](powershell/smart-quotes-are-string-delimiters.md) | PS parses `„` and `"` like ASCII `"` — localized text belongs in single-quoted here-strings |
 | [`'Stop'` + a native stderr warning = terminating error](powershell/erroractionpreference-stop-native-stderr.md) | `$ErrorActionPreference='Stop'` escalates a benign stderr warning (exit 0) to a script-killer — wrap in `'Continue'`, judge by `$LASTEXITCODE` |
+| [`Get-PnPList -Identity` rejects server-relative URLs](powershell/get-pnplist-identity-rejects-server-relative-url.md) | Resolves by title, GUID, or web-relative URL only — `/sites/team/shared` fails as "List does not exist"; prefer the GUID |
+| [PS7 `[ref]` arguments break Office COM calls](powershell/ps7-ref-arguments-break-com-calls.md) | The VBA-style `SaveAs2([ref]$path, [ref]$fmt)` dies with "psobject to Object" on PowerShell 7 — pass plain values positionally |
 
 ### security/
 
