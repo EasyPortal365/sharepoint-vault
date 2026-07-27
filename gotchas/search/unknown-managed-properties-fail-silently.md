@@ -70,13 +70,13 @@ const fake = await probe('EP365DefinitelyNotAProperty123');
 
 1. SharePoint admin center → **More features → Search → Manage Search Schema**.
 2. Find `ows_<YourColumn>` under Crawled Properties (it appears only after the first crawl that saw the column).
-3. Edit a `RefinableString00`–`RefinableString49` managed property → **Add a Mapping** → pick the crawled property.
+3. Edit one of the pre-built `RefinableString`NN managed properties → **Add a Mapping** → pick the crawled property. (Microsoft documents the pool as `RefinableString00`–`RefinableString99`; check what your tenant actually offers in the schema list rather than trusting a number.)
 4. Trigger a reindex of the site/library (Site settings → Search and offline availability → Reindex site) and wait for the crawl.
 5. Query `RefinableString07:Internal` instead of the auto-generated name.
 
 ## Notes
 
 - **This is a product decision you have to design around, not a bug to work around.** Requiring every customer to hand-map a schema entry is a real deployment cost — if your feature must work out of the box, get the data from the list REST API per site/library instead, and accept that it doesn't scale to a whole tenant in one query.
-- The mapping is **tenant-wide** and the pool of `Refinable*` slots is finite (50 strings, plus dates/numbers). Treat them as a shared resource and write down which slot you took; a second product silently reusing your slot produces mixed results.
+- The mapping is **tenant-wide** and the pool of `Refinable*` slots is finite (strings, plus dates, integers and decimals in their own smaller pools). Treat them as a shared resource and write down which slot you took; a second product silently reusing your slot produces mixed results.
 - `RefinableString00:anything` returning 0 is *not* proof of anything either — an unmapped refinable exists but is empty. Same control-probe rule applies.
 - The failure mode is worst for **counting** features ("how much content is classified?"), because zero is a plausible answer. Whenever a number could legitimately be zero, prove your query works on data you know exists before trusting the zero.
