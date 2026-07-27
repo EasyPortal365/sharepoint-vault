@@ -2,7 +2,7 @@
 title: "Portaled overlays sit outside your CSS reset — hello, phantom scrollbar"
 tags: [spfx, react, css, ux]
 applies-to: SharePoint Online (SPFx web parts)
-last-reviewed: 2026-07-27
+last-reviewed: 2026-07-28
 ---
 
 # Portaled overlays sit outside your CSS reset — hello, phantom scrollbar
@@ -79,6 +79,7 @@ return ReactDOM.createPortal(node, document.body);
 Two extra safeguards worth the keystrokes:
 
 - **Give tokens literal fallbacks** in the package — `var(--app-text, #002163)`. Then a forgotten class degrades to *slightly off-brand*, not *unstyled*.
+- **If your apps disagree on token names, chain both.** A fleet that grew over time often has two conventions — long (`--app-font-mono`) in newer apps, short (`--app-fm`) in older ones. A shared component that reads only one renders unstyled in half of them, *even inside the app root*, where no portal is involved: `var(--app-font-mono, var(--app-fm, monospace))`. Table headers and paginators are the usual victims, because nobody screenshots them.
 - **When migrating a component, ask: does it render inside the app root?** If not, the move is not a pure refactor — the CSS context changes, and nothing in your toolchain will say so.
 
 ## Notes
