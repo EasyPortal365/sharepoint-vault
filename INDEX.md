@@ -29,6 +29,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [`X-RequestDigest` expires mid-session](gotchas/rest-api/request-digest-expires-mid-session.md) — writes 403 "security validation is invalid" on a long-open page; the page digest times out (~30 min), fetch a fresh one from `/_api/contextinfo` per write
     - [Don't cache a throttled permission probe](gotchas/rest-api/dont-cache-a-throttled-permission-probe.md) — a 429/403 on `currentuser/groups` resolves to the lowest role; cache it and the user is stuck read-only for the TTL; only persist a confirmed (200) result
     - [There is no `sitegroups/removebyname`](gotchas/rest-api/delete-group-by-name-no-removebyname.md) — `GroupCollection` has `GetByName` but only `RemoveById`; resolve the Id first, then delete; verify with `getbyname` → 404
+    - [Telling a list's own columns from inherited ones](gotchas/rest-api/which-columns-are-the-librarys-own.md) — `Hidden` is not enough; `FromBaseType` + `CanBeDeleted` are what separate the list's own columns
     - [`fields/getbyinternalnameortitle` 400s for a missing field](gotchas/rest-api/getbyinternalnameortitle-400-not-404.md) — it throws `ArgumentException` (HTTP 400), not 404; an existence-check that hard-fails on non-404 breaks the "field missing → create" path
   - **lists/**
     - [The 5,000-item view threshold](gotchas/lists/list-view-threshold-and-indexes.md) — it's scanned rows, not returned rows; index early, page always
