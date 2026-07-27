@@ -2,7 +2,7 @@
 
 Every single thing in the vault, on one page. Section names link to folder READMEs; leaves link straight to the content.
 
-*Last updated: 2026-07-26*
+*Last updated: 2026-07-27*
 
 - 🧰 **[scripts/](scripts/)** — PowerShell scripts with comment-based help, read-only unless stated
   - **reporting/**
@@ -59,6 +59,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [rules-of-hooks false-positive from a JSX `&&` chain](gotchas/spfx/rules-of-hooks-false-positive-from-jsx-chain.md) — a complex conditional in your render blames the *wrong* hook; extract it to a `const`
     - [A cached dynamic `import()` caches the rejection too](gotchas/spfx/cached-rejected-dynamic-import.md) — one chunk-load blip poisons the module-level promise for the whole session; reset it to null in `.catch` so the next call retries
     - [`jest.mock()` doesn't hoist under Heft](gotchas/spfx/jest-mock-doesnt-hoist-in-heft.md) — tests run over pre-compiled `lib-commonjs` without Babel, so the mock lands after `require`; use `moduleNameMapper` (and why only *some* sp-http suites die on `@msinternal/ecs-flight`)
+    - [Application Customizer runs again in dialog iframes](gotchas/spfx/application-customizer-runs-in-dialog-iframe.md) — a floating button rendered twice, the copy pinned to the dialog's corner; refuse nested browsing contexts before anything else
   - **app-catalog/**
     - [Three `.sppkg` packaging pitfalls](gotchas/app-catalog/sppkg-packaging-pitfalls.md) — ASCII-only solution name, icon exactly 96×96, Publisher column is AppSource-only
   - **graph/**
