@@ -84,6 +84,7 @@ Every article carries frontmatter with `tags` and `applies-to`, so repo search g
 | [az CLI can't grant Sites.Selected](graph/az-cli-cannot-grant-sites-selected.md) | `sites/{id}/permissions` needs `Sites.FullControl.All`, which the CLI client can't request (`AADSTS65002`) — use the Graph PowerShell SDK |
 | [Re-read fresh before bulk-removing members](graph/reread-fresh-before-bulk-membership-removal.md) | The roster you showed is a preview, not truth — re-read strict & fresh before a `removeMember` loop; read error aborts, a vanished member is an idempotent skip, guard each delete |
 | [directoryObject collections reject `$select` — and `$top` separately](graph/directoryobject-collections-reject-select-and-top.md) | `$select` of user fields on `/members`/`/memberOf`/`/transitiveMembers` = 400; an OData cast cures that everywhere but `$top` stays refused per-endpoint — probe both, they're independent |
+| [`$filter` on group members needs `$count=true` too](graph/filter-on-group-members-needs-count-too.md) | `ConsistencyLevel: eventual` alone still 400s on navigation collections — send the pair, or read unfiltered and decide client-side; a best-effort catch hides it as a fake outage |
 
 ### azure-functions/
 

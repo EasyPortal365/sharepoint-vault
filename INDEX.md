@@ -2,7 +2,7 @@
 
 Every single thing in the vault, on one page. Section names link to folder READMEs; leaves link straight to the content.
 
-*Last updated: 2026-07-28*
+*Last updated: 2026-07-26*
 
 - 🧰 **[scripts/](scripts/)** — PowerShell scripts with comment-based help, read-only unless stated
   - **reporting/**
@@ -78,6 +78,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [`MSGraphClient` calls bypass DevTools Network](gotchas/graph/msgraphclient-calls-bypass-devtools-network.md) — SPFx Graph traffic invisible in Network; diagnose via `performance` entries, `currentuser`, DOM, user's response
     - [Re-read fresh before bulk-removing members](gotchas/graph/reread-fresh-before-bulk-membership-removal.md) — the roster you showed is a preview; strict fresh re-read before a `removeMember` loop, read-error aborts, vanished member = idempotent skip
     - [directoryObject collections reject `$select` — and `$top` separately](gotchas/graph/directoryobject-collections-reject-select-and-top.md) — user fields on `/members`/`/transitiveMembers` = 400; OData cast cures `$select` everywhere, `$top` stays per-endpoint (probe both)
+    - [`$filter` on group members needs `$count=true` too](gotchas/graph/filter-on-group-members-needs-count-too.md) — the header is only half the recipe; a permanently failing call hid behind a best-effort catch as a "temporary outage"
   - **azure-functions/**
     - [Windows zip deploy breaks the running app](gotchas/azure-functions/windows-zip-deploy-breaks-running-app.md) — live `wwwroot` file locks → whole app 503; re-run the deploy, prevent with `WEBSITE_RUN_FROM_PACKAGE=1`
     - [Rate limit counts the capability probe](gotchas/azure-functions/rate-limit-counts-capability-probe-corporate-nat.md) — corporate NAT makes per-IP per-company; metered probes silently hide the feature
