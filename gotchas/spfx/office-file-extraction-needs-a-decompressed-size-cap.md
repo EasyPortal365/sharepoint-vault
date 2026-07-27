@@ -2,7 +2,7 @@
 title: A file-size limit doesn't stop a zip bomb — Office extraction needs a decompressed cap
 tags: [spfx, files, security, xlsx, docx, pptx, dos]
 applies-to: SPFx / browser-side Office extraction (SheetJS, JSZip, mammoth)
-last-reviewed: 2026-07-18
+last-reviewed: 2026-07-27
 ---
 
 # A file-size limit doesn't stop a zip bomb — Office extraction needs a decompressed cap
@@ -67,3 +67,42 @@ Reasonable caps for an assistant context: ~2M cells for xlsx, ~12M chars of prod
   known zip-bomb sample) to trigger it.
 - The same extractor is often reused for **fetched** library files, so the attack surface isn't just
   user uploads — anything the code will parse counts.
+
+## Follow-up (2026-07-27): check the cap *before* materializing, from ZIP metadata
+
+The first version of this fix still tested the cap **after** producing the string:
+
+```js
+const xml = await zip.files[path].async('string');   // ← 8 MB pptx becomes a 1.5 GB string HERE
+if (xml.length > MAX_EXTRACT_CHARS) throw new Error(ZIP_BOMB_MSG);   // too late
+```
+
+The tab dies on the line above the check, so the guard never runs. JSZip 3 exposes the declared
+uncompressed size per entry after `loadAsync`, so read it first:
+
+```js
+/** Declared uncompressed size of a ZIP entry, or null when unavailable. */
+function entrySize(file) {
+  const d = file && file._data;              // internal, but stable across JSZip 3.x
+  const n = d && d.uncompressedSize;
+  return typeof n === 'number' ? n : null;   // null → fall back to previous behaviour
+}
+
+const size = entrySize(zip.files[path]);
+if (size !== null && size > MAX_DECOMPRESSED_BYTES) throw new Error(ZIP_BOMB_MSG);
+const xml = await zip.files[path].async('string');
+```
+
+Verified against JSZip 3.10.1: a 5 MB entry reports `5242891`, a tiny one `4`; directory entries
+report `undefined` (harmless — they never match an `.xml` path filter). Because it is an internal
+field, treat `null` as "unknown" and keep the old post-hoc check as a second line of defence rather
+than deleting it.
+
+Two extras from the same review:
+
+- **Sum the entries, don't just check each one.** A deck with 200 slides of 40 MB each passes any
+  per-entry cap. Track a running total across the entries you extract.
+- **SheetJS: bound the parse, not only the output** — `xlsx.read(buf, { type: 'array', sheetRows: N })`
+  stops parsing after N rows. And if the limit actually bites, *say so* in the returned text; a
+  silently truncated spreadsheet is worse than a refusal, because the answer built on it looks
+  complete.
