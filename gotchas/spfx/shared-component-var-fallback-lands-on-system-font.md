@@ -2,7 +2,7 @@
 title: "A shared component's var() fallback chain is only as good as its last link"
 tags: [spfx, react, css, design-system]
 applies-to: SharePoint Online (SPFx web parts sharing a component library)
-last-reviewed: 2026-07-26
+last-reviewed: 2026-07-28
 ---
 
 # A shared component's var() fallback chain is only as good as its last link

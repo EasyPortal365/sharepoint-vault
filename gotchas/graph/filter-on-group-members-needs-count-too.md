@@ -2,7 +2,7 @@
 title: "$filter on /groups/{id}/members needs $count=true, not just ConsistencyLevel"
 tags: [graph-api, groups, odata]
 applies-to: Microsoft Graph v1.0 (delegated and app-only)
-last-reviewed: 2026-07-26
+last-reviewed: 2026-07-28
 ---
 
 # `$filter` on `/groups/{id}/members` needs `$count=true`, not just `ConsistencyLevel`
