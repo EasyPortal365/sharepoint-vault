@@ -59,6 +59,7 @@ Every article carries frontmatter with `tags` and `applies-to`, so repo search g
 | [`behavior: 'smooth'` is silently ignored inside a portaled overlay](spfx/smooth-scroll-ignored-in-portaled-overlay.md) | Clicking a table-of-contents entry in a modal does nothing — smooth scroll never runs over a scroll-locked `body`; set `scrollTop` directly |
 | [Auto-save must wait for async inputs](spfx/autosave-effect-must-wait-for-async-inputs.md) | An effect saving a value computed from async-loaded state fires on mount with empty inputs — gate on a loaded flag, read inputs strictly |
 | [Application Customizer runs again in dialog iframes](spfx/application-customizer-runs-in-dialog-iframe.md) | Your floating button shows up twice — the copy is pinned to the dialog's corner because the dialog *is* its viewport; refuse `window.self !== window.top` |
+| [Application Customizer's floating UI disappears on SPA navigation](spfx/application-customizer-content-disappears-on-spa-navigation.md) | The button vanishes as you click around the site — `onInit` doesn't re-run on SPA nav and `visibilitychange` never fires; re-render on `navigatedEvent` |
 
 ### app-catalog/
 
