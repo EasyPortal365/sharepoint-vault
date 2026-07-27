@@ -34,7 +34,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [The 5,000-item view threshold](gotchas/lists/list-view-threshold-and-indexes.md) — it's scanned rows, not returned rows; index early, page always
     - [View formatting JSON can't contain `<` or `&`](gotchas/lists/view-formatter-rejects-angle-bracket-and-ampersand.md) — it's stored inside the view's schema XML; reverse the comparison and nest `if()`
     - [An empty Date field is not `''`](gotchas/lists/empty-date-is-not-an-empty-string-in-formatting.md) — blank dates fall through to "overdue" and turn rows red; test `.displayValue`
-    - [Gallery cards render from `tileProps`](gotchas/lists/gallery-cards-render-from-tileprops.md) — the documented top-level `formatter` is ignored; the card lives in a nested, undocumented `tileProps.formatter`
+    - [Gallery cards render from `tileProps`](gotchas/lists/gallery-cards-render-from-tileprops.md) — the documented top-level `formatter` is ignored; the card lives in a nested, undocumented `tileProps.formatter`. Layout and card must go in two separate writes (PnP or REST/SPFx)
     - [Non-web protocol in `href` drops the whole element](gotchas/lists/formatter-href-non-web-protocol-drops-element.md) — `ms-word:` in a formatter link removes the element with all children, per item, no error; open-in-app = `openContextMenu`
     - [`length()` is for arrays, not strings](gotchas/lists/formatting-length-is-for-arrays-not-strings.md) — string length via `indexOf(str + '^', '^')`, or the expression collapses to empty
   - **spfx/**

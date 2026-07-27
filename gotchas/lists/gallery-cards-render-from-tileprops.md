@@ -1,8 +1,8 @@
 ---
 title: Gallery cards render from `tileProps`, not from `formatter`
-tags: [lists, document-library, view-formatting, gallery, pnp-powershell]
-applies-to: SharePoint Online
-last-reviewed: 2026-07-25
+tags: [lists, document-library, view-formatting, gallery, pnp-powershell, rest-api, spfx]
+applies-to: SharePoint Online (PnP PowerShell and plain REST / SPFx)
+last-reviewed: 2026-07-28
 ---
 
 # Gallery cards render from `tileProps`, not from `formatter`
@@ -46,7 +46,7 @@ The second is that the card design lives one level deeper than the schema sugges
 
 ## Fix
 
-Set the layout and put the design in `tileProps.formatter`:
+Set the layout and put the design in `tileProps.formatter` — **in two separate calls, layout first**:
 
 ```powershell
 # 1) layout - the formatter alone will not switch a view to gallery
@@ -55,6 +55,29 @@ Set-PnPView -List $listId -Identity 'Gallery' -Values @{ ViewType2 = 'TILES' }
 # 2) the card itself
 Set-PnPView -List $listId -Identity 'Gallery' -Values @{ CustomFormatter = $json }
 ```
+
+**Why two calls and not one.** Switching a view to `TILES` makes SharePoint install *its own* default tile template alongside the layout change. Send `ViewType2` and `CustomFormatter` in the same request and the card you just wrote is the one that loses — you get the stock card again, with no error, which looks exactly like the `tileProps` mistake above and sends you back to debugging JSON that was fine. Order matters too: layout first, card second.
+
+### Same thing over plain REST (SPFx, no PnP)
+
+`ViewType2` is writable over REST as well, which is not obvious — it appears in no request sample and reads like a server-computed property. Verified live from an SPFx web part with `SPHttpClient` as a delegated (non-admin-consent) user:
+
+```http
+PATCH /_api/web/lists(guid'<listId>')/views(guid'<viewId>')
+Content-Type: application/json;odata=nometadata
+X-RequestDigest: <fresh digest>
+IF-MATCH: *
+
+{ "@odata.type": "#SP.View", "TabularView": true, "ViewType2": "TILES" }
+```
+
+Then a **second** `PATCH` with `{ "@odata.type": "#SP.View", "CustomFormatter": "<json string>" }`.
+
+- Keep `TabularView: true`. The native gallery has it set; with `false` SharePoint ignores the tile formatter and falls back to the stock card — the same silent failure by a third route.
+- `CustomFormatter` is a **string** containing the JSON, not a nested object.
+- Send it `odata=nometadata` with `@odata.type`, not `odata=verbose` with `__metadata` — `SPHttpClient.configurations.v1` adds `odata-version: 4.0`, which a verbose body then collides with (HTTP 400). See [`metadata-body-requires-verbose.md`](../rest-api/metadata-body-requires-verbose.md).
+- Creating the view from scratch works the same way: `POST /views` with `{ "@odata.type": "#SP.View", "Title": …, "PersonalView": false, "RowLimit": …, "ViewQuery": … }`, then set columns via `POST …/views(guid'…')/viewfields/removeallviewfields` followed by one `POST …/viewfields/addviewfield('<InternalName>')` per column. Those two endpoints take **no body** — send the digest and `Accept` only; an empty JSON body with a `Content-Type` is rejected by some farms.
+- Wrap the `ViewType2` PATCH in its own error branch. If it is refused, the row-level settings you sent in a combined call would go down with it; on its own, the view degrades to a plain list and everything else still applies.
 
 Build the card on the product's own structure rather than from scratch — the classes carry the click target, hover, selection and keyboard behaviour, and `filepreview` gives a real document thumbnail that an `<img>` pointed at `getpreview.ashx` will not match:
 
