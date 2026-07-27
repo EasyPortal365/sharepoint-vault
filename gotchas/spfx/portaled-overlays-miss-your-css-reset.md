@@ -2,7 +2,7 @@
 title: "Portaled overlays sit outside your CSS reset — hello, phantom scrollbar"
 tags: [spfx, react, css, ux]
 applies-to: SharePoint Online (SPFx web parts)
-last-reviewed: 2026-07-16
+last-reviewed: 2026-07-27
 ---
 
 # Portaled overlays sit outside your CSS reset — hello, phantom scrollbar
@@ -57,6 +57,29 @@ return ReactDOM.createPortal(node, document.body);
 ```
 
 One rule fixes every field in every panel, present and future.
+
+## The sequel: extracting the overlay into a shared package
+
+The wrapper class is easy to keep while the component lives in your app — it is right there in the JSX. It gets **silently dropped the moment you move that component into a shared UI package**, because the package has no idea your tokens are scoped to `.app-root`.
+
+That is exactly how it bit us twice in a row. Two apps migrated their ⌘K command palette into a shared `ui` package. TypeScript, ESLint, the build and the unit tests were all green — and the palette shipped rendering in the **browser's default serif font**, because `var(--app-font-text)` resolved to nothing outside the app root. Nobody noticed for three releases; it took a screenshot from a human.
+
+**Rule:** any shared component that portals to `body` must accept the app's scope as a prop.
+
+```tsx
+// package: accept it
+export interface ICommandPaletteProps { /* … */ portalClassName?: string }
+const node = <div className={portalClassName}>…</div>;
+return ReactDOM.createPortal(node, document.body);
+
+// app: pass your scope in
+<CommandPalette portalClassName="app-portal" … />
+```
+
+Two extra safeguards worth the keystrokes:
+
+- **Give tokens literal fallbacks** in the package — `var(--app-text, #002163)`. Then a forgotten class degrades to *slightly off-brand*, not *unstyled*.
+- **When migrating a component, ask: does it render inside the app root?** If not, the move is not a pure refactor — the CSS context changes, and nothing in your toolchain will say so.
 
 ## Notes
 
