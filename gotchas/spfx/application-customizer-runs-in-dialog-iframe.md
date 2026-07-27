@@ -1,8 +1,8 @@
 ---
 title: "Your Application Customizer runs again inside SharePoint dialog iframes"
-tags: [spfx, application-customizer, extensions, dialogs, iframe, ui]
+tags: [spfx, application-customizer, extensions, dialogs, iframe, ui, mutationobserver]
 applies-to: SharePoint Online (SPFx Application Customizer / any extension rendering floating UI)
-last-reviewed: 2026-07-27
+last-reviewed: 2026-07-28
 ---
 
 # Your Application Customizer runs again inside SharePoint dialog iframes
@@ -94,3 +94,55 @@ private async _tryRender(): Promise<void> {
 1. Open a page of the site where the extension is deployed. One floating button.
 2. Go to **Site contents → New → Document library** (any dialog that shows its own scrollbar is a good candidate). Still one button.
 3. In DevTools, check the frame dropdown in the console: switch to the dialog's frame and run `document.querySelectorAll('[id="<your-container-id>"]').length` — expect `0` there and `1` in `top`.
+
+## Related trap (2026-07-28): a floating element needs an *un*-render path, and a "definitive no"
+
+Two more ways the same tenant-wide customizer misbehaves once you add resilience to it. Both were
+found by auditing our own fix, so they are worth stating plainly.
+
+### 1. Only rendering is not enough — hide conditions must be re-evaluated
+
+Modern SharePoint is a SPA: `onInit` runs once, `navigatedEvent` fires on every in-page
+navigation. Teams usually add a re-render there (the element otherwise disappears when SharePoint
+prunes unknown `body` children). But if you only ever *render*, the reverse never happens: once the
+button exists, conditions like "this page hosts the full app", "the feature was switched off", or
+"this is the app's own page" are never checked again, so the button stays parked on top of the app
+forever.
+
+Give the class an `_unrender()` (unmount + `removeChild` + clear timers) and call it from **every**
+hide branch, plus pass a `force` flag on navigation so the render path re-evaluates even when the
+container already exists:
+
+```ts
+private async tryRender(force?: boolean): Promise<void> {
+  if (this.rendering) return;                                  // sync lock across the whole async path
+  if (!force && document.getElementById(ID)) return;           // nothing to do
+  this.rendering = true;
+  try {
+    const outcome = await this.renderOnce();                   // 'shown' | 'hidden-final' | 'hidden-retry'
+    …
+  } finally { this.rendering = false; }
+}
+```
+
+### 2. A `MutationObserver` on `body` needs a *definitive* negative, or it hammers the tenant
+
+The usual watchdog is `new MutationObserver(...).observe(document.body, {childList: true})` — cheap,
+because it only sees direct children. Except SharePoint adds and removes direct `body` children
+constantly (callouts, tooltips, layers), so the callback fires all day. If the callback re-runs a
+configuration read whenever the container is missing, then on every site where your extension is
+deployed tenant-wide but the app is *not* configured (list 404) or the feature is off, you generate
+a request every throttle window, per user, for the whole session.
+
+Split the outcome three ways:
+
+- **`shown`** → keep the observer connected.
+- **`hidden-final`** (feature off, no config row, app's own page, iframe, wrong host) → set a
+  `skipUntilNavigation` flag and **`disconnect()`** the observer. Re-arm it on `navigatedEvent`.
+- **`hidden-retry`** (HTTP 429/5xx — the answer may change in a second) → keep the observer, do
+  **not** latch the flag. Treating a transient error as definitive is the mirror image of the
+  `catch → default` trap: the user loses the feature for the rest of the page with no trace.
+
+And do not latch on the cheap synchronous check either: `navigatedEvent` can fire *before*
+SharePoint unmounts the previous page's web part, so a "the full app is on this page" marker may
+still be in the DOM while you are on your way *out* of that page.
