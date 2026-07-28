@@ -33,6 +33,7 @@ Every article carries frontmatter with `tags` and `applies-to`, so repo search g
 
 | Gotcha | TL;DR |
 |---|---|
+| [Seed idempotency must key on the item](lists/seed-idempotency-must-key-on-the-item.md) | A per-SET presence check re-inserts the whole block when another path creates it — key on set+value, and ship a cleanup |
 | [The 5,000-item view threshold](lists/list-view-threshold-and-indexes.md) | It's about scanned rows, not returned rows — index early, filter indexed-first, page always |
 | [View formatting JSON can't contain `<` or `&`](lists/view-formatter-rejects-angle-bracket-and-ampersand.md) | The formatter lives inside the view's schema XML — `XmlException` on save via PnP, CSOM *and* REST; reverse the comparison, nest `if()` instead of `&&` |
 | [An empty Date field is not `''`](lists/empty-date-is-not-an-empty-string-in-formatting.md) | `@currentField == ''` misses blank dates, so they coerce to the epoch and render as overdue — test `.displayValue`, and mind that column and row formatting want different syntax |
