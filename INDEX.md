@@ -22,6 +22,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [File size needs `$expand=File`](gotchas/rest-api/file-size-needs-expand-file.md) — `File_x0020_Size` 400s in `$select`; use `File/Length`
     - [Create a modern page via REST (3-step)](gotchas/rest-api/create-modern-page-via-rest-sitepages.md) — `CanvasContent1` won't stick on create; create → SavePageAsDraft → Publish, canvas is JSON
     - [`$filter` on multi-value person fields 400s](gotchas/rest-api/filter-on-multivalue-person-field-400.md) — fall back to client filtering, but only on HTTP 400
+    - [`GetStorageEntity` returns 200 for a missing key](gotchas/rest-api/getstorageentity-returns-200-for-missing-key.md) — unset tenant property answers `200 {"odata.null":true}`; "unset" and "failed" are indistinguishable by status code, and writing needs Tenant Admin
     - [App page properties are not in CanvasContent1](gotchas/rest-api/app-page-webpart-properties-not-in-canvascontent.md) — single-part app pages store web part config elsewhere; do not diagnose "not set" from page fields
     - [Silent fallbacks poison destructive writes](gotchas/rest-api/silent-fallbacks-poison-destructive-writes.md) — `catch → []` + delete-then-insert = data loss; strict and safe reads (+ a settings read that hides its failure lets a full-object save overwrite the config with defaults)
     - [Check-then-insert races produce duplicate rows](gotchas/rest-api/check-then-insert-races-duplicate-rows.md) — no unique constraint + eventual consistency = double insert; dedup on read by version, never delete "lowest Id"
@@ -49,6 +50,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [`SP.WebProxy` is add-in-only](gotchas/spfx/webproxy-is-add-in-only.md) — no SharePoint-native CORS proxy for SPFx; the 403 hides inside an HTTP 200
     - [Teams personal app needs global deploy](gotchas/spfx/teams-personal-app-needs-global-deploy.md) — `skipFeatureDeployment: true` + "all sites"; the `teams/` icon-folder convention
     - [Teams mobile webview renders desktop width](gotchas/spfx/teams-mobile-webview-renders-desktop-width.md) — ~980px layout; fix the viewport meta in Teams first
+    - [CDN-hosted bundle still needs a new `.sppkg`](gotchas/spfx/cdn-hosted-bundle-still-needs-new-sppkg.md) — `includeClientSideAssets: false` moves assets, not versioning; the manifest pins a content-hashed filename, so old packages never request the new bundle
     - [Office file extraction needs a decompressed-size cap](gotchas/spfx/office-file-extraction-needs-a-decompressed-size-cap.md) — an upload-size limit only bounds the compressed archive; a crafted `!ref` still OOMs the tab
     - [Shared package's dynamic import ships inlined](gotchas/spfx/shared-package-dynamic-import-inlines-with-commonjs.md) — a linked TS package built with module:commonjs turns import() into require(), so webpack can't lazy-chunk the lib into a separate file; set the package's module:esnext
     - [Centered flex clips on mobile](gotchas/spfx/centered-flex-clips-on-mobile.md) — centering + overflow cuts content above the scroll; flex "springs"
@@ -126,6 +128,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
   - **rest/**
     - [Read all items from a large list — paging done right](snippets/rest/get-all-list-items-paged.md) — `$top` caps at 5,000, `$skip` is ignored; follow `odata.nextLink`
     - [Find externally / anonymously shared content via Search](snippets/rest/find-externally-shared-content-search.md) — `ViewableByExternalUsers:1` is a queryable managed property; oversharing audit in one line, values are strings not booleans
+    - [Check another user's effective permissions](snippets/rest/check-another-users-effective-permissions.md) — `getusereffectivepermissions` resolves the mask for any user from your own session; `Open` is `Low` bit 16, and a zero mask means no access at all
   - **cli/**
     - [SPO Management Shell one-liners](snippets/cli/spo-management-shell-one-liners.md) — storage top 20, external sharing, deleted sites, lock state
 - 📦 **[templates/](templates/)** — reusable artifacts to adapt, not rewrite
