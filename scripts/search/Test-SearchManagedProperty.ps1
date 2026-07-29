@@ -70,6 +70,7 @@
     Auth     : Interactive (browser) sign-in. No admin rights needed - this
                is a read-only query as yourself.
     Related  : gotchas/search/unknown-managed-properties-fail-silently.md
+    Samples  : scripts/sample-outputs.md - what this prints, from a real run
     Source   : https://github.com/EasyPortal365/sharepoint-vault
 #>
 #Requires -Modules PnP.PowerShell

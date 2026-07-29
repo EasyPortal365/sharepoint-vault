@@ -48,6 +48,7 @@
     Caveat   : Creating an index on a list that is already over the threshold
                can itself fail during the day; SharePoint runs index creation
                as a background job on large lists. Schedule it off-hours.
+    Samples  : scripts/sample-outputs.md - what this prints, from a real run
     Source   : https://github.com/EasyPortal365/sharepoint-vault
 #>
 #Requires -Modules PnP.PowerShell

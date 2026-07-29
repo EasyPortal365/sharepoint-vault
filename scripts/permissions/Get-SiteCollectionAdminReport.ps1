@@ -39,6 +39,7 @@
     Auth     : Connect-SPOService, SharePoint Administrator role.
     Speed    : One Get-SPOUser call per site. On a 2,000-site tenant expect
                tens of minutes - narrow it with -SiteUrl when you can.
+    Samples  : scripts/sample-outputs.md - what this prints, from a real run
     Source   : https://github.com/EasyPortal365/sharepoint-vault
 #>
 #Requires -Modules Microsoft.Online.SharePoint.PowerShell

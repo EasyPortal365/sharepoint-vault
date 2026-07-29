@@ -47,6 +47,7 @@
                pins the bundle filename in the package manifest, so an
                out-of-date InstalledVersion means out-of-date code even
                when the CDN is current.
+    Samples  : scripts/sample-outputs.md - what this prints, from a real run
     Source   : https://github.com/EasyPortal365/sharepoint-vault
 #>
 #Requires -Modules PnP.PowerShell

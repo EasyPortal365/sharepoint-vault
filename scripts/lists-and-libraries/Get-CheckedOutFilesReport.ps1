@@ -47,6 +47,7 @@
                Manage Lists to see files checked out by other people; a
                plain member sees only their own and the report will look
                deceptively clean.
+    Samples  : scripts/sample-outputs.md - what this prints, from a real run
     Source   : https://github.com/EasyPortal365/sharepoint-vault
 #>
 #Requires -Modules PnP.PowerShell

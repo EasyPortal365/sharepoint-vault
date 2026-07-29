@@ -51,6 +51,7 @@
     Caveat   : An "Anyone" (anonymous) link has no members to enumerate - the
                group exists but stays empty. Absence of members is NOT
                evidence that nobody used the link.
+    Samples  : scripts/sample-outputs.md - what this prints, from a real run
     Source   : https://github.com/EasyPortal365/sharepoint-vault
 #>
 #Requires -Modules PnP.PowerShell

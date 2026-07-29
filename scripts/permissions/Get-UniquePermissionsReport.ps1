@@ -63,6 +63,7 @@
                object - an Edit-level account gets
                "Attempted to perform an unauthorized operation", which this
                script reports as a failure, never as "no unique permissions".
+    Samples  : scripts/sample-outputs.md - what this prints, from a real run
     Source   : https://github.com/EasyPortal365/sharepoint-vault
 #>
 #Requires -Modules PnP.PowerShell

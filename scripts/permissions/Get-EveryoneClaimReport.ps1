@@ -48,6 +48,7 @@
     Auth     : Interactive (browser) sign-in; needs Full Control on the site.
     Caveat   : Item-level grants are not scanned. A clean report means "no
                claim at web, list or group level", not "no claim anywhere".
+    Samples  : scripts/sample-outputs.md - what this prints, from a real run
     Source   : https://github.com/EasyPortal365/sharepoint-vault
 #>
 #Requires -Modules PnP.PowerShell

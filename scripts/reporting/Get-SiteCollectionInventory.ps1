@@ -32,6 +32,7 @@
     Auth     : Interactive sign-in via Connect-SPOService (MFA supported);
                the account needs the SharePoint Administrator role.
                No app registration required.
+    Samples  : scripts/sample-outputs.md - what this prints, from a real run
     Source   : https://github.com/EasyPortal365/sharepoint-vault
 #>
 #Requires -Modules Microsoft.Online.SharePoint.PowerShell

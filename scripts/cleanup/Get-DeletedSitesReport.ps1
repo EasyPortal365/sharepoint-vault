@@ -42,6 +42,7 @@
     Auth     : Connect-SPOService, SharePoint Administrator role.
     Restore  : Restore-SPODeletedSite -Identity <url>  (run it yourself,
                after checking the URL is not already taken by a new site).
+    Samples  : scripts/sample-outputs.md - what this prints, from a real run
     Source   : https://github.com/EasyPortal365/sharepoint-vault
 #>
 #Requires -Modules Microsoft.Online.SharePoint.PowerShell

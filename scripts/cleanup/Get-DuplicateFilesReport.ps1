@@ -56,6 +56,7 @@
     Requires : PnP.PowerShell 2.x or newer (Install-Module PnP.PowerShell)
     Auth     : Interactive (browser) sign-in. Search results are security
                trimmed - you only see duplicates you have access to.
+    Samples  : scripts/sample-outputs.md - what this prints, from a real run
     Source   : https://github.com/EasyPortal365/sharepoint-vault
 #>
 #Requires -Modules PnP.PowerShell

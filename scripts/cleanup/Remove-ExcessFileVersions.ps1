@@ -55,6 +55,7 @@
     Warning  : Legal hold, retention labels and eDiscovery may block or be
                violated by version deletion. Check compliance policy before
                running this against real content.
+    Samples  : scripts/sample-outputs.md - what this prints, from a real run
     Source   : https://github.com/EasyPortal365/sharepoint-vault
 #>
 #Requires -Modules PnP.PowerShell

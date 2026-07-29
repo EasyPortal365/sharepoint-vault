@@ -41,6 +41,7 @@
     Requires : SharePoint Online Management Shell
                (Install-Module Microsoft.Online.SharePoint.PowerShell)
     Auth     : Connect-SPOService, SharePoint Administrator role.
+    Samples  : scripts/sample-outputs.md - what this prints, from a real run
     Source   : https://github.com/EasyPortal365/sharepoint-vault
 #>
 #Requires -Modules Microsoft.Online.SharePoint.PowerShell

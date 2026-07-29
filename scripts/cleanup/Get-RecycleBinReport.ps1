@@ -44,6 +44,7 @@
     Requires : PnP.PowerShell 2.x or newer (Install-Module PnP.PowerShell)
     Auth     : Interactive (browser) sign-in; the second-stage bin needs
                site collection administrator rights.
+    Samples  : scripts/sample-outputs.md - what this prints, from a real run
     Source   : https://github.com/EasyPortal365/sharepoint-vault
 #>
 #Requires -Modules PnP.PowerShell
