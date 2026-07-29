@@ -2,7 +2,7 @@
 title: Seed idempotency must key on the item, not the collection
 tags: [lists, provisioning, seeding, data-quality]
 applies-to: SharePoint Online, SharePoint Server
-last-reviewed: 2026-07-28
+last-reviewed: 2026-07-29
 ---
 
 # Seed idempotency must key on the item, not the collection
@@ -56,6 +56,20 @@ The set-level check can stay as a cheap pre-filter — just never as the guarant
 - Show the count first ("found 95 duplicated values"), delete on a second explicit click, and report what was removed.
 
 **3. Invalidate the cache after cleanup.** Apps typically read lookup lists once at start-up and cache them (`localStorage`, memory). After a successful cleanup the rest of the UI keeps showing the duplicates until a reload — which looks exactly like "the cleanup did nothing". Rewrite the cache and tell the user to refresh.
+
+## The second source: a seed decided from a read that was never verified
+
+Same outcome, different trigger — and this one fires on healthy code that simply swallowed an error:
+
+```ts
+let rows = [];
+try { rows = await getChoices(); } catch (e) { console.warn(e); }   // ← failure becomes []
+if (!rows.length) await seedDefaults();                             // ← "empty", so seed
+```
+
+A throttled request (`429`), a transient `5xx`, or a list the current user cannot fully read (see item-level permissions) all arrive here as an empty array, and the seeder happily inserts the whole set again. **"The read failed" and "there is nothing there" must not collapse into the same value** when the next line performs a write — carry an explicit `readOk` flag and seed only after a proven successful read.
+
+Better still: **keep seeding out of the read path entirely.** A settings button ("create default values") is the honest place for it. On a fresh site, fall back to the built-in values *in memory* — the UI works, nothing is written, and an admin decides when the list gets populated. Auto-seeding on read also races: two users opening a brand-new site at the same moment both see "empty" and both insert.
 
 ## Diagnostic shortcut
 

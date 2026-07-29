@@ -64,6 +64,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [Gallery cards render from `tileProps`](gotchas/lists/gallery-cards-render-from-tileprops.md) — the documented top-level `formatter` is ignored; the card lives in a nested, undocumented `tileProps.formatter`. Layout and card must go in two separate writes (PnP or REST/SPFx)
     - [Non-web protocol in `href` drops the whole element](gotchas/lists/formatter-href-non-web-protocol-drops-element.md) — `ms-word:` in a formatter link removes the element with all children, per item, no error; open-in-app = `openContextMenu`
     - [Seed idempotency must key on the item](gotchas/lists/seed-idempotency-must-key-on-the-item.md) — a per-SET presence check re-inserts the whole block; lists have no unique constraint
+    - [Item-level permission defaults on provisioned lists](gotchas/lists/item-level-permissions-defaults-on-provisioned-lists.md) — ReadSecurity=2 looks perfect to an admin and empty to everyone else; WriteSecurity=2 breaks collaborative edits only
     - [`length()` is for arrays, not strings](gotchas/lists/formatting-length-is-for-arrays-not-strings.md) — string length via `indexOf(str + '^', '^')`, or the expression collapses to empty
     - [`MajorVersionLimit: 0` means unlimited, not none](gotchas/lists/major-version-limit-zero-means-unlimited.md) — one integer covering "no limit", "keep n" and "versioning is off"; the library your report calls tidiest is the one eating the quota
   - **spfx/**
