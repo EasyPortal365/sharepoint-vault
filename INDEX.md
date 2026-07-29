@@ -97,7 +97,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [An unparenthesized `OR` silently escapes your scope filter](gotchas/search/kql-or-escapes-your-scope-filter.md) — KQL AND binds tighter than OR, so `a OR b Path:"…"` = `a OR (b AND Path)`; wrap the query in parens
     - [Sensitivity labels in Search — property works, licensing gates it](gotchas/search/sensitivity-labels-in-search-and-licensing.md) — `InformationProtectionLabelId` returns a GUID only after AIP-enable + label + crawl; unlicensed tenants can't even create a label (`InvalidLicenseException`)
   - **powershell/**
-    - [PS 5.1 `Get-Content` mangles UTF-8](gotchas/powershell/get-content-mangles-utf8.md) — ANSI default double-encodes diacritics; use `System.IO.File` + BOM-less `UTF8Encoding`
+    - [PS 5.1 `Get-Content` mangles UTF-8](gotchas/powershell/get-content-mangles-utf8.md) — ANSI default double-encodes diacritics; non-ASCII in the *pattern* makes `-replace` match nothing and exit 1. Use `System.IO.File` + BOM-less `UTF8Encoding`, check `git status` after a failed run
     - [Smart quotes are string delimiters](gotchas/powershell/smart-quotes-are-string-delimiters.md) — `„`/`"` parse like `"`; localized text in single-quoted here-strings
     - [`'Stop'` + a native stderr warning = terminating error](gotchas/powershell/erroractionpreference-stop-native-stderr.md) — `$ErrorActionPreference='Stop'` escalates a benign stderr warning (exit 0) to a script-killer; wrap in `'Continue'`, judge by `$LASTEXITCODE`
     - [`Get-PnPList -Identity` rejects server-relative URLs](gotchas/powershell/get-pnplist-identity-rejects-server-relative-url.md) — title/GUID/web-relative only; `/sites/team/shared` fails as "List does not exist"

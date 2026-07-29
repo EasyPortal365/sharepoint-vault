@@ -116,7 +116,7 @@ The standard server-side companion of an SPFx solution — and its own set of tr
 
 | Gotcha | TL;DR |
 |---|---|
-| [PS 5.1 `Get-Content` mangles UTF-8](powershell/get-content-mangles-utf8.md) | ANSI-default reads double-encode diacritics (`á`→`Ã¡`) — go through `System.IO.File` with BOM-less `UTF8Encoding` |
+| [PS 5.1 `Get-Content` mangles UTF-8](powershell/get-content-mangles-utf8.md) | ANSI-default reads double-encode diacritics (`á`→`Ã¡`), and non-ASCII in the pattern makes `-replace` match nothing — go through `System.IO.File` with BOM-less `UTF8Encoding` |
 | [Smart quotes are string delimiters](powershell/smart-quotes-are-string-delimiters.md) | PS parses `„` and `"` like ASCII `"` — localized text belongs in single-quoted here-strings |
 | [`'Stop'` + a native stderr warning = terminating error](powershell/erroractionpreference-stop-native-stderr.md) | `$ErrorActionPreference='Stop'` escalates a benign stderr warning (exit 0) to a script-killer — wrap in `'Continue'`, judge by `$LASTEXITCODE` |
 | [`Get-PnPList -Identity` rejects server-relative URLs](powershell/get-pnplist-identity-rejects-server-relative-url.md) | Resolves by title, GUID, or web-relative URL only — `/sites/team/shared` fails as "List does not exist"; prefer the GUID |
