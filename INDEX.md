@@ -2,7 +2,7 @@
 
 Every single thing in the vault, on one page. Section names link to folder READMEs; leaves link straight to the content.
 
-*Last updated: 2026-07-28*
+*Last updated: 2026-07-29*
 
 - 🧰 **[scripts/](scripts/)** — PowerShell scripts with comment-based help, read-only unless stated
   - **reporting/**
@@ -23,6 +23,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [Create a modern page via REST (3-step)](gotchas/rest-api/create-modern-page-via-rest-sitepages.md) — `CanvasContent1` won't stick on create; create → SavePageAsDraft → Publish, canvas is JSON
     - [`$filter` on multi-value person fields 400s](gotchas/rest-api/filter-on-multivalue-person-field-400.md) — fall back to client filtering, but only on HTTP 400
     - [`GetStorageEntity` returns 200 for a missing key](gotchas/rest-api/getstorageentity-returns-200-for-missing-key.md) — unset tenant property answers `200 {"odata.null":true}`; "unset" and "failed" are indistinguishable by status code, and writing needs Tenant Admin
+    - [Silent read failure drives delete-all](gotchas/rest-api/silent-read-failure-drives-delete-all.md) — a quiet `if (!ok) break` turns "sync what changed" into "delete everything"; fail-safe for a view means show what you can, for a delete it means do nothing
     - [App page properties are not in CanvasContent1](gotchas/rest-api/app-page-webpart-properties-not-in-canvascontent.md) — single-part app pages store web part config elsewhere; do not diagnose "not set" from page fields
     - [Silent fallbacks poison destructive writes](gotchas/rest-api/silent-fallbacks-poison-destructive-writes.md) — `catch → []` + delete-then-insert = data loss; strict and safe reads (+ a settings read that hides its failure lets a full-object save overwrite the config with defaults)
     - [Check-then-insert races produce duplicate rows](gotchas/rest-api/check-then-insert-races-duplicate-rows.md) — no unique constraint + eventual consistency = double insert; dedup on read by version, never delete "lowest Id"
@@ -51,6 +52,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [Teams personal app needs global deploy](gotchas/spfx/teams-personal-app-needs-global-deploy.md) — `skipFeatureDeployment: true` + "all sites"; the `teams/` icon-folder convention
     - [Teams mobile webview renders desktop width](gotchas/spfx/teams-mobile-webview-renders-desktop-width.md) — ~980px layout; fix the viewport meta in Teams first
     - [CDN-hosted bundle still needs a new `.sppkg`](gotchas/spfx/cdn-hosted-bundle-still-needs-new-sppkg.md) — `includeClientSideAssets: false` moves assets, not versioning; the manifest pins a content-hashed filename, so old packages never request the new bundle
+    - [`npm audit --omit=dev` overstates shipped risk](gotchas/spfx/npm-audit-omit-dev-overstates-shipped-risk.md) — SPFx keeps its Node build toolchain in `dependencies`, so 229 „production“ findings can hide a single real one; grep the published bundle and always include a control sample
     - [Office file extraction needs a decompressed-size cap](gotchas/spfx/office-file-extraction-needs-a-decompressed-size-cap.md) — an upload-size limit only bounds the compressed archive; a crafted `!ref` still OOMs the tab
     - [Shared package's dynamic import ships inlined](gotchas/spfx/shared-package-dynamic-import-inlines-with-commonjs.md) — a linked TS package built with module:commonjs turns import() into require(), so webpack can't lazy-chunk the lib into a separate file; set the package's module:esnext
     - [Centered flex clips on mobile](gotchas/spfx/centered-flex-clips-on-mobile.md) — centering + overflow cuts content above the scroll; flex "springs"
