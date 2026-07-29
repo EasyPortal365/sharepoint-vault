@@ -173,7 +173,9 @@
     .markdown-section > ul.sv-links > li.sv-link:hover { background:rgba(255,255,255,.95); }
 
     /* ── hero terminal (home only, injected) ── */
-    .sv-hero { max-width:860px; margin:6px 0 34px; background:rgba(255,255,255,.9); backdrop-filter:blur(14px); border:1px solid rgba(0,33,99,.10); border-radius:14px; box-shadow:0 14px 38px -18px rgba(0,33,99,.30); overflow:hidden; }
+    /* Bez vlastního stropu — hero dýchá stejně jako obsah pod ním
+       (.markdown-section má max-width, hero se do něj vejde sám). */
+    .sv-hero { margin:6px 0 34px; background:rgba(255,255,255,.9); backdrop-filter:blur(14px); border:1px solid rgba(0,33,99,.10); border-radius:14px; box-shadow:0 14px 38px -18px rgba(0,33,99,.30); overflow:hidden; }
     .sv-hero .bar { display:flex; align-items:center; justify-content:space-between; padding:10px 16px; border-bottom:1px solid var(--line); background:rgba(244,247,251,.75); }
     .sv-hero .bar .ttl { font-family:var(--mono); font-size:11px; color:var(--soft); }
     .sv-hero .bar .winbtns { font-family:var(--mono); font-size:11px; color:var(--soft); display:flex; gap:14px; }
