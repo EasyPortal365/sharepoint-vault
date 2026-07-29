@@ -42,6 +42,7 @@ Every article carries frontmatter with `tags` and `applies-to`, so repo search g
 | [Gallery cards render from `tileProps`](lists/gallery-cards-render-from-tileprops.md) | The documented top-level `formatter` is ignored in a library's Gallery view — the card lives in an undocumented nested `tileProps.formatter`, and `ViewType2 = "TILES"` is what switches the layout. Layout and card must be two separate writes, or the card is overwritten (PnP and REST/SPFx both) |
 | [Non-web protocol in `href` drops the whole element](lists/formatter-href-non-web-protocol-drops-element.md) | An `ms-word:` link doesn't render as broken — the element vanishes with all children, per item, no error; open-in-app belongs to `customRowAction: "openContextMenu"` |
 | [`length()` is for arrays, not strings](lists/formatting-length-is-for-arrays-not-strings.md) | On a string the arithmetic collapses and `substring` renders empty — get string length as `indexOf(str + '^', '^')` |
+| [`MajorVersionLimit: 0` means unlimited, not none](lists/major-version-limit-zero-means-unlimited.md) | Zero is the API's "no limit" — and also what you get when versioning is off; a report printing the raw number says the opposite of the truth |
 
 ### spfx/
 
@@ -121,6 +122,9 @@ The standard server-side companion of an SPFx solution — and its own set of tr
 | [`'Stop'` + a native stderr warning = terminating error](powershell/erroractionpreference-stop-native-stderr.md) | `$ErrorActionPreference='Stop'` escalates a benign stderr warning (exit 0) to a script-killer — wrap in `'Continue'`, judge by `$LASTEXITCODE` |
 | [`Get-PnPList -Identity` rejects server-relative URLs](powershell/get-pnplist-identity-rejects-server-relative-url.md) | Resolves by title, GUID, or web-relative URL only — `/sites/team/shared` fails as "List does not exist"; prefer the GUID |
 | [PS7 `[ref]` arguments break Office COM calls](powershell/ps7-ref-arguments-break-com-calls.md) | The VBA-style `SaveAs2([ref]$path, [ref]$fmt)` dies with "psobject to Object" on PowerShell 7 — pass plain values positionally |
+| [A syntax check under PS 7 proves nothing about 5.1](powershell/ps7-parse-check-misses-ps51-syntax-errors.md) | `Parser::ParseFile` clears a script full of ternary / `??` / `&&` that 5.1 refuses to parse — run the check inside the oldest engine you support |
+| [`Export-Csv -Encoding UTF8` flips the BOM](powershell/export-csv-utf8-bom-flips-between-versions.md) | 5.1 writes the BOM, 7 omits it, Excel decides encoding by it — the same report is readable on one machine and mojibake on the next |
+| [`$host` is a constant you cannot assign](powershell/host-is-a-constant-you-cannot-assign.md) | The natural name for `[uri].Host` is reserved; the error blames the value, not the name — and `$input` / `$args` take the assignment silently |
 
 ### security/
 
