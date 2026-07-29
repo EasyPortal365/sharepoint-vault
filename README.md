@@ -32,7 +32,7 @@ It is **not** another copy of Microsoft's documentation. Everything in the vault
 
 | Section | What you'll find |
 |---|---|
-| [`scripts/`](scripts/) | PowerShell scripts — reporting, lists & libraries, permissions, provisioning |
+| [`scripts/`](scripts/) | PowerShell scripts — reporting, permissions, lists & libraries, cleanup, search |
 | [`gotchas/`](gotchas/) | Real-world traps, documented as *symptom → cause → fix* |
 | [`guides/`](guides/) | End-to-end guides — REST API, Microsoft Graph, SPFx, search |
 | [`course/`](course/) | *SharePoint Online – administrace od A do Z* — full CZ course materials (IT Pro admin) |
@@ -44,6 +44,7 @@ Prefer everything on a single page? Browse the 🗂️ **[full vault index](INDE
 
 ## Fresh from the vault
 
+- [**20 new admin scripts**](scripts/README.md) — permissions, cleanup, list governance and search diagnostics, from the "Everyone" claim hunt to version-history bloat
 - [**Guide: Search queries that actually work**](guides/search-queries-that-actually-work.md) — practical KQL, managed properties, and the traps between you and useful results
 - [**Guide: SharePoint REST vs Microsoft Graph**](guides/sharepoint-rest-vs-microsoft-graph.md) — the decision table we actually use, and where people pick wrong
 - [**Stored XSS via SharePoint list content**](gotchas/security/stored-xss-from-list-content.md) — React won't block `javascript:` hrefs; the `safeHref` pattern with the C0-strip that closes the bypass

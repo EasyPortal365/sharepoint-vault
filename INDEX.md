@@ -7,8 +7,31 @@ Every single thing in the vault, on one page. Section names link to folder READM
 - 🧰 **[scripts/](scripts/)** — PowerShell scripts with comment-based help, read-only unless stated
   - **reporting/**
     - [Get-SiteCollectionInventory.ps1](scripts/reporting/Get-SiteCollectionInventory.ps1) — every site collection in one CSV: storage, owner, template, sharing, lock state, last activity
+    - [Get-HubSiteStructure.ps1](scripts/reporting/Get-HubSiteStructure.ps1) — the whole hub topology; re-reads sites individually rather than reporting "no associations" when the bulk call omits `HubSiteId`
+    - [Get-InactiveSitesReport.ps1](scripts/reporting/Get-InactiveSitesReport.ps1) — dormant sites ranked by days since last change, with the storage they hold
+    - [Get-TenantSettingsBaseline.ps1](scripts/reporting/Get-TenantSettingsBaseline.ps1) — tenant settings to JSON, then `-CompareWith` prints "was X, now Y" per property
+    - [Get-AppCatalogInventory.ps1](scripts/reporting/Get-AppCatalogInventory.ps1) — catalog version vs. the version each site actually runs; a new `.sppkg` updates nobody by itself
+  - **permissions/**
+    - [Get-ExternalSharingReport.ps1](scripts/permissions/Get-ExternalSharingReport.ps1) — sharing capability per site plus every guest; `Get-SPOExternalUser` caps `-PageSize` at 50 and stops early on some tenants
+    - [Get-UniquePermissionsReport.ps1](scripts/permissions/Get-UniquePermissionsReport.ps1) — broken inheritance at web, list and opt-in item level; a capped item scan is labelled PARTIAL, never reported as complete
+    - [Get-SharingLinksReport.ps1](scripts/permissions/Get-SharingLinksReport.ps1) — the hidden `SharingLinks.<doc>.<kind>.<link>` groups: who used which link, and the document behind it
+    - [Get-EveryoneClaimReport.ps1](scripts/permissions/Get-EveryoneClaimReport.ps1) — where the tenant-wide claims were granted, including buried inside an ordinary SharePoint group
+    - [Get-SiteCollectionAdminReport.ps1](scripts/permissions/Get-SiteCollectionAdminReport.ps1) — the privilege that bypasses every item-level break and never shows up in Owners
   - **lists-and-libraries/**
     - [Get-LargeListsReport.ps1](scripts/lists-and-libraries/Get-LargeListsReport.ps1) — lists approaching or past the 5,000-item view threshold
+    - [Get-ListInventory.ps1](scripts/lists-and-libraries/Get-ListInventory.ps1) — every list with versioning, content types and unique permissions; `MajorVersionLimit = 0` is spelled out as *unlimited*, not printed as zero
+    - [Get-ListIndexAdvice.ps1](scripts/lists-and-libraries/Get-ListIndexAdvice.ps1) — big lists with no indexed column, and how many of the 20 index slots remain
+    - [Get-CheckedOutFilesReport.ps1](scripts/lists-and-libraries/Get-CheckedOutFilesReport.ps1) — server-side CAML on `CheckoutUser`; flags files with no checked-in version that nobody else can see
+    - [Get-ContentTypeUsage.ps1](scripts/lists-and-libraries/Get-ContentTypeUsage.ps1) — matches list copies by content type **Id prefix**, which name matching never does reliably
+    - [Get-LongFileUrlReport.ps1](scripts/lists-and-libraries/Get-LongFileUrlReport.ps1) — the ~400-char path and 255-char name limits, plus the characters that break sync clients
+  - **cleanup/**
+    - [Get-FileVersionBloatReport.ps1](scripts/cleanup/Get-FileVersionBloatReport.ps1) — what version history really costs, per library and per file; unreadable history is skipped, not counted as zero
+    - [Remove-ExcessFileVersions.ps1](scripts/cleanup/Remove-ExcessFileVersions.ps1) — ⚠️ **writes**: trims to the newest N versions, `-WhatIf` supported; deleted versions never reach the recycle bin
+    - [Get-RecycleBinReport.ps1](scripts/cleanup/Get-RecycleBinReport.ps1) — both stages, grouped by who deleted what, with the 93-day purge countdown
+    - [Get-DeletedSitesReport.ps1](scripts/cleanup/Get-DeletedSitesReport.ps1) — deleted site collections still burning quota, and the restore-or-lose deadline
+    - [Get-DuplicateFilesReport.ps1](scripts/cleanup/Get-DuplicateFilesReport.ps1) — duplicates by name + byte size through the index; `TrimDuplicates` off, and it aborts rather than call a `Size`-less result set clean
+  - **search/**
+    - [Test-SearchManagedProperty.ps1](scripts/search/Test-SearchManagedProperty.ps1) — retrievable? queryable? — settled with a deliberately fake control property, because Search answers 200 for names that don't exist
 - 💥 **[gotchas/](gotchas/)** — real-world traps as *symptom → cause → fix*
   - **rest-api/**
     - [Get lists by URL, not by title](gotchas/rest-api/get-list-by-url-not-by-title.md) — `getbytitle()` breaks the moment someone renames a list; resolve by URL
