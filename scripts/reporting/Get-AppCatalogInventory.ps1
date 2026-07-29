@@ -36,6 +36,14 @@
 .EXAMPLE
     .\Get-AppCatalogInventory.ps1 -TenantAppCatalogUrl https://contoso.sharepoint.com/sites/appcatalog -ClientId 00000000-0000-0000-0000-000000000000
 
+    Reading tenant app catalog https://contoso.sharepoint.com/sites/appcatalog ...
+      7 solution(s) in the catalog.
+    Reading installed apps on https://contoso.sharepoint.com/sites/intranet ...
+      Contoso Workplace: installed 1.22.0.0, catalog 1.25.0.0
+
+    Done. 12 row(s) written to .\AppCatalogInventory_20260729-143912.csv
+    1 site installation(s) are behind the catalog version.
+
 .EXAMPLE
     .\Get-AppCatalogInventory.ps1 -TenantAppCatalogUrl https://contoso.sharepoint.com/sites/appcatalog -SiteUrl (Get-Content .\sites.txt) -ClientId 00000000-0000-0000-0000-000000000000
 

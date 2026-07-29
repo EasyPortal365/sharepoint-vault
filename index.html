@@ -120,7 +120,11 @@
     .docsify-copy-code-button { font-family:var(--mono) !important; font-size:10px !important; background:var(--navy) !important; border-radius:6px !important; }
 
     /* ── tables ── */
-    .markdown-section table { display:block; overflow-x:auto; border-radius:12px; border:1px solid var(--line); box-shadow:0 6px 18px -16px rgba(0,33,99,.3); }
+    /* width:fit-content — jinak se tabulka roztáhne na celou (širokou) stopu
+       obsahu i s krátkými buňkami a řádky se rozředí. Kód a text šířku
+       využijí, tabulka se smrskne podle svého obsahu. */
+    .markdown-section table { display:block; width:fit-content; max-width:100%; overflow-x:auto; border-radius:12px; border:1px solid var(--line); box-shadow:0 6px 18px -16px rgba(0,33,99,.3); }
+    .markdown-section td { max-width:70ch; }
     .markdown-section th { font-family:var(--mono); font-size:11px; letter-spacing:.1em; text-transform:uppercase; background:var(--bg2); color:var(--muted); border:none; border-bottom:1px solid var(--line2); padding:10px 14px; }
     .markdown-section td { border:none; border-bottom:1px solid var(--line); font-size:13.5px; padding:10px 14px; }
     .markdown-section tr:last-child td { border-bottom:none; }

@@ -36,6 +36,18 @@
 .EXAMPLE
     .\Get-ExternalSharingReport.ps1 -TenantAdminUrl https://contoso-admin.sharepoint.com
 
+    Tenant sharing capability: ExternalUserSharingOnly
+    Retrieving site collections ...
+      110 site(s) written to .\ExternalSharing_Sites_20260729-143912.csv
+    Enumerating external users (50 per page) ...
+      26 guests so far ...
+      26 external user(s) written to .\ExternalSharing_Guests_20260729-143912.csv
+
+    Done.
+
+    Guest CSV columns:
+    DisplayName,Email,AcceptedAs,InvitedBy,WhenCreated,UniqueId
+
 .EXAMPLE
     .\Get-ExternalSharingReport.ps1 -TenantAdminUrl https://contoso-admin.sharepoint.com -SkipGuests
 

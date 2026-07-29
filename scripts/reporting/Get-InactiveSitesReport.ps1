@@ -37,6 +37,18 @@
 .EXAMPLE
     .\Get-InactiveSitesReport.ps1 -TenantAdminUrl https://contoso-admin.sharepoint.com
 
+    110 site(s) in scope, cutoff 2026-06-29.
+
+    Done. 21 inactive site(s) written to .\InactiveSites_20260729-143912.csv
+    Storage held by inactive sites: 24 MB
+
+    Ten longest dormant:
+
+    Url                                                DaysInactive StorageUsedMB Owner
+    ---                                                ------------ ------------- -----
+    https://contoso.sharepoint.com/sites/DaikinQuote              72             1 megan@contoso.com
+    https://contoso.sharepoint.com/sites/AllCompany.47            72             1 megan@contoso.com
+
 .EXAMPLE
     .\Get-InactiveSitesReport.ps1 -TenantAdminUrl https://contoso-admin.sharepoint.com -InactiveDays 730 -MinStorageMB 1024
 

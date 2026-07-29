@@ -53,8 +53,26 @@
 .EXAMPLE
     .\Get-UniquePermissionsReport.ps1 -SiteUrl https://contoso.sharepoint.com/sites/projects -ClientId 00000000-0000-0000-0000-000000000000
 
+    Scanning https://contoso.sharepoint.com/sites/projects ...
+      30 list(s), 2 with unique permissions.
+        list: Contracts
+        list: Board Documents
+
+    Done. 3 row(s) written to .\UniquePermissions_20260729-143912.csv
+
+    CSV columns, and a row:
+    SiteUrl,Scope,Object,ItemCount,Principals,Note
+    .../sites/projects,List,Contracts,412,Legal Team [Full Control]; Finance
+    Owners [Edit],
+
 .EXAMPLE
     .\Get-UniquePermissionsReport.ps1 -SiteUrl https://contoso.sharepoint.com/sites/hr -ClientId 00000000-0000-0000-0000-000000000000 -IncludeItems
+
+    A full item-level pass over 30 lists takes about ten seconds, because the
+    unique-permission flag for a whole list arrives in one request:
+
+      [3/30] Contracts (412 items) ...
+      [4/30] Board Documents (18 items) ...
 
 .NOTES
     Requires : PnP.PowerShell 2.x or newer (Install-Module PnP.PowerShell)

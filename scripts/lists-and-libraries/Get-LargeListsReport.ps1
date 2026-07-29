@@ -35,6 +35,15 @@
 .EXAMPLE
     .\Get-LargeListsReport.ps1 -SiteUrl https://contoso.sharepoint.com/sites/projects -ClientId 00000000-0000-0000-0000-000000000000
 
+    Scanning https://contoso.sharepoint.com/sites/projects ...
+      Contracts: 12 480 items
+      Archive: 8 210 items
+
+    Done. 2 large list(s) written to .\LargeListsReport_20260729-143912.csv
+
+    CSV columns:
+    SiteUrl,ListTitle,ItemCount,BaseTemplate,LastItemModified,OverHardLimit
+
 .EXAMPLE
     .\Get-LargeListsReport.ps1 -SiteUrl (Get-Content .\sites.txt) -ClientId 00000000-0000-0000-0000-000000000000 -Threshold 3000
 

@@ -38,6 +38,17 @@
 .EXAMPLE
     .\Get-CheckedOutFilesReport.ps1 -SiteUrl https://contoso.sharepoint.com/sites/projects -ClientId 00000000-0000-0000-0000-000000000000
 
+    Scanning https://contoso.sharepoint.com/sites/projects ...
+      Documents: 3 checked-out file(s)
+
+    Done. 3 row(s) written to .\CheckedOutFiles_20260729-143912.csv
+    1 file(s) have no checked-in version - nobody but the uploader can see them.
+
+    CSV columns, and a row:
+    SiteUrl,Library,FileName,FilePath,CheckedOutTo,Modified,DaysCheckedOut,Version,NeverCheckedIn
+    .../sites/projects,Documents,Tender draft.docx,/sites/projects/Shared
+    Documents/Tender draft.docx,Megan Bowen,2026-02-11 16:03:41,168,0.1,True
+
 .EXAMPLE
     .\Get-CheckedOutFilesReport.ps1 -SiteUrl (Get-Content .\sites.txt) -ClientId 00000000-0000-0000-0000-000000000000 -MinDaysCheckedOut 30
 

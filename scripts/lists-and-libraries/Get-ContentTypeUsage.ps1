@@ -45,6 +45,15 @@
 .EXAMPLE
     .\Get-ContentTypeUsage.ps1 -SiteUrl https://contoso.sharepoint.com/sites/projects -ClientId 00000000-0000-0000-0000-000000000000 -ContentType "Project Document"
 
+    Scanning https://contoso.sharepoint.com/sites/projects ...
+      Site content type: Project Document  (0x0101008B2A...)
+      59 list content type binding(s) found.
+
+    Done. 59 row(s) written to .\ContentTypeUsage_20260729-143912.csv
+
+    CSV columns:
+    SiteUrl,ListTitle,ListItemCount,ContentTypesOnList,ContentTypeName,ContentTypeId,ReadOnly,Sealed,ItemsUsingIt
+
 .EXAMPLE
     .\Get-ContentTypeUsage.ps1 -SiteUrl (Get-Content .\sites.txt) -ClientId 00000000-0000-0000-0000-000000000000 -CountItems
 

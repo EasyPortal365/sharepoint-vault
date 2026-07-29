@@ -38,7 +38,27 @@
     CSV file to create. Defaults to a timestamped file in the current directory.
 
 .EXAMPLE
-    .\Get-EveryoneClaimReport.ps1 -SiteUrl https://contoso.sharepoint.com/sites/projects -ClientId 00000000-0000-0000-0000-000000000000
+    .\Get-EveryoneClaimReport.ps1 -SiteUrl https://contoso.sharepoint.com/sites/hr -ClientId 00000000-0000-0000-0000-000000000000
+
+    Scanning https://contoso.sharepoint.com/sites/hr ...
+      2 grant(s) found.
+
+    Done. 2 row(s) written to .\EveryoneClaims_20260729-143912.csv
+    1 of them are the real 'Everyone' claim, which INCLUDES external guests.
+
+    And what it prints when the scan is refused - the output that matters most
+    on a security report, because the first version said "Nothing found" here:
+
+    WARNING: Failed to scan https://contoso.sharepoint.com/sites/hr: Attempted to
+    perform an unauthorized operation.
+
+    1 site(s) could NOT be scanned - this report does not cover them:
+      https://contoso.sharepoint.com/sites/hr
+    Reading role assignments needs Full Control. Treat a clean result for these
+    sites as unknown, not safe.
+
+    Done, but NOT ONE site could be scanned. This is not a clean result - it is
+    no result.
 
 .EXAMPLE
     .\Get-EveryoneClaimReport.ps1 -SiteUrl (Get-Content .\sites.txt) -ClientId 00000000-0000-0000-0000-000000000000

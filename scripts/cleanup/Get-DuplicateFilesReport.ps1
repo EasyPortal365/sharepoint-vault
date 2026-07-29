@@ -49,6 +49,25 @@
 .EXAMPLE
     .\Get-DuplicateFilesReport.ps1 -SiteUrl https://contoso.sharepoint.com/sites/projects -ClientId 00000000-0000-0000-0000-000000000000
 
+    Query: IsDocument:1 AND (Path:"https://contoso.sharepoint.com/sites/projects")
+    1842 document(s) returned by search.
+
+    Done. 37 duplicate group(s), 94 file(s), written to .\DuplicateFiles_20260729-143912.csv
+    Storage held by redundant copies: 2.41 GB
+
+    Ten most wasteful groups:
+
+    FileName              SizeMB Copies WastedMB
+    --------              ------ ------ --------
+    Company handbook.pdf   18.40      6    92.00
+
+    If the index answers without a Size on any row, the script refuses to
+    conclude rather than reporting a clean result:
+
+    WARNING: Not one result carries a Size value. The managed property did not
+    come back - the grouping below cannot be trusted. Aborting instead of
+    reporting a clean result.
+
 .EXAMPLE
     .\Get-DuplicateFilesReport.ps1 -SiteUrl https://contoso.sharepoint.com -ClientId 00000000-0000-0000-0000-000000000000 -Scope Tenant -MinSizeKB 1024
 

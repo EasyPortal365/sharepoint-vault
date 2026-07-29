@@ -37,6 +37,31 @@
 .EXAMPLE
     .\Get-RecycleBinReport.ps1 -SiteUrl https://contoso.sharepoint.com/sites/projects -ClientId 00000000-0000-0000-0000-000000000000
 
+    Scanning https://contoso.sharepoint.com/sites/projects ...
+      FirstStage: 1284 item(s)
+      SecondStage: 96 item(s)
+
+    Done. 1380 item(s), 3.12 GB, written to .\RecycleBin_20260729-143912.csv
+
+    Biggest deleters:
+
+    DeletedBy          Items     MB
+    ---------          -----     --
+    megan@contoso.com    902 2140.3
+    alex@contoso.com     311  680.1
+
+    14 item(s) will be purged within a week - restore now or lose them.
+
+    Denied access, as a real run produced it. The first version of this script
+    printed "Done. Recycle bins are empty." in exactly this situation:
+
+    WARNING: .../sites/projects / FirstStage: Access is denied. (Exception from
+    HRESULT: 0x80070005 (E_ACCESSDENIED))
+
+    2 recycle bin read(s) FAILED - this report is INCOMPLETE.
+    Reading the second-stage bin needs site collection administrator rights.
+    Done, but nothing could be read. This is NOT evidence that the bins are empty.
+
 .EXAMPLE
     .\Get-RecycleBinReport.ps1 -SiteUrl (Get-Content .\sites.txt) -ClientId 00000000-0000-0000-0000-000000000000 -RowLimit 20000
 

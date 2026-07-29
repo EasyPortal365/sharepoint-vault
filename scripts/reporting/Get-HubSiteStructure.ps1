@@ -31,6 +31,22 @@
 .EXAMPLE
     .\Get-HubSiteStructure.ps1 -TenantAdminUrl https://contoso-admin.sharepoint.com
 
+    3 hub site(s) registered.
+    Retrieving site collections ...
+
+    [hub] Departments  (https://contoso.sharepoint.com/sites/departments)
+           |- Finance  (https://contoso.sharepoint.com/sites/finance)
+           |- Human Resources  (https://contoso.sharepoint.com/sites/hr)
+    [hub] Projects  (https://contoso.sharepoint.com/sites/projects-hub)
+           |- (no associated sites)
+
+    Done. 110 row(s) written to .\HubSiteStructure_20260729-143912.csv
+    3 hub(s), 24 associated site(s), 83 standalone site(s).
+
+    A tenant with no hubs stops early rather than writing an empty CSV:
+    0 hub site(s) registered.
+    No hub sites in this tenant - nothing to map.
+
 .EXAMPLE
     .\Get-HubSiteStructure.ps1 -TenantAdminUrl https://contoso-admin.sharepoint.com -IncludeUnassociated:$false
 

@@ -33,6 +33,19 @@
 .EXAMPLE
     .\Get-DeletedSitesReport.ps1 -TenantAdminUrl https://contoso-admin.sharepoint.com
 
+    Retrieving deleted site collections ...
+
+    Done. 2 deleted site(s) written to .\DeletedSites_20260729-143912.csv
+
+    2 site(s) leave the recycle bin within 14 days:
+
+    Url                                              DeletedOn           DaysRemaining
+    ---                                              ---------           -------------
+    https://contoso.sharepoint.com/sites/oldproject  2026-04-30 11:02:18             2
+    https://contoso.sharepoint.com/sites/pilot       2026-05-04 08:41:55             6
+
+    Restore with: Restore-SPODeletedSite -Identity <url>
+
 .EXAMPLE
     .\Get-DeletedSitesReport.ps1 -TenantAdminUrl https://contoso-admin.sharepoint.com -ExpiringWithinDays 30
 

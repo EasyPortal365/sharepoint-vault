@@ -60,7 +60,23 @@
     Query used to fetch sample rows. Default: IsDocument:1
 
 .EXAMPLE
-    .\Test-SearchManagedProperty.ps1 -SiteUrl https://contoso.sharepoint.com/sites/projects -ClientId 00000000-0000-0000-0000-000000000000 -Name RefinableString00
+    .\Test-SearchManagedProperty.ps1 -SiteUrl https://contoso.sharepoint.com/sites/projects -ClientId 00000000-0000-0000-0000-000000000000 -Name ViewableByExternalUsers,RefinableString00,ContentTypeId,ZzTotallyMadeUp42
+
+    Base query: IsDocument:1
+    Control OK: invented property names are rejected, so a "missing" verdict
+    below is meaningful.
+    Sampling 25 row(s) per property.
+
+    Property                Exists Sortable RowsWithData Filterable Verdict
+    --------                ------ -------- ------------ ---------- -------
+    ViewableByExternalUsers   True     True           25       True Exists and carries data
+    RefinableString00         True     True            0      False Exists in the schema but empty here
+    ContentTypeId             True    False           25      False Exists and carries data
+    ZzTotallyMadeUp42        False    False            0      False DOES NOT EXIST
+
+    Four different real answers: a fabricated name, a real-but-unmapped
+    RefinableString00, a real-but-unsortable ContentTypeId, and one that works.
+    selectproperties alone reports the first two identically.
 
 .EXAMPLE
     .\Test-SearchManagedProperty.ps1 -SiteUrl https://contoso.sharepoint.com/sites/projects -ClientId 00000000-0000-0000-0000-000000000000 -Name ViewableByExternalUsers -SampleValue true

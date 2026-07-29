@@ -34,8 +34,21 @@
 .EXAMPLE
     .\Get-TenantSettingsBaseline.ps1 -TenantAdminUrl https://contoso-admin.sharepoint.com -OutputPath .\baseline.json
 
+    Connecting to https://contoso-admin.sharepoint.com ...
+    Captured 236 tenant properties.
+    Baseline written to .\baseline.json
+
 .EXAMPLE
     .\Get-TenantSettingsBaseline.ps1 -TenantAdminUrl https://contoso-admin.sharepoint.com -CompareWith .\baseline.json
+
+    Comparing against baseline captured 2026-07-29T14:39:12.4180000Z
+    3 setting(s) changed:
+
+    Setting                            Before                   After
+    -------                            ------                   -----
+    SharingCapability                  ExternalUserSharingOnly  ExternalUserAndGuestSharing
+    RequireAnonymousLinksExpireInDays  30                       -1
+    LegacyAuthProtocolsEnabled         False                    True
 
 .NOTES
     Requires : SharePoint Online Management Shell

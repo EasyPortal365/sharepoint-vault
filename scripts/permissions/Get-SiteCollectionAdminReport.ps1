@@ -30,6 +30,13 @@
 .EXAMPLE
     .\Get-SiteCollectionAdminReport.ps1 -TenantAdminUrl https://contoso-admin.sharepoint.com
 
+    Done. 214 row(s) across 110 site(s) written to .\SiteCollectionAdmins_20260729-143912.csv
+      2 site collection admin(s) are EXTERNAL accounts.
+      9 site(s) have more than 3 administrators.
+
+    A site whose admin list could not be read is written out as a row reading
+    "(read failed)" with AdminCount -1, never dropped from the report.
+
 .EXAMPLE
     .\Get-SiteCollectionAdminReport.ps1 -TenantAdminUrl https://contoso-admin.sharepoint.com -SiteUrl https://contoso.sharepoint.com/sites/finance
 

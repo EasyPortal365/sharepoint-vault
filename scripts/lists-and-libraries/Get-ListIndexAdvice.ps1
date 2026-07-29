@@ -39,6 +39,15 @@
 .EXAMPLE
     .\Get-ListIndexAdvice.ps1 -SiteUrl https://contoso.sharepoint.com/sites/projects -ClientId 00000000-0000-0000-0000-000000000000
 
+    Scanning https://contoso.sharepoint.com/sites/projects ...
+      22 list(s) at or above 2000 items.
+      Contracts: 12 480 items, NO indexed column
+      Archive: index limit reached (20/20)
+
+    Done. 22 list(s) written to .\ListIndexAdvice_20260729-143912.csv
+    1 list(s) are past 5,000 items with no index at all - those are already
+    breaking views.
+
 .EXAMPLE
     .\Get-ListIndexAdvice.ps1 -SiteUrl https://contoso.sharepoint.com/sites/archive -ClientId 00000000-0000-0000-0000-000000000000 -MinItemCount 500
 

@@ -44,6 +44,19 @@
 .EXAMPLE
     .\Get-LongFileUrlReport.ps1 -SiteUrl https://contoso.sharepoint.com/sites/projects -ClientId 00000000-0000-0000-0000-000000000000
 
+    Scanning https://contoso.sharepoint.com/sites/projects ...
+      Documents (842 items) ...
+      Site Pages (7 items) ...
+
+    Done. 15 problem file(s) written to .\LongFileUrls_20260729-143912.csv
+
+    Ten longest:
+
+    UrlLength NameLength FileName
+    --------- ---------- --------
+          121         43 Novinkovy-hub--prehled-na-jednom-miste.aspx
+          109         30 __rectSitelogo__Contoso.svg
+
 .EXAMPLE
     .\Get-LongFileUrlReport.ps1 -SiteUrl https://contoso.sharepoint.com/sites/archive -ClientId 00000000-0000-0000-0000-000000000000 -WarnAtPathLength 250
 

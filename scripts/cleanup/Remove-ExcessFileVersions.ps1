@@ -45,6 +45,22 @@
 .EXAMPLE
     .\Remove-ExcessFileVersions.ps1 -SiteUrl https://contoso.sharepoint.com/sites/media -ClientId 00000000-0000-0000-0000-000000000000 -Library Documents -WhatIf
 
+    *** Version deletion is PERMANENT - trimmed versions do not go to the recycle bin. ***
+    Site: https://contoso.sharepoint.com/sites/media | Library: Documents | Keeping newest 10 version(s) per file
+
+    142 file(s) at or above 5 MB.
+      would trim Product launch.pptx (27 of 37 versions, 2274.10 MB)
+      would trim Price list.xlsx (140 of 150 versions, 854.00 MB)
+
+    Files examined : 142
+    Files skipped  : 0 (unreadable version history)
+    Versions removed: 0
+    Storage freed  : 0 MB
+
+    Without -WhatIf the same lines read "trimmed ...". The skip counter is
+    printed even at zero: a file whose history could not be read is never
+    trimmed, and you should be able to see that it was left alone.
+
 .EXAMPLE
     .\Remove-ExcessFileVersions.ps1 -SiteUrl https://contoso.sharepoint.com/sites/media -ClientId 00000000-0000-0000-0000-000000000000 -Library Documents -KeepVersions 5
 

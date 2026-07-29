@@ -42,6 +42,17 @@
 .EXAMPLE
     .\Get-SharingLinksReport.ps1 -SiteUrl https://contoso.sharepoint.com/sites/projects -ClientId 00000000-0000-0000-0000-000000000000
 
+    Scanning https://contoso.sharepoint.com/sites/projects ...
+      4 sharing link group(s) found.
+
+    Done. 4 sharing link(s) written to .\SharingLinks_20260729-143912.csv
+      3 link(s) are Anonymous or Flexible (specific-people/anyone) - review those first.
+
+    CSV columns, and a row:
+    SiteUrl,LinkKind,DocumentGuid,DocumentPath,MemberCount,Members,GroupId,GroupLogin
+    .../sites/projects,Flexible,00000000-...,/sites/projects/Shared Documents/Q4
+    Budget.xlsx,2,megan@fabrikam.com; alex@fabrikam.com,31,SharingLinks.0000...
+
 .EXAMPLE
     .\Get-SharingLinksReport.ps1 -SiteUrl https://contoso.sharepoint.com/sites/projects -ClientId 00000000-0000-0000-0000-000000000000 -ResolveDocuments -OnlyWithMembers
 

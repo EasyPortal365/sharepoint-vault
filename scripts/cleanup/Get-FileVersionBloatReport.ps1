@@ -44,7 +44,26 @@
     CSV file with one row per library. Defaults to a timestamped file.
 
 .EXAMPLE
-    .\Get-FileVersionBloatReport.ps1 -SiteUrl https://contoso.sharepoint.com/sites/projects -ClientId 00000000-0000-0000-0000-000000000000
+    .\Get-FileVersionBloatReport.ps1 -SiteUrl https://contoso.sharepoint.com/sites/media -ClientId 00000000-0000-0000-0000-000000000000
+
+    Scanning https://contoso.sharepoint.com/sites/media ...
+      Documents ...
+      Site Assets ...
+
+    Library summary -> .\VersionBloat_Libraries_20260729-143912.csv
+    Per-file detail -> .\VersionBloat_Files_20260729-143912.csv
+    Version history in scope: 41.7 GB across 318 file(s).
+
+    Ten worst offenders:
+
+    Library   FileName            CurrentMB VersionsMB VersionCount
+    -------   --------            --------- ---------- ------------
+    Documents Product launch.pptx     84.20    3115.40           37
+    Documents Price list.xlsx          6.10     915.00          150
+
+    When a read fails, totals are labelled as a floor rather than an answer:
+    INCOMPLETE: 0 site(s) and 12 file(s) could not be read.
+    Any total below is a floor, not the answer.
 
 .EXAMPLE
     .\Get-FileVersionBloatReport.ps1 -SiteUrl https://contoso.sharepoint.com/sites/media -ClientId 00000000-0000-0000-0000-000000000000 -MinFileSizeMB 20

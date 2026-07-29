@@ -33,7 +33,21 @@
     CSV file to create. Defaults to a timestamped file in the current directory.
 
 .EXAMPLE
-    .\Get-ListInventory.ps1 -SiteUrl https://contoso.sharepoint.com/sites/projects -ClientId 00000000-0000-0000-0000-000000000000
+    .\Get-ListInventory.ps1 -SiteUrl https://contoso.sharepoint.com/sites/intranet -ClientId 00000000-0000-0000-0000-000000000000
+
+    Scanning https://contoso.sharepoint.com/sites/intranet ...
+      30 list(s)/librar(ies) inventoried.
+
+    Done. 30 row(s) written to .\ListInventory_20260729-143912.csv
+    1 librar(ies)/list(s) keep UNLIMITED versions - the usual storage culprit.
+
+    Two rows, showing why the raw numbers are never printed on their own:
+    Title,Kind,ItemCount,VersioningEnabled,MajorVersionLimit,VersionPolicy
+    Documents,Library,842,True,500,Keep 500 major versions
+    Site Pages,Library,7,True,0,"Unlimited major versions, drafts kept for ALL
+    major versions"
+
+    Both zeroes on the second row mean "unlimited", not "none".
 
 .EXAMPLE
     .\Get-ListInventory.ps1 -SiteUrl (Get-Content .\sites.txt) -ClientId 00000000-0000-0000-0000-000000000000 -IncludeHidden

@@ -23,6 +23,15 @@
 .EXAMPLE
     .\Get-SiteCollectionInventory.ps1 -TenantAdminUrl https://contoso-admin.sharepoint.com
 
+    Connecting to https://contoso-admin.sharepoint.com ...
+    Retrieving site collections (this can take a while on large tenants) ...
+
+    Done. 110 site collections exported to .\SiteCollectionInventory_20260729-143912.csv
+    Total storage in scope: 117.8 GB
+
+    CSV columns:
+    Url,Title,Template,StorageUsedMB,StorageQuotaMB,Owner,SharingCapability,LockState,LastContentModifiedDate
+
 .EXAMPLE
     .\Get-SiteCollectionInventory.ps1 -TenantAdminUrl https://contoso-admin.sharepoint.com -IncludeOneDrive -OutputPath .\full-inventory.csv
 
