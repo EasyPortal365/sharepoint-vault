@@ -59,7 +59,7 @@ PowerShell scripts for SharePoint Online administration and diagnostics.
 
 | Script | Purpose |
 |---|---|
-| [Test-SearchManagedProperty.ps1](search/Test-SearchManagedProperty.ps1) | Proves a managed property exists, is retrievable and is queryable — with a control sample *(PnP)* |
+| [Test-SearchManagedProperty.ps1](search/Test-SearchManagedProperty.ps1) | Proves a managed property exists, holds data and is filterable — via the `sortlist` probe, with a control sample *(PnP)* |
 
 ## Planned categories
 

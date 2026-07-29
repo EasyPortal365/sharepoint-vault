@@ -189,10 +189,18 @@ Done. 214 row(s) across 110 site(s) written to C:\reports\SiteCollectionAdmins.c
 
 ```text
 Scanning https://contoso.sharepoint.com/sites/projects ...
-  list: Contracts
-  list: Board Documents
+  30 list(s), 2 with unique permissions.
+    list: Contracts
+    list: Board Documents
 
 Done. 3 row(s) written to C:\reports\UniquePermissions.csv
+```
+
+A full `-IncludeItems` pass over 30 lists takes about ten seconds, because the unique-permission flag for every item arrives in one request per list:
+
+```text
+  [3/30] Contracts (412 items) ...
+  [4/30] Board Documents (18 items) ...
 ```
 
 ```csv
@@ -399,21 +407,22 @@ below cannot be trusted. Aborting instead of reporting a clean result.
 
 ```text
 Base query: IsDocument:1
-Control OK: a nonexistent property does not show up (20 sample rows).
+Control OK: invented property names are rejected, so a "missing" verdict below is meaningful.
+Sampling 25 row(s) per property.
 
-Property                Retrievable RowsSampled RowsWithData Queryable FilterHits Verdict
---------                ----------- ----------- ------------ --------- ---------- -------
-ViewableByExternalUsers        True          20           20      True         14 Retrievable with data
-RefinableString00              True          20            0                     Retrievable but EMPTY on every
-                                                                                 sampled row
+Property                Exists Sortable RowsSampled RowsWithData Filterable FilterHits Verdict
+--------                ------ -------- ----------- ------------ ---------- ---------- -------
+ViewableByExternalUsers   True     True          25           25       True       1951 Exists and carries data
+RefinableString00         True     True          25            0      False          0 Exists in the schema but
+                                                                                       empty here - likely never
+                                                                                       mapped or not crawled yet
+ContentTypeId             True    False          25           25      False          0 Exists and carries data
+ZzTotallyMadeUp42        False    False          25            0      False          0 DOES NOT EXIST - anything
+                                                                                       built on it returns empty
+                                                                                       forever
 ```
 
-And the case that matters — the control property came back, so the script disqualifies its own output instead of reporting a verdict:
-
-```text
-WARNING: The control property 'VaultControlPropertyThatCannotExist99' appears in the result rows.
-Detection is unreliable on this tenant - do not trust the results below.
-```
+Four different real answers, which is the whole point: a fabricated name, a real-but-unmapped `RefinableString00`, a real-but-unsortable `ContentTypeId`, and one that works. `selectproperties` alone reports the first two identically.
 
 ---
 

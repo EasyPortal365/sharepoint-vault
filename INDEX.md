@@ -32,7 +32,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [Get-DeletedSitesReport.ps1](scripts/cleanup/Get-DeletedSitesReport.ps1) — deleted site collections still burning quota, and the restore-or-lose deadline
     - [Get-DuplicateFilesReport.ps1](scripts/cleanup/Get-DuplicateFilesReport.ps1) — duplicates by name + byte size through the index; `TrimDuplicates` off, and it aborts rather than call a `Size`-less result set clean
   - **search/**
-    - [Test-SearchManagedProperty.ps1](scripts/search/Test-SearchManagedProperty.ps1) — retrievable? queryable? — settled with a deliberately fake control property, because Search answers 200 for names that don't exist
+    - [Test-SearchManagedProperty.ps1](scripts/search/Test-SearchManagedProperty.ps1) — exists? has data? filterable? — settled via `sortlist`, the one probe Search answers honestly, plus a fabricated control name
 - 💥 **[gotchas/](gotchas/)** — real-world traps as *symptom → cause → fix*
   - **rest-api/**
     - [Get lists by URL, not by title](gotchas/rest-api/get-list-by-url-not-by-title.md) — `getbytitle()` breaks the moment someone renames a list; resolve by URL
