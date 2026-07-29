@@ -120,13 +120,20 @@
     .docsify-copy-code-button { font-family:var(--mono) !important; font-size:10px !important; background:var(--navy) !important; border-radius:6px !important; }
 
     /* ── tables ── */
-    /* Jednotná šířka pro všechny tabulky. fit-content vypadal roztřepeně —
-       každá tabulka jinak široká podle délky svých buněk. */
-    .markdown-section table { display:block; width:100%; overflow-x:auto; border-radius:12px; border:1px solid var(--line); box-shadow:0 6px 18px -16px rgba(0,33,99,.3); }
+    /* display:table, ne block: block ruší tabulkový layout, takže width:100%
+       roztáhne jen vnější rámeček a hlavička s řádky skončí dřív (šedý pruh
+       th nedosáhl na konec tabulky). Vodorovný posuv je potřeba jen na úzkém
+       displeji — viz media query u konce stylů. */
+    .markdown-section table { display:table; width:100%; table-layout:auto; border-collapse:separate; border-spacing:0; border-radius:12px; border:1px solid var(--line); box-shadow:0 6px 18px -16px rgba(0,33,99,.3); overflow:hidden; }
     .markdown-section th { font-family:var(--mono); font-size:11px; letter-spacing:.1em; text-transform:uppercase; background:var(--bg2); color:var(--muted); border:none; border-bottom:1px solid var(--line2); padding:10px 14px; }
     .markdown-section td { border:none; border-bottom:1px solid var(--line); font-size:13.5px; padding:10px 14px; }
     .markdown-section tr:last-child td { border-bottom:none; }
     .markdown-section tr:nth-child(2n) { background:rgba(244,247,251,.5); }
+    /* Na úzkém displeji se tabulka smí posouvat vodorovně; tam už na
+       zarovnání hlavičky s rámečkem nezáleží tolik jako na čitelnosti. */
+    @media (max-width:768px) {
+      .markdown-section table { display:block; overflow-x:auto; }
+    }
 
     /* ── course = čtecí typografie (proporcionální nadpisy, ne terminál) ── */
     /* Kurz je souvislá próza — tam širší řádek škodí čtení, na rozdíl od
