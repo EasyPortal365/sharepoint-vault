@@ -80,6 +80,7 @@ Every article carries frontmatter with `tags` and `applies-to`, so repo search g
 
 | Gotcha | TL;DR |
 |---|---|
+| [Someone else's group membership without `User.Read.All`](graph/check-membership-of-another-user-without-user-read-all.md) | Invert the question: read the group's transitive members; keep a third state for "could not determine" |
 | [`/me/sendMail`: From is always the signed-in user](graph/sendmail-from-is-the-signed-in-user.md) | Delegated `Mail.Send` can't impersonate — configurable "sender" settings should govern Reply-To |
 | [Purview Audit Query API is async](graph/purview-audit-query-api-is-async.md) | Queries run for an hour+ — attach to the last succeeded one, create in the background; v1.0 may 404 where beta works |
 | [Office files: property demotion changes the hash](graph/office-files-property-demotion.md) | A metadata PATCH rewrites bytes inside docx/xlsx — `cTag` and even content hashes lie; key change detection on `lastModifiedBy` |
