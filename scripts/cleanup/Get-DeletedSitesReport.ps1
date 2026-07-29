@@ -58,6 +58,10 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
+
+# The module ships for Windows PowerShell and does not auto-load in PowerShell 7,
+# so #Requires alone leaves you with CommandNotFoundException. Import it explicitly.
+Import-Module Microsoft.Online.SharePoint.PowerShell -WarningAction SilentlyContinue
 $retentionDays = 93
 
 Write-Host "Connecting to $TenantAdminUrl ..." -ForegroundColor Cyan

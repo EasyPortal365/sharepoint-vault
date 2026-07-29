@@ -79,6 +79,11 @@ $ErrorActionPreference = 'Stop'
 $files     = New-Object System.Collections.Generic.List[object]
 $summaries = New-Object System.Collections.Generic.List[object]
 
+# Files and libraries we could not read. A storage report that answers "nothing
+# to reclaim" after failing every read is worse than no report at all.
+$failedFiles = 0
+$failedSites = 0
+
 $minBytes = [int64]$MinFileSizeMB * 1MB
 
 $caml = @"
@@ -125,13 +130,18 @@ foreach ($url in $SiteUrl) {
                 $currentSize = [int64]$item['File_x0020_Size']
 
                 try {
-                    $file = $item.File
+                    # Load File through the item's own context. Reaching for $item.File
+                    # directly throws "The object is used in the context different from
+                    # the one associated with the object" once anything else has opened
+                    # a second PnP connection in the same process.
+                    $file = Get-PnPProperty -ClientObject $item -Property File
                     $versions = Get-PnPProperty -ClientObject $file -Property Versions
                 }
                 catch {
                     # Unreadable version metadata is not "no versions" - skip the file
                     # rather than folding a read failure into a zero.
-                    Write-Warning ("{0}: could not read versions for {1}" -f $lib.Title, $item['FileLeafRef'])
+                    Write-Warning ("{0}: could not read versions for {1} - {2}" -f $lib.Title, $item['FileLeafRef'], $_.Exception.Message)
+                    $script:failedFiles++
                     continue
                 }
 
@@ -174,10 +184,17 @@ foreach ($url in $SiteUrl) {
     }
     catch {
         Write-Warning "Failed to scan ${url}: $($_.Exception.Message)"
+        $failedSites++
     }
 }
 
 Write-Host ''
+if ($failedSites -gt 0 -or $failedFiles -gt 0) {
+    Write-Host ("INCOMPLETE: {0} site(s) and {1} file(s) could not be read." -f $failedSites, $failedFiles) -ForegroundColor Red
+    Write-Host 'Any total below is a floor, not the answer.' -ForegroundColor Red
+    Write-Host ''
+}
+
 if ($summaries.Count -gt 0) {
     $summaries | Sort-Object VersionsMB -Descending | Export-Csv -Path $SummaryPath -NoTypeInformation -Encoding UTF8
     Write-Host ("Library summary -> {0}" -f (Resolve-Path $SummaryPath)) -ForegroundColor Green
@@ -193,6 +210,9 @@ if ($files.Count -gt 0) {
     Write-Host 'Ten worst offenders:' -ForegroundColor Cyan
     $files | Sort-Object VersionsMB -Descending | Select-Object -First 10 |
         Format-Table Library, FileName, CurrentMB, VersionsMB, VersionCount -AutoSize
+}
+elseif ($failedSites -gt 0 -or $failedFiles -gt 0) {
+    Write-Host 'Done, but every read failed - this says nothing about version history.' -ForegroundColor Red
 }
 else {
     Write-Host 'Done. No file version history above the thresholds.' -ForegroundColor Green

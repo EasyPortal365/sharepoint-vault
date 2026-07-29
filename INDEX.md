@@ -5,6 +5,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
 *Last updated: 2026-07-29*
 
 - 🧰 **[scripts/](scripts/)** — PowerShell scripts with comment-based help, read-only unless stated
+  - [What the scripts actually print](scripts/sample-outputs.md) — console + CSV samples for every script from real runs, including what a denied read looks like
   - **reporting/**
     - [Get-SiteCollectionInventory.ps1](scripts/reporting/Get-SiteCollectionInventory.ps1) — every site collection in one CSV: storage, owner, template, sharing, lock state, last activity
     - [Get-HubSiteStructure.ps1](scripts/reporting/Get-HubSiteStructure.ps1) — the whole hub topology; re-reads sites individually rather than reporting "no associations" when the bulk call omits `HubSiteId`

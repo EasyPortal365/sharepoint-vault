@@ -65,6 +65,10 @@ param(
 $ErrorActionPreference = 'Stop'
 $report = New-Object System.Collections.Generic.List[object]
 
+# A read that failed is not a bin that is empty. Counted here so the closing
+# summary can tell the two apart instead of reporting silence as cleanliness.
+$failedReads = 0
+
 foreach ($url in $SiteUrl) {
     Write-Host "Scanning $url ..." -ForegroundColor Cyan
 
@@ -83,6 +87,7 @@ foreach ($url in $SiteUrl) {
             }
             catch {
                 Write-Warning ("{0} / {1}: {2}" -f $url, $stage, $_.Exception.Message)
+                $failedReads++
                 continue
             }
 
@@ -113,10 +118,16 @@ foreach ($url in $SiteUrl) {
     }
     catch {
         Write-Warning "Failed to scan ${url}: $($_.Exception.Message)"
+        $failedReads++
     }
 }
 
 Write-Host ''
+if ($failedReads -gt 0) {
+    Write-Host ("{0} recycle bin read(s) FAILED - this report is INCOMPLETE." -f $failedReads) -ForegroundColor Red
+    Write-Host 'Reading the second-stage bin needs site collection administrator rights.' -ForegroundColor Red
+}
+
 if ($report.Count -gt 0) {
     $report | Sort-Object DeletedDate -Descending | Export-Csv -Path $OutputPath -NoTypeInformation -Encoding UTF8
     $totalGB = [math]::Round((($report | Measure-Object SizeMB -Sum).Sum) / 1024, 2)
@@ -134,6 +145,9 @@ if ($report.Count -gt 0) {
     if ($expiring.Count -gt 0) {
         Write-Host ("{0} item(s) will be purged within a week - restore now or lose them." -f $expiring.Count) -ForegroundColor Yellow
     }
+}
+elseif ($failedReads -gt 0) {
+    Write-Host 'Done, but nothing could be read. This is NOT evidence that the bins are empty.' -ForegroundColor Red
 }
 else {
     Write-Host 'Done. Recycle bins are empty.' -ForegroundColor Green

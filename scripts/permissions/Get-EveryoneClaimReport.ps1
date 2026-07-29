@@ -66,6 +66,10 @@ param(
 $ErrorActionPreference = 'Stop'
 $report = New-Object System.Collections.Generic.List[object]
 
+# This is a security report. "No claim found" and "the scan blew up" must never
+# look the same in the output, so failures are counted and stated at the end.
+$failedSites = New-Object System.Collections.Generic.List[string]
+
 function Get-ClaimLabel {
     param([string]$LoginName)
 
@@ -152,10 +156,18 @@ foreach ($url in $SiteUrl) {
     }
     catch {
         Write-Warning "Failed to scan ${url}: $($_.Exception.Message)"
+        $failedSites.Add($url)
     }
 }
 
 Write-Host ''
+if ($failedSites.Count -gt 0) {
+    Write-Host ("{0} site(s) could NOT be scanned - this report does not cover them:" -f $failedSites.Count) -ForegroundColor Red
+    foreach ($u in $failedSites) { Write-Host ("  {0}" -f $u) -ForegroundColor Red }
+    Write-Host 'Reading role assignments needs Full Control. Treat a clean result for these sites as unknown, not safe.' -ForegroundColor Red
+    Write-Host ''
+}
+
 if ($report.Count -gt 0) {
     $report | Export-Csv -Path $OutputPath -NoTypeInformation -Encoding UTF8
     Write-Host ("Done. {0} row(s) written to {1}" -f $report.Count, (Resolve-Path $OutputPath)) -ForegroundColor Green
@@ -165,8 +177,11 @@ if ($report.Count -gt 0) {
         Write-Host ("  {0} of them are the real 'Everyone' claim, which INCLUDES external guests." -f $everyone.Count) -ForegroundColor Red
     }
 }
+elseif ($failedSites.Count -ge @($SiteUrl).Count) {
+    Write-Host 'Done, but NOT ONE site could be scanned. This is not a clean result - it is no result.' -ForegroundColor Red
+}
 else {
-    Write-Host 'Done. Nothing found.' -ForegroundColor Green
+    Write-Host 'Done. No tenant-wide claim found on the sites that were scanned.' -ForegroundColor Green
 }
 
 try { Disconnect-PnPOnline } catch { }

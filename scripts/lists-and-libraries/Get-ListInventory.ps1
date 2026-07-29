@@ -91,7 +91,14 @@ foreach ($url in $SiteUrl) {
                     $versionPolicy = ('Keep {0} major versions' -f $list.MajorVersionLimit)
                 }
                 if ($list.EnableMinorVersions) {
-                    $versionPolicy += (', drafts for {0} major versions' -f $list.MajorWithMinorVersionsLimit)
+                    # Zero is "unlimited" here too - printing the raw 0 reads as
+                    # "keeps no drafts", the exact opposite of what it means.
+                    if ($list.MajorWithMinorVersionsLimit -eq 0) {
+                        $versionPolicy += ', drafts kept for ALL major versions'
+                    }
+                    else {
+                        $versionPolicy += (', drafts for {0} major versions' -f $list.MajorWithMinorVersionsLimit)
+                    }
                 }
             }
 

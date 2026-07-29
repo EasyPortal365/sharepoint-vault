@@ -65,6 +65,10 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
+
+# The module ships for Windows PowerShell and does not auto-load in PowerShell 7,
+# so #Requires alone leaves you with CommandNotFoundException. Import it explicitly.
+Import-Module Microsoft.Online.SharePoint.PowerShell -WarningAction SilentlyContinue
 $cutoff = (Get-Date).AddDays(-$InactiveDays)
 
 Write-Host "Connecting to $TenantAdminUrl ..." -ForegroundColor Cyan
@@ -99,9 +103,13 @@ Write-Host ''
 if ($report.Count -gt 0) {
     $report | Export-Csv -Path $OutputPath -NoTypeInformation -Encoding UTF8
 
-    $reclaimGB = [math]::Round((($stale | Measure-Object StorageUsageCurrent -Sum).Sum) / 1024, 1)
+    # Report the unit that carries information: rounding 21 MB to "0.0 GB"
+    # tells the reader there is nothing there, which is a different claim.
+    $reclaimMB = [math]::Round((($stale | Measure-Object StorageUsageCurrent -Sum).Sum), 0)
+    $reclaimText = if ($reclaimMB -ge 1024) { '{0} GB' -f [math]::Round($reclaimMB / 1024, 1) } else { '{0} MB' -f $reclaimMB }
+
     Write-Host ("Done. {0} inactive site(s) written to {1}" -f $report.Count, (Resolve-Path $OutputPath)) -ForegroundColor Green
-    Write-Host ("Storage held by inactive sites: {0} GB" -f $reclaimGB) -ForegroundColor Yellow
+    Write-Host ("Storage held by inactive sites: {0}" -f $reclaimText) -ForegroundColor Yellow
 
     Write-Host ''
     Write-Host 'Ten longest dormant:' -ForegroundColor Cyan
