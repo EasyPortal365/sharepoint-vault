@@ -72,6 +72,7 @@ Every article carries frontmatter with `tags` and `applies-to`, so repo search g
 | [Application Customizer runs again in dialog iframes](spfx/application-customizer-runs-in-dialog-iframe.md) | Your floating button shows up twice — the copy is pinned to the dialog's corner because the dialog *is* its viewport; refuse `window.self !== window.top` |
 | [`speechSynthesis.cancel()` doesn't stop chunked reading](spfx/speech-cancel-doesnt-stop-chunked-reading.md) | Stop needs N clicks and two messages read over each other — the utterance chain re-queues itself from `onend`; guard with an epoch counter bumped before `cancel()` |
 | [Application Customizer's floating UI disappears on SPA navigation](spfx/application-customizer-content-disappears-on-spa-navigation.md) | The button vanishes as you click around the site — `onInit` doesn't re-run on SPA nav and `visibilitychange` never fires; re-render on `navigatedEvent` |
+| [Sharing text via URL hits length limits](spfx/share-text-via-url-hits-length-limits.md) | "Send to Teams" dies with `AADSTS90015` and `mailto` silently won't open on long text — cap the URL payload, carry the full text on the clipboard |
 
 ### app-catalog/
 

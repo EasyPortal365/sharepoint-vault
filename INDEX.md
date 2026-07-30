@@ -97,6 +97,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [Application Customizer runs again in dialog iframes](gotchas/spfx/application-customizer-runs-in-dialog-iframe.md) — a floating button rendered twice, the copy pinned to the dialog's corner; refuse nested browsing contexts before anything else (+ un-render path and why a body MutationObserver needs a definitive „no“)
     - [`speechSynthesis.cancel()` doesn't stop chunked reading](gotchas/spfx/speech-cancel-doesnt-stop-chunked-reading.md) — the utterance chain re-queues itself from onend; epoch counter bumped BEFORE cancel(), and no onEnd from a superseded chain
     - [Application Customizer's floating UI disappears on SPA navigation](gotchas/spfx/application-customizer-content-disappears-on-spa-navigation.md) — the button vanishes as you click around the site; `visibilitychange` never fires on in-page nav, so re-render on `navigatedEvent` (+ a `MutationObserver` backstop)
+    - [Sharing text via URL hits length limits](gotchas/spfx/share-text-via-url-hits-length-limits.md) — "Send to Teams" (`/share?msgText`) dies with `AADSTS90015` on long answers and `mailto` silently won't open; cap the URL payload and put the full text on the clipboard
   - **app-catalog/**
     - [Three `.sppkg` packaging pitfalls](gotchas/app-catalog/sppkg-packaging-pitfalls.md) — ASCII-only solution name, icon exactly 96×96, Publisher column is AppSource-only
   - **graph/**
