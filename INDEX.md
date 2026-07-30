@@ -85,6 +85,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [Centered flex clips on mobile](gotchas/spfx/centered-flex-clips-on-mobile.md) — centering + overflow cuts content above the scroll; flex "springs"
     - [JSX attributes and smart quotes](gotchas/spfx/jsx-attributes-and-smart-quotes.md) — typographic quotes in attributes = TS1003; wrap as `{'…'}`
     - [A shared component's var() fallback chain is only as good as its last link](gotchas/spfx/shared-component-var-fallback-lands-on-system-font.md) — shared UI package falls through to `sans-serif` in apps that never publish CSS custom properties; runtime-only, no build catches it
+    - [Read-only mode must cover Graph too](gotchas/spfx/read-only-mode-must-cover-graph-too.md) — an SPFx app writes through two clients; wrapping `SPHttpClient` leaves mail, calendar and Planner wide open
     - [Portaled overlays miss your CSS reset](gotchas/spfx/portaled-overlays-miss-your-css-reset.md) — portal to `body` escapes the scoped reset; `content-box` fields overflow and grow a scrollbar
     - [`behavior: 'smooth'` is silently ignored inside a portaled overlay](gotchas/spfx/smooth-scroll-ignored-in-portaled-overlay.md) — jump-to-section does nothing in a modal/reader; drop the flag and set `scrollTop` directly
     - [Previewing library files in your own app](gotchas/spfx/previewing-library-files-in-your-app.md) — PDF embeds directly, Office needs WOPI by `{UniqueId}`, HTML is served as an attachment and never renders from `src`
