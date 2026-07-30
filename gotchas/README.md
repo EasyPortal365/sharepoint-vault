@@ -116,6 +116,7 @@ The standard server-side companion of an SPFx solution — and its own set of tr
 | [Graph Search returns 0 hits — you passed the question as the `queryString`](search/graph-search-raw-question-returns-nothing.md) | A question isn't a query and "what's new" isn't a search — translate to keywords, use `*` + the default date sort, and only documented per-entity KQL |
 | [An unparenthesized `OR` silently escapes your scope filter](search/kql-or-escapes-your-scope-filter.md) | KQL `AND` binds tighter than `OR` — `a OR b Path:"…"` = `a OR (b AND Path)`; wrap the whole user/AI query in parentheses |
 | [Sensitivity labels in Search — property works, licensing gates it](search/sensitivity-labels-in-search-and-licensing.md) | `InformationProtectionLabelId` returns a GUID only after AIP-enable + label + crawl; unlicensed tenants can't even create a label (`InvalidLicenseException`) |
+| [`NoCrawl` on a library silently blinds your RAG](search/nocrawl-on-a-library-silently-blinds-your-rag.md) | Excluded containers return 0 with HTTP 200 and no log, so Search-backed AI can never see them; ask what the container *holds*, not its type — and indexing isn't a permission change, Search trims per user |
 
 ### powershell/
 
