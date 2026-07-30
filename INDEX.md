@@ -2,7 +2,7 @@
 
 Every single thing in the vault, on one page. Section names link to folder READMEs; leaves link straight to the content.
 
-*Last updated: 2026-07-29*
+*Last updated: 2026-07-30*
 
 - 🧰 **[scripts/](scripts/)** — PowerShell scripts with comment-based help, read-only unless stated
   - [What the scripts actually print](scripts/sample-outputs.md) — console + CSV samples for every script from real runs, including what a denied read looks like
@@ -163,6 +163,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [Read all items from a large list — paging done right](snippets/rest/get-all-list-items-paged.md) — `$top` caps at 5,000, `$skip` is ignored; follow `odata.nextLink`
     - [Find externally / anonymously shared content via Search](snippets/rest/find-externally-shared-content-search.md) — `ViewableByExternalUsers:1` is a queryable managed property; oversharing audit in one line, values are strings not booleans
     - [Check another user's effective permissions](snippets/rest/check-another-users-effective-permissions.md) — `getusereffectivepermissions` resolves the mask for any user from your own session; `Open` is `Low` bit 16, and a zero mask means no access at all
+    - [Upload a generated image as a list item attachment](snippets/rest/upload-generated-image-as-list-attachment.md) — `AttachmentFiles/add` takes a raw `ArrayBuffer`; the item must exist first, `Blob.arrayBuffer()` is unavailable on ES2015, and PNG beats SVG if you render it back
   - **cli/**
     - [SPO Management Shell one-liners](snippets/cli/spo-management-shell-one-liners.md) — storage top 20, external sharing, deleted sites, lock state
 - 📦 **[templates/](templates/)** — reusable artifacts to adapt, not rewrite
