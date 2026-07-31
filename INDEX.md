@@ -141,6 +141,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [Stored XSS via list content](gotchas/security/stored-xss-from-list-content.md) — React doesn't block `javascript:` hrefs; allowlist `safeHref` with C0-strip at every sink
     - [Field hiding is not a permission](gotchas/security/field-hiding-is-not-a-permission.md) — role-based UI field hiding is cosmetic; Read on the list = REST/Export/other web parts see it; confidentiality needs a separate list, item perms, or a server tier
     - [CSV export executes formulas](gotchas/security/csv-export-of-list-data-executes-formulas.md) — a member-written cell starting `= + - @` (or TAB/CR) runs in Excel on the reader's machine; quoting doesn't disarm it, an apostrophe prefix does
+    - [URL sanitiser strips spaces](gotchas/security/url-sanitiser-strips-spaces.md) — the C0 strip that blocks `java<TAB>script:` also eats the plain space, so every link to `/Shared Documents/…` 404s; strip to decide, return with `%20`
   - **tooling/**
     - [Getting bulk data into a SharePoint page from the console](gotchas/tooling/getting-bulk-data-into-a-sharepoint-page-from-the-console.md) — serve the payload from `127.0.0.1` with CORS instead of pasting it or uploading it; loopback is a trustworthy origin so HTTPS pages may fetch it
     - [Git Bash mangles backslashes for native exes](gotchas/tooling/git-bash-mangles-backslashes-for-native-exes.md) — `[\\/]` arrives as `[/]`; Windows-path regexes silently under-match

@@ -2,7 +2,7 @@
 title: Stored XSS via SharePoint list content — React won't save you
 tags: [security, spfx, react, xss]
 applies-to: SharePoint Online (any client rendering list data)
-last-reviewed: 2026-07-16
+last-reviewed: 2026-07-31
 ---
 
 # Stored XSS via SharePoint list content — React won't save you
@@ -32,19 +32,35 @@ One tiny module, used at **every** sink:
 ```ts
 export function safeHref(raw: string | undefined): string | undefined {
   if (!raw) { return undefined; }
-  // 1) strip whitespace + C0 controls (U+0000–U+0020): browsers strip them
-  //    before parsing, so 'java\tscript:alert(1)' otherwise sneaks past checks
+  const trimmed = String(raw).trim();
+
+  // 1) DECISION copy — strip whitespace + C0 controls (U+0000–U+0020). Browsers
+  //    strip them before parsing, so 'java\tscript:alert(1)' would otherwise sneak past.
+  let decide = '';
+  for (let i = 0; i < trimmed.length; i++) { if (trimmed.charCodeAt(i) > 0x20) { decide += trimmed[i]; } }
+  if (!decide) { return undefined; }
+
+  // 2) OUTPUT copy — drop only C0 + DEL and encode the space. That range in step 1
+  //    includes U+0020, and returning it would turn '/Shared Documents/A.docx' into
+  //    '/SharedDocuments/A.docx' — a 404. See url-sanitiser-strips-spaces.md.
   let url = '';
-  for (let i = 0; i < raw.length; i++) { if (raw.charCodeAt(i) > 0x20) { url += raw[i]; } }
-  const lower = url.toLowerCase();
+  for (let i = 0; i < trimmed.length; i++) {
+    const c = trimmed.charCodeAt(i);
+    if (c === 0x20) { url += '%20'; }
+    else if (c > 0x1f && c !== 0x7f) { url += trimmed[i]; }
+  }
+
+  const lower = decide.toLowerCase();
   if (/^(javascript|vbscript|data):/.test(lower)) { return undefined; }   // hard block
   if (/^https?:\/\//.test(lower) || /^(mailto|tel):/.test(lower)) { return url; }
   if (lower.indexOf('//') === 0) { return 'https:' + url; }               // protocol-relative → https
-  if (url.indexOf('/') === 0) { return url; }                             // site-relative
+  if (decide.indexOf('/') === 0) { return url; }                          // site-relative
   if (/^[\w.-]+\.[a-z]{2,}(\/|$)/.test(lower)) { return 'https://' + url; } // bare domain → https
   return undefined;                                                        // unknown scheme → no link
 }
 ```
+
+> ⚠ **The two copies are not optional.** Deciding and returning from the same aggressively stripped string is the single most common way this function gets broken — it passes every attack test and quietly 404s every SharePoint file whose path contains a space. Details and a verification recipe: [URL sanitiser strips spaces](url-sanitiser-strips-spaces.md).
 
 - Render the anchor **only when `safeHref` returns a value** — `<a href={undefined}>` looks like a link and does nothing.
 - **SVG/HTML from lists** → a DOMParser-based sanitizer with an element/attribute **allowlist** (drop `script`, `foreignObject`, `iframe`, all `on*` attributes, `javascript:`/`data:` in `href`/`src`). **Never a regex-only sanitizer** — `java\tscript:` and nested tags walk right through.
