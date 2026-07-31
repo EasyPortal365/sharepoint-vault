@@ -2,7 +2,7 @@
 title: rules-of-hooks false-positive — a complex JSX `&&` chain flags the wrong hook
 tags: [spfx, react, eslint, debugging]
 applies-to: SharePoint Online (SPFx, React 17, eslint-plugin-react-hooks)
-last-reviewed: 2026-07-19
+last-reviewed: 2026-07-31
 ---
 
 # rules-of-hooks false-positive — a complex JSX `&&` chain flags the *wrong* hook
@@ -55,3 +55,18 @@ return (
 The `const` sits after the hooks and before the return; the plugin sees a single simple identifier in the JSX and stops mis-attributing.
 
 **Debugging heuristic:** when rules-of-hooks blames a hook that is obviously unconditional, don't bisect the hooks — bisect the **render**. Look for a complex `&&`/ternary expression added in the same batch (even below an early return). `git stash <file>` confirms HEAD is clean faster than reverting hunk by hunk, and hand-reverted intermediate states mislead more than they help — reset to a clean HEAD and re-add in small blocks, running eslint after each.
+
+## Second trigger: component *size* — and here extracting conditions does not help
+
+*Added 2026-07-31.* The same false-positive has a second cause, and the fix above makes no difference to it. Adding two cards to a ~960-line component holding 20+ hooks flagged **30 hooks** that had nothing to do with the new code. Six rounds of the prescribed remedy — lifting conditions into `const`, flattening nested ternaries, moving derived values below the hooks — only **shuffled the count** (35 → 3 → 30 → 30), and one round *increased* it, which reads as "it's getting better" and isn't.
+
+What fixed it, first try, was **extracting the new part into its own component**:
+
+```tsx
+// Before: one component, 20+ hooks, the new cards inline in a 400-line return
+// After:  <MfaCards user={user} … />  — its own hooks, props instead of closure
+```
+
+**How to tell the two apart:** if lifting conditions doesn't help, or the error count oscillates between runs, the trigger isn't the shape of an expression — it's the volume of the component. Stop tuning expressions and **split the component**. That is also the better design: the extracted part usually turns out to be a separate concern with its own state and its own loading.
+
+Note this is a *lint* failure only — the code runs correctly either way. But `build --production` runs lint as an error, so it blocks the release.
