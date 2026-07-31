@@ -5,6 +5,9 @@ applies-to: Microsoft Graph (beta) /users/{id}/authentication/requirements, Micr
 last-reviewed: 2026-07-31
 ---
 
+<!-- Verified live on 2026-07-31 against a tenant without an Entra ID premium license. -->
+
+
 # `perUserMfaState` says "disabled" even when MFA is enforced
 
 > **Bottom line.** Per-user MFA (`perUserMfaState`) is the *legacy* enforcement switch. When a tenant enforces MFA through Conditional Access or security defaults — which is the norm — every user stays `disabled` while being fully protected. Reading that field and rendering "no MFA" is a false statement, not a rounding error. To report on MFA, use `/reports/authenticationMethods/userRegistrationDetails` (registration is a fact regardless of enforcement method); use `perUserMfaState` only alongside the tenant's actual enforcement context.
@@ -73,6 +76,14 @@ Treat each of those as **three-valued**: `true` / `false` / *couldn't read it*. 
 
 ## Watch out for
 
+- 🔴 **The registration report needs an Entra ID P1/P2 tenant — and the docs don't say so.** On a tenant without a premium license the call fails with:
+
+  ```
+  HTTP 403 · Authentication_RequestFromNonPremiumTenantOrB2CTenant:
+  Tenant is not a B2C tenant and doesn't have premium license
+  ```
+
+  The endpoint's permissions table lists only the scope and the supported directory roles, so this condition cannot be derived from the documentation — only from a live call. Handle it as its own case: telling an admin to "add the Reports Reader role" when the tenant simply has no P1 sends them somewhere that cannot help. `perUserMfaState` (beta) rejects the same tenants, so on Entra ID Free there is no Graph route to MFA status at all — say so and point at the admin center instead of rendering an empty column.
 - **The registration report omits disabled (blocked) accounts.** The docs note: *"This method doesn't work for disabled users."* A missing row therefore means *no data*, never *no MFA*. Render it as "not stated".
 - **Reading the report needs a directory role**, not just the scope: Reports Reader, Security Reader, Security Administrator, or Global Reader. A tenant admin's app registration having `AuditLog.Read.All` is not enough if the signed-in user holds none of those roles — you get 403. Fail loudly with the actual Graph error rather than rendering an empty (i.e. "nobody has MFA") table.
 - **Writing `perUserMfaState` is beta-only.** There is no v1.0 equivalent; Microsoft's standard warning applies (*"Use of these APIs in production applications is not supported"*). Writing needs delegated `Policy.ReadWrite.AuthenticationMethod` plus the Authentication Policy Administrator role (least privileged supported).
