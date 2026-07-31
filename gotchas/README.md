@@ -145,6 +145,7 @@ The standard server-side companion of an SPFx solution — and its own set of tr
 
 | Gotcha | TL;DR |
 |---|---|
+| [Getting bulk data into a SharePoint page from the console](tooling/getting-bulk-data-into-a-sharepoint-page-from-the-console.md) | Don't paste 100+ kB and don't upload it anywhere — serve it from `127.0.0.1` with CORS; loopback is a trustworthy origin, so HTTPS pages may fetch it |
 | [Git Bash mangles backslashes for native exes](tooling/git-bash-mangles-backslashes-for-native-exes.md) | `[\\/]` arrives as `[/]` — Windows-path regexes silently under-match; use `.{1,4}` or run from PowerShell |
 | [GitHub Pages certificate stuck](tooling/github-pages-certificate-stuck.md) | Domain added before DNS existed → cert never arrives — remove & re-add the domain to restart provisioning |
 | [NUL byte makes grep treat a file as binary](tooling/nul-byte-makes-grep-treat-file-as-binary.md) | One raw U+0000 in a literal and every grep-based sweep silently skips the file — write the escape, detect with `file` |

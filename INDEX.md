@@ -2,7 +2,7 @@
 
 Every single thing in the vault, on one page. Section names link to folder READMEs; leaves link straight to the content.
 
-*Last updated: 2026-07-30*
+*Last updated: 2026-07-31*
 
 - 🧰 **[scripts/](scripts/)** — PowerShell scripts with comment-based help, read-only unless stated
   - [What the scripts actually print](scripts/sample-outputs.md) — console + CSV samples for every script from real runs, including what a denied read looks like
@@ -142,6 +142,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [Field hiding is not a permission](gotchas/security/field-hiding-is-not-a-permission.md) — role-based UI field hiding is cosmetic; Read on the list = REST/Export/other web parts see it; confidentiality needs a separate list, item perms, or a server tier
     - [CSV export executes formulas](gotchas/security/csv-export-of-list-data-executes-formulas.md) — a member-written cell starting `= + - @` (or TAB/CR) runs in Excel on the reader's machine; quoting doesn't disarm it, an apostrophe prefix does
   - **tooling/**
+    - [Getting bulk data into a SharePoint page from the console](gotchas/tooling/getting-bulk-data-into-a-sharepoint-page-from-the-console.md) — serve the payload from `127.0.0.1` with CORS instead of pasting it or uploading it; loopback is a trustworthy origin so HTTPS pages may fetch it
     - [Git Bash mangles backslashes for native exes](gotchas/tooling/git-bash-mangles-backslashes-for-native-exes.md) — `[\\/]` arrives as `[/]`; Windows-path regexes silently under-match
     - [GitHub Pages certificate stuck](gotchas/tooling/github-pages-certificate-stuck.md) — domain added before DNS existed; remove & re-add restarts provisioning
     - [NUL byte makes grep treat a file as binary](gotchas/tooling/nul-byte-makes-grep-treat-file-as-binary.md) — one raw U+0000 and every grep-based sweep silently skips the file; write the escape, detect with `file`
