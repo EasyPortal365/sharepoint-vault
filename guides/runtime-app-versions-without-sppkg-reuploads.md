@@ -78,6 +78,7 @@ These are rare; bump the package version (10.1…) when they happen.
 
 ## Pitfalls we hit so you don't
 
+- **Copy ALL lazy chunks (`chunk.*`) into the versioned folder.** Webpack runtime inside the library composes chunk URLs from *its* manifest's `internalModuleBaseUrls` — i.e. the versioned folder. If your stabilizer moves only the library bundle, every `import()`-ed feature (charts, xlsx, previews…) 404s **on first use**, which a load-the-app smoke test never exercises. Copy, don't move — the flat folder may still serve other components. Add the copy step even to apps with zero chunks today; the first future `import()` silently breaks otherwise.
 - **Offer actions based on the *running* version, not the *target* one.** The client may serve an older cached version for a while; comparing against "what would load next" hid the Activate button in our first live test.
 - **Allowlist `.gitignore` on the CDN repo silently drops new file types.** If your CDN repo ignores `*` and whitelists `!*.js`, your `releases.json` and `manifest.json` never reach the remote — add exceptions first, then verify the pushed commit lists *all* new files.
 - Windows PowerShell 5.1 only: `@(Get-Content x | ConvertFrom-Json)` does **not** unwrap the parsed array — see the companion gotcha before you script `releases.json` updates.
