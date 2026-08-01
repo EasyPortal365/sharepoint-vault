@@ -131,6 +131,7 @@ The standard server-side companion of an SPFx solution — and its own set of tr
 | [PS7 `[ref]` arguments break Office COM calls](powershell/ps7-ref-arguments-break-com-calls.md) | The VBA-style `SaveAs2([ref]$path, [ref]$fmt)` dies with "psobject to Object" on PowerShell 7 — pass plain values positionally |
 | [A syntax check under PS 7 proves nothing about 5.1](powershell/ps7-parse-check-misses-ps51-syntax-errors.md) | `Parser::ParseFile` clears a script full of ternary / `??` / `&&` that 5.1 refuses to parse — run the check inside the oldest engine you support |
 | [`Export-Csv -Encoding UTF8` flips the BOM](powershell/export-csv-utf8-bom-flips-between-versions.md) | 5.1 writes the BOM, 7 omits it, Excel decides encoding by it — the same report is readable on one machine and mojibake on the next |
+| [PS 5.1: `@(ConvertFrom-Json)` keeps the array wrapped](powershell/convertfrom-json-array-not-unwrapped-in-json-output.md) | `@()` around the pipeline doesn't enumerate the parsed array; a later `+` nests it whole and `ConvertTo-Json` writes `{value:[…],Count:n}` into your JSON — enumerate with `ForEach-Object` and filter by shape |
 | [`$host` is a constant you cannot assign](powershell/host-is-a-constant-you-cannot-assign.md) | The natural name for `[uri].Host` is reserved; the error blames the value, not the name — and `$input` / `$args` take the assignment silently |
 
 ### security/
