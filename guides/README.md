@@ -11,6 +11,7 @@ End-to-end walkthroughs that connect the dots — the "how it all fits together"
 | [SharePoint REST vs Microsoft Graph](sharepoint-rest-vs-microsoft-graph.md) | A decision table by capability, the SPFx auth difference, common wrong picks, and throttling budgets |
 | [Choosing a knowledge format for RAG](choosing-a-knowledge-format-for-sharepoint-rag.md) | Markdown vs DOCX vs site pages vs list items — extraction quality, token economics, and the author-here-publish-Markdown pattern |
 | [Token cost of content formats (measured)](token-cost-of-sharepoint-content-formats.md) | Real numbers: the same article as `.md`/`.docx`/`.pdf`/a SharePoint page — why extraction, not format, drives the token bill; plus a CZ-vs-EN language tax and a reproducible harness |
+| [Reverse-engineering Plumsail Forms apps](reverse-engineering-plumsail-forms-apps.md) | Where the JSON definitions, custom JS, and hosting web parts live; a read-only extraction routine and the client-side patterns (dummy-item pages, UI-only security, race conditions) to flag before a migration |
 
 ## Planned next
 
