@@ -51,6 +51,7 @@ Every article carries frontmatter with `tags` and `applies-to`, so repo search g
 
 | Gotcha | TL;DR |
 |---|---|
+| [A global kill-switch must not block its own fix](spfx/kill-switch-must-not-block-its-own-fix.md) | Expired licence / suspended / read-only guarding the version switch means the fix that exists cannot be applied — exit only via DevTools |
 | [The ES2015 `lib` trap](spfx/es2015-lib-forbidden-apis.md) | Why `padStart` and friends fail the build (TS2550), and the safe equivalents |
 | [SPA router hijacks anchor clicks](spfx/spa-router-hijacks-anchor-clicks.md) | On published pages, `<a href>` navigates before React `onClick` runs — use buttons for in-app actions |
 | [Third-party CSS breaks webpack](spfx/css-url-assets-break-webpack.md) | `url(images/...)` without `./` kills the build (Leaflet et al.) — inject a `<link>` instead of importing |

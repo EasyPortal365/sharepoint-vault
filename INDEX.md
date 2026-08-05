@@ -70,6 +70,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [`length()` is for arrays, not strings](gotchas/lists/formatting-length-is-for-arrays-not-strings.md) — string length via `indexOf(str + '^', '^')`, or the expression collapses to empty
     - [`MajorVersionLimit: 0` means unlimited, not none](gotchas/lists/major-version-limit-zero-means-unlimited.md) — one integer covering "no limit", "keep n" and "versioning is off"; the library your report calls tidiest is the one eating the quota
   - **spfx/**
+    - [A global kill-switch must not block its own fix](gotchas/spfx/kill-switch-must-not-block-its-own-fix.md) — the lock defends itself against being lifted; infrastructure operations (version pin, re-check, config, diagnostics) belong outside it
     - [The ES2015 `lib` trap](gotchas/spfx/es2015-lib-forbidden-apis.md) — TS2550 on `padStart` & friends, and the safe equivalents
     - [SPA router hijacks anchor clicks](gotchas/spfx/spa-router-hijacks-anchor-clicks.md) — `<a href>` navigates before React `onClick` runs; use buttons for in-app actions
     - [Third-party CSS breaks webpack](gotchas/spfx/css-url-assets-break-webpack.md) — `url(images/...)` without `./` kills the build; inject a `<link>` instead
