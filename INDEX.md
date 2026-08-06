@@ -174,6 +174,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [Find externally / anonymously shared content via Search](snippets/rest/find-externally-shared-content-search.md) — `ViewableByExternalUsers:1` is a queryable managed property; oversharing audit in one line, values are strings not booleans
     - [Check another user's effective permissions](snippets/rest/check-another-users-effective-permissions.md) — `getusereffectivepermissions` resolves the mask for any user from your own session; `Open` is `Low` bit 16, and a zero mask means no access at all
     - [Upload a generated image as a list item attachment](snippets/rest/upload-generated-image-as-list-attachment.md) — `AttachmentFiles/add` takes a raw `ArrayBuffer`; the item must exist first, `Blob.arrayBuffer()` is unavailable on ES2015, and PNG beats SVG if you render it back
+    - [Write to Azure Table Storage without the SDK (SharedKeyLite)](snippets/rest/azure-table-storage-no-sdk-sharedkeylite.md) — Table-flavored SharedKeyLite is just `Date\n/{account}{path}` (Blob's format 403s forever); split the connection string on the first `=`, query string stays unsigned, 409 on create = already exists
   - **cli/**
     - [SPO Management Shell one-liners](snippets/cli/spo-management-shell-one-liners.md) — storage top 20, external sharing, deleted sites, lock state
 - 📦 **[templates/](templates/)** — reusable artifacts to adapt, not rewrite
