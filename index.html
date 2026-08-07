@@ -317,7 +317,17 @@
           for (k = 0; k < SV_GH.spark.length; k++) { if (SV_GH.spark[k] > mx) mx = SV_GH.spark[k]; tot += SV_GH.spark[k]; }
           var line = '';
           for (k = 0; k < SV_GH.spark.length; k++) { line += lv[Math.min(7, Math.round(SV_GH.spark[k] / mx * 7))]; }
-          sp.innerHTML = '<span class="hl" style="letter-spacing:1px">' + line + '</span>&nbsp;&nbsp;<span style="color:var(--soft)">' + tot + ' commits / 52 weeks</span>';
+          /* `tot` je soucet sparkliny, a ta muze stat na fallbacku z max 100
+             commitu — jako celkovy pocet by lhala. Kdyz neni znamy skutecny
+             pocet, rekni to slovem "at least". Okno taky nesmi tvrdit 52
+             tydnu u repa, ktere je stare tri. */
+          var born = SV_GH.born ? new Date(SV_GH.born).getTime() : 0;
+          var ageWk = born ? Math.max(1, Math.ceil((Date.now() - born) / 604800000)) : 0;
+          var windowLabel = (ageWk && ageWk < 52) ? (ageWk + ' weeks') : '52 weeks';
+          var countLabel = SV_GH.total
+            ? (SV_GH.total + ' commits')
+            : ('at least ' + tot + ' commits');
+          sp.innerHTML = '<span class="hl" style="letter-spacing:1px">' + line + '</span>&nbsp;&nbsp;<span style="color:var(--soft)">' + countLabel + ' / ' + windowLabel + '</span>';
         } else { sp.textContent = 'activity stats are being computed by GitHub — check back in a minute'; }
       }
       /* new this week */
@@ -362,6 +372,17 @@
           return weeks;
         }).catch(function () { return null; });
     }
+    function svFetchCommitTotal(base) {
+      /* Skutecny pocet commitu = cislo posledni stranky pri per_page=1.
+         Scitat /commits?per_page=100 nejde: to vrati nejvys 100, takze by
+         se jako "pocet commitu" zobrazil strop strankovani. */
+      return fetch(base + '/commits?per_page=1').then(function (r) {
+        if (!r.ok) { return null; }
+        var link = r.headers.get('Link') || '';
+        var m = link.match(/[?&]page=(\d+)>;\s*rel="last"/);
+        return m ? parseInt(m[1], 10) : null;
+      }).catch(function () { return null; });
+    }
     function svFetchStats(base, attempt) {
       /* GitHub stats vrací 202, dokud je nepočítá — retry, pak fallback z commitů */
       return fetch(base + '/stats/commit_activity').then(function (r) {
@@ -373,12 +394,12 @@
       }).catch(function () { return null; });
     }
     function svSaveCache() {
-      try { localStorage.setItem('sv-gh-v2', JSON.stringify({ t: Date.now(), d: SV_GH })); } catch (e) {}
+      try { localStorage.setItem('sv-gh-v3', JSON.stringify({ t: Date.now(), d: SV_GH })); } catch (e) {}
     }
     function svLoad() {
       var base0 = 'https://api.github.com/repos/EasyPortal365/sharepoint-vault';
       try {
-        var cached = JSON.parse(localStorage.getItem('sv-gh-v2') || 'null');
+        var cached = JSON.parse(localStorage.getItem('sv-gh-v3') || 'null');
         if (cached && Date.now() - cached.t < 1800000) {
           SV_GH = cached.d; svFill();
           if (!SV_GH.spark) {
@@ -402,9 +423,11 @@
         fetch(base + '/commits?per_page=5').then(function (r) { return r.ok ? r.json() : null; }),
         fetch(base + '/git/trees/main?recursive=1').then(function (r) { return r.ok ? r.json() : null; }),
         svFetchStats(base, 0).then(function (s) { return s || svSparkFromCommits(base); }),
-        fetch(base + '/commits?until=' + encodeURIComponent(weekAgo) + '&per_page=1').then(function (r) { return r.ok ? r.json() : null; })
+        fetch(base + '/commits?until=' + encodeURIComponent(weekAgo) + '&per_page=1').then(function (r) { return r.ok ? r.json() : null; }),
+        svFetchCommitTotal(base)
       ]).then(function (res) {
         SV_GH.repo = res[0]; SV_GH.commits = res[1];
+        SV_GH.total = res[5];
         if (res[0] && res[0].created_at) { SV_GH.born = res[0].created_at; }
         if (res[2] && res[2].tree) {
           var n = { gotchas: 0, guides: 0, scripts: 0, snippets: 0, cats: 0 }, catSet = {}, gp = [];
