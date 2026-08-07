@@ -2,7 +2,7 @@
 
 Every single thing in the vault, on one page. Section names link to folder READMEs; leaves link straight to the content.
 
-*Last updated: 2026-08-01*
+*Last updated: 2026-08-06*
 
 - 🧰 **[scripts/](scripts/)** — PowerShell scripts with comment-based help, read-only unless stated
   - [What the scripts actually print](scripts/sample-outputs.md) — console + CSV samples for every script from real runs, including what a denied read looks like
@@ -123,6 +123,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [A pinned Azure OpenAI model+version is a time bomb](gotchas/azure-functions/azure-openai-pinned-model-version-is-a-time-bomb.md) — "Deprecating" blocks NEW deployments well before retirement; resolve the newest GA version at deploy time, and match the deployment name to the model family
   - **search/**
     - [Search ignores unknown managed properties](gotchas/search/unknown-managed-properties-fail-silently.md) — a made-up property name returns HTTP 200 with full results; auto-created Choice properties are not queryable; probe with a fake name, map to RefinableString
+    - [The crawl log DOES exist in SharePoint Online](gotchas/search/crawl-log-exists-in-spo-via-csom.md) — reachable only through CSOM DocumentCrawlLog via /_vti_bin/client.svc/ProcessQuery, gated by a separate Crawl Log Permissions grant that no admin role implies; returns ~52 columns incl. per-pass crawl timestamps, errors, NoIndex and delete state
     - [ViewsX properties sort only by `ViewsLifeTime`](gotchas/search/viewsx-properties-sort-only-by-viewslifetime.md) — windowed counts select but don't sort; re-rank client-side
     - [Compare SharePoint paths decode-first](gotchas/search/compare-sharepoint-paths-decode-first.md) — normalize encoding + boundary-aware prefix, or matches never fire
     - [Don't trust the parsed-file-types table: SPO does index `.md`](gotchas/search/md-is-fulltext-indexed-despite-the-docs.md) — the official table omits Markdown, yet live SPO full-text indexes it; probe before architecting
