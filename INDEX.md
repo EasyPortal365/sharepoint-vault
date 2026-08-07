@@ -152,6 +152,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
   - **tooling/**
     - [Getting bulk data into a SharePoint page from the console](gotchas/tooling/getting-bulk-data-into-a-sharepoint-page-from-the-console.md) — serve the payload from `127.0.0.1` with CORS instead of pasting it or uploading it; loopback is a trustworthy origin so HTTPS pages may fetch it
     - [Git Bash mangles backslashes for native exes](gotchas/tooling/git-bash-mangles-backslashes-for-native-exes.md) — `[\\/]` arrives as `[/]`; Windows-path regexes silently under-match
+    - [Contributors panel keeps a co-author you removed](gotchas/tooling/contributors-panel-stale-after-history-rewrite.md) — panel and API answer different questions (co-authors vs authors), so verify at the source; know the documented ~24 h window before you start waiting
     - [GitHub Pages certificate stuck](gotchas/tooling/github-pages-certificate-stuck.md) — domain added before DNS existed; remove & re-add restarts provisioning
     - [NUL byte makes grep treat a file as binary](gotchas/tooling/nul-byte-makes-grep-treat-file-as-binary.md) — one raw U+0000 and every grep-based sweep silently skips the file; write the escape, detect with `file`
 - 🧭 **[guides/](guides/)** — end-to-end walkthroughs
