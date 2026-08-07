@@ -118,7 +118,7 @@ An `SP.SimpleDataTable` with roughly 52 columns per row. The ones worth having:
 | `TimeStampUtc` | last crawl of this item |
 | `TimeStamp_AddModify`, `TimeStamp_SecurityOnly`, `TimeStamp_EnumerateChildren` | separate timestamps for content vs. permissions-only vs. child enumeration passes |
 | `ErrorCode`, `ErrorDesc`, `ErrorCount`, `ErrorLevel`, `StatusMessage` | why an item failed to crawl |
-| `NoIndex`, `ExclusionReason` | excluded from the index, and why |
+| `NoIndex`, `ExclusionReason` | 🚫 **not usable** — see the traps below; use REST `NoCrawl` instead |
 | `IsDeleted`, `DeleteReason`, `DeletePending` | removal state |
 | `SPItemModifiedTime` | content modification time (UTC) — against `TimeStampUtc` this gives indexing lag |
 | `ChildrenCount`, `ParentDocID` | crawl hierarchy |
@@ -140,13 +140,25 @@ An `SP.SimpleDataTable` with roughly 52 columns per row. The ones worth having:
 - **HTTP 200 does not mean success.** CSOM reports failures inside `ErrorInfo` with a 200 status — the missing-permission case included.
 - **Most rows are not "content".** A quiet 30-day window on one small site returned 468 rows: 466 flagged `NoIndex` (mostly `AllItems.aspx` / `DispForm.aspx` form pages, correctly excluded) and 376 flagged `IsDeleted` (transient list items). Filter before showing this to anyone, or a perfectly healthy site will look alarming.
 - **Do not classify rows by their URL — read `AccessData`.** The obvious heuristic ("`AllItems.aspx` is a view, `DispForm.aspx` is a form, everything else is content") is wrong, because the crawler indexes a list *through* its form pages: to SharePoint, `.../Lists/X/AllItems.aspx` **is the list** and `.../Lists/X/DispForm.aspx?ID=1` **is list item 1**. Measured against `AccessData` on 254 rows, that heuristic agreed on **9**. Everything downstream — counts, per-type breakdowns, rules — inherits the error.
-- **`NoIndex` on an item is usually inherited, not a decision.** Exclude a list from the index and every item in it arrives flagged. Counting flagged *rows* therefore measures how much data a list holds, not how much is misconfigured: one deliberately excluded list turned a two-digit number into **2,251**. Aggregate at the level where the decision was made — count lists and webs, and report items only as context ("containing N items"). A finding that grows with data volume instead of with the number of mistakes is using the wrong unit.
+- 🚫 **`NoIndex` does not mean "excluded from the index". Do not build anything on it.** The name is a trap. Measured across 2,000 rows and checked against both REST and search:
+
+  | List | crawl log `NoIndex` | REST `NoCrawl` (the truth) | Search hits |
+  |---|---|---|---|
+  | a deliberately excluded data list | true | **true** | 0 |
+  | `Shared Documents` | true | **false** | 2 |
+  | `SiteAssets` | true | false | 3 |
+  | `TaxonomyHiddenList` | **false** | – | 0 |
+
+  `NoIndex: true` covers 30 of 32 lists, 20 of 20 root folders, 25 of 31 views, 1,872 of 1,894 items and both site collections — essentially every row, regardless of configuration, and as the last line shows it sometimes points the wrong way. It appears to mean "this row is not itself a document in the index" (containers, deleted items), not "someone excluded it". **The authoritative source is REST `NoCrawl`** on the web (`/_api/web?$select=NoCrawl`) and on the list (`/_api/web/lists?$select=NoCrawl`).
+
+  Worth stating how this was nearly missed: the first correction only narrowed the count from items to containers, on the theory that items inherit the flag from their list. That reduced 2,251 to 30 and looked solved. It wasn't — the check had only ever looked at lists that genuinely *were* excluded. One ordinary document library, known not to be excluded, was enough to show the field does not discriminate at all. **A sample without a counter-example confirms whatever you already believe.**
+- **`ExclusionReason` is always 0**, including on rows where `NoIndex` is true — SharePoint Online does not appear to populate it, and no other column carries a reason.
 
 ## Meta-lesson
 
-Three columns in a row — `LastRepositoryModifiedTime`, the object type, `NoIndex` — meant something other than their name suggests, and each one moved the resulting number by an order of magnitude. What made them expensive is that every wrong result was **plausible**: "almost everything is waiting to be re-indexed", "most rows are form pages", "a lot of content sits outside the index" could all be true of a real tenant. Nothing about the output invited a second look.
+Four columns in a row — `LastRepositoryModifiedTime`, the object type, `NoIndex`, `ExclusionReason` — meant something other than their name suggests, and each one moved the resulting number by an order of magnitude. What made them expensive is that every wrong result was **plausible**: "almost everything is waiting to be re-indexed", "most rows are form pages", "a lot of content sits outside the index" could all be true of a real tenant. Nothing about the output invited a second look.
 
-So, before a crawl-log column becomes a number in a UI or a threshold in a rule, check its meaning against an **independent** source — REST `Modified` for a timestamp, `AccessData` for a type, an actual search query for an exclusion. And make sure the check has a **non-empty control**: "searching for that list returned 0, so it really is excluded" proves nothing until a query that *must* return something is run beside it.
+So, before a crawl-log column becomes a number in a UI or a threshold in a rule, check its meaning against an **independent** source — REST `Modified` for a timestamp, `AccessData` for a type, REST `NoCrawl` plus a real search query for an exclusion. Two things make such a check worth anything: a **non-empty control** ("searching for that list returned 0" proves nothing until a query that *must* return something runs beside it), and a **counter-example** — at least one object you know is *not* in the state you are testing for. Without the counter-example a field that is always true looks like confirmation.
 
 "This API does not exist in SharePoint Online" is a claim about absence, and two quick probes cannot establish it — especially when both probes tested *different* surfaces (search properties, admin pages) than the one it actually lives on (CSOM). Before declaring a SharePoint capability missing, **grep the PnP PowerShell cmdlets**: they are thin wrappers over CSOM and REST, and they routinely expose surfaces that the documentation never mentions.
 
