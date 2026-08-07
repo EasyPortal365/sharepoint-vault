@@ -119,12 +119,23 @@ An `SP.SimpleDataTable` with roughly 52 columns per row. The ones worth having:
 | `ErrorCode`, `ErrorDesc`, `ErrorCount`, `ErrorLevel`, `StatusMessage` | why an item failed to crawl |
 | `NoIndex`, `ExclusionReason` | excluded from the index, and why |
 | `IsDeleted`, `DeleteReason`, `DeletePending` | removal state |
-| `LastRepositoryModifiedTime` | compare against `TimeStampUtc` to estimate indexing lag |
+| `SPItemModifiedTime` | content modification time (UTC) — against `TimeStampUtc` this gives indexing lag |
 | `ChildrenCount`, `ParentDocID` | crawl hierarchy |
 
 ## Traps when reading the result
 
 - **Values are CSOM-encoded, not plain JSON.** Dates arrive both as `/Date(1785959294170)/` (epoch millis) and as `/Date(2026,7,5,19,48,14,170)/` — where **the month is zero-based**. GUIDs come as `/Guid(...)/`, binary as `/Base64Binary(...)/`. Parse with a regex; `new Date(value)` will not do it.
+- **Three different time bases, and two of them lie if taken naively.** This is the trap most likely to reach production, because the wrong values look plausible:
+
+  | Column | Base | How to read it |
+  |---|---|---|
+  | `TimeStampUtc` | epoch millis, **UTC** | the only unambiguous one — use it for "last crawled" |
+  | `TimeStamp`, `TimeStamp_AddModify`, `TimeStamp_SecurityOnly`, `SPItemModifiedTime` | component form, **UTC** | `Date.UTC(y, m, d, …)` — **not** `new Date(y, m, d, …)`, which reads them as browser-local and shifts them by your offset |
+  | `LastRepositoryModifiedTime` | FILETIME in the **backend's local time** | 🚫 do not use — see below |
+
+  Read as epoch millis, `LastRepositoryModifiedTime` yields the year ~4,250,000. Converted properly from FILETIME it is still **7 hours ahead of reality**: an item whose REST `Modified` is `2026-08-07T06:14:52Z` carries `SPItemModifiedTime` of exactly `06:14:52Z` but a FILETIME of `13:14:52Z`. Seven hours is US Pacific *daylight* time — meaning **the offset becomes eight in winter**. Take the modification time from `SPItemModifiedTime` instead.
+
+- **Verify one value against an independent source before building a metric on it.** Indexing lag computed from the wrong column produced 20 usable values out of 400 and **367 rows claiming the crawl happened before the change** — which reads as a property of the tenant ("almost everything is waiting to be re-indexed"), not as a conversion bug. The numbers were nonsense, but *plausible* nonsense. After switching to `SPItemModifiedTime`: 387 usable, zero pending, median 23 minutes. One comparison against REST `Modified` would have caught it immediately.
 - **HTTP 200 does not mean success.** CSOM reports failures inside `ErrorInfo` with a 200 status — the missing-permission case included.
 - **Most rows are not "content".** A quiet 30-day window on one small site returned 468 rows: 466 flagged `NoIndex` (mostly `AllItems.aspx` / `DispForm.aspx` form pages, correctly excluded) and 376 flagged `IsDeleted` (transient list items). Filter before showing this to anyone, or a perfectly healthy site will look alarming.
 
