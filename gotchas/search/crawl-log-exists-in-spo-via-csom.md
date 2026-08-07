@@ -2,7 +2,7 @@
 title: The crawl log DOES exist in SharePoint Online — it just isn't where you look for it
 tags: [search, crawl-log, csom, permissions, diagnostics]
 applies-to: SharePoint Online
-last-reviewed: 2026-08-06
+last-reviewed: 2026-08-07
 ---
 
 # The crawl log DOES exist in SharePoint Online — it just isn't where you look for it
@@ -114,6 +114,7 @@ An `SP.SimpleDataTable` with roughly 52 columns per row. The ones worth having:
 | Column | Meaning |
 |---|---|
 | `FullUrl` | the crawled URL |
+| `AccessData` | **what kind of object this is** — `SPWeb`, `SPList`, `SPListItem`, `SPFolder`, `SPView`. Use this, never a guess based on the URL |
 | `TimeStampUtc` | last crawl of this item |
 | `TimeStamp_AddModify`, `TimeStamp_SecurityOnly`, `TimeStamp_EnumerateChildren` | separate timestamps for content vs. permissions-only vs. child enumeration passes |
 | `ErrorCode`, `ErrorDesc`, `ErrorCount`, `ErrorLevel`, `StatusMessage` | why an item failed to crawl |
@@ -138,8 +139,14 @@ An `SP.SimpleDataTable` with roughly 52 columns per row. The ones worth having:
 - **Verify one value against an independent source before building a metric on it.** Indexing lag computed from the wrong column produced 20 usable values out of 400 and **367 rows claiming the crawl happened before the change** — which reads as a property of the tenant ("almost everything is waiting to be re-indexed"), not as a conversion bug. The numbers were nonsense, but *plausible* nonsense. After switching to `SPItemModifiedTime`: 387 usable, zero pending, median 23 minutes. One comparison against REST `Modified` would have caught it immediately.
 - **HTTP 200 does not mean success.** CSOM reports failures inside `ErrorInfo` with a 200 status — the missing-permission case included.
 - **Most rows are not "content".** A quiet 30-day window on one small site returned 468 rows: 466 flagged `NoIndex` (mostly `AllItems.aspx` / `DispForm.aspx` form pages, correctly excluded) and 376 flagged `IsDeleted` (transient list items). Filter before showing this to anyone, or a perfectly healthy site will look alarming.
+- **Do not classify rows by their URL — read `AccessData`.** The obvious heuristic ("`AllItems.aspx` is a view, `DispForm.aspx` is a form, everything else is content") is wrong, because the crawler indexes a list *through* its form pages: to SharePoint, `.../Lists/X/AllItems.aspx` **is the list** and `.../Lists/X/DispForm.aspx?ID=1` **is list item 1**. Measured against `AccessData` on 254 rows, that heuristic agreed on **9**. Everything downstream — counts, per-type breakdowns, rules — inherits the error.
+- **`NoIndex` on an item is usually inherited, not a decision.** Exclude a list from the index and every item in it arrives flagged. Counting flagged *rows* therefore measures how much data a list holds, not how much is misconfigured: one deliberately excluded list turned a two-digit number into **2,251**. Aggregate at the level where the decision was made — count lists and webs, and report items only as context ("containing N items"). A finding that grows with data volume instead of with the number of mistakes is using the wrong unit.
 
 ## Meta-lesson
+
+Three columns in a row — `LastRepositoryModifiedTime`, the object type, `NoIndex` — meant something other than their name suggests, and each one moved the resulting number by an order of magnitude. What made them expensive is that every wrong result was **plausible**: "almost everything is waiting to be re-indexed", "most rows are form pages", "a lot of content sits outside the index" could all be true of a real tenant. Nothing about the output invited a second look.
+
+So, before a crawl-log column becomes a number in a UI or a threshold in a rule, check its meaning against an **independent** source — REST `Modified` for a timestamp, `AccessData` for a type, an actual search query for an exclusion. And make sure the check has a **non-empty control**: "searching for that list returned 0, so it really is excluded" proves nothing until a query that *must* return something is run beside it.
 
 "This API does not exist in SharePoint Online" is a claim about absence, and two quick probes cannot establish it — especially when both probes tested *different* surfaces (search properties, admin pages) than the one it actually lives on (CSOM). Before declaring a SharePoint capability missing, **grep the PnP PowerShell cmdlets**: they are thin wrappers over CSOM and REST, and they routinely expose surfaces that the documentation never mentions.
 
