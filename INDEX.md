@@ -46,6 +46,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [Lookup fields need `$expand`](gotchas/rest-api/lookup-fields-need-expand.md) — read via `$expand` + projections, write via `<Name>Id`; ~12-lookup query limit
     - [File size needs `$expand=File`](gotchas/rest-api/file-size-needs-expand-file.md) — `File_x0020_Size` 400s in `$select`; use `File/Length`
     - [Uploaded `.html` gains mso document properties](gotchas/rest-api/html-upload-gains-mso-document-properties.md) — setting column values rewrites the file; hash read-back fails…
+    - [“Invalid text value” is a MaxLength 500](gotchas/rest-api/invalid-text-value-is-a-maxlength-500.md) — generic 500 naming no field; a `Text` column capped at 255
     - [Create a modern page via REST (3-step)](gotchas/rest-api/create-modern-page-via-rest-sitepages.md) — `CanvasContent1` won't stick on create; create → SavePageAsDraft → Publish, canvas is JSON
     - [`$filter` on multi-value person fields 400s](gotchas/rest-api/filter-on-multivalue-person-field-400.md) — fall back to client filtering, but only on HTTP 400
     - [`GetStorageEntity` returns 200 for a missing key](gotchas/rest-api/getstorageentity-returns-200-for-missing-key.md) — unset tenant property answers `200 {"odata.null":true}`; "unset" and "failed" are indistinguishable by status code, and writing needs Tenant Admin
