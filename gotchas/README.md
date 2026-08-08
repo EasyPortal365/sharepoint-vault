@@ -19,6 +19,7 @@ Every article carries frontmatter with `tags` and `applies-to`, so repo search g
 | [Choice fields accept any value](rest-api/choice-fields-accept-any-value.md) | Validation is a form-only illusion — REST writes anything; enforce vocabulary yourself |
 | [Lookup fields need `$expand`](rest-api/lookup-fields-need-expand.md) | Relations, not values — read via `$expand` + projected fields, write via `<Name>Id`; mind the ~12-lookup limit |
 | [File size needs `$expand=File`](rest-api/file-size-needs-expand-file.md) | `File_x0020_Size` is computed and 400s in `$select` — use `File/Length` + `File/UIVersionLabel` |
+| [Uploaded `.html` gains mso document properties](rest-api/html-upload-gains-mso-document-properties.md) | Writing column values rewrites the file with `<mso:CustomDocumentProperties>` — SHA-1 read-back fails for markup, holds for binaries |
 | [Create a modern page via REST (3-step)](rest-api/create-modern-page-via-rest-sitepages.md) | `CanvasContent1` won't stick on create — it's create → SavePageAsDraft → Publish, and the canvas is JSON, not HTML |
 | [`$filter` on multi-value person fields 400s](rest-api/filter-on-multivalue-person-field-400.md) | UserMulti projections don't filter server-side — fall back to client filtering, but only on HTTP 400 |
 | [`GetStorageEntity` returns 200 for a missing key](rest-api/getstorageentity-returns-200-for-missing-key.md) | Unset tenant property answers `200 {"odata.null":true}` — status codes cannot tell "unset" from "failed"; writing needs Tenant Admin |
