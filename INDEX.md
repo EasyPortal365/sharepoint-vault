@@ -2,7 +2,7 @@
 
 Every single thing in the vault, on one page. Section names link to folder READMEs; leaves link straight to the content.
 
-*Last updated: 2026-08-06*
+*Last updated: 2026-08-08*
 
 - 🧰 **[scripts/](scripts/)** — PowerShell scripts with comment-based help, read-only unless stated
   - [What the scripts actually print](scripts/sample-outputs.md) — console + CSV samples for every script from real runs, including what a denied read looks like
@@ -124,6 +124,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [Rate limit counts the capability probe](gotchas/azure-functions/rate-limit-counts-capability-probe-corporate-nat.md) — corporate NAT makes per-IP per-company; metered probes silently hide the feature
     - [A pinned Azure OpenAI model+version is a time bomb](gotchas/azure-functions/azure-openai-pinned-model-version-is-a-time-bomb.md) — "Deprecating" blocks NEW deployments well before retirement; resolve the newest GA version at deploy time, and match the deployment name to the model family
     - ["No such host" for &lt;app&gt;.azurewebsites.net](gotchas/azure-functions/unique-default-hostname-no-such-host.md) — new apps get a unique default hostname (`<app>-<hash>.<region>-01`); the bare name never resolves, and the deploy log's `.scm.` URL reveals the real host even when the app name is a masked secret
+    - [Measure a third-party API before you build on it](gotchas/azure-functions/third-party-api-measure-before-you-build-on-it.md) — the best-known free API returned 404/502/timeout on 7 of 8 live calls while the test suite stayed green; probe latency and status on real data, then cache successes (never failures) and honour `Retry-After` — a Function App's single outbound IP shares one quota
   - **search/**
     - [Search ignores unknown managed properties](gotchas/search/unknown-managed-properties-fail-silently.md) — a made-up property name returns HTTP 200 with full results; auto-created Choice properties are not queryable; probe with a fake name, map to RefinableString
     - [The crawl log DOES exist in SharePoint Online](gotchas/search/crawl-log-exists-in-spo-via-csom.md) — reachable only through CSOM DocumentCrawlLog via /_vti_bin/client.svc/ProcessQuery, gated by a separate Crawl Log Permissions grant that no admin role implies; returns ~52 columns incl. per-pass crawl timestamps, errors, NoIndex and delete state
