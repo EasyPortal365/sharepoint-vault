@@ -113,6 +113,7 @@ The standard server-side companion of an SPFx solution — and its own set of tr
 | [A pinned Azure OpenAI model+version is a time bomb](azure-functions/azure-openai-pinned-model-version-is-a-time-bomb.md) | "Deprecating" blocks NEW deployments well before retirement — resolve the newest GA version at deploy time |
 | ["No such host" for &lt;app&gt;.azurewebsites.net](azure-functions/unique-default-hostname-no-such-host.md) | New apps get a unique default hostname (`<app>-<hash>.<region>-01`) — the bare name never resolves; the deploy log's `.scm.` URL reveals the real host |
 | [Measure a third-party API before you build on it](azure-functions/third-party-api-measure-before-you-build-on-it.md) | The canonical free API 404'd/502'd/timed out on 7 of 8 live calls while tests stayed green — probe latency *and* status on real data; then cache successes (never failures) and honour `Retry-After`, because one outbound IP means one shared quota |
+| [Cache-Control on a dynamic endpoint is uninvalidatable](azure-functions/cache-control-on-dynamic-endpoint-is-uninvalidatable.md) | `max-age` on a live aggregate lets a shared cache hold it keyed by URL — neither app restart nor deleting the data clears it, only expiry; serve dynamic data `no-store`, cache server-side, call with `?_=Date.now()` |
 
 ### search/
 
