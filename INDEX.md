@@ -36,6 +36,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
 - 💥 **[gotchas/](gotchas/)** — real-world traps as *symptom → cause → fix*
   - **rest-api/**
     - [Get lists by URL, not by title](gotchas/rest-api/get-list-by-url-not-by-title.md) — `getbytitle()` breaks the moment someone renames a list; resolve by URL
+    - [`GetObjectSharingInformation` traps](gotchas/rest-api/getobjectsharinginformation-traps.md) — GET is 405 every time (stop retrying it: 2.7× slower), `CreatedBy` is always null, `$expand` is dead weight
     - [Search REST needs `odata-version: 3.0`](gotchas/rest-api/search-api-needs-odata-version-3.md) — the header behind mysterious search 500s
     - [DateTime: write full ISO, derive days locally](gotchas/rest-api/datetime-write-full-iso-read-local-day.md) — no-timezone writes 400; UTC reads shift the day
     - [`__metadata` body requires verbose](gotchas/rest-api/metadata-body-requires-verbose.md) — old-tutorial payloads 400 in modern clients
@@ -73,6 +74,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
   - **spfx/**
     - [A global kill-switch must not block its own fix](gotchas/spfx/kill-switch-must-not-block-its-own-fix.md) — the lock defends itself against being lifted; infrastructure operations (version pin, re-check, config, diagnostics) belong outside it
     - [The ES2015 `lib` trap](gotchas/spfx/es2015-lib-forbidden-apis.md) — TS2550 on `padStart` & friends, and the safe equivalents
+    - [Instrumenting the Graph client fails silently](gotchas/spfx/instrumenting-the-graph-client-fails-silently.md) — reassigning `client.api` throws and your fail-safe catch hides it; use `Object.create` and assert it attached
     - [SPA router hijacks anchor clicks](gotchas/spfx/spa-router-hijacks-anchor-clicks.md) — `<a href>` navigates before React `onClick` runs; use buttons for in-app actions
     - [Third-party CSS breaks webpack](gotchas/spfx/css-url-assets-break-webpack.md) — `url(images/...)` without `./` kills the build; inject a `<link>` instead
     - [Minified React errors cheatsheet](gotchas/spfx/react-minified-errors-cheatsheet.md) — #310/#300/#321/#31/#185 decoded for SPFx debugging
