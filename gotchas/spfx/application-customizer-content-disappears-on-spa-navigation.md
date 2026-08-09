@@ -2,7 +2,7 @@
 title: "Your Application Customizer's floating UI disappears when navigating the site"
 tags: [spfx, application-customizer, extensions, spa, navigation, ui]
 applies-to: SharePoint Online (SPFx Application Customizer / any extension rendering persistent floating UI)
-last-reviewed: 2026-07-27
+last-reviewed: 2026-08-09
 ---
 
 # Your Application Customizer's floating UI disappears when navigating the site
@@ -72,6 +72,12 @@ Notes:
 - **Keep the observer cheap.** Watch `document.body` with `{ childList: true }` only (not `subtree`) — it fires when layers/dialogs are added or removed, which is rare enough. Bail out immediately when the container is still present; only run the expensive path (config read + render) when it is actually gone.
 - **Guard against thrash.** If the extension has a page-state reason to *not* render (e.g. a full-page web part version of the same feature is present), re-check that cheaply (`_shouldSkip`) inside the observer, or you will re-add what your own hide logic just removed, and fight yourself on every mutation.
 - **This is not caught by the compiler, linter, or build.** It only shows up when you click through a live site. Verify by navigating, not by unit tests.
+
+## Refinement: the observer misses deep-DOM removals
+
+`MutationObserver(document.body, { childList: true })` only fires on **direct** body children. If your re-render depends on some *other* element disappearing deep in the page — e.g. you hide the floating button while a full-app web part is present and wait for that web part's marker to be removed on navigation — the observer never wakes, because the marker lives deep in the canvas, not as a body child. The button then stays gone until an unrelated body-child mutation happens to fire.
+
+Fix: after navigation, run a short **bounded poll** (e.g. every 500 ms for ~5 s) that re-checks the condition and renders once the deep node is gone. A poll beats `subtree: true` here, which would fire the callback — and any `querySelector` inside it — on *every* DOM mutation anywhere (expensive on busy pages). Async component loading (a bundle fetched from a CDN) slows teardown and widens this race, so the symptom can appear only after such a change.
 
 ## How to verify
 
