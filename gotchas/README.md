@@ -42,6 +42,7 @@ Every article carries frontmatter with `tags` and `applies-to`, so repo search g
 | [Seed idempotency must key on the item](lists/seed-idempotency-must-key-on-the-item.md) | A per-SET presence check re-inserts the whole block when another path creates it — key on set+value, and ship a cleanup |
 | [Version-gated provisioning drops elevated settings](lists/version-gated-provisioning-drops-elevated-settings.md) | `Hidden`/`ReadSecurity` are a PATCH needing Manage Lists — if a member opens the app first, the 403 is swallowed, the version is stored and the setting never applies again |
 | [Item-level permission defaults on provisioned lists](lists/item-level-permissions-defaults-on-provisioned-lists.md) | `ReadSecurity=2` returns 200 + zero items to members while admins bypass it; `WriteSecurity=2` breaks approvals and shared edits |
+| [Reader-written counters belong in their own list](lists/reader-written-counters-belong-in-their-own-list.md) | Views and "was this helpful?" are written by the reader — on a `WriteSecurity: 4` content list every click is a swallowed 403 while the UI still says thanks; split the counters into a `writeSecurity: 1` list and sum both on read |
 | [The 5,000-item view threshold](lists/list-view-threshold-and-indexes.md) | It's about scanned rows, not returned rows — index early, filter indexed-first, page always |
 | [View formatting JSON can't contain `<` or `&`](lists/view-formatter-rejects-angle-bracket-and-ampersand.md) | The formatter lives inside the view's schema XML — `XmlException` on save via PnP, CSOM *and* REST; reverse the comparison, nest `if()` instead of `&&` |
 | [An empty Date field is not `''`](lists/empty-date-is-not-an-empty-string-in-formatting.md) | `@currentField == ''` misses blank dates, so they coerce to the epoch and render as overdue — test `.displayValue`, and mind that column and row formatting want different syntax |
@@ -152,6 +153,8 @@ The standard server-side companion of an SPFx solution — and its own set of tr
 | [Stored XSS via list content](security/stored-xss-from-list-content.md) | React doesn't block `javascript:` hrefs or sanitize SVG — allowlist `safeHref` with C0-strip at every sink |
 | [Field hiding is not a permission](security/field-hiding-is-not-a-permission.md) | Role-based UI field hiding is cosmetic — Read on the list means REST/Export/other web parts see it; confidentiality needs a separate list, item perms, or a server tier |
 | [CSV export executes formulas](security/csv-export-of-list-data-executes-formulas.md) | A member-written cell starting `= + - @` (or TAB/CR) runs in Excel on the reader's machine — quoting doesn't disarm it, an apostrophe prefix does |
+| [An `image/*` upload accepts SVG](security/uploaded-svg-is-stored-xss.md) | SVG is a script that renders inert in `<img>` and executes on the file's direct URL — allow-list raster MIME types instead of prefix-matching |
+| [App-provisioned libraries inherit the web's write permissions](security/app-provisioned-library-inherits-web-write.md) | Provisioning sets item-level permissions on lists, rarely on libraries — a Contribute member can upload over REST, which poisons any AI grounded on that library; lock with `WriteSecurity: 4` in a step outside the version gate |
 
 ### tooling/
 

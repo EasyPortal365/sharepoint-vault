@@ -2,7 +2,7 @@
 
 Every single thing in the vault, on one page. Section names link to folder READMEs; leaves link straight to the content.
 
-*Last updated: 2026-08-08*
+*Last updated: 2026-08-10*
 
 - 🧰 **[scripts/](scripts/)** — PowerShell scripts with comment-based help, read-only unless stated
   - [What the scripts actually print](scripts/sample-outputs.md) — console + CSV samples for every script from real runs, including what a denied read looks like
@@ -71,6 +71,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [Seed idempotency must key on the item](gotchas/lists/seed-idempotency-must-key-on-the-item.md) — a per-SET presence check re-inserts the whole block; lists have no unique constraint
     - [Version-gated provisioning drops elevated settings](gotchas/lists/version-gated-provisioning-drops-elevated-settings.md) — a settings PATCH needs Manage Lists; the first member to open the app after an upgrade burns the one attempt and the version is stored anyway
     - [Item-level permission defaults on provisioned lists](gotchas/lists/item-level-permissions-defaults-on-provisioned-lists.md) — ReadSecurity=2 looks perfect to an admin and empty to everyone else; WriteSecurity=2 breaks collaborative edits only
+    - [Reader-written counters belong in their own list](gotchas/lists/reader-written-counters-belong-in-their-own-list.md) — views and ratings are written by the reader, so on a `WriteSecurity: 4` content list every click is a swallowed 403 while the UI says thanks
     - [`length()` is for arrays, not strings](gotchas/lists/formatting-length-is-for-arrays-not-strings.md) — string length via `indexOf(str + '^', '^')`, or the expression collapses to empty
     - [`MajorVersionLimit: 0` means unlimited, not none](gotchas/lists/major-version-limit-zero-means-unlimited.md) — one integer covering "no limit", "keep n" and "versioning is off"; the library your report calls tidiest is the one eating the quota
   - **spfx/**
@@ -155,6 +156,8 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [Field hiding is not a permission](gotchas/security/field-hiding-is-not-a-permission.md) — role-based UI field hiding is cosmetic; Read on the list = REST/Export/other web parts see it; confidentiality needs a separate list, item perms, or a server tier
     - [CSV export executes formulas](gotchas/security/csv-export-of-list-data-executes-formulas.md) — a member-written cell starting `= + - @` (or TAB/CR) runs in Excel on the reader's machine; quoting doesn't disarm it, an apostrophe prefix does
     - [URL sanitiser strips spaces](gotchas/security/url-sanitiser-strips-spaces.md) — the C0 strip that blocks `java<TAB>script:` also eats the plain space, so every link to `/Shared Documents/…` 404s; strip to decide, return with `%20`
+    - [An `image/*` upload accepts SVG](gotchas/security/uploaded-svg-is-stored-xss.md) — SVG is a script: inert inside `<img>`, executed when the file's own URL is opened; allow-list raster MIME types
+    - [App-provisioned libraries inherit the web's write permissions](gotchas/security/app-provisioned-library-inherits-web-write.md) — libraries rarely get item-level settings from provisioning, so a Contribute member can upload over REST and poison an AI grounded on that library; `WriteSecurity: 4` in a step outside the version gate
   - **tooling/**
     - [Getting bulk data into a SharePoint page from the console](gotchas/tooling/getting-bulk-data-into-a-sharepoint-page-from-the-console.md) — serve the payload from `127.0.0.1` with CORS instead of pasting it or uploading it; loopback is a trustworthy origin so HTTPS pages may fetch it
     - [Git Bash mangles backslashes for native exes](gotchas/tooling/git-bash-mangles-backslashes-for-native-exes.md) — `[\\/]` arrives as `[/]`; Windows-path regexes silently under-match
