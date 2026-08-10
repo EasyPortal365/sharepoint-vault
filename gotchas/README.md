@@ -154,7 +154,7 @@ The standard server-side companion of an SPFx solution — and its own set of tr
 | [Field hiding is not a permission](security/field-hiding-is-not-a-permission.md) | Role-based UI field hiding is cosmetic — Read on the list means REST/Export/other web parts see it; confidentiality needs a separate list, item perms, or a server tier |
 | [CSV export executes formulas](security/csv-export-of-list-data-executes-formulas.md) | A member-written cell starting `= + - @` (or TAB/CR) runs in Excel on the reader's machine — quoting doesn't disarm it, an apostrophe prefix does |
 | [An `image/*` upload accepts SVG](security/uploaded-svg-is-stored-xss.md) | SVG is a script that renders inert in `<img>` and executes on the file's direct URL — allow-list raster MIME types instead of prefix-matching |
-| [App-provisioned libraries inherit the web's write permissions](security/app-provisioned-library-inherits-web-write.md) | Provisioning sets item-level permissions on lists, rarely on libraries — a Contribute member can upload over REST, which poisons any AI grounded on that library; lock with `WriteSecurity: 4` in a step outside the version gate |
+| [App-provisioned libraries inherit the web's write permissions](security/app-provisioned-library-inherits-web-write.md) | Provisioning sets item-level permissions on lists, rarely on libraries, so any member can upload over REST and poison an AI grounded there — and `WriteSecurity: 4` does **not** fix it, because the default Members group holds Edit, which includes Manage Lists and bypasses item-level settings; only unique permissions on the library hold |
 
 ### tooling/
 

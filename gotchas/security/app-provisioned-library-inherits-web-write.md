@@ -24,11 +24,39 @@ Two habits meeting:
 1. **Library definitions carry fewer settings than list definitions.** Provisioning code that faithfully applies `ReadSecurity`/`WriteSecurity` to lists often has no equivalent path for libraries — the settings are simply never sent, so the library keeps the web's inheritance.
 2. **The app's own gate is UI.** "Only administrators can publish" is enforced by which buttons render. `POST /_api/web/GetFolderByServerRelativeUrl('…')/Files/add(...)` does not consult your React tree.
 
-## Fix
+## The fix that looks right and mostly is not
 
-Set `WriteSecurity: 4` on the library — *create and edit: none*, i.e. only holders of **Manage Lists**. That maps neatly onto the people who publish (site owners and anyone with the built-in **Edit** permission level, which includes Manage Lists), while readers keep reading.
+The obvious move is `WriteSecurity: 4` on the library — *create and edit: none*. It is one PATCH, it reads back cleanly, and it is **almost useless on a team site**.
 
-Three details decide whether it actually sticks:
+Item-level permissions are bypassed by anyone holding **Manage Lists** — and that is not just owners. Measured on a real site:
+
+```
+Members  [Edit] -> bypasses the setting      Visitors [Read] -> setting applies
+Manage Lists:  Full Control ✅  Design ✅  Edit ✅  |  Contribute ❌  Read ❌
+```
+
+The built-in **Edit** level includes Manage Lists, and Edit is what the default **Members** group gets on a modern team site. So `WriteSecurity: 4` stops users with **Contribute** and nobody else — while the ordinary member you were worried about uploads happily.
+
+**The only boundary that holds is unique permissions on the library:**
+
+```
+POST /_api/web/GetList('<serverRelLibUrl>')/breakroleinheritance(copyRoleAssignments=false,clearSubscopes=true)
+POST /_api/web/GetList('<serverRelLibUrl>')/roleassignments/addroleassignment(principalid=<group>,roleDefId=<def>)
+```
+
+Writers (the publishing/approver groups) get Contribute or higher; everyone else gets Read. Keep `WriteSecurity: 4` as defence in depth if you like, but do not count it as the control.
+
+### Verifying Manage Lists without guessing
+
+```
+GET /_api/web/roledefinitions?$select=Name,BasePermissions
+```
+
+Manage Lists is **bit 11 (`0x800`)** of `BasePermissions.Low`. Do not derive the bit from the `PermissionKind` value (that tempts you into `1 << 12`, which is `viewFormPages`). Derive it from the **difference between Edit and Contribute** — two levels that differ precisely by Manage Lists — and sanity-check the result: Read must come out **false**, Full Control **true**. A calculation claiming "Read has Manage Lists" is telling you the mask is wrong, not that SharePoint is odd.
+
+## Making the setting stick at all
+
+Whichever control you choose, the write itself needs care:
 
 **1. Do it outside the version-gated provisioning block.** Schema-version gates return early once the version matches. If the first person to open the upgraded app is a plain member, the `PATCH` fails with `403`, the version is still recorded, and the setting is never applied again. Use a dedicated post-provisioning step with its **own marker** (per user + web + step revision).
 
@@ -50,15 +78,24 @@ Treat `403` as "done for this user" (their marker is their own) but a `5xx` as "
 
 **3. Do not reach for `NoCrawl` instead.** Excluding the library from the search index is a different axis: it does not stop anyone writing, and it *does* stop the assistant (and tenant search) from finding legitimate content. Search trims results by the asking user's permissions anyway.
 
-## Verify it, do not assume it
+## "It is set" and "it excludes someone" are different claims
 
-SharePoint hides the item-level permissions section in the UI for document libraries, so confirm on a real site with a real account rather than declaring victory from the code:
+The trap this page exists for: it is easy to PATCH `WriteSecurity: 4`, read it back over REST, see `4`, and write "library locked" in the release notes. That proves the value is **stored**. Whether anyone is actually **excluded** depends on which permission levels the site's groups hold — which is a different query entirely:
 
-- a member with Contribute gets `403` when uploading over REST,
-- a user with **Edit** (an approver, say) can still publish through the app,
-- image upload inside the editor still works for the roles that need it.
+```
+GET /_api/web/roleassignments?$expand=Member,RoleDefinitionBindings
+    &$select=Member/Title,RoleDefinitionBindings/Name
+```
 
-Until those three are observed, it is a measure, not a proven control — worth a line in your tech-debt list.
+Cross that list with the Manage Lists check above. If every group that can already add files holds Edit or higher, the setting excludes nobody and the control is decorative.
+
+Note also that you cannot test enforcement from an owner account: Full Control bypasses item-level permissions by design, so "I could still upload" tells you nothing. Either sign in as a Contribute-level user, or check effective permissions for a specific person without their password:
+
+```
+GET /_api/web/getusereffectivepermissions(@u)?@u='i:0%23.f|membership|user@company.com'
+```
+
+Until you have observed a non-Manage-Lists user being refused, it is a measure, not a proven control — worth a line in your tech-debt list.
 
 ## Related
 
