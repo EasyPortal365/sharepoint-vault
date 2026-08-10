@@ -2,7 +2,7 @@
 title: A provisioned list with ReadSecurity=2 looks perfect to an admin and empty to everyone else
 tags: [lists, provisioning, permissions, rest-api, security]
 applies-to: SharePoint Online, SharePoint Server
-last-reviewed: 2026-07-29
+last-reviewed: 2026-08-10
 ---
 
 # A provisioned list with ReadSecurity=2 looks perfect to an admin and empty to everyone else
@@ -33,6 +33,11 @@ Two shapes, and the second one is much easier to miss.
 - a kanban drag-and-drop reverts mid-gesture with a `403`.
 
 The failures are per-record and per-user, which reads like a flaky back end rather than a setting.
+
+**`WriteSecurity = 4` — "Contribute" becomes an empty gesture.** `4` means *edit no items at all*, so the only way anybody can update an existing item is by holding **Manage Lists** — and of the built-in levels only Full Control, Design and Edit carry it. Grant the group that maintains the content plain **Contribute** and it can create items but never rewrite one; a generator that regenerates a file or row on every change fails from the second run onward. Two things follow, and both are counter-intuitive:
+
+- A permission report showing *"maintainers: Contribute"* looks like a working setup. It is not. On a `WriteSecurity: 4` list, Contribute is indistinguishable from Read for updates.
+- "Least privilege" pushes the wrong way here. Dropping a maintainer from Edit to Contribute does not reduce their effective rights — it removes them, and the feature that writes on their behalf breaks silently. If you want them at Contribute, first move the list to `WriteSecurity: 1` and make **unique role assignments** the real boundary.
 
 ## Cause
 
