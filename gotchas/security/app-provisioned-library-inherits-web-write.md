@@ -46,6 +46,15 @@ POST /_api/web/GetList('<serverRelLibUrl>')/roleassignments/addroleassignment(pr
 
 Writers (the publishing/approver groups) get Contribute or higher; everyone else gets Read. Keep `WriteSecurity: 4` as defence in depth if you like, but do not count it as the control.
 
+**The order of operations decides what a half-failure leaves behind:**
+
+1. Break inheritance **with** `copyRoleAssignments=true` — the intermediate state is identical to the old one, so nobody loses access if the next step never runs.
+2. Grant the writer groups Contribute **before** anyone loses write.
+3. Only then downgrade everyone else to Read. Leave **Limited Access** (`RoleTypeKind: 1`) alone — SharePoint maintains it so users can reach parent objects.
+4. Read the assignments back and treat "done" as conditional on that check.
+
+`copyRoleAssignments=false` is the tempting "clean slate", but a failure between breaking and granting leaves the library unreadable for the whole company — and if it is a RAG source, the assistant quietly loses its grounding at the same time.
+
 ### Verifying Manage Lists without guessing
 
 ```
