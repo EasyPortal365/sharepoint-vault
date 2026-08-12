@@ -108,6 +108,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [Application Customizer's floating UI disappears on SPA navigation](gotchas/spfx/application-customizer-content-disappears-on-spa-navigation.md) — the button vanishes as you click around the site; `visibilitychange` never fires on in-page nav, so re-render on `navigatedEvent` (+ a `MutationObserver` backstop)
     - [Sharing text via URL hits length limits](gotchas/spfx/share-text-via-url-hits-length-limits.md) — "Send to Teams" (`/share?msgText`) dies with `AADSTS90015` on long answers and `mailto` silently won't open; cap the URL payload and put the full text on the clipboard
     - [Command set button never appears](gotchas/spfx/command-set-button-never-appears.md) — two independent causes: uploading a new .sppkg never registers the extension on a site, and `raiseOnChange()` re-reads `command.visible` without re-running `onListViewUpdated`
+    - [Injecting your own column into the modern list grid](gotchas/spfx/modern-list-grid-inject-custom-column.md) — an appended cell lands in the wrong row and shifts the table; rows are `display: contents`, so the cells are the grid items and every one carries explicit `grid-column`/`grid-row`
   - **app-catalog/**
     - [Three `.sppkg` packaging pitfalls](gotchas/app-catalog/sppkg-packaging-pitfalls.md) — ASCII-only solution name, icon exactly 96×96, Publisher column is AppSource-only
   - **graph/**
