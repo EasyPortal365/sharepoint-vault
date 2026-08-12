@@ -2,7 +2,7 @@
 
 Every single thing in the vault, on one page. Section names link to folder READMEs; leaves link straight to the content.
 
-*Last updated: 2026-08-11*
+*Last updated: 2026-08-12*
 
 - 🧰 **[scripts/](scripts/)** — PowerShell scripts with comment-based help, read-only unless stated
   - [What the scripts actually print](scripts/sample-outputs.md) — console + CSV samples for every script from real runs, including what a denied read looks like
@@ -166,6 +166,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [Contributors panel keeps a co-author you removed](gotchas/tooling/contributors-panel-stale-after-history-rewrite.md) — panel and API answer different questions (co-authors vs authors), so verify at the source; know the documented ~24 h window before you start waiting
     - [GitHub Pages certificate stuck](gotchas/tooling/github-pages-certificate-stuck.md) — domain added before DNS existed; remove & re-add restarts provisioning
     - [NUL byte makes grep treat a file as binary](gotchas/tooling/nul-byte-makes-grep-treat-file-as-binary.md) — one raw U+0000 and every grep-based sweep silently skips the file; write the escape, detect with `file`
+    - [Compiled files next to sources fake your build check](gotchas/tooling/compiled-files-next-to-sources-fake-your-build-check.md) — stale `.js`/`.d.ts` in `src/` greps like live code while `main` points at `lib/`; ask `require.resolve`, date-check with `git log`, and keep the ignore rule narrow enough to spare hand-written `.d.ts`
 - 🧭 **[guides/](guides/)** — end-to-end walkthroughs
   - [Calling SharePoint REST like a pro](guides/calling-sharepoint-rest-like-a-pro.md) — clients, headers, safe writes, reading well, and the ten-minute diagnosis routine
   - [Search queries that actually work](guides/search-queries-that-actually-work.md) — the mandatory header, practical KQL, managed properties, paging, freshness traps

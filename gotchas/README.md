@@ -167,6 +167,7 @@ The standard server-side companion of an SPFx solution — and its own set of tr
 | [Contributors panel keeps a co-author you removed](tooling/contributors-panel-stale-after-history-rewrite.md) | The REST endpoint counts authors, the panel also counts co-authors — so a "clean" API answer proves nothing; documented refresh is ~24 h, then it's a support ticket |
 | [GitHub Pages certificate stuck](tooling/github-pages-certificate-stuck.md) | Domain added before DNS existed → cert never arrives — remove & re-add the domain to restart provisioning |
 | [NUL byte makes grep treat a file as binary](tooling/nul-byte-makes-grep-treat-file-as-binary.md) | One raw U+0000 in a literal and every grep-based sweep silently skips the file — write the escape, detect with `file` |
+| [Compiled files next to sources fake your build check](tooling/compiled-files-next-to-sources-fake-your-build-check.md) | Stale `.js` in `src/` greps like live code while nothing loads it — verify with `require.resolve`, not by reading whichever copy grep hit |
 
 ## Writing your own
 
