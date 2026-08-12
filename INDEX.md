@@ -2,7 +2,7 @@
 
 Every single thing in the vault, on one page. Section names link to folder READMEs; leaves link straight to the content.
 
-*Last updated: 2026-08-12*
+*Last updated: 2026-08-13*
 
 - 🧰 **[scripts/](scripts/)** — PowerShell scripts with comment-based help, read-only unless stated
   - [What the scripts actually print](scripts/sample-outputs.md) — console + CSV samples for every script from real runs, including what a denied read looks like
@@ -112,6 +112,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [Sharing text via URL hits length limits](gotchas/spfx/share-text-via-url-hits-length-limits.md) — "Send to Teams" (`/share?msgText`) dies with `AADSTS90015` on long answers and `mailto` silently won't open; cap the URL payload and put the full text on the clipboard
     - [Command set button never appears](gotchas/spfx/command-set-button-never-appears.md) — two independent causes: uploading a new .sppkg never registers the extension on a site, and `raiseOnChange()` re-reads `command.visible` without re-running `onListViewUpdated`
     - [Injecting your own column into the modern list grid](gotchas/spfx/modern-list-grid-inject-custom-column.md) — an appended cell lands in the wrong row and shifts the table; rows are `display: contents`, so the cells are the grid items and every one carries explicit `grid-column`/`grid-row`
+    - [Reading the modern list selection from the DOM](gotchas/spfx/reading-list-selection-from-the-dom.md) — only a `ListViewCommandSet` gets `selectedRows`; from the DOM take names only (the name is a button, not a link), resolve paths with one folder-scoped call, and take the real count from `clearSelectionCommand` because the view is virtualized
   - **app-catalog/**
     - [Three `.sppkg` packaging pitfalls](gotchas/app-catalog/sppkg-packaging-pitfalls.md) — ASCII-only solution name, icon exactly 96×96, Publisher column is AppSource-only
   - **graph/**
