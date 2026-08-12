@@ -2,7 +2,7 @@
 title: "A theme override on your app root can't reach tokens declared on :root"
 tags: [spfx, css, theming, react]
 applies-to: SharePoint Online (SPFx web parts)
-last-reviewed: 2026-08-12
+last-reviewed: 2026-08-13
 ---
 
 # A theme override on your app root can't reach tokens declared on `:root`
@@ -101,8 +101,39 @@ hover that jumps to your original hue. When you make a token inheritable, walk e
 hand-derived from it and derive those too (lighten/darken from the inherited value, keeping the
 original constant when the primary equals your default).
 
+## Related trap: a colour written as a literal is unreachable, fix or no fix
+
+After the override lands correctly, some elements can *still* show your default palette — typically
+avatar and icon gradients:
+
+```scss
+.avatar--g1 { background: linear-gradient(135deg, #003599, #00CED7); }
+```
+
+No token is involved, so no amount of fixing the token chain touches it. This is worth knowing
+because the failure looks identical to the substitution bug above, and it is easy to spend a
+diagnostic round re-checking the theme record and the service that reads it. Before you suspect the
+inheritance chain, **grep your stylesheets and JS colour maps for literal brand hexes**.
+
+The fix is to derive those shades in the same resolver that produces the rest of the palette
+(`--avatar-g1: linear-gradient(135deg, <primary>, <accent>)`) and consume them with the original
+value as a fallback:
+
+```scss
+.avatar--g1 { background: var(--avatar-g1, linear-gradient(135deg, #003599, #00CED7)); }
+```
+
+The fallback keeps the default look byte-for-byte when no theme is set and during the async window
+before the theme is fetched — so the change is invisible to every existing tenant.
+
+**Draw a line around what you derive.** Derive shades that are your *product's default branding*.
+A colour the user explicitly picked for a record (a green category, an amber label) is a stored
+decision — recolouring it from the theme silently overrides the choice its author made.
+
 ## See also
 
+- [An element selector outranks your button class](element-selector-outranks-your-button-class.md) —
+  the theme applies, but the label on it is unreadable.
 - [Portaled overlays miss your CSS reset](portaled-overlays-miss-your-css-reset.md) — same
   outside-the-root blind spot, hitting `box-sizing` instead of colours.
 - [A shared component's var() fallback chain is only as good as its last link](shared-component-var-fallback-lands-on-system-font.md)
