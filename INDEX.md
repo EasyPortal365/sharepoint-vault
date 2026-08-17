@@ -2,7 +2,7 @@
 
 Every single thing in the vault, on one page. Section names link to folder READMEs; leaves link straight to the content.
 
-*Last updated: 2026-08-13*
+*Last updated: 2026-08-17*
 
 - 🧰 **[scripts/](scripts/)** — PowerShell scripts with comment-based help, read-only unless stated
   - [What the scripts actually print](scripts/sample-outputs.md) — console + CSV samples for every script from real runs, including what a denied read looks like
@@ -170,6 +170,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [URL sanitiser strips spaces](gotchas/security/url-sanitiser-strips-spaces.md) — the C0 strip that blocks `java<TAB>script:` also eats the plain space, so every link to `/Shared Documents/…` 404s; strip to decide, return with `%20`
     - [An `image/*` upload accepts SVG](gotchas/security/uploaded-svg-is-stored-xss.md) — SVG is a script: inert inside `<img>`, executed when the file's own URL is opened; allow-list raster MIME types
     - [App-provisioned libraries inherit the web's write permissions](gotchas/security/app-provisioned-library-inherits-web-write.md) — any member can upload over REST and poison an AI grounded on that library; `WriteSecurity: 4` does not fix it (Edit includes Manage Lists and bypasses item-level settings) — only unique permissions on the library do
+    - [A group created by code hides its own membership](gotchas/security/group-created-by-code-hides-its-membership.md) — `sitegroups` POST defaults to `OnlyAllowMembersViewMembership: true`, so only a member or the account that ran provisioning can read the members; Full Control does not help and identical permission masks prove it
   - **tooling/**
     - [Getting bulk data into a SharePoint page from the console](gotchas/tooling/getting-bulk-data-into-a-sharepoint-page-from-the-console.md) — serve the payload from `127.0.0.1` with CORS instead of pasting it or uploading it; loopback is a trustworthy origin so HTTPS pages may fetch it
     - [Git Bash mangles backslashes for native exes](gotchas/tooling/git-bash-mangles-backslashes-for-native-exes.md) — `[\\/]` arrives as `[/]`; Windows-path regexes silently under-match
