@@ -2,7 +2,7 @@
 title: `fields/getbyinternalnameortitle` returns 400, not 404, for a missing field
 tags: [rest-api, fields, provisioning, existence-check]
 applies-to: SharePoint REST (/_api/web/lists(...)/fields/getbyinternalnameortitle), field provisioning
-last-reviewed: 2026-07-24
+last-reviewed: 2026-08-17
 ---
 
 # `fields/getbyinternalnameortitle` returns 400, not 404, for a missing field
@@ -35,6 +35,8 @@ server-side and, when the name matches nothing, raises `ArgumentException`, whic
 way (they throw rather than 404 on a miss). So "404 means missing" is an unsafe assumption here.
 
 Concrete sibling: **`sitegroups/getbyname('Missing')` returns HTTP 500** (`Group cannot be found`), not 404, for a nonexistent group. A provisioning existence-check written as `if (status !== 404) { skip }` therefore *never* reaches the create branch on a fresh web (missing group → 500 → skipped forever), so the groups are silently never created. Same rule, different status code: don't branch a `getby*` existence-check on a specific non-OK status — treat only 200 as "exists" and let the create decide.
+
+Found in the wild twice more (2026-08-17) while auditing an unrelated group setting across a suite of apps: two applications carried exactly that `status !== 404` guard and had therefore **never** created their own role groups on any deployment. Nothing failed loudly — role detection quietly fell back to the site's own Owners/Members groups, so the applications looked fine and the missing groups only showed up when someone went looking for them. If you have this pattern anywhere, the bug is not "sometimes flaky"; it has been 100% broken since the line was written.
 
 ## Fix
 
