@@ -86,7 +86,13 @@ async function getMembers(group: string): Promise<{ ok: boolean; users: ISpUser[
 }
 ```
 
-Then say so in the UI: *"Members of this group could not be read — SharePoint denied access."* A single swallowed 403 rendered as "nobody here yet" is what turns a permissions quirk into a support ticket claiming the app deleted people's roles.
+Then say so in the UI: *"Members of this group could not be read — SharePoint returned an error."* A single swallowed 403 rendered as "nobody here yet" is what turns a permissions quirk into a support ticket claiming the app deleted people's roles.
+
+Two things that bite when you retrofit this across an existing codebase:
+
+- **Showing the error is not enough — you must also switch the empty state off.** Two of the screens fixed in one sweep (2026-08-17) already surfaced the failure in a red banner, and directly underneath still rendered "No members" because the condition only tested `members.length === 0`. An error message next to a claim about emptiness is not an honest state; the fix is `!error && members.length === 0`. This class of bug survives code review precisely because "we do show the error" looks finished.
+- **Never let a cache remember the failure.** Where membership is cached, only the success path may write to the cache. Otherwise a denied read is pinned for the whole TTL and the banner keeps accusing SharePoint long after the permission is fixed.
+- **Keep the wording cause-agnostic.** "Access denied" is a lie on a fresh deployment, where the group does not exist yet and `getbyname` answers 500 (see the sibling note in [`getbyinternalnameortitle-400-not-404`](../rest-api/getbyinternalnameortitle-400-not-404.md)). "SharePoint returned an error (typically access denied)" covers both.
 
 ## Related
 
