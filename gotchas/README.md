@@ -142,6 +142,7 @@ The standard server-side companion of an SPFx solution — and its own set of tr
 | [An unparenthesized `OR` silently escapes your scope filter](search/kql-or-escapes-your-scope-filter.md) | KQL `AND` binds tighter than `OR` — `a OR b Path:"…"` = `a OR (b AND Path)`; wrap the whole user/AI query in parentheses |
 | [Sensitivity labels in Search — property works, licensing gates it](search/sensitivity-labels-in-search-and-licensing.md) | `InformationProtectionLabelId` returns a GUID only after AIP-enable + label + crawl; unlicensed tenants can't even create a label (`InvalidLicenseException`) |
 | [`NoCrawl` on a library silently blinds your RAG](search/nocrawl-on-a-library-silently-blinds-your-rag.md) | Excluded containers return 0 with HTTP 200 and no log, so Search-backed AI can never see them; ask what the container *holds*, not its type — and indexing isn't a permission change, Search trims per user |
+| [Duplicate trimming hides the file copies you search for](search/duplicate-trimming-hides-file-copies.md) | Search collapses identical content by default — a copy-finder query returns "no copies" precisely when perfect copies exist; add `trimduplicates=false` to duplicate-hunting queries only |
 
 ### powershell/
 
