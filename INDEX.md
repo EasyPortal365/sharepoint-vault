@@ -2,7 +2,7 @@
 
 Every single thing in the vault, on one page. Section names link to folder READMEs; leaves link straight to the content.
 
-*Last updated: 2026-08-18*
+*Last updated: 2026-08-19*
 
 - 🧰 **[scripts/](scripts/)** — PowerShell scripts with comment-based help, read-only unless stated
   - [What the scripts actually print](scripts/sample-outputs.md) — console + CSV samples for every script from real runs, including what a denied read looks like
@@ -42,6 +42,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [`__metadata` body requires verbose](gotchas/rest-api/metadata-body-requires-verbose.md) — old-tutorial payloads 400 in modern clients
     - [File upload 406 needs verbose](gotchas/rest-api/file-upload-406-needs-verbose.md) — `/Files/add` is classic OData 3; plus the empty-filename mobile camera trap
     - [Apostrophes in OData literals](gotchas/rest-api/odata-string-literals-and-apostrophes.md) — `encodeURIComponent` leaves `'` alone; double it
+    - [`ensureuser` returns the login name](gotchas/rest-api/ensureuser-returns-the-login-name.md) — the response already carries `LoginName`; a follow-up `siteusers` filter on `Email` misses accounts whose UPN differs
     - [Choice fields accept any value](gotchas/rest-api/choice-fields-accept-any-value.md) — REST skips choice validation entirely; enforce vocabulary yourself
     - [Lookup fields need `$expand`](gotchas/rest-api/lookup-fields-need-expand.md) — read via `$expand` + projections, write via `<Name>Id`; ~12-lookup query limit
     - [File size needs `$expand=File`](gotchas/rest-api/file-size-needs-expand-file.md) — `File_x0020_Size` 400s in `$select`; use `File/Length`
@@ -74,6 +75,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [Seed idempotency must key on the item](gotchas/lists/seed-idempotency-must-key-on-the-item.md) — a per-SET presence check re-inserts the whole block; lists have no unique constraint
     - [Version-gated provisioning drops elevated settings](gotchas/lists/version-gated-provisioning-drops-elevated-settings.md) — a settings PATCH needs Manage Lists; the first member to open the app after an upgrade burns the one attempt and the version is stored anyway
     - [Item-level permission defaults on provisioned lists](gotchas/lists/item-level-permissions-defaults-on-provisioned-lists.md) — ReadSecurity=2 looks perfect to an admin and empty to everyone else; WriteSecurity=2 breaks collaborative edits only
+    - [View formatting lands on the wrong view](gotchas/lists/view-formatting-lands-on-the-wrong-view.md) — Site Pages has no `AllItems.aspx` and the default view may be grouped; a column missing from the view is `undefined`, so the empty-check guard never hides it
     - [Created/Modified on a document library](gotchas/lists/created-modified-on-a-document-library.md) — a plain MERGE reports 204 and SharePoint overwrites both with "now"; `ValidateUpdateListItem` + `bNewDocumentUpdate` is the only path that holds, and ISO dates fail with HTTP 200 plus a per-field `HasException`
     - [Column internal name comes from DisplayName](gotchas/lists/field-internal-name-comes-from-displayname.md) — `createfieldasxml` ignores `Name`/`StaticName` when adding to a list; a localized label is escaped into the internal name permanently, so create with ASCII and rename the Title
     - [Indexing built-in fields (Title, Created)](gotchas/lists/indexing-built-in-fields-title-created.md) — provisioning indexes only the columns it creates, so the most-filtered fields stay unindexed; past 5,000 items the read throttles and a swallowed error in a write path stops all writes silently
@@ -172,6 +174,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [CSV export executes formulas](gotchas/security/csv-export-of-list-data-executes-formulas.md) — a member-written cell starting `= + - @` (or TAB/CR) runs in Excel on the reader's machine; quoting doesn't disarm it, an apostrophe prefix does
     - [URL sanitiser strips spaces](gotchas/security/url-sanitiser-strips-spaces.md) — the C0 strip that blocks `java<TAB>script:` also eats the plain space, so every link to `/Shared Documents/…` 404s; strip to decide, return with `%20`
     - [An `image/*` upload accepts SVG](gotchas/security/uploaded-svg-is-stored-xss.md) — SVG is a script: inert inside `<img>`, executed when the file's own URL is opened; allow-list raster MIME types
+    - [Breaking inheritance copies foreign Edit grants](gotchas/security/breaking-inheritance-copies-foreign-edit-grants.md) — another app's groups arrive with `Edit`, which carries ManageLists and bypasses item-level security; break without copying and prune the ACL
     - [App-provisioned libraries inherit the web's write permissions](gotchas/security/app-provisioned-library-inherits-web-write.md) — any member can upload over REST and poison an AI grounded on that library; `WriteSecurity: 4` does not fix it (Edit includes Manage Lists and bypasses item-level settings) — only unique permissions on the library do
     - [A group created by code hides its own membership](gotchas/security/group-created-by-code-hides-its-membership.md) — `sitegroups` POST defaults to `OnlyAllowMembersViewMembership: true`, so only a member or the account that ran provisioning can read the members; Full Control does not help and identical permission masks prove it
   - **tooling/**

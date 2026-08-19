@@ -35,6 +35,7 @@ Every article carries frontmatter with `tags` and `applies-to`, so repo search g
 | [A page-size cap reported as a finding](rest-api/page-size-cap-reported-as-a-result.md) | "100 commits", "500 guests", "5,000 items" — one unpaged request returns exactly the cap; ask for the count instead of counting what arrived |
 | [File versions come back oldest-first](rest-api/file-versions-are-oldest-first.md) | `/Versions` is ascending — `$top` truncates the NEWEST versions, and a client-side descending sort makes the gap invisible |
 | [Retrying a throttled call is safe for GET only](rest-api/retry-on-throttling-only-for-get.md) | A throttled `POST` may already have been applied — SharePoint has no idempotency key, so the retry writes a second item; retry on the method, not the status code |
+| [`ensureuser` returns the login name](rest-api/ensureuser-returns-the-login-name.md) | The response already holds `LoginName` — re-querying `siteusers` by `Email` misses every account whose UPN differs |
 | [`fields/getbyinternalnameortitle` 400s for a missing field](rest-api/getbyinternalnameortitle-400-not-404.md) | It throws `ArgumentException` (HTTP 400), not 404 — an existence-check that hard-fails on non-404 never reaches the create path; treat only 200 as "exists" |
 
 ### lists/
@@ -55,6 +56,7 @@ Every article carries frontmatter with `tags` and `applies-to`, so repo search g
 | [Gallery cards render from `tileProps`](lists/gallery-cards-render-from-tileprops.md) | The documented top-level `formatter` is ignored in a library's Gallery view — the card lives in an undocumented nested `tileProps.formatter`, and `ViewType2 = "TILES"` is what switches the layout. Layout and card must be two separate writes, or the card is overwritten (PnP and REST/SPFx both) |
 | [Non-web protocol in `href` drops the whole element](lists/formatter-href-non-web-protocol-drops-element.md) | An `ms-word:` link doesn't render as broken — the element vanishes with all children, per item, no error; open-in-app belongs to `customRowAction: "openContextMenu"` |
 | [`length()` is for arrays, not strings](lists/formatting-length-is-for-arrays-not-strings.md) | On a string the arithmetic collapses and `substring` renders empty — get string length as `indexOf(str + '^', '^')` |
+| [View formatting lands on the wrong view](lists/view-formatting-lands-on-the-wrong-view.md) | No `AllItems.aspx` in Site Pages and a grouped default view — plus a column absent from the view is `undefined`, not `''`, so the hide guard never fires |
 | [`MajorVersionLimit: 0` means unlimited, not none](lists/major-version-limit-zero-means-unlimited.md) | Zero is the API's "no limit" — and also what you get when versioning is off; a report printing the raw number says the opposite of the truth |
 
 ### spfx/
@@ -167,6 +169,7 @@ The standard server-side companion of an SPFx solution — and its own set of tr
 | [CSV export executes formulas](security/csv-export-of-list-data-executes-formulas.md) | A member-written cell starting `= + - @` (or TAB/CR) runs in Excel on the reader's machine — quoting doesn't disarm it, an apostrophe prefix does |
 | [An `image/*` upload accepts SVG](security/uploaded-svg-is-stored-xss.md) | SVG is a script that renders inert in `<img>` and executes on the file's direct URL — allow-list raster MIME types instead of prefix-matching |
 | [App-provisioned libraries inherit the web's write permissions](security/app-provisioned-library-inherits-web-write.md) | Provisioning sets item-level permissions on lists, rarely on libraries, so any member can upload over REST and poison an AI grounded there — and `WriteSecurity: 4` does **not** fix it, because the default Members group holds Edit, which includes Manage Lists and bypasses item-level settings; only unique permissions on the library hold |
+| [Breaking inheritance copies foreign Edit grants](security/breaking-inheritance-copies-foreign-edit-grants.md) | `copyRoleAssignments=true` drags another app's `Edit` groups onto your list, and `Edit` bypasses item-level security — break without copying, then prune |
 
 ### tooling/
 
