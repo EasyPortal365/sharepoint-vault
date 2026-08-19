@@ -128,6 +128,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [`/me/sendMail`: From is always the signed-in user](gotchas/graph/sendmail-from-is-the-signed-in-user.md) — delegated `Mail.Send` can't impersonate; configure Reply-To instead
     - [ApplicationAccessPolicy rejects a shared mailbox](gotchas/graph/application-access-policy-rejects-shared-mailbox.md) — "not a security principal"; scope app-only `Mail.Send` to a mail-enabled security group
     - [`/me/todo` needs an Exchange mailbox](gotchas/graph/todo-requires-exchange-mailbox.md) — 404 "Item not found" on admin/cloud-only accounts is not a 403; Planner works without a mailbox
+    - [A mail-permission probe that can't tell "no mailbox" from "no consent" lies to admins](gotchas/graph/mail-probe-no-mailbox-vs-no-consent.md) — `/me/messages` 404 `MailboxNotEnabled*` on mailbox-less accounts ≠ missing consent; three verdicts, and never cache a negative probe result
     - [Purview Audit Query API is async](gotchas/graph/purview-audit-query-api-is-async.md) — hour-long queries; attach to the last succeeded, create in background
     - [Office files: property demotion changes the hash](gotchas/graph/office-files-property-demotion.md) — metadata PATCH rewrites docx bytes; key change detection on `lastModifiedBy`
     - [Usage reports are CORS-blocked in the browser](gotchas/graph/usage-reports-cors-blocked-in-browser.md) — fetch server-side; browser inventory = SP Search + `/_api/site/usage`
