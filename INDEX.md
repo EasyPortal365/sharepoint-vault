@@ -173,6 +173,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
   - **security/**
     - [Stored XSS via list content](gotchas/security/stored-xss-from-list-content.md) — React doesn't block `javascript:` hrefs; allowlist `safeHref` with C0-strip at every sink
     - [Field hiding is not a permission](gotchas/security/field-hiding-is-not-a-permission.md) — role-based UI field hiding is cosmetic; Read on the list = REST/Export/other web parts see it; confidentiality needs a separate list, item perms, or a server tier
+    - [Effective permissions come as a bitmask](gotchas/security/effective-permissions-bitmask-off-by-one.md) — `ViewListItems` is bit 0, `Low`/`High` are decimal strings; decode off by one and every ordinary member looks locked out. Sanity-check the decoder against a site admin AND a known Read user
     - [CSV export executes formulas](gotchas/security/csv-export-of-list-data-executes-formulas.md) — a member-written cell starting `= + - @` (or TAB/CR) runs in Excel on the reader's machine; quoting doesn't disarm it, an apostrophe prefix does
     - [URL sanitiser strips spaces](gotchas/security/url-sanitiser-strips-spaces.md) — the C0 strip that blocks `java<TAB>script:` also eats the plain space, so every link to `/Shared Documents/…` 404s; strip to decide, return with `%20`
     - [An `image/*` upload accepts SVG](gotchas/security/uploaded-svg-is-stored-xss.md) — SVG is a script: inert inside `<img>`, executed when the file's own URL is opened; allow-list raster MIME types
