@@ -2,7 +2,7 @@
 title: A provisioned list with ReadSecurity=2 looks perfect to an admin and empty to everyone else
 tags: [lists, provisioning, permissions, rest-api, security]
 applies-to: SharePoint Online, SharePoint Server
-last-reviewed: 2026-08-10
+last-reviewed: 2026-08-22
 ---
 
 # A provisioned list with ReadSecurity=2 looks perfect to an admin and empty to everyone else
@@ -95,3 +95,23 @@ Which account am I in this window, and what does the list actually say. Two requ
 
 - Hiding a field in the UI is not a permission — item-level settings are one of the few real per-record boundaries SharePoint offers.
 - "The step was marked done" is not "the step ran": any guard whose condition can be satisfied by someone the operation failed for is not a guard.
+
+## Making item-level actually hold (2026-08-22)
+
+Setting `ReadSecurity`/`WriteSecurity = 2` is only half the job: on a modern team site the **Members** group holds *Edit*, which includes `ManageLists`, so the setting protects nobody. Filtering by author in your queries is convenience, not a boundary — REST is right there.
+
+For a list of **personal items** (preferences, favourites, per-user state), break inheritance with `copyRoleAssignments=false` and grant deliberately:
+
+| Principal | Level | Why |
+|---|---|---|
+| Owners | Full Control | SharePoint cannot take this away anyway |
+| Members | **Contribute** | writing their own items yes, `ManageLists` no |
+| Visitors | **Contribute** | a read-only visitor still needs their own preferences, or they get 403 |
+| Anyone else (including your app's admin group) | nothing | the point is that *nobody* reads other people's items |
+
+Two traps when you automate this:
+
+- **Contribute, not Read.** The usual "lock it down" recipe grants Members *Read*, which breaks the feature instead of securing it.
+- **Whatever decides "too much" must be the same in the fix and in the verification.** Downgrade foreign bindings on `ManageLists`, then verify on `ManageLists` too. Verify on "grants write" and the routine will correct the list, immediately flag its own correct result as broken, and repeat forever — which reads like "permissions cannot be set" while they are set perfectly.
+
+Prove the outcome with [`getUserEffectivePermissions`](../security/effective-permissions-bitmask-off-by-one.md) against a real member — no borrowed password, no guessing.

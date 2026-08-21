@@ -11,6 +11,33 @@ last-reviewed: 2026-07-15
 >
 > **Ve zkratce.** Pro celofiremní people picker v SPFx vynech `clientPeoplePickerSearchUser` (přes SPHttpClient vrací prázdno) i `/web/siteusers` (jen uživatelé webu) – dotazuj se na People result source v SP Search a číselné user ID dořeš přes `ensureuser`.
 
+## Update 2026-08-22 — the endpoint is fine, `SPHttpClient` is not (and groups are a different story)
+
+The advice above stands **for people**. For **groups** there is no alternative — `siteusers` only knows the site's users and Search People returns people — so the picker endpoint is the only way, and it does work when you call it with a plain same-origin `fetch` instead of `SPHttpClient`:
+
+```js
+const digest = await fetch(web + "/_api/contextinfo", { method: "POST", credentials: "same-origin",
+  headers: { Accept: "application/json;odata=nometadata" } }).then(r => r.json()).then(j => j.FormDigestValue);
+
+const res = await fetch(web + "/_api/SP.UI.ApplicationPages.ClientPeoplePickerWebServiceInterface.ClientPeoplePickerSearchUser", {
+  method: "POST", credentials: "same-origin",
+  headers: { Accept: "application/json;odata=nometadata",
+             "Content-Type": "application/json;odata=verbose",   // the endpoint insists on verbose here
+             "X-RequestDigest": digest },
+  body: JSON.stringify({ queryParams: {
+    __metadata: { type: "SP.UI.ApplicationPages.ClientPeoplePickerQueryParameters" },
+    QueryString: term, MaximumEntitySuggestions: 12,
+    PrincipalType: 15,      // users + security groups + SP groups
+    PrincipalSource: 15,    // all sources, directory included
+    AllowEmailAddresses: true, AllowMultipleEntities: true, AllUrlZones: false, SharePointGroupID: 0 } })
+});
+const entities = JSON.parse((await res.json()).value);
+```
+
+- The `objectId` of an Entra group comes from the claim in `Key` (`c:0o.c|federateddirectoryclaimprovider|<guid>` for M365 groups, `c:0t.c|tenant|<guid>` for security groups) — `EntityData.ObjectId` is often `null`.
+- **Do not offer SharePoint groups for anything you later resolve through Graph**: they have no objectId, so a membership check (`checkMemberGroups`) can never confirm them.
+- Meta-lesson: when a note says "endpoint X does not work", check whether the verdict belongs to the endpoint or to the **transport**. Ruling out the whole endpoint closed the only path to group search here.
+
 ## Symptom
 
 You're building a custom people picker and the obvious endpoints let you down one by one:
