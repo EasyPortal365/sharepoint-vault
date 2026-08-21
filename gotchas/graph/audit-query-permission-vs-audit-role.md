@@ -30,16 +30,29 @@ Two independent authorization layers guard the same call:
 | Graph delegated permission (admin consent) | Is the *application* allowed to ask? | `accessDenied`, `Authorization_RequestDenied`, HTTP 403 from Graph |
 | Audit search role (Exchange Online RBAC, surfaced in Purview) | Is the *user* allowed to search the audit log? | `User:… dont have any permissions` — from the audit backend, not from Graph |
 
-The audit search right is the Exchange role **View-Only Audit Logs** (or **Audit Logs**). Global Administrators usually hold it implicitly through the Exchange role group **Organization Management**, which is why most tenants never configure anything — and why the Purview portal can show **no role group membership at all** for an admin whose audit search works. Purview lists Purview role groups; the inherited right lives in Exchange (admin center → Roles → Admin roles → Organization Management).
+The audit search right is the Exchange role **View-Only Audit Logs** (or **Audit Logs**). Global Administrators hold it implicitly, and the chain is worth knowing because every diagnostic question follows from it — measured on a working tenant:
 
-Two things are worth ruling out before you theorise, because both are commonly blamed and neither is required: **a mailbox** and **a licence**. A tenant admin account with no mailbox at all can search the audit log perfectly well.
+```powershell
+Get-ManagementRoleAssignment -RoleAssignee <admin-upn> -Role "View-Only Audit Logs"
+#   Name             : View-Only Audit Logs-Organization Management
+#   RoleAssigneeName : Organization Management
+#   RoleAssigneeType : RoleGroup          (EffectiveUserName: All Group Members)
 
-When the call fails *despite* the account being a Global Administrator, all you actually know is that the inherited role did not apply to that account. Candidates to check — not to assert:
+Get-RoleGroupMember "Organization Management"
+#   Name                     RecipientType
+#   TenantAdmins_-123456789  Group        <- auto-managed group holding the Global Admins
+```
 
-* **PIM**: the role is eligible but not activated, or was activated after the current token was issued.
-* **A customized Organization Management role group** with the audit roles removed.
-* **A freshly created account or a recent role change** that has not propagated.
-* **A tenant whose Exchange Online RBAC has nothing to map the directory role onto.**
+So: **Global Administrator → auto-managed `TenantAdmins_<hash>` group → Organization Management role group → audit roles.** That is why most tenants never configure anything, and why the Purview portal can show **no role group membership at all** for an admin whose audit search works — Purview lists Purview role groups, while this right lives in Exchange (admin center → Roles → Admin roles → Organization Management).
+
+Two things are worth ruling out before you theorise, because both get blamed and neither is required: **a mailbox** and **a licence**. On the tenant measured above the admin account has no mailbox at all (`Get-Mailbox` returns nothing, `Get-User` reports `RecipientType: User`) and audit search works fine.
+
+When the call fails *despite* the account being a Global Administrator, one link of that chain is broken. Check them in order rather than guessing:
+
+1. Is the account actually **in `TenantAdmins_*`** — i.e. is the Global Administrator role *active*, not merely PIM-eligible?
+2. Is `TenantAdmins_*` still a **member of Organization Management**?
+3. Does Organization Management still **hold the audit roles** (`Get-ManagementRoleAssignment -Role "View-Only Audit Logs"`)?
+4. Is **`UnifiedAuditLogIngestionEnabled`** true at all?
 
 A third state is easy to confuse with both errors: **auditing disabled**. That one does not error at all — the query completes and returns zero records.
 
