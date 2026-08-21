@@ -130,7 +130,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [`/me/todo` needs an Exchange mailbox](gotchas/graph/todo-requires-exchange-mailbox.md) — 404 "Item not found" on admin/cloud-only accounts is not a 403; Planner works without a mailbox
     - [A mail-permission probe that can't tell "no mailbox" from "no consent" lies to admins](gotchas/graph/mail-probe-no-mailbox-vs-no-consent.md) — `/me/messages` 404 `MailboxNotEnabled*` on mailbox-less accounts ≠ missing consent; three verdicts, and never cache a negative probe result
     - [Purview Audit Query API is async](gotchas/graph/purview-audit-query-api-is-async.md) — hour-long queries; attach to the last succeeded, create in background
-    - [`dont have any permissions` is a missing audit role](gotchas/graph/audit-query-permission-vs-audit-role.md) — consent vs. Audit Reader/Manager; Global Admin is not enough
+    - [`dont have any permissions` rejects the user, not the app](gotchas/graph/audit-query-permission-vs-audit-role.md) — consent vs. Exchange audit role; Global Admin usually inherits it, so compare accounts
     - [Office files: property demotion changes the hash](gotchas/graph/office-files-property-demotion.md) — metadata PATCH rewrites docx bytes; key change detection on `lastModifiedBy`
     - [Usage reports are CORS-blocked in the browser](gotchas/graph/usage-reports-cors-blocked-in-browser.md) — fetch server-side; browser inventory = SP Search + `/_api/site/usage`
     - [Tenant-wide enumeration is app-only](gotchas/graph/tenant-wide-enumeration-is-app-only.md) — `getAllSites` rejects delegated tokens; check the Permissions table first
