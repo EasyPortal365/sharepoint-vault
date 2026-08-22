@@ -2,14 +2,14 @@
 title: GetStorageEntity returns 200 for a missing key, not 404
 tags: [rest-api, tenant-properties, spfx, configuration]
 applies-to: SharePoint Online
-last-reviewed: 2026-07-28
+last-reviewed: 2026-08-22
 ---
 
 # `GetStorageEntity` returns 200 for a missing key, not 404
 
 > **Bottom line.** A tenant property that was never set answers `HTTP 200 {"odata.null":true}`, so status codes cannot tell "not configured" apart from "read failed" — and writing one needs Tenant Admin, so an app can never provision its own.
 >
-> **Ve zkratce.** Nenastavená tenant property vrací `HTTP 200 {"odata.null":true}`, takže podle status kódu nerozliš��š „není nakonfigurováno" od „čtení selhalo" – a zápis vyžaduje Tenant Admin, takže si aplikace vlastní property nikdy nezaloží sama.
+> **Ve zkratce.** Nenastavená tenant property vrací `HTTP 200 {"odata.null":true}`, takže podle status kódu nerozlišíš „není nakonfigurováno" od „čtení selhalo" – a zápis vyžaduje Tenant Admin, takže si aplikace vlastní property nikdy nezaloží sama.
 
 ## Symptom
 
@@ -75,10 +75,25 @@ SharePoint's `GetByX`-style accessors are unreliable about signalling "this obje
 | Call | Missing object returns |
 |---|---|
 | `GetStorageEntity('key')` | **200** + `{"odata.null":true}` |
+| `GetFolderByServerRelativeUrl('/…')?$select=Exists` | **200** + `{"Exists":false}` |
 | [`fields/getbyinternalnameortitle('X')`](getbyinternalnameortitle-400-not-404.md) | **400** `ArgumentException` |
 | `sitegroups/getbyname('X')` | **500** |
 
 So an existence check written as `if (status !== 404) { fail }` is wrong in every one of these cases. Either inspect the body, or skip the check entirely and let the create call give you the definitive answer.
+
+The `Exists` row bites hardest, because the field name reads like the answer while the status code is the thing most code actually tests:
+
+```ts
+// WRONG — 200 only says the question was understood.
+const ok = (await fetch(`${web}/_api/web/GetFolderByServerRelativeUrl('${path}')?$select=Exists`)).ok;
+
+// RIGHT — the answer is in the body.
+const r = await fetch(`${web}/_api/web/GetFolderByServerRelativeUrl('${path}')?$select=Exists`,
+                      { headers: { Accept: 'application/json;odata=nometadata' } });
+const exists = r.ok && (await r.json()).Exists === true;
+```
+
+Get it wrong and the failure surfaces one call later, as a `404` from `Files/add` or `ListItemAllFields` — pointing at the upload, not at the check that lied. The same applies to `GetFileByServerRelativeUrl(…)?$select=Exists`.
 
 ## Design consequence
 

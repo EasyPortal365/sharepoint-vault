@@ -2,7 +2,7 @@
 
 Every single thing in the vault, on one page. Section names link to folder READMEs; leaves link straight to the content.
 
-*Last updated: 2026-08-19*
+*Last updated: 2026-08-22*
 
 - 🧰 **[scripts/](scripts/)** — PowerShell scripts with comment-based help, read-only unless stated
   - [What the scripts actually print](scripts/sample-outputs.md) — console + CSV samples for every script from real runs, including what a denied read looks like
@@ -50,7 +50,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [“Invalid text value” is a MaxLength 500](gotchas/rest-api/invalid-text-value-is-a-maxlength-500.md) — generic 500 naming no field; a `Text` column capped at 255
     - [Create a modern page via REST (3-step)](gotchas/rest-api/create-modern-page-via-rest-sitepages.md) — `CanvasContent1` won't stick on create; create → SavePageAsDraft → Publish, canvas is JSON
     - [`$filter` on multi-value person fields 400s](gotchas/rest-api/filter-on-multivalue-person-field-400.md) — fall back to client filtering, but only on HTTP 400
-    - [`GetStorageEntity` returns 200 for a missing key](gotchas/rest-api/getstorageentity-returns-200-for-missing-key.md) — unset tenant property answers `200 {"odata.null":true}`; "unset" and "failed" are indistinguishable by status code, and writing needs Tenant Admin
+    - [`GetStorageEntity` returns 200 for a missing key](gotchas/rest-api/getstorageentity-returns-200-for-missing-key.md) — unset tenant property answers `200 {"odata.null":true}`; "unset" and "failed" are indistinguishable by status code, and writing needs Tenant Admin — same trap in `…?$select=Exists`, which returns `200 {"Exists":false}`
     - [Silent read failure drives delete-all](gotchas/rest-api/silent-read-failure-drives-delete-all.md) — a quiet `if (!ok) break` turns "sync what changed" into "delete everything"; fail-safe for a view means show what you can, for a delete it means do nothing
     - [App page properties are not in CanvasContent1](gotchas/rest-api/app-page-webpart-properties-not-in-canvascontent.md) — single-part app pages store web part config elsewhere; do not diagnose "not set" from page fields
     - [Field written but missing from `$select`](gotchas/rest-api/field-written-but-missing-from-select.md) — `$select` is an allowlist; a `snapshot ?? live` fallback silently erases the feature the snapshot exists for
