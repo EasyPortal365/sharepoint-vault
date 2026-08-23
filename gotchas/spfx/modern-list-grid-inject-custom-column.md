@@ -2,7 +2,7 @@
 title: Injecting your own column into the modern list grid — rows are display:contents, cells carry explicit grid placement
 tags: [spfx, modern-list, dom, css-grid, overlay]
 applies-to: SharePoint Online (modern list/library view, 2026)
-last-reviewed: 2026-08-12
+last-reviewed: 2026-08-22
 ---
 
 # Adding a column to the modern list grid from SPFx
@@ -81,7 +81,22 @@ Reading a row's identity (to match your data): the file name lives in
 
 ## What else it has to handle
 
-- **Re-renders.** Scrolling recycles rows, resizing and sorting rebuild them. Watch the grid with a `MutationObserver` (`childList`, `subtree`, plus `attributes` on `style`/`class`) and re-apply inside `requestAnimationFrame`, guarded by a flag so your own writes don't retrigger it.
+- **Re-renders.** Scrolling recycles rows, resizing and sorting rebuild them. Watch the grid with a `MutationObserver` (`childList`, `subtree`, plus `attributes` on `style`/`class`) and re-apply inside `requestAnimationFrame`.
+
+  ⚠️ **A plain "I'm writing right now" flag does NOT guard this — it will freeze the browser.** `MutationObserver` delivers its records *after* the current synchronous task finishes, by which time your flag is already back to `false`. The observer then receives **your own** mutations, treats them as a foreign edit and schedules another apply — an endless rAF loop that allocates hundreds of cells per frame. Measured in production: ~7 GB RAM, 98 % CPU, tab frozen, in both Edge and Chrome.
+
+  ```js
+  applying = true;
+  try { /* strip + write cells + set gridTemplateColumns */ }
+  finally {
+    observer.takeRecords();   // ← drop the records our own writes just produced
+    applying = false;
+  }
+  ```
+
+  `takeRecords()` empties the queue so the callback only ever wakes for a genuinely foreign change. `disconnect()` + `observe()` around the write works too. Add a circuit breaker as a backstop, but base it on **how long the redrawing has gone on without a pause** (say 5 s), not on a per-second count: a runaway loop and a fast fling-scroll are both rAF-capped, so they redraw at the same rate and a frame counter cannot tell them apart.
+
+  While you're there, do all your `getComputedStyle` reads **before** any writes. Interleaving reads and writes per row forces a layout recalculation on every iteration, and this function runs on every observer wake-up.
 - **Cleanup must be complete.** Remove your cells, clear the inline `gridTemplateColumns`, and clear `gridColumn` on `addColumnCell_*`. Reset foreign inline styles to empty rather than to a remembered value — let SharePoint set them again.
 - **SPA navigation.** Moving to another library swaps the whole grid; your observer is then attached to a dead node. Unmount on navigation (`context.application.navigatedEvent` for an application customizer).
 - **Don't insert in the middle.** Putting your column right after *Name* means rewriting `grid-column` on every cell to its right — values SharePoint sets inline, some as `calc()` with a CSS variable, all restored on the next render. Appending at the end plus `position: sticky` touches nothing but your own nodes.
