@@ -179,6 +179,7 @@ The standard server-side companion of an SPFx solution — and its own set of tr
 
 | Gotcha | TL;DR |
 |---|---|
+| [Driving an SPFx page from the console](tooling/driving-a-spfx-page-from-the-console.md) | Setting `input.value` leaves React state empty so the form saves nothing, and `window.confirm` blocks CDP automation — both fail as success |
 | [Getting bulk data into a SharePoint page from the console](tooling/getting-bulk-data-into-a-sharepoint-page-from-the-console.md) | Don't paste 100+ kB and don't upload it anywhere — serve it from `127.0.0.1` with CORS; loopback is a trustworthy origin, so HTTPS pages may fetch it |
 | [Git Bash mangles backslashes for native exes](tooling/git-bash-mangles-backslashes-for-native-exes.md) | `[\\/]` arrives as `[/]` — Windows-path regexes silently under-match; use `.{1,4}` or run from PowerShell |
 | [Contributors panel keeps a co-author you removed](tooling/contributors-panel-stale-after-history-rewrite.md) | The REST endpoint counts authors, the panel also counts co-authors — so a "clean" API answer proves nothing; documented refresh is ~24 h, then it's a support ticket |
