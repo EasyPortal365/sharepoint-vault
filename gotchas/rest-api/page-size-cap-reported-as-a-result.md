@@ -2,7 +2,7 @@
 title: "A page-size cap reported as a finding"
 tags: [rest-api, graph, reporting, paging, powershell]
 applies-to: SharePoint Online, Microsoft Graph, any paged REST API
-last-reviewed: 2026-08-07
+last-reviewed: 2026-08-24
 ---
 
 # A page-size cap reported as a finding
