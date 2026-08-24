@@ -10,6 +10,7 @@ Every article carries frontmatter with `tags` and `applies-to`, so repo search g
 
 | Gotcha | TL;DR |
 |---|---|
+| [Unbounded `Promise.all` fan-out invites 429](rest-api/unbounded-promise-all-fanout-throttling.md) | Fan-out is safe when your code decides the count, dangerous when the customer's data does. Bounded batch / worker-pool patterns. |
 | [Get lists by URL, not by title](rest-api/get-list-by-url-not-by-title.md) | `getbytitle()` breaks the moment someone renames a list — resolve by URL instead |
 | [Search REST needs `odata-version: 3.0`](rest-api/search-api-needs-odata-version-3.md) | The header that turns mysterious search 500s into working queries |
 | [DateTime: write full ISO, derive days locally](rest-api/datetime-write-full-iso-read-local-day.md) | No-timezone writes 400; UTC reads shift the day — `toISOString()` in, local getters out |
@@ -81,6 +82,7 @@ Every article carries frontmatter with `tags` and `applies-to`, so repo search g
 | [A conditional spread hides a phantom list column](spfx/conditional-spread-hides-a-phantom-list-column.md) | `...(cond ? {…} : {})` skips TypeScript's excess-property check — the extra field reaches SharePoint and 400s |
 | [A shared component's var() fallback chain is only as good as its last link](spfx/shared-component-var-fallback-lands-on-system-font.md) | Extracted components render in the browser's default font in any app that keeps tokens as TS constants — the terminal fallback must be your brand stack |
 | [Read-only mode must cover Graph too](spfx/read-only-mode-must-cover-graph-too.md) | Wrapping `SPHttpClient` blocks list writes but not `MSGraphClientFactory` — "read-only" still sends mail and creates tasks |
+| [Provisioning step gated on success runs forever](spfx/provisioning-step-gated-on-success-runs-forever.md) | A startup step needing ManageLists writes no marker for ordinary members, so the whole batch replays on every page load. The marker needs two states. |
 | [Command set button never appears](spfx/command-set-button-never-appears.md) | Uploading a new `.sppkg` does not register the extension on a site, and `raiseOnChange()` never re-runs `onListViewUpdated` — decide visibility in one method called from both triggers |
 | [Injecting your own column into the modern list grid](spfx/modern-list-grid-inject-custom-column.md) | Appending a cell shifts the whole table — rows are `display: contents`, so cells are the grid items and each carries an explicit `grid-column`/`grid-row` |
 | [Reading the modern list selection from the DOM](spfx/reading-list-selection-from-the-dom.md) | Only a command set gets `selectedRows`; from the DOM take names only, resolve paths per folder, and read the real count from the clear-selection button — the view is virtualized |
