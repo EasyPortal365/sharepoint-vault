@@ -192,6 +192,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [GitHub Pages certificate stuck](gotchas/tooling/github-pages-certificate-stuck.md) — domain added before DNS existed; remove & re-add restarts provisioning
     - [NUL byte makes grep treat a file as binary](gotchas/tooling/nul-byte-makes-grep-treat-file-as-binary.md) — one raw U+0000 and every grep-based sweep silently skips the file; write the escape, detect with `file`
     - [Compiled files next to sources fake your build check](gotchas/tooling/compiled-files-next-to-sources-fake-your-build-check.md) — stale `.js`/`.d.ts` in `src/` greps like live code while `main` points at `lib/`; ask `require.resolve`, date-check with `git log`, and keep the ignore rule narrow enough to spare hand-written `.d.ts`
+    - [Word’s PDF export silently substitutes your fonts](gotchas/tooling/word-pdf-export-substitutes-fonts.md) — `ExportAsFixedFormat` lays the text out in Calibri while Word still lists and embeds the font; print to PDF instead, install static (not variable) instances, and verify via the `name` table inside the embedded `FontFile2`
 - 🧭 **[guides/](guides/)** — end-to-end walkthroughs
   - [Calling SharePoint REST like a pro](guides/calling-sharepoint-rest-like-a-pro.md) — clients, headers, safe writes, reading well, and the ten-minute diagnosis routine
   - [Search queries that actually work](guides/search-queries-that-actually-work.md) — the mandatory header, practical KQL, managed properties, paging, freshness traps

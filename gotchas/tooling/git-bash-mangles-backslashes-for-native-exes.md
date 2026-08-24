@@ -2,7 +2,7 @@
 title: Git Bash on Windows mangles backslashes passed to native tools — regexes silently stop matching
 tags: [tooling, windows, git-bash, ripgrep]
 applies-to: Git Bash / MSYS2 on Windows
-last-reviewed: 2026-07-16
+last-reviewed: 2026-08-24
 ---
 
 # Git Bash on Windows mangles backslashes passed to native tools — regexes silently stop matching
@@ -44,3 +44,4 @@ Pick any of the three, in order of preference:
 
 - The same mechanism is behind MSYS's famous *path conversion* (arguments that look like `/foo` becoming `C:\msys64\foo`) — `MSYS_NO_PATHCONV=1` helps for paths, but the backslash handling in regex arguments is the sneakier sibling.
 - Treat *any* "grep found surprisingly little" moment on Windows as a tooling suspect first, filesystem fact second.
+- **The same collapse happens on the way into a heredoc**, including a quoted one (`<<'EOF'`), which is exactly where you expect literal text to survive. A regex written as `[^()\\]` lands in the file as `[^()\]` and the script dies on a syntax error — the loud, harmless case. The dangerous case is a regex that still *parses*: `\\s` arriving as `\s` turns a whitespace class into a literal `s`, so a trailing-whitespace cleaner starts eating the letter "s" off the end of every word. Write files containing regexes with a real file-writing tool, or build the pattern from `String.fromCharCode`/`new RegExp` with escaped input — and always test the cleaner against real samples rather than reading it.
