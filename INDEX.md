@@ -2,7 +2,7 @@
 
 Every single thing in the vault, on one page. Section names link to folder READMEs; leaves link straight to the content.
 
-*Last updated: 2026-08-24*
+*Last updated: 2026-08-25*
 
 - 🧰 **[scripts/](scripts/)** — PowerShell scripts with comment-based help, read-only unless stated
   - [What the scripts actually print](scripts/sample-outputs.md) — console + CSV samples for every script from real runs, including what a denied read looks like
@@ -121,6 +121,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [Application Customizer runs again in dialog iframes](gotchas/spfx/application-customizer-runs-in-dialog-iframe.md) — a floating button rendered twice, the copy pinned to the dialog's corner; refuse nested browsing contexts before anything else (+ un-render path and why a body MutationObserver needs a definitive „no“)
     - [`speechSynthesis.cancel()` doesn't stop chunked reading](gotchas/spfx/speech-cancel-doesnt-stop-chunked-reading.md) — the utterance chain re-queues itself from onend; epoch counter bumped BEFORE cancel(), and no onEnd from a superseded chain
     - [Application Customizer's floating UI disappears on SPA navigation](gotchas/spfx/application-customizer-content-disappears-on-spa-navigation.md) — the button vanishes as you click around the site; `visibilitychange` never fires on in-page nav, so re-render on `navigatedEvent` (+ a `MutationObserver` backstop)
+    - [Per-user data vanishes for admin accounts](gotchas/spfx/user-email-is-empty-for-mailbox-less-accounts.md) — mailbox-less accounts get an empty `pageContext.user.email`; rows save under an empty key, SharePoint stores empty text as NULL, and `$filter=Field eq ''` never matches it again
     - [Sharing text via URL hits length limits](gotchas/spfx/share-text-via-url-hits-length-limits.md) — "Send to Teams" (`/share?msgText`) dies with `AADSTS90015` on long answers and `mailto` silently won't open; cap the URL payload and put the full text on the clipboard
     - [Provisioning step gated on success runs forever](gotchas/spfx/provisioning-step-gated-on-success-runs-forever.md) — a startup step needing ManageLists writes no marker for ordinary members, so the whole batch replays on every page load; the marker needs two states
     - [Command set button never appears](gotchas/spfx/command-set-button-never-appears.md) — two independent causes: uploading a new .sppkg never registers the extension on a site, and `raiseOnChange()` re-reads `command.visible` without re-running `onListViewUpdated`
@@ -186,6 +187,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [A group created by code hides its own membership](gotchas/security/group-created-by-code-hides-its-membership.md) — `sitegroups` POST defaults to `OnlyAllowMembersViewMembership: true`, so only a member or the account that ran provisioning can read the members; Full Control does not help and identical permission masks prove it
   - **tooling/**
     - [Driving an SPFx page from the console](gotchas/tooling/driving-a-spfx-page-from-the-console.md) — `input.value` from the console leaves React state empty (use the native setter + input event) and `window.confirm` freezes CDP automation; both fail silently as success
+    - [Measuring a page in a hidden tab](gotchas/tooling/measuring-a-page-in-a-hidden-tab.md) — hidden tabs never fire `requestAnimationFrame` and clamp `setTimeout` to ~1/s, so the run times out and looks like the very freeze you were chasing (and the code under test never ran either)
     - [Getting bulk data into a SharePoint page from the console](gotchas/tooling/getting-bulk-data-into-a-sharepoint-page-from-the-console.md) — serve the payload from `127.0.0.1` with CORS instead of pasting it or uploading it; loopback is a trustworthy origin so HTTPS pages may fetch it
     - [Git Bash mangles backslashes for native exes](gotchas/tooling/git-bash-mangles-backslashes-for-native-exes.md) — `[\\/]` arrives as `[/]`; Windows-path regexes silently under-match
     - [Contributors panel keeps a co-author you removed](gotchas/tooling/contributors-panel-stale-after-history-rewrite.md) — panel and API answer different questions (co-authors vs authors), so verify at the source; know the documented ~24 h window before you start waiting
