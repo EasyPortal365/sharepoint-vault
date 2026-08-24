@@ -12,6 +12,7 @@ Every article carries frontmatter with `tags` and `applies-to`, so repo search g
 |---|---|
 | [Unbounded `Promise.all` fan-out invites 429](rest-api/unbounded-promise-all-fanout-throttling.md) | Fan-out is safe when your code decides the count, dangerous when the customer's data does. Bounded batch / worker-pool patterns. |
 | [Get lists by URL, not by title](rest-api/get-list-by-url-not-by-title.md) | `getbytitle()` breaks the moment someone renames a list — resolve by URL instead |
+| [FieldValuesAsText re-encodes underscores in JSON keys](rest-api/fieldvaluesastext-reencodes-underscores.md) | `A_x0020_B` comes back as `A_x005f_x0020_x005f_B` — decode `_x005f_` before matching keys |
 | [Search REST needs `odata-version: 3.0`](rest-api/search-api-needs-odata-version-3.md) | The header that turns mysterious search 500s into working queries |
 | [DateTime: write full ISO, derive days locally](rest-api/datetime-write-full-iso-read-local-day.md) | No-timezone writes 400; UTC reads shift the day — `toISOString()` in, local getters out |
 | [`__metadata` body requires verbose](rest-api/metadata-body-requires-verbose.md) | Old-tutorial payloads 400 in modern clients — drop the hint or go verbose on both headers |
