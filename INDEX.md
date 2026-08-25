@@ -90,6 +90,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [A global kill-switch must not block its own fix](gotchas/spfx/kill-switch-must-not-block-its-own-fix.md) — the lock defends itself against being lifted; infrastructure operations (version pin, re-check, config, diagnostics) belong outside it
     - [The ES2015 `lib` trap](gotchas/spfx/es2015-lib-forbidden-apis.md) — TS2550 on `padStart` & friends, and the safe equivalents
     - [Dropping a folder does nothing](gotchas/spfx/drag-drop-folders-webkitgetasentry.md) — `dataTransfer.files` cannot see a folder, `items` is neutered after the first `await`, and `readEntries()` returns the contents in batches of 100
+    - [Opening a pre-filled e-mail in the desktop client](gotchas/spfx/open-email-in-desktop-client-eml.md) — no API tells you which mail client is default; `mailto:` reaches it but carries no attachment, and a `.eml` needs `X-Unsent: 1` or it opens read-only
     - [Instrumenting the Graph client fails silently](gotchas/spfx/instrumenting-the-graph-client-fails-silently.md) — reassigning `client.api` throws and your fail-safe catch hides it; use `Object.create` and assert it attached
     - [SPA router hijacks anchor clicks](gotchas/spfx/spa-router-hijacks-anchor-clicks.md) — `<a href>` navigates before React `onClick` runs; use buttons for in-app actions
     - [Third-party CSS breaks webpack](gotchas/spfx/css-url-assets-break-webpack.md) — `url(images/...)` without `./` kills the build; inject a `<link>` instead
