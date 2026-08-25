@@ -89,6 +89,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [Graph grants are tenant-wide](gotchas/spfx/graph-permission-grants-are-tenant-wide.md) — `webApiPermissionRequests` is a request, not a grant; an approval lands on one tenant-wide principal, so a scope another solution had approved already works in yours (and may be missing at the customer)
     - [A global kill-switch must not block its own fix](gotchas/spfx/kill-switch-must-not-block-its-own-fix.md) — the lock defends itself against being lifted; infrastructure operations (version pin, re-check, config, diagnostics) belong outside it
     - [The ES2015 `lib` trap](gotchas/spfx/es2015-lib-forbidden-apis.md) — TS2550 on `padStart` & friends, and the safe equivalents
+    - [Dropping a folder does nothing](gotchas/spfx/drag-drop-folders-webkitgetasentry.md) — `dataTransfer.files` cannot see a folder, `items` is neutered after the first `await`, and `readEntries()` returns the contents in batches of 100
     - [Instrumenting the Graph client fails silently](gotchas/spfx/instrumenting-the-graph-client-fails-silently.md) — reassigning `client.api` throws and your fail-safe catch hides it; use `Object.create` and assert it attached
     - [SPA router hijacks anchor clicks](gotchas/spfx/spa-router-hijacks-anchor-clicks.md) — `<a href>` navigates before React `onClick` runs; use buttons for in-app actions
     - [Third-party CSS breaks webpack](gotchas/spfx/css-url-assets-break-webpack.md) — `url(images/...)` without `./` kills the build; inject a `<link>` instead

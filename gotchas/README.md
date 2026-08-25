@@ -68,6 +68,7 @@ Every article carries frontmatter with `tags` and `applies-to`, so repo search g
 | [A global kill-switch must not block its own fix](spfx/kill-switch-must-not-block-its-own-fix.md) | Expired licence / suspended / read-only guarding the version switch means the fix that exists cannot be applied — exit only via DevTools |
 | [Graph grants are tenant-wide](spfx/graph-permission-grants-are-tenant-wide.md) | `webApiPermissionRequests` only asks; the approval sits on the tenant's Client Extensibility principal, so every SPFx component inherits it — your feature may work before deployment and break at a customer whose tenant never approved it |
 | [The ES2015 `lib` trap](spfx/es2015-lib-forbidden-apis.md) | Why `padStart` and friends fail the build (TS2550), and the safe equivalents |
+| [Dropping a folder does nothing](spfx/drag-drop-folders-webkitgetasentry.md) | `dataTransfer.files` never sees a folder, `items` is dead after the first `await`, and `readEntries()` hands back the contents 100 at a time |
 | [SPA router hijacks anchor clicks](spfx/spa-router-hijacks-anchor-clicks.md) | On published pages, `<a href>` navigates before React `onClick` runs — use buttons for in-app actions |
 | [Third-party CSS breaks webpack](spfx/css-url-assets-break-webpack.md) | `url(images/...)` without `./` kills the build (Leaflet et al.) — inject a `<link>` instead of importing |
 | [Minified React errors cheatsheet](spfx/react-minified-errors-cheatsheet.md) | #310/#300 = hooks after early returns, #31 = object as child, #185 = setState loop — decoded for SPFx |
