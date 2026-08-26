@@ -2,7 +2,7 @@
 
 Every single thing in the vault, on one page. Section names link to folder READMEs; leaves link straight to the content.
 
-*Last updated: 2026-08-25*
+*Last updated: 2026-08-26*
 
 - 🧰 **[scripts/](scripts/)** — PowerShell scripts with comment-based help, read-only unless stated
   - [What the scripts actually print](scripts/sample-outputs.md) — console + CSV samples for every script from real runs, including what a denied read looks like
@@ -125,6 +125,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [`speechSynthesis.cancel()` doesn't stop chunked reading](gotchas/spfx/speech-cancel-doesnt-stop-chunked-reading.md) — the utterance chain re-queues itself from onend; epoch counter bumped BEFORE cancel(), and no onEnd from a superseded chain
     - [Application Customizer's floating UI disappears on SPA navigation](gotchas/spfx/application-customizer-content-disappears-on-spa-navigation.md) — the button vanishes as you click around the site; `visibilitychange` never fires on in-page nav, so re-render on `navigatedEvent` (+ a `MutationObserver` backstop)
     - [Per-user data vanishes for admin accounts](gotchas/spfx/user-email-is-empty-for-mailbox-less-accounts.md) — mailbox-less accounts get an empty `pageContext.user.email`; rows save under an empty key, SharePoint stores empty text as NULL, and `$filter=Field eq ''` never matches it again
+    - [serverRequestPath is not the page URL](gotchas/spfx/server-request-path-is-not-the-page-url.md) — it is the last SERVER REQUEST path, so a modern list view can hand you `…/RenderListDataAsStream`; validate the shape before storing it as your app page
     - [Sharing text via URL hits length limits](gotchas/spfx/share-text-via-url-hits-length-limits.md) — "Send to Teams" (`/share?msgText`) dies with `AADSTS90015` on long answers and `mailto` silently won't open; cap the URL payload and put the full text on the clipboard
     - [Provisioning step gated on success runs forever](gotchas/spfx/provisioning-step-gated-on-success-runs-forever.md) — a startup step needing ManageLists writes no marker for ordinary members, so the whole batch replays on every page load; the marker needs two states
     - [Command set button never appears](gotchas/spfx/command-set-button-never-appears.md) — two independent causes: uploading a new .sppkg never registers the extension on a site, and `raiseOnChange()` re-reads `command.visible` without re-running `onListViewUpdated`
@@ -159,6 +160,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [Cache-Control on a dynamic endpoint is uninvalidatable](gotchas/azure-functions/cache-control-on-dynamic-endpoint-is-uninvalidatable.md) — `max-age` on a live aggregate lets a shared cache hold the response keyed by URL; neither an app restart nor deleting the underlying data clears it, only expiry — serve dynamic data `no-store`, cache server-side, and have the consumer call with `?_=Date.now()`
   - **search/**
     - [Search ignores unknown managed properties](gotchas/search/unknown-managed-properties-fail-silently.md) — a made-up property name returns HTTP 200 with full results; auto-created Choice properties are not queryable; probe with a fake name, map to RefinableString
+    - [Site missing from the index looks like a permissions problem](gotchas/search/site-missing-from-the-index-looks-like-a-permissions-problem.md) — three queries tell you whether the site is in the index at all, before you debug a query that was never wrong
     - [The crawl log DOES exist in SharePoint Online](gotchas/search/crawl-log-exists-in-spo-via-csom.md) — reachable only through CSOM DocumentCrawlLog via /_vti_bin/client.svc/ProcessQuery, gated by a separate Crawl Log Permissions grant that no admin role implies; returns ~52 columns incl. per-pass crawl timestamps, errors, NoIndex and delete state
     - [ViewsX properties sort only by `ViewsLifeTime`](gotchas/search/viewsx-properties-sort-only-by-viewslifetime.md) — windowed counts select but don't sort; re-rank client-side
     - [Compare SharePoint paths decode-first](gotchas/search/compare-sharepoint-paths-decode-first.md) — normalize encoding + boundary-aware prefix, or matches never fire
@@ -191,6 +193,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
   - **tooling/**
     - [Driving an SPFx page from the console](gotchas/tooling/driving-a-spfx-page-from-the-console.md) — `input.value` from the console leaves React state empty (use the native setter + input event) and `window.confirm` freezes CDP automation; both fail silently as success
     - [Measuring a page in a hidden tab](gotchas/tooling/measuring-a-page-in-a-hidden-tab.md) — hidden tabs never fire `requestAnimationFrame` and clamp `setTimeout` to ~1/s, so the run times out and looks like the very freeze you were chasing (and the code under test never ran either)
+    - [Diagnostics that cannot survive the crash](gotchas/tooling/diagnostics-that-cannot-survive-the-crash.md) — frozen threads stop repainting, `sessionStorage` dies with the tab and the next healthy run overwrites the crash report; persist synchronously and never gate recovery on a flag
     - [Getting bulk data into a SharePoint page from the console](gotchas/tooling/getting-bulk-data-into-a-sharepoint-page-from-the-console.md) — serve the payload from `127.0.0.1` with CORS instead of pasting it or uploading it; loopback is a trustworthy origin so HTTPS pages may fetch it
     - [Git Bash mangles backslashes for native exes](gotchas/tooling/git-bash-mangles-backslashes-for-native-exes.md) — `[\\/]` arrives as `[/]`; Windows-path regexes silently under-match
     - [Contributors panel keeps a co-author you removed](gotchas/tooling/contributors-panel-stale-after-history-rewrite.md) — panel and API answer different questions (co-authors vs authors), so verify at the source; know the documented ~24 h window before you start waiting

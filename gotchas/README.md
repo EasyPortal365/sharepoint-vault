@@ -99,6 +99,7 @@ Every article carries frontmatter with `tags` and `applies-to`, so repo search g
 | [`speechSynthesis.cancel()` doesn't stop chunked reading](spfx/speech-cancel-doesnt-stop-chunked-reading.md) | Stop needs N clicks and two messages read over each other — the utterance chain re-queues itself from `onend`; guard with an epoch counter bumped before `cancel()` |
 | [Application Customizer's floating UI disappears on SPA navigation](spfx/application-customizer-content-disappears-on-spa-navigation.md) | The button vanishes as you click around the site — `onInit` doesn't re-run on SPA nav and `visibilitychange` never fires; re-render on `navigatedEvent` |
 | [Per-user data vanishes for admin accounts](spfx/user-email-is-empty-for-mailbox-less-accounts.md) | Mailbox-less accounts get an empty `user.email`; the rows save with an empty key, SharePoint stores it as NULL, and `eq ''` then matches nothing |
+| [serverRequestPath is not the page URL](spfx/server-request-path-is-not-the-page-url.md) | It is the path of the last SERVER REQUEST — on a modern list view it can be a REST endpoint, and stored as "where my app lives" every link lands on an XML error |
 | [Sharing text via URL hits length limits](spfx/share-text-via-url-hits-length-limits.md) | "Send to Teams" dies with `AADSTS90015` and `mailto` silently won't open on long text — cap the URL payload, carry the full text on the clipboard |
 
 ### app-catalog/
@@ -146,6 +147,7 @@ The standard server-side companion of an SPFx solution — and its own set of tr
 | Gotcha | TL;DR |
 |---|---|
 | [Search ignores unknown managed properties — silently](search/unknown-managed-properties-fail-silently.md) | A fake property name returns HTTP 200 and full results — auto-created `*OWSCHCS`/`ows_*` are not queryable; probe with a deliberately invalid name, then map to `RefinableString` |
+| [Site missing from the index looks like a permissions problem](search/site-missing-from-the-index-looks-like-a-permissions-problem.md) | Zero results for content the user is looking at: measure search itself (target path, `*`, `contentclass:STS_Site`) before touching your code |
 | [The crawl log DOES exist in SharePoint Online](search/crawl-log-exists-in-spo-via-csom.md) | No REST endpoint and no crawl-time managed property, so it looks absent — it lives in CSOM DocumentCrawlLog.GetCrawledUrls and needs a separate grant that admin roles do not imply |
 | [ViewsX properties sort only by `ViewsLifeTime`](search/viewsx-properties-sort-only-by-viewslifetime.md) | Windowed view counts select fine but don't sort — one lifetime-sorted query, re-rank client-side |
 | [Compare SharePoint paths decode-first](search/compare-sharepoint-paths-decode-first.md) | Browser URLs are %-encoded, search `Path` is decoded — normalize both, then boundary-aware prefix match |
@@ -188,6 +190,7 @@ The standard server-side companion of an SPFx solution — and its own set of tr
 |---|---|
 | [Driving an SPFx page from the console](tooling/driving-a-spfx-page-from-the-console.md) | Setting `input.value` leaves React state empty so the form saves nothing, and `window.confirm` blocks CDP automation — both fail as success |
 | [Measuring a page in a hidden tab](tooling/measuring-a-page-in-a-hidden-tab.md) | Background tabs never run `requestAnimationFrame` and clamp timers to ~1/s — the measurement times out and reads exactly like the freeze you were reproducing |
+| [Diagnostics that cannot survive the crash](tooling/diagnostics-that-cannot-survive-the-crash.md) | A frozen thread stops repainting, a closed tab wipes sessionStorage, and the healthy run overwrites the crash report — three ways to get nothing from the one case you built it for |
 | [Getting bulk data into a SharePoint page from the console](tooling/getting-bulk-data-into-a-sharepoint-page-from-the-console.md) | Don't paste 100+ kB and don't upload it anywhere — serve it from `127.0.0.1` with CORS; loopback is a trustworthy origin, so HTTPS pages may fetch it |
 | [Git Bash mangles backslashes for native exes](tooling/git-bash-mangles-backslashes-for-native-exes.md) | `[\\/]` arrives as `[/]` — Windows-path regexes silently under-match; use `.{1,4}` or run from PowerShell |
 | [Contributors panel keeps a co-author you removed](tooling/contributors-panel-stale-after-history-rewrite.md) | The REST endpoint counts authors, the panel also counts co-authors — so a "clean" API answer proves nothing; documented refresh is ~24 h, then it's a support ticket |
