@@ -100,6 +100,7 @@ Every article carries frontmatter with `tags` and `applies-to`, so repo search g
 | [Application Customizer's floating UI disappears on SPA navigation](spfx/application-customizer-content-disappears-on-spa-navigation.md) | The button vanishes as you click around the site — `onInit` doesn't re-run on SPA nav and `visibilitychange` never fires; re-render on `navigatedEvent` |
 | [Per-user data vanishes for admin accounts](spfx/user-email-is-empty-for-mailbox-less-accounts.md) | Mailbox-less accounts get an empty `user.email`; the rows save with an empty key, SharePoint stores it as NULL, and `eq ''` then matches nothing |
 | [serverRequestPath is not the page URL](spfx/server-request-path-is-not-the-page-url.md) | It is the path of the last SERVER REQUEST — on a modern list view it can be a REST endpoint, and stored as "where my app lives" every link lands on an XML error |
+| [Parser entry and collector must share one shape](spfx/parser-entry-and-collector-must-share-one-shape.md) | An entry regex accepting more than the collector loop consumes re-reads the same line forever — the tab dies of out-of-memory, and it looks machine-specific because the trigger is the USER'S DATA |
 | [Sharing text via URL hits length limits](spfx/share-text-via-url-hits-length-limits.md) | "Send to Teams" dies with `AADSTS90015` and `mailto` silently won't open on long text — cap the URL payload, carry the full text on the clipboard |
 
 ### app-catalog/
