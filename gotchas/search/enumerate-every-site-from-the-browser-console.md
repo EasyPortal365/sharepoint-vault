@@ -40,6 +40,7 @@ const webs = rows.map(row => Object.fromEntries(row.Cells.map(c => [c.Key, c.Val
 - The [`odata-version: 3.0` header is mandatory](../rest-api/search-api-needs-odata-version-3.md) on Search REST.
 - Compare `TotalRows` against the rows you received — past `rowlimit` you must page with `startrow`, and a silently truncated inventory looks complete.
 - Results are security-trimmed: you enumerate what the signed-in account can read, which for a sweep is exactly the set of sites you can act on anyway.
+- **Because of that trimming, the count is a signal — compare it against a baseline.** When the account loses access to some sites, they *silently vanish* from the enumeration and the sweep still reports success over what is left. Field case: the same query returned 30 webs and, two hours later, a stable 16 across three retries — the 14-web difference answered 403 even to direct navigation. That was a real permission change caught only because the previous run's count was known. A sweep that does not check "did I see roughly as many sites as last time?" will happily declare half a tenant healthy.
 
 Then sweep: for each web, plain `fetch` against `ORIGIN + webPath + '/_api/...'` works cross-site because it is all one origin. Traps that will bite a naive loop, each of them field-paid:
 
