@@ -2,7 +2,7 @@
 title: `fields/getbyinternalnameortitle` returns 400, not 404, for a missing field
 tags: [rest-api, fields, provisioning, existence-check]
 applies-to: SharePoint REST (/_api/web/lists(...)/fields/getbyinternalnameortitle), field provisioning
-last-reviewed: 2026-08-17
+last-reviewed: 2026-08-27
 ---
 
 # `fields/getbyinternalnameortitle` returns 400, not 404, for a missing field
