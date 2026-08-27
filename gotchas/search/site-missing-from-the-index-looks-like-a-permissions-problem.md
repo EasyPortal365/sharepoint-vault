@@ -2,7 +2,7 @@
 title: "\"Search finds nothing here\" is usually a site missing from the index — not a permissions problem"
 tags: [search, kql, index, crawl, rag, copilot, troubleshooting]
 applies-to: SharePoint Online (Search REST / KQL, and anything built on it — RAG, custom search, AI assistants)
-last-reviewed: 2026-08-26
+last-reviewed: 2026-08-27
 ---
 
 # "Search finds nothing here" is usually a site missing from the index — not a permissions problem
@@ -47,8 +47,10 @@ Also read `NoCrawl` directly rather than assuming, on both the web and each list
 
 ```
 /_api/web?$select=Title,NoCrawl
-/_api/web/lists?$select=Title,NoCrawl,ItemCount&$filter=Hidden eq false
+/_api/web/lists?$select=Title,NoCrawl,ItemCount
 ```
+
+(Resist the habit of adding `$filter=Hidden eq false` here — apps hide their settings lists on purpose, and a hidden list with `NoCrawl = false` still feeds the index. Filtering it out means auditing a different site than the one search sees; see [Enumerate every site from the browser console](enumerate-every-site-from-the-browser-console.md).)
 
 ## Fix
 

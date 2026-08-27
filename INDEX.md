@@ -2,7 +2,7 @@
 
 Every single thing in the vault, on one page. Section names link to folder READMEs; leaves link straight to the content.
 
-*Last updated: 2026-08-26*
+*Last updated: 2026-08-27*
 
 - 🧰 **[scripts/](scripts/)** — PowerShell scripts with comment-based help, read-only unless stated
   - [What the scripts actually print](scripts/sample-outputs.md) — console + CSV samples for every script from real runs, including what a denied read looks like
@@ -162,6 +162,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
   - **search/**
     - [Search ignores unknown managed properties](gotchas/search/unknown-managed-properties-fail-silently.md) — a made-up property name returns HTTP 200 with full results; auto-created Choice properties are not queryable; probe with a fake name, map to RefinableString
     - [Site missing from the index looks like a permissions problem](gotchas/search/site-missing-from-the-index-looks-like-a-permissions-problem.md) — three queries tell you whether the site is in the index at all, before you debug a query that was never wrong
+    - [Enumerate every site from the browser console](gotchas/search/enumerate-every-site-from-the-browser-console.md) — `contentclass:STS_Site OR STS_Web` over Search REST lists every web the account can read, no admin role or tooling; plus the traps of a cross-site F12 sweep (Hidden filter, case-sensitive GetList, 400 vs 404, per-web digest)
     - [The crawl log DOES exist in SharePoint Online](gotchas/search/crawl-log-exists-in-spo-via-csom.md) — reachable only through CSOM DocumentCrawlLog via /_vti_bin/client.svc/ProcessQuery, gated by a separate Crawl Log Permissions grant that no admin role implies; returns ~52 columns incl. per-pass crawl timestamps, errors, NoIndex and delete state
     - [ViewsX properties sort only by `ViewsLifeTime`](gotchas/search/viewsx-properties-sort-only-by-viewslifetime.md) — windowed counts select but don't sort; re-rank client-side
     - [Compare SharePoint paths decode-first](gotchas/search/compare-sharepoint-paths-decode-first.md) — normalize encoding + boundary-aware prefix, or matches never fire
