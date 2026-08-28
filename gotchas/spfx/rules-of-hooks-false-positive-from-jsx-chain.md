@@ -2,7 +2,7 @@
 title: rules-of-hooks false-positive — a complex JSX `&&` chain flags the wrong hook
 tags: [spfx, react, eslint, debugging]
 applies-to: SharePoint Online (SPFx, React 17, eslint-plugin-react-hooks)
-last-reviewed: 2026-07-31
+last-reviewed: 2026-08-28
 ---
 
 # rules-of-hooks false-positive — a complex JSX `&&` chain flags the *wrong* hook
@@ -68,5 +68,35 @@ What fixed it, first try, was **extracting the new part into its own component**
 ```
 
 **How to tell the two apart:** if lifting conditions doesn't help, or the error count oscillates between runs, the trigger isn't the shape of an expression — it's the volume of the component. Stop tuning expressions and **split the component**. That is also the better design: the extracted part usually turns out to be a separate concern with its own state and its own loading.
+
+## Third trigger: the *recommended fix itself* — and why only bisection finds it
+
+*Added 2026-08-28.* A confirmation dialog was added to a ~1650-line component: 27 errors. Extracting the
+whole feature into its own hook (about 130 lines out of the component, the "split the component" remedy
+above) brought it down to 23 — so volume was not the whole story either. Bisecting from a clean HEAD,
+block by block, pinned it on a **single line**, and it was the *simplification*:
+
+```tsx
+// clean
+onSendDocs={target && target.found ? () => send(selected) : undefined}
+
+// 24 errors, all in unrelated hooks 300 lines above
+const canSend = !!target && !!target.found;      // ← the const itself is fine
+onSendDocs={canSend ? () => send(selected) : undefined}   // ← using it HERE is not
+```
+
+The `const` may exist and be used elsewhere (in a props object, in another branch) without any problem.
+It breaks only when it appears in *that* ternary in the JSX. Putting the inline condition back: zero errors.
+
+**So the rule "lift the condition into a named const" is not reliable** — the plugin trips over a specific
+expression, and which variant trips it cannot be predicted; here the *simpler* one did. The only method
+that converges quickly:
+
+1. `git checkout -- <file>` and confirm HEAD lints clean.
+2. Re-apply your change in small blocks, running `npx eslint <file>` after **each** block.
+3. On the guilty block, try variants one at a time.
+
+Guessing "what might be upsetting it" reliably burns dozens of rounds. Splitting the component is still
+worth doing (better design, smaller file) — just don't expect it to clear the error.
 
 Note this is a *lint* failure only — the code runs correctly either way. But `build --production` runs lint as an error, so it blocks the release.
