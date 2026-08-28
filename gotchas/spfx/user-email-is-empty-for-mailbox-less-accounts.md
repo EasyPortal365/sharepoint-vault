@@ -2,7 +2,7 @@
 title: "Per-user data vanishes for admin accounts: pageContext.user.email is empty and `eq ''` matches nothing"
 tags: [spfx, page-context, identity, rest-api, odata, filter, admin-accounts, lists]
 applies-to: SharePoint Online (SPFx web parts and extensions storing per-user rows in a list)
-last-reviewed: 2026-08-24
+last-reviewed: 2026-08-28
 ---
 
 # Per-user data vanishes for admin accounts: `pageContext.user.email` is empty and `eq ''` matches nothing
@@ -82,3 +82,18 @@ A one-line check from the browser console on a page where your solution runs:
 // empty string here = your identity key is about to be empty too
 _spPageContextInfo.userEmail
 ```
+
+## It is not only the OData filter — a client-side guard hides the row too (2026-08-28)
+
+The `eq ''` mismatch above is the server-side half. The same empty key bites again **entirely in the browser**, and there the symptom is faster and more confusing: the record is written, shows up for the rest of the session, and is gone after a reload.
+
+A saved-filter ("segments") feature stored an owner and rendered the list as:
+
+```js
+// `me` is the identity key — empty string for a mailbox-less account
+items.filter(s => s.shared || (!!me && s.owner === me));
+```
+
+The `!!me` guard exists so an unknown user does not match every unowned row — reasonable on its own. Combined with an empty key it means the author of a private item **can never see it again**: the row was written with `owner: ''` and the guard drops it before any comparison happens.
+
+**So when you fix an empty identity, grep for both shapes:** the OData `eq` on the key *and* every client-side predicate that guards on the key being truthy. Fixing only the query leaves the second one silently filtering the user out of their own data.
