@@ -2,7 +2,7 @@
 
 Every single thing in the vault, on one page. Section names link to folder READMEs; leaves link straight to the content.
 
-*Last updated: 2026-08-28*
+*Last updated: 2026-08-29*
 
 - 🧰 **[scripts/](scripts/)** — PowerShell scripts with comment-based help, read-only unless stated
   - [What the scripts actually print](scripts/sample-outputs.md) — console + CSV samples for every script from real runs, including what a denied read looks like
@@ -141,6 +141,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [Three `.sppkg` packaging pitfalls](gotchas/app-catalog/sppkg-packaging-pitfalls.md) — ASCII-only solution name, icon exactly 96×96, Publisher column is AppSource-only
   - **graph/**
     - [`/me/sendMail`: From is always the signed-in user](gotchas/graph/sendmail-from-is-the-signed-in-user.md) — delegated `Mail.Send` can't impersonate; configure Reply-To instead
+    - [A pasted screenshot is too big for `/me/sendMail`](gotchas/graph/sendmail-attachment-size-ceiling.md) — inline base64 attachments share a ~4 MB request budget; shrink bitmaps in a canvas, cap the total, and remember `mailto:` fallbacks carry no attachments at all
     - [ApplicationAccessPolicy rejects a shared mailbox](gotchas/graph/application-access-policy-rejects-shared-mailbox.md) — "not a security principal"; scope app-only `Mail.Send` to a mail-enabled security group
     - [`/me/todo` needs an Exchange mailbox](gotchas/graph/todo-requires-exchange-mailbox.md) — 404 "Item not found" on admin/cloud-only accounts is not a 403; Planner works without a mailbox
     - [A mail-permission probe that can't tell "no mailbox" from "no consent" lies to admins](gotchas/graph/mail-probe-no-mailbox-vs-no-consent.md) — `/me/messages` 404 `MailboxNotEnabled*` on mailbox-less accounts ≠ missing consent; three verdicts, and never cache a negative probe result
