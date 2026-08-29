@@ -183,6 +183,7 @@ The standard server-side companion of an SPFx solution — and its own set of tr
 
 | Gotcha | TL;DR |
 |---|---|
+| [Sanitizer keeps script and style TEXT](security/sanitizer-keeps-script-and-style-text.md) | "Drop the tag, keep the inner text" is right for `<font>`, wrong for `<script>`/`<style>` — it pastes their source into your content. Nothing executes, so security tests pass |
 | [Stored XSS via list content](security/stored-xss-from-list-content.md) | React doesn't block `javascript:` hrefs or sanitize SVG — allowlist `safeHref` with C0-strip at every sink |
 | [Field hiding is not a permission](security/field-hiding-is-not-a-permission.md) | Role-based UI field hiding is cosmetic — Read on the list means REST/Export/other web parts see it; confidentiality needs a separate list, item perms, or a server tier |
 | [Effective permissions come as a bitmask](security/effective-permissions-bitmask-off-by-one.md) | `getUserEffectivePermissions` returns `Low`/`High` decimal strings of one 64-bit mask; `ViewListItems` is bit 0. Decode off by one and a plain Read grant reads back as "no access" — verify the decoder against a site admin and a known Read user |
