@@ -106,6 +106,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [`SP.WebProxy` is add-in-only](gotchas/spfx/webproxy-is-add-in-only.md) — no SharePoint-native CORS proxy for SPFx; the 403 hides inside an HTTP 200
     - [Teams personal app needs global deploy](gotchas/spfx/teams-personal-app-needs-global-deploy.md) — `skipFeatureDeployment: true` + "all sites"; the `teams/` icon-folder convention
     - [Teams mobile webview renders desktop width](gotchas/spfx/teams-mobile-webview-renders-desktop-width.md) — ~980px layout; fix the viewport meta in Teams first
+    - [Shared component measures the viewport, not its container](gotchas/spfx/shared-component-measures-viewport-not-container.md) — `@media` never sees the narrow panel you were reused in; measure the element with `ResizeObserver` and switch every child together
     - [CDN-hosted bundle still needs a new `.sppkg`](gotchas/spfx/cdn-hosted-bundle-still-needs-new-sppkg.md) — `includeClientSideAssets: false` moves assets, not versioning; the manifest pins a content-hashed filename, so old packages never request the new bundle
     - [`npm audit --omit=dev` overstates shipped risk](gotchas/spfx/npm-audit-omit-dev-overstates-shipped-risk.md) — SPFx keeps its Node build toolchain in `dependencies`, so 229 „production“ findings can hide a single real one; grep the published bundle and always include a control sample
     - [Office file extraction needs a decompressed-size cap](gotchas/spfx/office-file-extraction-needs-a-decompressed-size-cap.md) — an upload-size limit only bounds the compressed archive; a crafted `!ref` still OOMs the tab
@@ -142,6 +143,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [Three `.sppkg` packaging pitfalls](gotchas/app-catalog/sppkg-packaging-pitfalls.md) — ASCII-only solution name, icon exactly 96×96, Publisher column is AppSource-only
   - **graph/**
     - [`/me/sendMail`: From is always the signed-in user](gotchas/graph/sendmail-from-is-the-signed-in-user.md) — delegated `Mail.Send` can't impersonate; configure Reply-To instead
+    - [A `mailto:` fallback reported as sent](gotchas/graph/sendmail-fallback-reported-as-sent.md) — `sendMail` fails on accounts without a mailbox and the fallback only hands a draft to a mail client; model sent / handed off / failed, never a boolean
     - [A pasted screenshot is too big for `/me/sendMail`](gotchas/graph/sendmail-attachment-size-ceiling.md) — inline base64 attachments share a ~4 MB request budget; shrink bitmaps in a canvas, cap the total, and remember `mailto:` fallbacks carry no attachments at all
     - [ApplicationAccessPolicy rejects a shared mailbox](gotchas/graph/application-access-policy-rejects-shared-mailbox.md) — "not a security principal"; scope app-only `Mail.Send` to a mail-enabled security group
     - [`/me/todo` needs an Exchange mailbox](gotchas/graph/todo-requires-exchange-mailbox.md) — 404 "Item not found" on admin/cloud-only accounts is not a 403; Planner works without a mailbox

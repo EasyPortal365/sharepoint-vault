@@ -82,6 +82,7 @@ Every article carries frontmatter with `tags` and `applies-to`, so repo search g
 | [`SP.WebProxy` is add-in-only](spfx/webproxy-is-add-in-only.md) | There is no SharePoint-native CORS proxy for SPFx — 403 "without an app context", hidden inside an HTTP 200 |
 | [Teams personal app needs global deploy](spfx/teams-personal-app-needs-global-deploy.md) | `skipFeatureDeployment: true` + "all sites", or the root-hosted app crashes on `componentType`; plus the `teams/` icon-folder convention |
 | [Teams mobile webview renders desktop width](spfx/teams-mobile-webview-renders-desktop-width.md) | ~980px layout you can't reproduce in a browser — fix the viewport meta in Teams, then debug breakpoints |
+| [Shared component measures the viewport, not its container](spfx/shared-component-measures-viewport-not-container.md) | Media queries can't see the 420px panel you were dropped into — measure with `ResizeObserver` and switch the whole layout |
 | [CDN-hosted bundle still needs a new `.sppkg`](spfx/cdn-hosted-bundle-still-needs-new-sppkg.md) | `includeClientSideAssets: false` moves assets, not versioning — the manifest pins a content-hashed filename |
 | [`npm audit --omit=dev` overstates shipped risk](spfx/npm-audit-omit-dev-overstates-shipped-risk.md) | SPFx keeps its build toolchain in `dependencies` — grep the published bundle, with a control sample |
 | [Centered flex clips on mobile](spfx/centered-flex-clips-on-mobile.md) | `justify-content:center` + overflow = content cut off above the scroll — use flex "springs" instead |
@@ -118,6 +119,7 @@ Every article carries frontmatter with `tags` and `applies-to`, so repo search g
 |---|---|
 | [Someone else's group membership without `User.Read.All`](graph/check-membership-of-another-user-without-user-read-all.md) | Invert the question: read the group's transitive members; keep a third state for "could not determine" |
 | [`/me/sendMail`: From is always the signed-in user](graph/sendmail-from-is-the-signed-in-user.md) | Delegated `Mail.Send` can't impersonate — configurable "sender" settings should govern Reply-To |
+| [A `mailto:` fallback reported as sent](graph/sendmail-fallback-reported-as-sent.md) | `sendMail` fails on accounts without a mailbox; the fallback hands off a draft, it doesn't deliver — three states, not a boolean |
 | [ApplicationAccessPolicy rejects a shared mailbox](graph/application-access-policy-rejects-shared-mailbox.md) | "Not a security principal" — scope app-only `Mail.Send` to a mail-enabled security group instead |
 | [A mail-permission probe that can't tell "no mailbox" from "no consent" lies to admins](graph/mail-probe-no-mailbox-vs-no-consent.md) | `/me/messages` 404 `MailboxNotEnabled*` on mailbox-less accounts is not missing consent — three verdicts, and never cache a negative probe result |
 | [Purview Audit Query API is async](graph/purview-audit-query-api-is-async.md) | Queries run for an hour+ — attach to the last succeeded one, create in the background; v1.0 may 404 where beta works |
