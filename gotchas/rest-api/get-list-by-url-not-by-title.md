@@ -11,6 +11,10 @@ last-reviewed: 2026-08-24
 >
 > **Ve zkratce.** `getbytitle()` přestane fungovat, jakmile někdo seznam přejmenuje (nebo přepne jazyk UI) – řeš seznamy přes jejich neměnnou server-relativní URL pomocí `GetList(@u)`.
 
+> ⚠ **Follow-up trap.** Once you are on the alias form, the URL ends in a query string —
+> so you can no longer concatenate an action onto it. See
+> [Actions go before the alias query string](actions-must-precede-the-alias-query-string.md).
+
 ## Symptom
 
 REST calls that worked for months suddenly return **404 Not Found**:

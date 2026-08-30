@@ -37,6 +37,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
   - **rest-api/**
     - [Unbounded `Promise.all` fan-out invites 429](gotchas/rest-api/unbounded-promise-all-fanout-throttling.md) — fan-out is safe when YOUR code decides the count, dangerous when the customer's data does; bounded batch and worker-pool patterns
     - [Get lists by URL, not by title](gotchas/rest-api/get-list-by-url-not-by-title.md) — `getbytitle()` breaks the moment someone renames a list; resolve by URL (bonus: `GetList` normalises folder paths to their list)
+    - [Actions go before the alias query string](gotchas/rest-api/actions-must-precede-the-alias-query-string.md) — Appending `/breakroleinheritance(...)` to a `GetList(@u)?@u=...` URL buries the action inside the parameter — splice it in before the `?`
     - [FieldValuesAsText re-encodes underscores in JSON keys](gotchas/rest-api/fieldvaluesastext-reencodes-underscores.md) — `A_x0020_B` comes back as `A_x005f_x0020_x005f_B`; decode `_x005f_` before matching
     - [`GetObjectSharingInformation` traps](gotchas/rest-api/getobjectsharinginformation-traps.md) — GET is 405 every time (stop retrying it: 2.7× slower), `CreatedBy` is always null, `$expand` is dead weight
     - [Search REST needs `odata-version: 3.0`](gotchas/rest-api/search-api-needs-odata-version-3.md) — the header behind mysterious search 500s
