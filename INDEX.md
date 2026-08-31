@@ -235,7 +235,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
   - [09 · PowerShell](course/09-powershell.md) — SPO Management Shell + PnP PowerShell, admin/reporting scripts (storage, guests, duplicates, long URLs, provisioning)
 - ✂️ **[snippets/](snippets/)** — small copy-paste fragments
   - **rest/**
-    - [Read all items from a large list — paging done right](snippets/rest/get-all-list-items-paged.md) — `$top` caps at 5,000, `$skip` is ignored; follow `odata.nextLink`
+    - [Read all items from a large list — paging done right](snippets/rest/get-all-list-items-paged.md) — `$top` caps at 5,000, `$skip` is ignored; follow `odata.nextLink`. Also: why `break` on an error is worse than throwing, and a `{ ok, items, truncated }` shape for callers that must not throw
     - [Find externally / anonymously shared content via Search](snippets/rest/find-externally-shared-content-search.md) — `ViewableByExternalUsers:1` is a queryable managed property; oversharing audit in one line, values are strings not booleans
     - [Check another user's effective permissions](snippets/rest/check-another-users-effective-permissions.md) — `getusereffectivepermissions` resolves the mask for any user from your own session; `Open` is `Low` bit 16, and a zero mask means no access at all
     - [Upload a generated image as a list item attachment](snippets/rest/upload-generated-image-as-list-attachment.md) — `AttachmentFiles/add` takes a raw `ArrayBuffer`; the item must exist first, `Blob.arrayBuffer()` is unavailable on ES2015, and PNG beats SVG if you render it back
