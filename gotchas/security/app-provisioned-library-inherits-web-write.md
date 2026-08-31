@@ -2,7 +2,7 @@
 title: A library your app provisions inherits the web's write permissions — and that is how an AI grounding source gets poisoned
 tags: [security, provisioning, libraries, search, rag, permissions]
 applies-to: SharePoint Online
-last-reviewed: 2026-08-10
+last-reviewed: 2026-08-31
 ---
 
 # A library your app provisions inherits the web's write permissions
@@ -40,11 +40,21 @@ The built-in **Edit** level includes Manage Lists, and Edit is what the default 
 **The only boundary that holds is unique permissions on the library:**
 
 ```
-POST /_api/web/GetList('<serverRelLibUrl>')/breakroleinheritance(copyRoleAssignments=false,clearSubscopes=true)
+POST /_api/web/GetList('<serverRelLibUrl>')/breakroleinheritance(copyRoleAssignments=true,clearSubscopes=true)
 POST /_api/web/GetList('<serverRelLibUrl>')/roleassignments/addroleassignment(principalid=<group>,roleDefId=<def>)
 ```
 
-Writers (the publishing/approver groups) get Contribute or higher; everyone else gets Read. Keep `WriteSecurity: 4` as defence in depth if you like, but do not count it as the control.
+Writers (the publishing/approver groups) get Contribute or higher; everyone else gets Read.
+
+### Do not keep `WriteSecurity: 4` "as defence in depth" either
+
+An earlier version of this page said you could leave it on as a second layer. That advice was wrong, and the reason is worth stating plainly, because it generalises far past this one setting.
+
+On a **document library** the item-level settings are not merely weak — they are not a supported feature at all. SharePoint does not render the *Item-level Permissions* section in a library's Advanced Settings; Microsoft's answer for libraries is per-file **Manage access** instead. You can still `PATCH` `ReadSecurity`/`WriteSecurity` onto a library over REST, and you can read the value back, but `WriteSecurity` on libraries is widely reported not to be honoured, and library item-level permissions are described as deprecated. Whatever the current server build does, you are relying on behaviour the product does not document.
+
+And there is no value that both protects and works. `ReadSecurity: 2` means *read only the documents you uploaded* — apply it to a shared library and it goes empty for everyone except each file's own author. `ReadSecurity: 1` is what SharePoint already does. So the only settings that would change anything are the ones that break the library.
+
+**The general rule: a stored setting that excludes nobody is worse than no setting.** It reads back cleanly, it survives review, it appears in the release notes as a lock, and it costs you the question *"so what actually stops them?"* — the only question that was ever load-bearing. Defence in depth means a second **boundary**, not a second **value**. If the unique role assignments are the control, let them be visibly the whole control.
 
 **The order of operations decides what a half-failure leaves behind:**
 
@@ -69,23 +79,24 @@ Whichever control you choose, the write itself needs care:
 
 **1. Do it outside the version-gated provisioning block.** Schema-version gates return early once the version matches. If the first person to open the upgraded app is a plain member, the `PATCH` fails with `403`, the version is still recorded, and the setting is never applied again. Use a dedicated post-provisioning step with its **own marker** (per user + web + step revision).
 
-**2. Read first, patch only the difference.** Cheap, and it stops members generating a `403` on every page load:
+**2. Read first, write only the difference.** Cheap, and it stops members generating a `403` on every page load. Read the state that decides the write **with a cache-buster** — a cached "it already looks right" is the one answer that makes the whole step skip itself:
 
 ```ts
-const info = await get(`${web}/_api/web/GetList('${serverRelLibUrl}')?$select=WriteSecurity`);
-if (info.WriteSecurity !== 4) {
-  const r = await fetchApi(`${web}/_api/web/GetList('${serverRelLibUrl}')`, {
-    method: 'PATCH',
-    headers: { Accept: 'application/json', 'Content-Type': 'application/json', 'IF-MATCH': '*' },
-    body: JSON.stringify({ '@odata.type': '#SP.List', WriteSecurity: 4 })
-  });
-  settled = r.ok || r.status === 403;   // 403 = this user simply cannot; do not retry forever
+const bust = (u: string) => u + (u.indexOf('?') === -1 ? '?' : '&') + '_=' + Date.now();
+const info = await get(bust(`${web}/_api/web/GetList('${serverRelLibUrl}')?$select=Id,HasUniqueRoleAssignments`));
+if (info.HasUniqueRoleAssignments !== true) {
+  await post(`${web}/_api/web/lists(guid'${info.Id}')/breakroleinheritance(copyRoleAssignments=true,clearSubscopes=true)`);
 }
+// ...then grant the writer groups, then downgrade everyone else, then re-read and verify.
 ```
+
+Note what is **not** in that snippet: no `PATCH` of `WriteSecurity`. The whole write path is role assignments, because that is the whole control.
+
+**3. Never end on a return code.** `200` on the three POSTs means the calls were accepted, not that anyone was excluded. Finish by re-reading the assignments and checking that no principal outside the writer allowlist still holds a level with Add/Edit/Delete — and only then record "done". A step that trusts its own status codes will happily mark an untouched library as secured.
 
 Treat `403` as "done for this user" (their marker is their own) but a `5xx` as "try again next load".
 
-**3. Do not reach for `NoCrawl` instead.** Excluding the library from the search index is a different axis: it does not stop anyone writing, and it *does* stop the assistant (and tenant search) from finding legitimate content. Search trims results by the asking user's permissions anyway.
+**4. Do not reach for `NoCrawl` instead.** Excluding the library from the search index is a different axis: it does not stop anyone writing, and it *does* stop the assistant (and tenant search) from finding legitimate content. Search trims results by the asking user's permissions anyway.
 
 ## "It is set" and "it excludes someone" are different claims
 
