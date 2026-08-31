@@ -32,7 +32,7 @@ Every article carries frontmatter with `tags` and `applies-to`, so repo search g
 | [A deleted site vs. a site you cannot see](rest-api/deleted-site-vs-site-you-cannot-see.md) | `_api/web` on a non-existent site answers 404 (measured), so `if (!r.ok)` makes a dead row in your own inventory look like a site you merely lack access to — keep `r.status` and give the two opposite treatment |
 | [App page properties are not in CanvasContent1](rest-api/app-page-webpart-properties-not-in-canvascontent.md) | Single-part app pages keep web part config elsewhere — the property pane and the runtime tree are the truth |
 | [Silent fallbacks poison destructive writes](rest-api/silent-fallbacks-poison-destructive-writes.md) | `catch → []` is great for rendering and catastrophic for delete-then-insert syncs — offer strict and safe reads |
-| [Provisioning skips schema changes to existing fields](rest-api/provisioning-skips-schema-changes-to-existing-fields.md) | "Create field if missing" never updates an existing field — a new Choice value in your manifest no-ops on deployed sites; reconcile with a verbose `SP.FieldChoice` MERGE |
+| [Provisioning skips schema changes to existing fields](rest-api/provisioning-skips-schema-changes-to-existing-fields.md) | "Create field if missing" never updates an existing field — a new Choice value in your manifest no-ops on deployed sites; reconcile with a verbose `SP.FieldChoice` MERGE that only ever *widens* the set — `Choices` is replace, so a failed read of the current values collapses the union into the manifest and deletes everything else |
 | [`X-RequestDigest` expires mid-session](rest-api/request-digest-expires-mid-session.md) | Writes 403 "security validation is invalid" on a long-open page — the page digest times out (~30 min); fetch a fresh one from `/_api/contextinfo` per write |
 | [PDF conversion endpoint: plain fetch only](rest-api/pdf-conversion-endpoint-plain-fetch-only.md) | `format=pdf` converts Office files server-side without Graph consent — but the 302 to `*.svc.ms` breaks under auth-decorating clients; plain `fetch` + Content-Type guard |
 | [Don't cache a throttled permission probe](rest-api/dont-cache-a-throttled-permission-probe.md) | A 429/403 on `currentuser/groups` resolves to the lowest role — cache it and the user is stuck read-only for the TTL; only persist a confirmed (200) result |
@@ -51,7 +51,6 @@ Every article carries frontmatter with `tags` and `applies-to`, so repo search g
 | [Seed idempotency must key on the item](lists/seed-idempotency-must-key-on-the-item.md) | A per-SET presence check re-inserts the whole block when another path creates it — key on set+value, and ship a cleanup |
 | [Version-gated provisioning drops elevated settings](lists/version-gated-provisioning-drops-elevated-settings.md) | `Hidden`/`ReadSecurity` are a PATCH needing Manage Lists — if a member opens the app first, the 403 is swallowed, the version is stored and the setting never applies again |
 | [Item-level permission defaults on provisioned lists](lists/item-level-permissions-defaults-on-provisioned-lists.md) | `ReadSecurity=2` returns 200 + zero items to members while admins bypass it; `WriteSecurity=2` breaks approvals and shared edits |
-| [WriteSecurity 4 ignores Contribute](permissions/write-security-4-needs-managelists.md) | Only ManageLists overrides the item-level write block — Contribute does not have it, so the obvious grant changes nothing |
 | [Hand-built .docx / .pptx: the parts Office demands](spfx/hand-built-ooxml-missing-parts.md) | Header image rels, Content_Types image extension, per-part namespaces, and the theme/master/layout a .pptx cannot open without |
 | [Created/Modified on a document library](lists/created-modified-on-a-document-library.md) | A plain MERGE returns 204 and is then overwritten; only `ValidateUpdateListItem` + `bNewDocumentUpdate` sticks, and it wants a locale date — ISO fails with HTTP 200 and `HasException` |
 | [Column internal name comes from DisplayName](lists/field-internal-name-comes-from-displayname.md) | `createfieldasxml` ignores `Name`/`StaticName` on a list, so a localized label leaves you with `_x00da_tvar`; create ASCII, rename after |
@@ -66,6 +65,14 @@ Every article carries frontmatter with `tags` and `applies-to`, so repo search g
 | [`length()` is for arrays, not strings](lists/formatting-length-is-for-arrays-not-strings.md) | On a string the arithmetic collapses and `substring` renders empty — get string length as `indexOf(str + '^', '^')` |
 | [View formatting lands on the wrong view](lists/view-formatting-lands-on-the-wrong-view.md) | No `AllItems.aspx` in Site Pages and a grouped default view — plus a column absent from the view is `undefined`, not `''`, so the hide guard never fires |
 | [`MajorVersionLimit: 0` means unlimited, not none](lists/major-version-limit-zero-means-unlimited.md) | Zero is the API's "no limit" — and also what you get when versioning is off; a report printing the raw number says the opposite of the truth |
+
+### permissions/
+
+| Gotcha | TL;DR |
+|---|---|
+| [WriteSecurity 4 ignores Contribute](permissions/write-security-4-needs-managelists.md) | Only ManageLists overrides the item-level write block — Contribute does not have it, so the obvious grant changes nothing |
+| [Breaking inheritance without copying keeps only you](permissions/break-without-copy-keeps-only-you.md) | `copyRoleAssignments=false` leaves a single role assignment — the caller — so re-granting Owners/Members/Visitors silently drops direct grants and custom groups; and an account that loses a *config* read can end up with that feature's limits switched off, so hardening lowers security for the one it locked out |
+| [A one-sided permission check passes on an empty ACL](permissions/one-sided-permission-check-passes-on-an-empty-acl.md) | "Nobody outside the allow-list can write" is also true when nobody can write at all — assert the other direction and a non-zero writer count, and read strictly so a 429 cannot drop a group out of the policy |
 
 ### spfx/
 

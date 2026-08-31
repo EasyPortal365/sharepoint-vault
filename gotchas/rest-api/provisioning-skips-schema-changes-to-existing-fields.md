@@ -2,7 +2,7 @@
 title: A new Choice value in your provisioning code never reaches already-deployed sites
 tags: [rest-api, fields, provisioning]
 applies-to: SharePoint Online, SharePoint Server
-last-reviewed: 2026-07-21
+last-reviewed: 2026-09-01
 ---
 
 # A new Choice value in your provisioning code never reaches already-deployed sites
@@ -41,6 +41,7 @@ Add a targeted **post-provisioning migration** that reconciles just the field yo
 //    nometadata -> Choices is a plain array; verbose -> { results: [...] }. Handle both.
 const url = `${web}/_api/web/lists/getbytitle('Documents')/fields/getbyinternalnameortitle('DocStatus')`;
 const res = await sp.get(`${url}?$select=Choices`, cfg, { headers: { Accept: 'application/json;odata=nometadata' } });
+if (!res.ok) return;                                             // MUST NOT continue: see "widen only" below
 const raw = (await res.json()).Choices;
 const current: string[] = Array.isArray(raw) ? raw : (raw && raw.results) || [];
 if (current.indexOf('Scheduled') !== -1) return;                 // already there — no-op
@@ -65,6 +66,28 @@ Key points:
 - **Make it idempotent** — bail out when the value is already present, so it costs a single GET on every subsequent load.
 - **Make it fail-safe** — a normal user without `ManageLists` can't PATCH a field definition. Catch and warn; never let it abort provisioning. The first admin who opens the app reconciles the field for everyone.
 - **Run it *after* your normal provisioning pass**, not instead of it.
+
+## The reconcile widens, never narrows — and a failed read is not an empty vocabulary
+
+Both halves of that sentence are load-bearing, and they fail together.
+
+**Widen only.** `Choices` replaces the whole set, so the reconcile is a *union* of the manifest and what the field already holds. It is tempting to make it an assignment instead — "the manifest is the truth, write exactly that" — and on a fresh site it behaves identically. On a deployed site it is destructive in a way SharePoint will not warn you about: **items already carry the values you are removing.** Nothing is deleted from the items; the stored value simply stops being part of the field's vocabulary. The result is a column whose contents are no longer valid according to its own definition:
+
+- forms show the item's current value as out of range and refuse to save an unrelated edit to that item;
+- group-by and filters offer a set that does not cover the data;
+- a `$filter` on the retired value still matches rows that the picker can no longer produce.
+
+If a value must go out of use, retire it in the UI (stop offering it, migrate the items, then remove it) — not by shrinking the definition underneath live data.
+
+**A failed read collapses the union into the manifest.** That makes the strict read above more than hygiene. Reading the current `Choices` fails for perfectly ordinary reasons — a member without `ManageLists` gets `403`, a busy tenant returns `429`, and a missing field answers with HTTP **400**, not 404 ([`fields/getbyinternalnameortitle` 400s for a missing field](getbyinternalnameortitle-400-not-404.md)). A helper that resolves any of those to `[]` produces an empty "current" set, and:
+
+```
+desired = manifest ∪ current   →   manifest ∪ ∅   →   manifest
+```
+
+The MERGE then goes through with full authority and **deletes every value the manifest does not know about** — including the ones an older release added and the ones a customer added by hand. The call returns `204`, the log says "reconciled", and the damage is only visible in the field's definition.
+
+So: check `res.ok` (and the parsed shape) before computing the union, and treat "could not read the current choices" as a reason to do nothing this run. An unknown current state is never a licence to write an authoritative one.
 
 ## Notes
 

@@ -9,7 +9,7 @@ last-reviewed: 2026-08-28
 
 > **Bottom line.** `WriteSecurity = 4` on a list means "users cannot modify any items", and the only thing that overrides it is the **ManageLists** permission — which `Contribute` does **not** include. So the obvious fix, "break inheritance and give the group Contribute on that list", changes nothing: the group still gets 403 on write. Grant a role that carries ManageLists (**Design**, RoleTypeKind 4) instead, and resolve it by **type**, never by its localised name.
 >
-> **Ve zkratce.** `WriteSecurity = 4` znamená „položky nesmí měnit nikdo" a obchází to jedině oprávnění **ManageLists**, které `Contribute` NEMÁ. Očividná oprava „rozbij dědičnost a dej skupině Contribute" tedy nefunguje — skupina dál dostane 403. Přiděl roli s ManageLists (**Návrh**, RoleTypeKind 4) a hledej ji podle TYPU, ne podle lokalizovaného názvu.
+> **Ve zkratce.** `WriteSecurity = 4` znamená „položky nesmí měnit nikdo" a obchází to jedině oprávnění **ManageLists**, které `Contribute` NEMÁ. Očividná oprava „rozbij dědičnost a dej skupině Contribute" tedy nefunguje – skupina dál dostane 403. Přiděl roli s ManageLists (**Návrh**, RoleTypeKind 4) a hledej ji podle TYPU, ne podle lokalizovaného názvu.
 
 ## Symptom
 
