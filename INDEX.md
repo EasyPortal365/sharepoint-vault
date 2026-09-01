@@ -148,6 +148,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
   - **graph/**
     - [`/me/sendMail`: From is always the signed-in user](gotchas/graph/sendmail-from-is-the-signed-in-user.md) — delegated `Mail.Send` can't impersonate; configure Reply-To instead
     - [A `mailto:` fallback reported as sent](gotchas/graph/sendmail-fallback-reported-as-sent.md) — `sendMail` fails on accounts without a mailbox and the fallback only hands a draft to a mail client; model sent / handed off / failed, never a boolean
+    - ["0 sent" hides whether anyone was asked](gotchas/graph/zero-sent-hides-whether-anyone-was-asked.md) — the recipient side of the same trap: a denied group read becomes an empty audience, an empty audience becomes a benign `false`, and an approval queue notifies nobody
     - [A pasted screenshot is too big for `/me/sendMail`](gotchas/graph/sendmail-attachment-size-ceiling.md) — inline base64 attachments share a ~4 MB request budget; shrink bitmaps in a canvas, cap the total, and remember `mailto:` fallbacks carry no attachments at all
     - [ApplicationAccessPolicy rejects a shared mailbox](gotchas/graph/application-access-policy-rejects-shared-mailbox.md) — "not a security principal"; scope app-only `Mail.Send` to a mail-enabled security group
     - [`/me/todo` needs an Exchange mailbox](gotchas/graph/todo-requires-exchange-mailbox.md) — 404 "Item not found" on admin/cloud-only accounts is not a 403; Planner works without a mailbox

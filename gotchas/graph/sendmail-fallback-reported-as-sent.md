@@ -77,6 +77,8 @@ Wording carries the whole weight here: "We've received your report" and "Press S
 
 ## Notes
 
+- **The same trap has a recipient-side half:** if the *audience* is read in a way that turns a denied read into an empty array, "nobody to notify" and "we were not allowed to look" become the same `0 sent`. See ["0 sent" hides whether anyone was asked](zero-sent-hides-whether-anyone-was-asked.md).
+
 - **Test on an account that reproduces the branch.** A tenant admin without a mailbox is the cheapest way to force the catch path on demand; a licensed user account will never show you this bug. The reverse also holds — proving delivery requires an account that *has* a mailbox, so verify both branches on different accounts.
 - Distinguishing "no mailbox" from "no consent" is a separate trap with its own three outcomes: see [mail-probe-no-mailbox-vs-no-consent.md](mail-probe-no-mailbox-vs-no-consent.md).
 - `sendMail` always sends **as the signed-in user** in the delegated flow, which is usually what you want for feedback — see [sendmail-from-is-the-signed-in-user.md](sendmail-from-is-the-signed-in-user.md).
