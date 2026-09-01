@@ -2,7 +2,7 @@
 title: "Sharing text through a URL (Teams /share, mailto) breaks at length limits"
 tags: [spfx, teams, deeplink, mailto, sharing, aad, ui]
 applies-to: SharePoint Online / SPFx / any web app with "share to Teams" or "share via e-mail" buttons
-last-reviewed: 2026-08-09
+last-reviewed: 2026-09-01
 ---
 
 # Sharing text through a URL (Teams /share, mailto) breaks at length limits
@@ -72,6 +72,9 @@ Two environment traps hit the same buttons, independent of length:
 
 - **`window.open` is blocked inside the Teams desktop webview** for external URLs — the button simply "does nothing" (only in the Windows Teams app; a normal browser is fine). Use an **anchor-click** (`<a target="_blank">` appended to the DOM, `.click()`, removed) instead of `window.open` — Teams desktop and browsers both honor it.
 - **`mailto:` launches the OS default mail handler** — on Windows where the default browser is Chrome with no registered mail handler, it just opens the browser and creates no draft. Prefer a **Graph draft** (`POST /me/messages` → open the returned `webLink` in OWA/Outlook); it also has no URL length limit, so the cap and clipboard fallback disappear. Async caveat: opening `webLink` *after* the Graph call trips the popup blocker → **pre-open a blank tab synchronously in the click** (`const w = window.open('', '_blank')`) and set `w.location.href` in the `.then`. Fall back to `mailto:` (via `location.href`) only when Graph is unavailable (e.g. a mailbox-less account).
+
+- **Do not add `noopener` to the *pre-opened* blank tab.** `window.open('', '_blank', 'noopener')` returns `null` **even when the tab opens fine** — with `noopener` the browser deliberately withholds the handle. Two things break at once: you can no longer assign `w.location.href`, which was the whole point of pre-opening, and `null` stops meaning "popup blocked", so a genuinely blocked tab gets reported to the user as success. Open it as `window.open('', '_blank')` and clear the back-reference yourself before navigating (`w.opener = null`).
+  This is the trap in the security instinct: hardening the call is exactly what breaks it, and it breaks it *silently* — the button reports success and nothing opens. Note `w.opener = null` is not fully identical to `noopener` (which can also isolate the browsing-context group), so the rule is: **plain external link with nothing to fill in afterwards → keep `noopener` and do not pre-open at all; deferred navigation after an `await` → pre-open without `noopener` and null the opener.**
 
 Neither is caught by the compiler or linter — only a manual matrix (mobile/desktop × browser/Teams-app) reveals them.
 
