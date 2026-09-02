@@ -137,7 +137,10 @@
 
     /* ── úvod na stránce skriptu: animace + dvojjazyčné shrnutí ── */
     .sv-intro { margin: 0 0 22px; }
-    .sv-intro-anim { display:block; width:100%; max-width:880px; height:auto; margin:0 0 16px; border-radius:10px; box-shadow:0 10px 30px -18px rgba(0,33,99,.55); }
+    /* Selektor musí být specifičtější než `.markdown-section img`, jinak ho
+       přebije jeho max-width:100% a animace se roztáhne nad svou nativní
+       šířku 880 px (písmo terminálu pak působí nepřirozeně velké). */
+    .markdown-section .sv-intro-anim { display:block; width:100%; max-width:880px; height:auto; margin:0 0 16px; border-radius:10px; box-shadow:0 10px 30px -18px rgba(0,33,99,.55); }
     .sv-intro p { margin:0 0 8px; font-size:14.5px; line-height:1.7; color:var(--muted); }
     .sv-intro p:last-child { margin-bottom:0; }
     .sv-intro code { font-size:.85em; }
