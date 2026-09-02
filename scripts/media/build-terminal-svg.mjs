@@ -37,25 +37,29 @@ function build({ file, title, width, lines }) {
     const cursor = ln.cursor
       ? `<rect class="cur" x="${(PAD_X + text.length * CH_W + 1).toFixed(1)}" y="${y - 11}" width="8" height="15" fill="${COL.white}"/>`
       : '';
-    return `  <g class="ln" style="animation-delay:${delay}s">
+    return `  <g class="ln" style="animation-name:ln${i}">
     <text x="${PAD_X}" y="${y}" fill="${color}"${weight}>${text}</text>${cursor ? '\n    ' + cursor : ''}
   </g>`;
+  }).join('\n');
+
+  // Kazdy radek ma VLASTNI keyframes, ale stejnou delku cyklu. S animation-delay
+  // + infinite by kazdy radek bezel svuj vlastni cyklus a uz po prvnim pruchodu
+  // by se rozesly z faze - misto vypisovani by jen nesynchronne blikaly.
+  const frames = lines.map((ln, i) => {
+    const start = (i * STEP) / total * 100;
+    const lit = Math.min(start + 0.8, 95);
+    return `    @keyframes ln${i} { 0%, ${start.toFixed(2)}% { opacity: 0 } ${lit.toFixed(2)}%, 96% { opacity: 1 } 100% { opacity: 0 } }`;
   }).join('\n');
 
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} ${height}" width="${width}" height="${height}" role="img" aria-label="${esc(title)}">
   <style>
     text { font-family: Consolas, "Cascadia Mono", "DejaVu Sans Mono", monospace; font-size: 13px; white-space: pre; }
-    .ln { opacity: 0; animation: reveal ${total.toFixed(2)}s linear infinite; }
-    @keyframes reveal {
-      0%   { opacity: 0; }
-      1.2% { opacity: 1; }
-      96%  { opacity: 1; }
-      100% { opacity: 0; }
-    }
+    .ln { opacity: 0; animation-duration: ${total.toFixed(2)}s; animation-timing-function: linear; animation-iteration-count: infinite; }
+${frames}
     .cur { animation: blink 1s steps(1) infinite; }
     @keyframes blink { 0%,50% { opacity: 1; } 51%,100% { opacity: 0; } }
     @media (prefers-reduced-motion: reduce) {
-      .ln { opacity: 1; animation: none; }
+      .ln { opacity: 1; animation: none !important; }
       .cur { animation: none; }
     }
   </style>

@@ -1,17 +1,32 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 484" width="880" height="484" role="img" aria-label="Administrator: Windows PowerShell">
   <style>
     text { font-family: Consolas, "Cascadia Mono", "DejaVu Sans Mono", monospace; font-size: 13px; white-space: pre; }
-    .ln { opacity: 0; animation: reveal 10.34s linear infinite; }
-    @keyframes reveal {
-      0%   { opacity: 0; }
-      1.2% { opacity: 1; }
-      96%  { opacity: 1; }
-      100% { opacity: 0; }
-    }
+    .ln { opacity: 0; animation-duration: 10.34s; animation-timing-function: linear; animation-iteration-count: infinite; }
+    @keyframes ln0 { 0%, 0.00% { opacity: 0 } 0.80%, 96% { opacity: 1 } 100% { opacity: 0 } }
+    @keyframes ln1 { 0%, 3.29% { opacity: 0 } 4.09%, 96% { opacity: 1 } 100% { opacity: 0 } }
+    @keyframes ln2 { 0%, 6.58% { opacity: 0 } 7.38%, 96% { opacity: 1 } 100% { opacity: 0 } }
+    @keyframes ln3 { 0%, 9.86% { opacity: 0 } 10.66%, 96% { opacity: 1 } 100% { opacity: 0 } }
+    @keyframes ln4 { 0%, 13.15% { opacity: 0 } 13.95%, 96% { opacity: 1 } 100% { opacity: 0 } }
+    @keyframes ln5 { 0%, 16.44% { opacity: 0 } 17.24%, 96% { opacity: 1 } 100% { opacity: 0 } }
+    @keyframes ln6 { 0%, 19.73% { opacity: 0 } 20.53%, 96% { opacity: 1 } 100% { opacity: 0 } }
+    @keyframes ln7 { 0%, 23.02% { opacity: 0 } 23.82%, 96% { opacity: 1 } 100% { opacity: 0 } }
+    @keyframes ln8 { 0%, 26.31% { opacity: 0 } 27.11%, 96% { opacity: 1 } 100% { opacity: 0 } }
+    @keyframes ln9 { 0%, 29.59% { opacity: 0 } 30.39%, 96% { opacity: 1 } 100% { opacity: 0 } }
+    @keyframes ln10 { 0%, 32.88% { opacity: 0 } 33.68%, 96% { opacity: 1 } 100% { opacity: 0 } }
+    @keyframes ln11 { 0%, 36.17% { opacity: 0 } 36.97%, 96% { opacity: 1 } 100% { opacity: 0 } }
+    @keyframes ln12 { 0%, 39.46% { opacity: 0 } 40.26%, 96% { opacity: 1 } 100% { opacity: 0 } }
+    @keyframes ln13 { 0%, 42.75% { opacity: 0 } 43.55%, 96% { opacity: 1 } 100% { opacity: 0 } }
+    @keyframes ln14 { 0%, 46.03% { opacity: 0 } 46.83%, 96% { opacity: 1 } 100% { opacity: 0 } }
+    @keyframes ln15 { 0%, 49.32% { opacity: 0 } 50.12%, 96% { opacity: 1 } 100% { opacity: 0 } }
+    @keyframes ln16 { 0%, 52.61% { opacity: 0 } 53.41%, 96% { opacity: 1 } 100% { opacity: 0 } }
+    @keyframes ln17 { 0%, 55.90% { opacity: 0 } 56.70%, 96% { opacity: 1 } 100% { opacity: 0 } }
+    @keyframes ln18 { 0%, 59.19% { opacity: 0 } 59.99%, 96% { opacity: 1 } 100% { opacity: 0 } }
+    @keyframes ln19 { 0%, 62.48% { opacity: 0 } 63.28%, 96% { opacity: 1 } 100% { opacity: 0 } }
+    @keyframes ln20 { 0%, 65.76% { opacity: 0 } 66.56%, 96% { opacity: 1 } 100% { opacity: 0 } }
     .cur { animation: blink 1s steps(1) infinite; }
     @keyframes blink { 0%,50% { opacity: 1; } 51%,100% { opacity: 0; } }
     @media (prefers-reduced-motion: reduce) {
-      .ln { opacity: 1; animation: none; }
+      .ln { opacity: 1; animation: none !important; }
       .cur { animation: none; }
     }
   </style>
@@ -20,67 +35,67 @@
   <rect y="22" width="880" height="8" fill="#1F3B6E"/>
   <text x="16" y="20" fill="#D6E0F5" font-size="12">Administrator: Windows PowerShell</text>
   <g>
-  <g class="ln" style="animation-delay:0.00s">
+  <g class="ln" style="animation-name:ln0">
     <text x="16" y="46" fill="#FFFFFF">PS C:\&gt; .\Set-SiteSharingCapability.ps1 -TenantAdminUrl https://contoso-admin.sharepoint.com `</text>
   </g>
-  <g class="ln" style="animation-delay:0.34s">
+  <g class="ln" style="animation-name:ln1">
     <text x="16" y="66" fill="#FFFFFF">&gt;&gt;     -All -SharingCapability ExistingExternalUserSharingOnly -WhatIf</text>
   </g>
-  <g class="ln" style="animation-delay:0.68s">
+  <g class="ln" style="animation-name:ln2">
     <text x="16" y="86" fill="#CCCCCC"></text>
   </g>
-  <g class="ln" style="animation-delay:1.02s">
+  <g class="ln" style="animation-name:ln3">
     <text x="16" y="106" fill="#F14C4C" font-weight="700">*** This script CHANGES external sharing settings. Run with -WhatIf first. ***</text>
   </g>
-  <g class="ln" style="animation-delay:1.36s">
+  <g class="ln" style="animation-name:ln4">
     <text x="16" y="126" fill="#29B8DB">Connecting to https://contoso-admin.sharepoint.com ...</text>
   </g>
-  <g class="ln" style="animation-delay:1.70s">
+  <g class="ln" style="animation-name:ln5">
     <text x="16" y="146" fill="#29B8DB">Tenant ceiling: ExternalUserSharingOnly</text>
   </g>
-  <g class="ln" style="animation-delay:2.04s">
+  <g class="ln" style="animation-name:ln6">
     <text x="16" y="166" fill="#29B8DB">Retrieving site collections ...</text>
   </g>
-  <g class="ln" style="animation-delay:2.38s">
+  <g class="ln" style="animation-name:ln7">
     <text x="16" y="186" fill="#29B8DB">110 site(s) in scope.</text>
   </g>
-  <g class="ln" style="animation-delay:2.72s">
+  <g class="ln" style="animation-name:ln8">
     <text x="16" y="206" fill="#23D18B">Backup written to .\SharingCapability_Backup_20260901-101500.csv</text>
   </g>
-  <g class="ln" style="animation-delay:3.06s">
+  <g class="ln" style="animation-name:ln9">
     <text x="16" y="226" fill="#CCCCCC"></text>
   </g>
-  <g class="ln" style="animation-delay:3.40s">
+  <g class="ln" style="animation-name:ln10">
     <text x="16" y="246" fill="#CCCCCC">What if: Performing the operation "Set sharing to</text>
   </g>
-  <g class="ln" style="animation-delay:3.74s">
+  <g class="ln" style="animation-name:ln11">
     <text x="16" y="266" fill="#CCCCCC">ExistingExternalUserSharingOnly (was ExternalUserSharingOnly)" on target</text>
   </g>
-  <g class="ln" style="animation-delay:4.08s">
+  <g class="ln" style="animation-name:ln12">
     <text x="16" y="286" fill="#CCCCCC">"https://contoso.sharepoint.com/sites/projects".</text>
   </g>
-  <g class="ln" style="animation-delay:4.42s">
+  <g class="ln" style="animation-name:ln13">
     <text x="16" y="306" fill="#767676">  skipped  https://contoso.sharepoint.com/sites/archive   already at target</text>
   </g>
-  <g class="ln" style="animation-delay:4.76s">
+  <g class="ln" style="animation-name:ln14">
     <text x="16" y="326" fill="#F5F543">  SKIPPED  https://contoso.sharepoint.com/sites/legal     site is locked (ReadOnly)</text>
   </g>
-  <g class="ln" style="animation-delay:5.10s">
+  <g class="ln" style="animation-name:ln15">
     <text x="16" y="346" fill="#CCCCCC"></text>
   </g>
-  <g class="ln" style="animation-delay:5.44s">
+  <g class="ln" style="animation-name:ln16">
     <text x="16" y="366" fill="#29B8DB">Changed : 0</text>
   </g>
-  <g class="ln" style="animation-delay:5.78s">
+  <g class="ln" style="animation-name:ln17">
     <text x="16" y="386" fill="#29B8DB">Skipped : 13 (11 already at target, 2 locked)</text>
   </g>
-  <g class="ln" style="animation-delay:6.12s">
+  <g class="ln" style="animation-name:ln18">
     <text x="16" y="406" fill="#29B8DB">FAILED  : 0</text>
   </g>
-  <g class="ln" style="animation-delay:6.46s">
+  <g class="ln" style="animation-name:ln19">
     <text x="16" y="426" fill="#CCCCCC"></text>
   </g>
-  <g class="ln" style="animation-delay:6.80s">
+  <g class="ln" style="animation-name:ln20">
     <text x="16" y="446" fill="#FFFFFF">PS C:\&gt; </text>
     <rect class="cur" x="95.7" y="435" width="8" height="15" fill="#FFFFFF"/>
   </g>
