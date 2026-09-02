@@ -20,6 +20,23 @@ Verzování je první linie obrany proti nechtěné změně nebo smazání obsah
 
 Reference: [Jak funguje správa verzí v seznamech a knihovnách](https://support.microsoft.com/cs-cz/office/jak-funguje-spr%C3%A1va-verz%C3%AD-v-seznamech-a-knihovn%C3%A1ch-0f6cd105-974f-44a4-aadb-43ac5bdfd247)
 
+### Kolik verzování stojí místa
+
+Verzování není zadarmo a jeho cena se často podceňuje. **Každá verze se do kvóty počítá v plné velikosti souboru**, ne jako rozdíl proti té předchozí. Dokument o 5 MB, který někdo třikrát upraví, tedy drží 20 MB – čtyři verze po pěti megabajtech.
+
+Platí to i pro změnu, která se obsahu vůbec nedotkne: úprava jediné hodnoty sloupce vytvoří novou verzi a ta stojí další plnou kopii. Hromadné doplnění metadat nad tisíci dokumenty je proto z pohledu úložiště jedna z nejdražších operací, jaké nad knihovnou můžete spustit – přidá nulu užitečného obsahu a zdvojnásobí zabrané místo.
+
+Rozšířená představa, že SharePoint si u verzí ukládá jen rozdíly, protože používá shredded storage, míchá dvě různé vrstvy. Shredded storage je mechanismus uvnitř SQL Serveru u on-premises SharePointu a Microsoft sám píše, že kvótová komponenta s ním nemá přímý vztah. Měření i s čísly najdete v [A version is a full copy, not a delta](../gotchas/lists/a-version-is-a-full-copy-not-a-delta.md).
+
+Co s tím:
+
+- **Přepněte organizační limity historie verzí na automatické.** Microsoft je doporučuje jako výchozí volbu; algoritmus drží všechny verze do 30 dnů, pak hodinové do 60 dnů, denní do 180 dnů a dál týdenní, dokud se nenaplní strop 500 verzí. Podle Microsoftu to znamená úsporu 94 až 96 procent oproti pouhému počtu verzí.
+- **Nastavení limitu neprořeže to, co už v knihovně leží.** Existující historii je potřeba trimnout zvlášť – přes sestavu využití a naplánovanou úlohu.
+- **Rozmyslete si verzování před migračním skriptem** nebo hromadnou reklasifikací.
+- **Pozor na to, kudy verze mažete.** Prořezání limitem nebo úlohou obchází koš a je nevratné. Verze smazaná uživatelem v UI naopak do koše jde – a drží místo dál, dokud se koš nevysype.
+
+> Verzování ale kvůli místu nevypínejte. Je to vaše první linie obrany; cílem je platit za ni vědomě, ne se jí zbavit.
+
 ## Odpadkové koše
 
 SharePoint má **dvě úrovně koše**:
@@ -57,4 +74,4 @@ Alternativy s vlastní kopií dat mimo Microsoft cloud:
 
 ---
 
-*Součást kurzu [„Microsoft SharePoint Online – administrace od A do Z"](README.md). Vede [Kamil Juřík](https://www.linkedin.com/in/kamiljurik/) · [okskoleni.cz/kurzy/detail/MSHP-ONLINE](https://www.okskoleni.cz/kurzy/detail/MSHP-ONLINE)*
+*Součást kurzu [„Microsoft SharePoint Online – administrace od A do Z“](README.md). Vede [Kamil Juřík](https://www.linkedin.com/in/kamiljurik/) · [okskoleni.cz/kurzy/detail/MSHP-ONLINE](https://www.okskoleni.cz/kurzy/detail/MSHP-ONLINE)*
