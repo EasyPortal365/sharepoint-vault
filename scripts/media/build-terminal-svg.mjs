@@ -54,7 +54,11 @@ function build({ file, title, width, lines }) {
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} ${height}" width="${width}" height="${height}" role="img" aria-label="${esc(title)}">
   <style>
     text { font-family: Consolas, "Cascadia Mono", "DejaVu Sans Mono", monospace; font-size: 13px; white-space: pre; }
-    .ln { opacity: 0; animation-duration: ${total.toFixed(2)}s; animation-timing-function: linear; animation-iteration-count: infinite; }
+    /* Vychozi stav je VIDITELNY, ne skryty. Kdyz se animace neprehraje
+       (GitHub sanitizuje CSS v SVG, tisk, screenshot, nahled), zustane
+       cely prepis citelny misto prazdneho okna. Animace pak jen rizne
+       radky odhaluje - neni podminkou toho, aby slo neco precist. */
+    .ln { opacity: 1; animation-duration: ${total.toFixed(2)}s; animation-timing-function: linear; animation-iteration-count: infinite; }
 ${frames}
     .cur { animation: blink 1s steps(1) infinite; }
     @keyframes blink { 0%,50% { opacity: 1; } 51%,100% { opacity: 0; } }
