@@ -211,6 +211,74 @@ https://contoso.sharepoint.com/sites/projects,List,Board Documents,18,Board [Rea
 
 ---
 
+### Set-SiteSharingCapability.ps1 — ⚠️ writes
+
+Always start here. The backup is written even under `-WhatIf`:
+
+```text
+*** This script CHANGES external sharing settings. Run with -WhatIf first. ***
+Connecting to https://contoso-admin.sharepoint.com ...
+Tenant ceiling: ExternalUserSharingOnly
+1 site(s) in scope.
+Backup written to .\SharingCapability_Backup_20260901-101500.csv
+
+What if: Performing the operation "Set sharing to Disabled (was
+ExternalUserSharingOnly)" on target "https://contoso.sharepoint.com/sites/projects".
+
+Changed : 0
+Skipped : 0 (0 already at target, 0 locked)
+FAILED  : 0
+```
+
+A real run across the tenant, showing each kind of skip:
+
+```text
+110 site(s) in scope.
+  changed  https://contoso.sharepoint.com/sites/projects  ExternalUserSharingOnly -> ExistingExternalUserSharingOnly
+  skipped  https://contoso.sharepoint.com/sites/archive   already ExistingExternalUserSharingOnly
+  SKIPPED  https://contoso.sharepoint.com/sites/legal     site is locked (ReadOnly)
+
+Changed : 96
+Skipped : 13 (11 already at target, 2 locked)
+FAILED  : 1
+
+WARNING: 1 site(s) FAILED. Their sharing setting is unchanged - re-run for those URLs:
+  https://contoso.sharepoint.com/sites/finance
+```
+
+And the refusal that matters — asking for a level above the tenant ceiling stops before a single site is touched:
+
+```text
+Tenant ceiling: ExternalUserSharingOnly
+Cannot set sites to 'ExternalUserAndGuestSharing': the tenant is
+'ExternalUserSharingOnly', and a site can never be more permissive than the
+tenant. Raise the tenant setting first, deliberately.
+```
+
+### Set-SiteDefaultLinkPermission.ps1 — ⚠️ writes
+
+```text
+Tenant default link permission: Edit
+110 site(s) in scope.
+Backup written to .\DefaultLinkPermission_Backup_20260901-101500.csv
+  changed  https://contoso.sharepoint.com/sites/projects  Edit -> View
+  skipped  https://contoso.sharepoint.com/sites/wiki      already View
+  SKIPPED  https://contoso.sharepoint.com/sites/archive   sharing is Disabled - setting would have no effect
+
+Changed : 88
+Skipped : 22 (14 already at target, 6 sharing disabled, 2 locked)
+FAILED  : 0
+```
+
+The backup CSV of either script is the rollback — it holds the previous value per site:
+
+```csv
+Url,Title,DefaultLinkPermissionBefore,DefaultSharingLinkType,SharingCapability,LockState,CapturedUtc
+https://contoso.sharepoint.com/sites/projects,Projects,Edit,Direct,ExternalUserSharingOnly,Unlock,2026-09-01T08:15:00.0000000Z
+```
+
+---
+
 ## lists-and-libraries/
 
 ### Get-ListInventory.ps1
