@@ -32,7 +32,9 @@ Covers where knowledge actually lives, the five pillars of preparation, the limi
 
 ## About the speaker
 
-Both decks are by **[Kamil Juřík](https://www.linkedin.com/in/kamiljurik/)** — Microsoft MVP, working with SharePoint since 2001, founder of the iLikeSharePoint.cz community, and the curator of this vault.
+Both decks are by **Kamil Juřík** — Microsoft MVP, working with SharePoint since 2001, founder of the iLikeSharePoint.cz community, and the curator of this vault.
+
+[Profile](https://easyportal365.cz/en/about/kamil-jurik/) · [LinkedIn](https://www.linkedin.com/in/kamiljurik/)
 
 ## Reusing this material
 
