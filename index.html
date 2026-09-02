@@ -135,6 +135,18 @@
       .markdown-section table { display:block; overflow-x:auto; }
     }
 
+    /* ── úvod na stránce skriptu: animace + dvojjazyčné shrnutí ── */
+    .sv-intro { margin: 0 0 22px; }
+    .sv-intro-anim { display:block; width:100%; max-width:880px; height:auto; margin:0 0 16px; border-radius:10px; box-shadow:0 10px 30px -18px rgba(0,33,99,.55); }
+    .sv-intro p { margin:0 0 8px; font-size:14.5px; line-height:1.7; color:var(--muted); }
+    .sv-intro p:last-child { margin-bottom:0; }
+    .sv-intro code { font-size:.85em; }
+    .sv-lang {
+      display:inline-block; min-width:22px; margin-right:8px; padding:1px 6px;
+      font-family:var(--mono); font-size:10px; font-weight:700; letter-spacing:.08em;
+      color:var(--teal7); background:var(--mint); border-radius:4px; vertical-align:1px;
+    }
+
     /* ── course = čtecí typografie (proporcionální nadpisy, ne terminál) ── */
     /* Kurz je souvislá próza — tam širší řádek škodí čtení, na rozdíl od
        gotchas/scripts, které jsou z velké části tabulky a kód. */
@@ -480,6 +492,36 @@
       frontMatter: {},
       plugins: [
         function (hook, vm) {
+          /* Uvod na strance skriptu: animovany prubeh + co dela, EN a CZ.
+             Klic = nazev souboru, aby to prezilo presun mezi slozkami. */
+          var SV_INTRO = {
+            'Set-SiteSharingCapability.ps1': {
+              anim: '/scripts/media/set-sharing-capability.svg',
+              en: 'Turns external sharing on or off &mdash; for one site, a list of sites, or every site in the tenant. The tenant setting is a ceiling a site can never exceed, so the script refuses up front rather than letting a write appear to succeed. It writes a backup CSV of the previous state before touching anything, even under <code>-WhatIf</code>.',
+              cz: 'Zapíná a vypíná externí sdílení &ndash; pro jeden web, seznam webů nebo všechny weby v tenantu. Nastavení tenantu je strop, který web nikdy nepřekročí, takže skript odmítne předem místo toho, aby tě nechal věřit, že zápis prošel. Před jakoukoli změnou zapíše zálohu původního stavu do CSV, a to i s přepínačem <code>-WhatIf</code>.'
+            },
+            'Set-SiteDefaultLinkPermission.ps1': {
+              anim: '/scripts/media/set-default-link-permission.svg',
+              en: 'Changes the permission the Share dialog pre-selects. Setting View forbids nobody from granting Edit deliberately &mdash; it stops Edit being what happens when somebody shares without thinking. Sites with sharing switched off are skipped and counted separately, because the setting exists there but governs nothing.',
+              cz: 'Mění oprávnění, které dialog Sdílet přednastaví. Volba View nikomu nezakazuje udělit Edit vědomě &ndash; jen zabrání tomu, aby Edit vznikal bez rozmyslu. Weby s vypnutým sdílením se přeskočí a počítají zvlášť, protože tam nastavení sice existuje, ale nic neřídí.'
+            },
+            'Set-SiteAccessRequestSettings.ps1': {
+              anim: '/scripts/media/set-access-request-settings.svg',
+              en: 'Configures the per-site <em>Access Requests Settings</em> dialog end to end: who may share, who may invite into the members group, whether access requests are offered at all, where they are routed, and the message shown on the request page. Two of those settings have no cmdlet in any module and are CSOM calls.',
+              cz: 'Nastavuje celý dialog <em>Access Requests Settings</em> jednoho webu: kdo smí sdílet, kdo smí zvát do skupiny členů, zda se žádosti o přístup vůbec nabízejí, komu chodí a jaká zpráva se na stránce žádosti zobrazí. Dvě z těch nastavení nemá žádný modul jako cmdlet a jdou jen přes CSOM.'
+            }
+          };
+          window.SV_INTRO = SV_INTRO;
+          /* Docsify bere titulek stránky z textu odkazu v sidebaru, včetně
+             emoji — a protože favicon je taky 🗝️, měla záložka dva klíče
+             vedle sebe. Emoji patří do navigace, ne do <title>. */
+          hook.doneEach(function () {
+            var clean = document.title
+              .replace(/[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\u{2B00}-\u{2BFF}\u{FE0F}\u{200D}]/gu, '')
+              .replace(/\s{2,}/g, ' ')
+              .trim();
+            if (clean && clean !== document.title) { document.title = clean; }
+          });
           hook.beforeEach(function (content, next) {
             /* /README je tatáž stránka jako / — drž jedinou homepage */
             if (vm.route.path === '/README') { window.location.replace(window.location.pathname + '#/'); next(content); return; }
@@ -505,7 +547,15 @@
                 var lines = code.split('\n').length;
                 var kb = Math.round(code.length / 102.4) / 10;
                 var gh = 'https://github.com/EasyPortal365/sharepoint-vault';
-                next('# ' + fname + '\n\n' +
+                var intro = SV_INTRO[fname];
+                var introHtml = intro
+                  ? '<div class="sv-intro">' +
+                      (intro.anim ? '<img class="sv-intro-anim" src="' + intro.anim + '" alt="' + fname + ' running in a PowerShell window">' : '') +
+                      '<p><span class="sv-lang">EN</span> ' + intro.en + '</p>' +
+                      '<p><span class="sv-lang">CZ</span> ' + intro.cz + '</p>' +
+                    '</div>\n\n'
+                  : '';
+                next('# ' + fname + '\n\n' + introHtml +
                   '<div class="sv-fileact">' +
                   '<button type="button" class="sv-btn" data-svcopy="' + vm.route.path + '">⧉ copy to clipboard</button>' +
                   '<a class="sv-btn" href="' + rel + '" download="' + fname + '">⬇ download</a>' +
