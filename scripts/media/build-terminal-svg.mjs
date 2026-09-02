@@ -45,10 +45,19 @@ function build({ file, title, width, lines }) {
   // Kazdy radek ma VLASTNI keyframes, ale stejnou delku cyklu. S animation-delay
   // + infinite by kazdy radek bezel svuj vlastni cyklus a uz po prvnim pruchodu
   // by se rozesly z faze - misto vypisovani by jen nesynchronne blikaly.
+  // Cyklus zacina HOTOVYM stavem a teprve pak maze a vypisuje znovu.
+  // Duvod: cokoli, co vykresli jen prvni snimek (CDP screenshot, nahled,
+  // tisk), by u obracene faze ukazalo prazdne okno. Takhle je snimek v
+  // case 0 uplny prepis.
+  const holdPct = (TAIL / total) * 100;
   const frames = lines.map((ln, i) => {
-    const start = (i * STEP) / total * 100;
-    const lit = Math.min(start + 0.8, 95);
-    return `    @keyframes ln${i} { 0%, ${start.toFixed(2)}% { opacity: 0 } ${lit.toFixed(2)}%, 96% { opacity: 1 } 100% { opacity: 0 } }`;
+    if (i === 0) {
+      // Prvni radek je zadany prikaz - ten z okna nikdy nemizi.
+      return `    @keyframes ln${i} { 0%, 100% { opacity: 1 } }`;
+    }
+    const start = holdPct + (i * STEP) / total * 100;
+    const lit = Math.min(start + 0.8, 99);
+    return `    @keyframes ln${i} { 0%, ${holdPct.toFixed(2)}% { opacity: 1 } ${(holdPct + 0.01).toFixed(2)}%, ${start.toFixed(2)}% { opacity: 0 } ${lit.toFixed(2)}%, 100% { opacity: 1 } }`;
   }).join('\n');
 
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} ${height}" width="${width}" height="${height}" role="img" aria-label="${esc(title)}">

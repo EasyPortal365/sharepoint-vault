@@ -6,26 +6,26 @@
        cely prepis citelny misto prazdneho okna. Animace pak jen rizne
        radky odhaluje - neni podminkou toho, aby slo neco precist. */
     .ln { opacity: 1; animation-duration: 10.00s; animation-timing-function: linear; animation-iteration-count: infinite; }
-    @keyframes ln0 { 0%, 0.00% { opacity: 0 } 0.80%, 96% { opacity: 1 } 100% { opacity: 0 } }
-    @keyframes ln1 { 0%, 3.40% { opacity: 0 } 4.20%, 96% { opacity: 1 } 100% { opacity: 0 } }
-    @keyframes ln2 { 0%, 6.80% { opacity: 0 } 7.60%, 96% { opacity: 1 } 100% { opacity: 0 } }
-    @keyframes ln3 { 0%, 10.20% { opacity: 0 } 11.00%, 96% { opacity: 1 } 100% { opacity: 0 } }
-    @keyframes ln4 { 0%, 13.60% { opacity: 0 } 14.40%, 96% { opacity: 1 } 100% { opacity: 0 } }
-    @keyframes ln5 { 0%, 17.00% { opacity: 0 } 17.80%, 96% { opacity: 1 } 100% { opacity: 0 } }
-    @keyframes ln6 { 0%, 20.40% { opacity: 0 } 21.20%, 96% { opacity: 1 } 100% { opacity: 0 } }
-    @keyframes ln7 { 0%, 23.80% { opacity: 0 } 24.60%, 96% { opacity: 1 } 100% { opacity: 0 } }
-    @keyframes ln8 { 0%, 27.20% { opacity: 0 } 28.00%, 96% { opacity: 1 } 100% { opacity: 0 } }
-    @keyframes ln9 { 0%, 30.60% { opacity: 0 } 31.40%, 96% { opacity: 1 } 100% { opacity: 0 } }
-    @keyframes ln10 { 0%, 34.00% { opacity: 0 } 34.80%, 96% { opacity: 1 } 100% { opacity: 0 } }
-    @keyframes ln11 { 0%, 37.40% { opacity: 0 } 38.20%, 96% { opacity: 1 } 100% { opacity: 0 } }
-    @keyframes ln12 { 0%, 40.80% { opacity: 0 } 41.60%, 96% { opacity: 1 } 100% { opacity: 0 } }
-    @keyframes ln13 { 0%, 44.20% { opacity: 0 } 45.00%, 96% { opacity: 1 } 100% { opacity: 0 } }
-    @keyframes ln14 { 0%, 47.60% { opacity: 0 } 48.40%, 96% { opacity: 1 } 100% { opacity: 0 } }
-    @keyframes ln15 { 0%, 51.00% { opacity: 0 } 51.80%, 96% { opacity: 1 } 100% { opacity: 0 } }
-    @keyframes ln16 { 0%, 54.40% { opacity: 0 } 55.20%, 96% { opacity: 1 } 100% { opacity: 0 } }
-    @keyframes ln17 { 0%, 57.80% { opacity: 0 } 58.60%, 96% { opacity: 1 } 100% { opacity: 0 } }
-    @keyframes ln18 { 0%, 61.20% { opacity: 0 } 62.00%, 96% { opacity: 1 } 100% { opacity: 0 } }
-    @keyframes ln19 { 0%, 64.60% { opacity: 0 } 65.40%, 96% { opacity: 1 } 100% { opacity: 0 } }
+    @keyframes ln0 { 0%, 100% { opacity: 1 } }
+    @keyframes ln1 { 0%, 32.00% { opacity: 1 } 32.01%, 35.40% { opacity: 0 } 36.20%, 100% { opacity: 1 } }
+    @keyframes ln2 { 0%, 32.00% { opacity: 1 } 32.01%, 38.80% { opacity: 0 } 39.60%, 100% { opacity: 1 } }
+    @keyframes ln3 { 0%, 32.00% { opacity: 1 } 32.01%, 42.20% { opacity: 0 } 43.00%, 100% { opacity: 1 } }
+    @keyframes ln4 { 0%, 32.00% { opacity: 1 } 32.01%, 45.60% { opacity: 0 } 46.40%, 100% { opacity: 1 } }
+    @keyframes ln5 { 0%, 32.00% { opacity: 1 } 32.01%, 49.00% { opacity: 0 } 49.80%, 100% { opacity: 1 } }
+    @keyframes ln6 { 0%, 32.00% { opacity: 1 } 32.01%, 52.40% { opacity: 0 } 53.20%, 100% { opacity: 1 } }
+    @keyframes ln7 { 0%, 32.00% { opacity: 1 } 32.01%, 55.80% { opacity: 0 } 56.60%, 100% { opacity: 1 } }
+    @keyframes ln8 { 0%, 32.00% { opacity: 1 } 32.01%, 59.20% { opacity: 0 } 60.00%, 100% { opacity: 1 } }
+    @keyframes ln9 { 0%, 32.00% { opacity: 1 } 32.01%, 62.60% { opacity: 0 } 63.40%, 100% { opacity: 1 } }
+    @keyframes ln10 { 0%, 32.00% { opacity: 1 } 32.01%, 66.00% { opacity: 0 } 66.80%, 100% { opacity: 1 } }
+    @keyframes ln11 { 0%, 32.00% { opacity: 1 } 32.01%, 69.40% { opacity: 0 } 70.20%, 100% { opacity: 1 } }
+    @keyframes ln12 { 0%, 32.00% { opacity: 1 } 32.01%, 72.80% { opacity: 0 } 73.60%, 100% { opacity: 1 } }
+    @keyframes ln13 { 0%, 32.00% { opacity: 1 } 32.01%, 76.20% { opacity: 0 } 77.00%, 100% { opacity: 1 } }
+    @keyframes ln14 { 0%, 32.00% { opacity: 1 } 32.01%, 79.60% { opacity: 0 } 80.40%, 100% { opacity: 1 } }
+    @keyframes ln15 { 0%, 32.00% { opacity: 1 } 32.01%, 83.00% { opacity: 0 } 83.80%, 100% { opacity: 1 } }
+    @keyframes ln16 { 0%, 32.00% { opacity: 1 } 32.01%, 86.40% { opacity: 0 } 87.20%, 100% { opacity: 1 } }
+    @keyframes ln17 { 0%, 32.00% { opacity: 1 } 32.01%, 89.80% { opacity: 0 } 90.60%, 100% { opacity: 1 } }
+    @keyframes ln18 { 0%, 32.00% { opacity: 1 } 32.01%, 93.20% { opacity: 0 } 94.00%, 100% { opacity: 1 } }
+    @keyframes ln19 { 0%, 32.00% { opacity: 1 } 32.01%, 96.60% { opacity: 0 } 97.40%, 100% { opacity: 1 } }
     .cur { animation: blink 1s steps(1) infinite; }
     @keyframes blink { 0%,50% { opacity: 1; } 51%,100% { opacity: 0; } }
     @media (prefers-reduced-motion: reduce) {
