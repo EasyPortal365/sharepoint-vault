@@ -45,7 +45,7 @@ Prefer everything on a single page? Browse the 🗂️ **[full vault index](INDE
 
 ## Fresh from the vault
 
-- [**20 new admin scripts**](scripts/README.md) — permissions, cleanup, list governance and search diagnostics, from the "Everyone" claim hunt to version-history bloat
+- [**Admin scripts for the everyday jobs**](scripts/README.md) — permissions, cleanup, list governance and search diagnostics, from the "Everyone" claim hunt to version-history bloat; the writing ones back up before they touch anything
 - [**Guide: Search queries that actually work**](guides/search-queries-that-actually-work.md) — practical KQL, managed properties, and the traps between you and useful results
 - [**Guide: SharePoint REST vs Microsoft Graph**](guides/sharepoint-rest-vs-microsoft-graph.md) — the decision table we actually use, and where people pick wrong
 - [**Stored XSS via SharePoint list content**](gotchas/security/stored-xss-from-list-content.md) — React won't block `javascript:` hrefs; the `safeHref` pattern with the C0-strip that closes the bypass

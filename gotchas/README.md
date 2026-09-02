@@ -43,6 +43,11 @@ Every article carries frontmatter with `tags` and `applies-to`, so repo search g
 | [Retrying a throttled call is safe for GET only](rest-api/retry-on-throttling-only-for-get.md) | A throttled `POST` may already have been applied — SharePoint has no idempotency key, so the retry writes a second item; retry on the method, not the status code |
 | [`ensureuser` returns the login name](rest-api/ensureuser-returns-the-login-name.md) | The response already holds `LoginName` — re-querying `siteusers` by `Email` misses every account whose UPN differs |
 | [`fields/getbyinternalnameortitle` 400s for a missing field](rest-api/getbyinternalnameortitle-400-not-404.md) | It throws `ArgumentException` (HTTP 400), not 404 — an existence-check that hard-fails on non-404 never reaches the create path; treat only 200 as "exists" |
+| [Check-then-insert races produce duplicate rows](rest-api/check-then-insert-races-duplicate-rows.md) | no unique constraint + eventual consistency = double insert; dedup on read by version, never delete "lowest Id" |
+| [There is no `sitegroups/removebyname`](rest-api/delete-group-by-name-no-removebyname.md) | `GroupCollection` has `GetByName` but only `RemoveById`; resolve the Id first, then delete; verify with `getbyname` → 404 |
+| [Field written but missing from `$select`](rest-api/field-written-but-missing-from-select.md) | `$select` is an allowlist; a `snapshot ?? live` fallback silently erases the feature the snapshot exists for |
+| [`GetObjectSharingInformation` traps](rest-api/getobjectsharinginformation-traps.md) | GET is 405 every time (stop retrying it: 2.7× slower), `CreatedBy` is always null, `$expand` is dead weight |
+| [`/_api/HubSites` returns an empty list, not 403](rest-api/hubsites-returns-empty-list-not-403.md) | the hub list is security-trimmed, so an account that cannot read the hub sites gets `value: []` with HTTP 200; "this site has no hub" and "no inherited owner" must never be derived from it — read `IsHubSite`/`HubSiteId` from `_api/site` and treat "belongs to a hub that is not in the list" as unknown |
 
 ### lists/
 
@@ -115,6 +120,16 @@ Every article carries frontmatter with `tags` and `applies-to`, so repo search g
 | [serverRequestPath is not the page URL](spfx/server-request-path-is-not-the-page-url.md) | It is the path of the last SERVER REQUEST — on a modern list view it can be a REST endpoint, and stored as "where my app lives" every link lands on an XML error |
 | [Parser entry and collector must share one shape](spfx/parser-entry-and-collector-must-share-one-shape.md) | An entry regex accepting more than the collector loop consumes re-reads the same line forever — the tab dies of out-of-memory, and it looks machine-specific because the trigger is the USER'S DATA |
 | [Sharing text via URL hits length limits](spfx/share-text-via-url-hits-length-limits.md) | "Send to Teams" dies with `AADSTS90015` and `mailto` silently won't open on long text — cap the URL payload, carry the full text on the clipboard |
+| [A cached dynamic `import()` caches the rejection too](spfx/cached-rejected-dynamic-import.md) | one chunk-load blip poisons the module-level promise for the whole session; reset it to null in `.catch` so the next call retries |
+| [Deep-link param appended to a page URL that already has one](spfx/deep-link-param-appended-to-a-page-that-has-one.md) | the address an admin pastes already carries your routing param, so appending makes it appear twice and `URLSearchParams.get` reads the OLD value; replace the key, never append |
+| [An element selector outranks your button class](spfx/element-selector-outranks-your-button-class.md) | `.app-root a { color: inherit }` beats `.btn--accent`, so link-styled buttons get an unreadable label — but only on a tenant whose accent needs white text |
+| [A Promise over img.onload can hang forever](spfx/image-promise-without-a-timeout-hangs-forever.md) | onload/onerror are not guaranteed to fire; try/catch guards rejection, not a Promise that never settles |
+| [Instrumenting the Graph client fails silently](spfx/instrumenting-the-graph-client-fails-silently.md) | reassigning `client.api` throws and your fail-safe catch hides it; use `Object.create` and assert it attached |
+| [`jest.mock()` doesn't hoist under Heft](spfx/jest-mock-doesnt-hoist-in-heft.md) | tests run over pre-compiled `lib-commonjs` without Babel, so the mock lands after `require`; use `moduleNameMapper` (and why only *some* sp-http suites die on `@msinternal/ecs-flight`) |
+| [Mermaid clips node text with a web font](spfx/mermaid-text-clipping-webfont.md) | measure-before-load (FOUT) sizes boxes for the fallback font; use a system font stack |
+| [Office file extraction needs a decompressed-size cap](spfx/office-file-extraction-needs-a-decompressed-size-cap.md) | an upload-size limit only bounds the compressed archive; a crafted `!ref` still OOMs the tab |
+| [rules-of-hooks false-positive from a JSX `&&` chain](spfx/rules-of-hooks-false-positive-from-jsx-chain.md) | a complex conditional in your render blames the *wrong* hook; extract it to a `const`. Second trigger: sheer component *size* — there extracting conditions doesn't help, splitting the component does. Third trigger: the recommended `const` extraction ITSELF — only block-by-block bisection from a clean HEAD finds the guilty line |
+| [Shared package's dynamic import ships inlined](spfx/shared-package-dynamic-import-inlines-with-commonjs.md) | a linked TS package built with module:commonjs turns import() into require(), so webpack can't lazy-chunk the lib into a separate file; set the package's module:esnext |
 
 ### app-catalog/
 
@@ -144,6 +159,8 @@ Every article carries frontmatter with `tags` and `applies-to`, so repo search g
 | [`perUserMfaState` lies under Conditional Access](graph/per-user-mfa-state-lies-under-conditional-access.md) | The legacy per-user switch reads `disabled` while MFA is fully enforced — report on `userRegistrationDetails` (which omits blocked accounts) and always show what actually enforces MFA |
 | [directoryObject collections reject `$select` — and `$top` separately](graph/directoryobject-collections-reject-select-and-top.md) | `$select` of user fields on `/members`/`/memberOf`/`/transitiveMembers` = 400; an OData cast cures that everywhere but `$top` stays refused per-endpoint — probe both, they're independent |
 | [`$filter` on group members needs `$count=true` too](graph/filter-on-group-members-needs-count-too.md) | `ConsistencyLevel: eventual` alone still 400s on navigation collections — send the pair, or read unfiltered and decide client-side; a best-effort catch hides it as a fake outage |
+| [A pasted screenshot is too big for `/me/sendMail`](graph/sendmail-attachment-size-ceiling.md) | inline base64 attachments share a ~4 MB request budget; shrink bitmaps in a canvas, cap the total, and remember `mailto:` fallbacks carry no attachments at all |
+| [`/me/todo` needs an Exchange mailbox](graph/todo-requires-exchange-mailbox.md) | 404 "Item not found" on admin/cloud-only accounts is not a 403; Planner works without a mailbox |
 
 ### azure-functions/
 
@@ -157,6 +174,7 @@ The standard server-side companion of an SPFx solution — and its own set of tr
 | ["No such host" for &lt;app&gt;.azurewebsites.net](azure-functions/unique-default-hostname-no-such-host.md) | New apps get a unique default hostname (`<app>-<hash>.<region>-01`) — the bare name never resolves; the deploy log's `.scm.` URL reveals the real host |
 | [Measure a third-party API before you build on it](azure-functions/third-party-api-measure-before-you-build-on-it.md) | The canonical free API 404'd/502'd/timed out on 7 of 8 live calls while tests stayed green — probe latency *and* status on real data; then cache successes (never failures) and honour `Retry-After`, because one outbound IP means one shared quota |
 | [Cache-Control on a dynamic endpoint is uninvalidatable](azure-functions/cache-control-on-dynamic-endpoint-is-uninvalidatable.md) | `max-age` on a live aggregate lets a shared cache hold it keyed by URL — neither app restart nor deleting the data clears it, only expiry; serve dynamic data `no-store`, cache server-side, call with `?_=Date.now()` |
+| [pdf-parse and pdfjs-dist cannot share a process](azure-functions/pdf-parse-and-pdfjs-dist-cannot-share-a-process.md) | Loading pdfjs-dist breaks pdf-parse's bundled pdf.js ("bad XRef entry"), but only for classic xref-table PDFs and from the second request on — one PDF library per process; and load code under test the way production loads it |
 
 ### search/
 
@@ -174,6 +192,7 @@ The standard server-side companion of an SPFx solution — and its own set of tr
 | [Sensitivity labels in Search — property works, licensing gates it](search/sensitivity-labels-in-search-and-licensing.md) | `InformationProtectionLabelId` returns a GUID only after AIP-enable + label + crawl; unlicensed tenants can't even create a label (`InvalidLicenseException`) |
 | [`NoCrawl` on a library silently blinds your RAG](search/nocrawl-on-a-library-silently-blinds-your-rag.md) | Excluded containers return 0 with HTTP 200 and no log, so Search-backed AI can never see them; ask what the container *holds*, not its type — and indexing isn't a permission change, Search trims per user |
 | [Duplicate trimming hides the file copies you search for](search/duplicate-trimming-hides-file-copies.md) | Search collapses identical content by default — a copy-finder query returns "no copies" precisely when perfect copies exist; add `trimduplicates=false` to duplicate-hunting queries only |
+| [Search cannot see text inside images — and what that does to RAG](search/search-cannot-see-text-inside-images.md) | the crawler indexes the text layer only, so a value that exists only in an embedded flyer or a scan can never be found by keyword: a search-then-read pipeline is in a closed loop, the LLM re-ranker drops such documents (it scores text-layer snippets), and the only real fix is transcribing images into a crawled column |
 
 ### powershell/
 
@@ -201,6 +220,9 @@ The standard server-side companion of an SPFx solution — and its own set of tr
 | [An `image/*` upload accepts SVG](security/uploaded-svg-is-stored-xss.md) | SVG is a script that renders inert in `<img>` and executes on the file's direct URL — allow-list raster MIME types instead of prefix-matching |
 | [App-provisioned libraries inherit the web's write permissions](security/app-provisioned-library-inherits-web-write.md) | Provisioning sets item-level permissions on lists, rarely on libraries, so any member can upload over REST and poison an AI grounded there — and `WriteSecurity: 4` does **not** fix it, because the default Members group holds Edit, which includes Manage Lists and bypasses item-level settings; only unique permissions on the library hold |
 | [Breaking inheritance copies foreign Edit grants](security/breaking-inheritance-copies-foreign-edit-grants.md) | `copyRoleAssignments=true` drags another app's `Edit` groups onto your list, and `Edit` bypasses item-level security — break without copying, then prune |
+| [Fewer sites and sudden 403s mean a different account](security/fewer-sites-and-403s-mean-a-different-account.md) | a tenant-wide snippet run from a second browser window executes as whoever is signed in there; print `currentuser` and the visible-site count before you blame the tenant |
+| [A group created by code hides its own membership](security/group-created-by-code-hides-its-membership.md) | `sitegroups` POST defaults to `OnlyAllowMembersViewMembership: true`, so only a member or the account that ran provisioning can read the members; Full Control does not help and identical permission masks prove it |
+| [URL sanitiser strips spaces](security/url-sanitiser-strips-spaces.md) | the C0 strip that blocks `java<TAB>script:` also eats the plain space, so every link to `/Shared Documents/…` 404s; strip to decide, return with `%20` |
 
 ### tooling/
 
@@ -215,6 +237,7 @@ The standard server-side companion of an SPFx solution — and its own set of tr
 | [GitHub Pages certificate stuck](tooling/github-pages-certificate-stuck.md) | Domain added before DNS existed → cert never arrives — remove & re-add the domain to restart provisioning |
 | [NUL byte makes grep treat a file as binary](tooling/nul-byte-makes-grep-treat-file-as-binary.md) | One raw U+0000 in a literal and every grep-based sweep silently skips the file — write the escape, detect with `file` |
 | [Compiled files next to sources fake your build check](tooling/compiled-files-next-to-sources-fake-your-build-check.md) | Stale `.js` in `src/` greps like live code while nothing loads it — verify with `require.resolve`, not by reading whichever copy grep hit |
+| [Word’s PDF export silently substitutes your fonts](tooling/word-pdf-export-substitutes-fonts.md) | `ExportAsFixedFormat` lays the text out in Calibri while Word still lists and embeds the font; print to PDF instead, install static (not variable) instances, and verify via the `name` table inside the embedded `FontFile2` |
 
 ## Writing your own
 

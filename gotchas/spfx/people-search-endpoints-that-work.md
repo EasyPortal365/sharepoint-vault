@@ -92,7 +92,7 @@ const spUserId = (await eu.json()).Id;
 ## Notes
 
 - The `sourceid` GUID above is the built-in People result source — the same on every tenant.
-- Note the `odata-version: 3.0` header — the search endpoint [demands it](search-api-needs-odata-version-3.md).
+- Note the `odata-version: 3.0` header — the search endpoint [demands it](../rest-api/search-api-needs-odata-version-3.md).
 - Results depend on the search index; brand-new users can take a while to appear.
 - Searching **Entra groups** is a different road: Microsoft Graph `GET /v1.0/groups?$filter=startswith(displayName,'…')` via `AadHttpClient` (needs an approved `Group.Read.All` API permission request).
 - Rendering the dropdown? Mind the [CSS transform trap](fixed-dropdowns-in-transformed-panels.md) — inside animated panels it will position itself off-screen.

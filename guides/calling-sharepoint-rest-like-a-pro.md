@@ -88,7 +88,7 @@ if (!res.ok) {
 ## 4. Reading well
 
 - `$select` only what you render; add `$expand` for [lookup and person columns](../gotchas/rest-api/lookup-fields-need-expand.md), `$expand=File&$select=File/Length` for [file size and version](../gotchas/rest-api/file-size-needs-expand-file.md).
-- Past a few thousand items, [page with `odata.nextLink`](../../snippets/rest/get-all-list-items-paged.md) — `$skip` is silently ignored on items — and make sure your `$filter` [leads with an indexed column](../gotchas/lists/list-view-threshold-and-indexes.md).
+- Past a few thousand items, [page with `odata.nextLink`](../snippets/rest/get-all-list-items-paged.md) — `$skip` is silently ignored on items — and make sure your `$filter` [leads with an indexed column](../gotchas/lists/list-view-threshold-and-indexes.md).
 - OData text filters are **case-sensitive** (`substringof('kamil', Title)` won't find "Kamil"). For user-facing search-as-you-type, fetch a candidate set and filter client-side, or use SP Search.
 
 ## 5. Creating lists and fields over REST

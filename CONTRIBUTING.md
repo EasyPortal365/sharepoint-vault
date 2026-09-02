@@ -79,5 +79,12 @@ Edge cases, related traps, links.
 1. One topic per PR.
 2. When you add a file, update the section README's index **and** the root [INDEX.md](INDEX.md).
 3. Walk through the sanitization table above one more time.
+4. Run the consistency check — it catches the two indexes drifting apart, dead relative links, and counts written into prose that nobody updates afterwards:
+
+   ```bash
+   node tools/check-vault.mjs
+   ```
+
+   It exits non-zero when something is off and names the file. If it reports a count in a sentence, prefer deleting the number over correcting it: prose that says "20 scripts" is wrong again the next time somebody adds one.
 
 Not sure whether something fits? [Open an issue](https://github.com/EasyPortal365/sharepoint-vault/issues) and ask.
