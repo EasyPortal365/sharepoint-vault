@@ -2,7 +2,7 @@
 
 Every single thing in the vault, on one page. Section names link to folder READMEs; leaves link straight to the content.
 
-*Last updated: 2026-09-01*
+*Last updated: 2026-09-02*
 
 - 🧰 **[scripts/](scripts/)** — PowerShell scripts with comment-based help, read-only unless stated
   - [Terminal animations](scripts/media/) — the writing scripts as an animated PowerShell console; plain SVG, no JavaScript, respects `prefers-reduced-motion`
@@ -98,6 +98,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [Item IDs are never reused — unless the list is recreated](gotchas/lists/item-ids-are-not-reused-but-recreated-lists-restart.md) — purging a list does not rewind its counter, so orphaned rows in a derived list are dead weight; a recreated list restarts at 1 and turns them into wrong-item attributions
     - [`length()` is for arrays, not strings](gotchas/lists/formatting-length-is-for-arrays-not-strings.md) — string length via `indexOf(str + '^', '^')`, or the expression collapses to empty
     - [`MajorVersionLimit: 0` means unlimited, not none](gotchas/lists/major-version-limit-zero-means-unlimited.md) — one integer covering "no limit", "keep n" and "versioning is off"; the library your report calls tidiest is the one eating the quota
+    - [A version is a full copy, not a delta](gotchas/lists/a-version-is-a-full-copy-not-a-delta.md) — the quota counts every version at full file size and a metadata-only edit costs one; measured on a live tenant, three column edits took a 1 MiB file to 4 MB
   - **spfx/**
     - [Hand-built .docx / .pptx: the parts Office demands](gotchas/spfx/hand-built-ooxml-missing-parts.md) — header images are referenced from the header's own rels, Content_Types must know the image extension, namespaces are per part, and a .pptx without theme + master + layout is invalid; split parts from zipping so a strict XML parser can check them in tests
     - [Graph grants are tenant-wide](gotchas/spfx/graph-permission-grants-are-tenant-wide.md) — `webApiPermissionRequests` is a request, not a grant; an approval lands on one tenant-wide principal, so a scope another solution had approved already works in yours (and may be missing at the customer)

@@ -70,6 +70,7 @@ Every article carries frontmatter with `tags` and `applies-to`, so repo search g
 | [`length()` is for arrays, not strings](lists/formatting-length-is-for-arrays-not-strings.md) | On a string the arithmetic collapses and `substring` renders empty — get string length as `indexOf(str + '^', '^')` |
 | [View formatting lands on the wrong view](lists/view-formatting-lands-on-the-wrong-view.md) | No `AllItems.aspx` in Site Pages and a grouped default view — plus a column absent from the view is `undefined`, not `''`, so the hide guard never fires |
 | [`MajorVersionLimit: 0` means unlimited, not none](lists/major-version-limit-zero-means-unlimited.md) | Zero is the API's "no limit" — and also what you get when versioning is off; a report printing the raw number says the opposite of the truth |
+| [A version is a full copy, not a delta](lists/a-version-is-a-full-copy-not-a-delta.md) | Every version counts against the quota at the full file size, and a metadata-only edit creates one — measured: three column edits turned a 1 MiB file into 4 MB. "Shredded storage" is a SQL-level mechanism in on-prem SharePoint that the quota component explicitly does not track |
 
 ### permissions/
 
