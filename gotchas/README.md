@@ -78,6 +78,7 @@ Every article carries frontmatter with `tags` and `applies-to`, so repo search g
 |---|---|
 | [WriteSecurity 4 ignores Contribute](permissions/write-security-4-needs-managelists.md) | Only ManageLists overrides the item-level write block — Contribute does not have it, so the obvious grant changes nothing |
 | [Breaking inheritance without copying keeps only you](permissions/break-without-copy-keeps-only-you.md) | `copyRoleAssignments=false` leaves a single role assignment — the caller — so re-granting Owners/Members/Visitors silently drops direct grants and custom groups; and an account that loses a *config* read can end up with that feature's limits switched off, so hardening lowers security for the one it locked out |
+| [`HasUniqueRoleAssignments` proves the break, not the hardening](permissions/unique-role-assignments-is-not-proof-of-hardening.md) | the flag flips after step one, so a check that stops there reports "locked" over a list whose trim step never ran — and because the safe break is `copy=true`, that half-done state is worse than inheritance: the object owns a private copy of Members-with-Edit, which carries `ManageLists` |
 | [A one-sided permission check passes on an empty ACL](permissions/one-sided-permission-check-passes-on-an-empty-acl.md) | "Nobody outside the allow-list can write" is also true when nobody can write at all — assert the other direction and a non-zero writer count, and read strictly so a 429 cannot drop a group out of the policy |
 
 ### spfx/
