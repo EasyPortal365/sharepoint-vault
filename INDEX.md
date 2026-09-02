@@ -20,6 +20,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [Get-SiteCollectionAdminReport.ps1](scripts/permissions/Get-SiteCollectionAdminReport.ps1) — the privilege that bypasses every item-level break and never shows up in Owners
     - [Set-SiteSharingCapability.ps1](scripts/permissions/Set-SiteSharingCapability.ps1) — ⚠️ **writes**: external sharing on/off per site or tenant-wide; the tenant setting is a ceiling and the check ranks levels explicitly, because the enum's numbers do not follow its own hierarchy
     - [Set-SiteDefaultLinkPermission.ps1](scripts/permissions/Set-SiteDefaultLinkPermission.ps1) — ⚠️ **writes**: the permission pre-selected in the Share dialog; setting View does not forbid Edit, it stops Edit being what happens by default
+    - [Set-SiteAccessRequestSettings.ps1](scripts/permissions/Set-SiteAccessRequestSettings.ps1) — ⚠️ **writes**: the per-site *Access Requests Settings* dialog end to end; two of its settings have no cmdlet at all and need CSOM, and a tenant override can make one of them cosmetic
   - **lists-and-libraries/**
     - [Get-LargeListsReport.ps1](scripts/lists-and-libraries/Get-LargeListsReport.ps1) — lists approaching or past the 5,000-item view threshold
     - [Get-ListInventory.ps1](scripts/lists-and-libraries/Get-ListInventory.ps1) — every list with versioning, content types and unique permissions; `MajorVersionLimit = 0` is spelled out as *unlimited*, not printed as zero

@@ -270,6 +270,32 @@ Skipped : 22 (14 already at target, 6 sharing disabled, 2 locked)
 FAILED  : 0
 ```
 
+### Set-SiteAccessRequestSettings.ps1 — ⚠️ writes
+
+The whole *Access Requests Settings* dialog. Current state is printed before anything changes, together with the tenant override that can make one of the settings cosmetic:
+
+```text
+*** This script CHANGES site access request settings. Run with -WhatIf first. ***
+Backup written to .\AccessRequestSettings_Backup_20260901-101500.csv
+
+https://contoso.sharepoint.com/sites/projects
+  current  MembersCanShare=True  MembersCanInvite=True  AccessRequests=owners group  Message=(none)
+  tenant   member sharing override: Unspecified (not overridden)
+  changed  access requests -> helpdesk@contoso.com
+  changed  custom message set (31 chars)
+
+Changed : 2 setting(s) across 1 site(s)
+Skipped : 0
+FAILED  : 0
+```
+
+Two skips that are easy to mistake for success, so they are printed as skips:
+
+```text
+  SKIPPED  MembersCanShare - blocked by the tenant-wide override, the write would be cosmetic
+  SKIPPED  MembersCanInvite - this site has no associated members group
+```
+
 The backup CSV of either script is the rollback — it holds the previous value per site:
 
 ```csv

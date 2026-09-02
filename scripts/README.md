@@ -5,7 +5,7 @@ PowerShell scripts for SharePoint Online administration and diagnostics.
 ## Ground rules
 
 - Every script carries comment-based help — run `Get-Help .\TheScript.ps1 -Full` before first use.
-- **Read-only unless clearly stated otherwise** in the script header. Three scripts write, each supports `-WhatIf`, and each says so loudly in its first line: [Remove-ExcessFileVersions.ps1](cleanup/Remove-ExcessFileVersions.ps1), [Set-SiteSharingCapability.ps1](permissions/Set-SiteSharingCapability.ps1), [Set-SiteDefaultLinkPermission.ps1](permissions/Set-SiteDefaultLinkPermission.ps1). The two `Set-` scripts write a backup CSV of the previous state — even under `-WhatIf` — before touching anything.
+- **Read-only unless clearly stated otherwise** in the script header. Four scripts write, each supports `-WhatIf`, and each says so loudly in its first line: [Remove-ExcessFileVersions.ps1](cleanup/Remove-ExcessFileVersions.ps1), [Set-SiteSharingCapability.ps1](permissions/Set-SiteSharingCapability.ps1), [Set-SiteDefaultLinkPermission.ps1](permissions/Set-SiteDefaultLinkPermission.ps1), [Set-SiteAccessRequestSettings.ps1](permissions/Set-SiteAccessRequestSettings.ps1). Every `Set-` script writes a backup CSV of the previous state — even under `-WhatIf` — before touching anything.
 - **Module policy:** scripts use the official [SharePoint Online Management Shell](https://learn.microsoft.com/en-us/powershell/sharepoint/sharepoint-online/connect-sharepoint-online) (`Microsoft.Online.SharePoint.PowerShell`) wherever it covers the task — plain admin sign-in, no app registration. [PnP.PowerShell](https://pnp.github.io/powershell/) appears only where the official module can't go (list-level and content-level work); those scripts say so in their header and expect **your own Entra app registration** via `-ClientId` ([why and how](https://pnp.github.io/powershell/articles/registerapplication.html)).
 - **Partial results are labelled as partial.** Where a script caps a scan (`-MaxItemsPerList`, `-RowLimit`, `-MaxFilesPerLibrary`) it says so in the output instead of letting a truncated report read as a complete one. Same for failed reads: a library that couldn't be read is reported as *read failed*, never as *nothing found*.
 - Review the code before running anything against a production tenant. Always.
@@ -35,6 +35,7 @@ PowerShell scripts for SharePoint Online administration and diagnostics.
 | [Get-SiteCollectionAdminReport.ps1](permissions/Get-SiteCollectionAdminReport.ps1) | Who bypasses every permission on every site, and which of them are guests |
 | [Set-SiteSharingCapability.ps1](permissions/Set-SiteSharingCapability.ps1) | ⚠️ **Writes.** Turns external sharing on/off per site or tenant-wide; refuses to exceed the tenant ceiling, backs up first |
 | [Set-SiteDefaultLinkPermission.ps1](permissions/Set-SiteDefaultLinkPermission.ps1) | ⚠️ **Writes.** Changes the pre-selected sharing permission (Edit → View), so Edit stops being the accident |
+| [Set-SiteAccessRequestSettings.ps1](permissions/Set-SiteAccessRequestSettings.ps1) | ⚠️ **Writes.** The whole *Access Requests Settings* dialog: who may share, who may invite, where requests go, custom message *(PnP + CSOM)* |
 
 ### lists-and-libraries/
 
