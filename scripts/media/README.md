@@ -2,7 +2,9 @@
 
 Animated SVGs showing what the writing scripts print in a PowerShell window, so you can see the shape of a run before you commit to one.
 
-Each is a plain SVG with the CSS animation inside it — no JavaScript, no external assets, so it animates when embedded as an ordinary image. Lines fade in one after another, the cursor blinks, and the loop restarts after a pause. Anyone who has `prefers-reduced-motion` set sees the finished frame with no animation at all.
+Each one plays a whole interaction: the command is typed out word by word with the caret moving along behind it, then Enter, then the output appears line by line. It runs **once** and stops on the finished transcript — no loop, nothing blinking away in the corner of your eye while you read.
+
+Plain SVG with the CSS inside it — no JavaScript, no external assets — so it animates when embedded as an ordinary image. Anyone with `prefers-reduced-motion` set gets the finished transcript immediately, and so does any surface that strips CSS from SVG (GitHub's markdown renderer does, and so do print and thumbnails): the fallback is the whole output, never an empty window.
 
 | Animation | Script |
 |---|---|
@@ -22,4 +24,6 @@ The transcripts are the sanitised output from [sample-outputs.md](../sample-outp
 node build-terminal-svg.mjs .
 ```
 
-Colours follow the `Write-Host` foregrounds the scripts actually use (red for the warning banner, cyan for progress, green for a change, yellow for a skip, grey for a no-op). The character width in the file is measured, not guessed — if you change the font size, re-measure it with `canvas.measureText`, or the cursor drifts away from the end of the prompt.
+Colours follow the `Write-Host` foregrounds the scripts actually use (red for the warning banner, cyan for progress, green for a change, yellow for a skip, grey for a no-op). The character width in the file is measured, not guessed — if you change the font size, re-measure it with `canvas.measureText`, or the caret drifts away from the end of the words it is supposed to follow.
+
+One note if you ever debug these: a browser tab that is not actually on screen has a frozen animation timeline, so a screenshot of one shows frame zero no matter how long you wait. To check the timing, drive it yourself rather than watching it — open the SVG, then step the clock through `document.getAnimations().forEach(a => a.currentTime = 1700)` and read the state at that instant.
