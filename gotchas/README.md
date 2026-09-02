@@ -171,6 +171,7 @@ The standard server-side companion of an SPFx solution — and its own set of tr
 | Gotcha | TL;DR |
 |---|---|
 | [Windows zip deploy breaks the running app](azure-functions/windows-zip-deploy-breaks-running-app.md) | Copying onto a live `wwwroot` corrupts files → whole app 503 — re-run the deploy (not restart); prevent with `WEBSITE_RUN_FROM_PACKAGE=1` |
+| [Verifying CORS by header presence passes every origin](azure-functions/verifying-cors-by-header-presence-passes-every-origin.md) | an allowlist API returns a **fallback** origin rather than omitting the header, so `grep` for the header name says "allowed" for `evil.example` too — compare the value to the `Origin` you sent, and treat a uniform verdict across all inputs as a broken probe |
 | [Rate limit counts the capability probe](azure-functions/rate-limit-counts-capability-probe-corporate-nat.md) | Per-IP limits behind corporate NAT = per-company limits — metered "what can you do?" probes silently kill the feature's UI |
 | [A pinned Azure OpenAI model+version is a time bomb](azure-functions/azure-openai-pinned-model-version-is-a-time-bomb.md) | "Deprecating" blocks NEW deployments well before retirement — resolve the newest GA version at deploy time |
 | ["No such host" for &lt;app&gt;.azurewebsites.net](azure-functions/unique-default-hostname-no-such-host.md) | New apps get a unique default hostname (`<app>-<hash>.<region>-01`) — the bare name never resolves; the deploy log's `.scm.` URL reveals the real host |
