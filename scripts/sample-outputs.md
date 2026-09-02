@@ -213,6 +213,8 @@ https://contoso.sharepoint.com/sites/projects,List,Board Documents,18,Board [Rea
 
 ### Set-SiteSharingCapability.ps1 — ⚠️ writes
 
+![Set-SiteSharingCapability.ps1 running with -WhatIf](media/set-sharing-capability.svg)
+
 Always start here. The backup is written even under `-WhatIf`:
 
 ```text
@@ -257,6 +259,8 @@ tenant. Raise the tenant setting first, deliberately.
 
 ### Set-SiteDefaultLinkPermission.ps1 — ⚠️ writes
 
+![Set-SiteDefaultLinkPermission.ps1 running tenant-wide](media/set-default-link-permission.svg)
+
 ```text
 Tenant default link permission: Edit
 110 site(s) in scope.
@@ -271,6 +275,8 @@ FAILED  : 0
 ```
 
 ### Set-SiteAccessRequestSettings.ps1 — ⚠️ writes
+
+![Set-SiteAccessRequestSettings.ps1 changing two settings](media/set-access-request-settings.svg)
 
 The whole *Access Requests Settings* dialog. Current state is printed before anything changes, together with the tenant override that can make one of the settings cosmetic:
 

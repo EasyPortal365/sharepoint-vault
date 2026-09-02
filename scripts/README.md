@@ -10,6 +10,8 @@ PowerShell scripts for SharePoint Online administration and diagnostics.
 - **Partial results are labelled as partial.** Where a script caps a scan (`-MaxItemsPerList`, `-RowLimit`, `-MaxFilesPerLibrary`) it says so in the output instead of letting a truncated report read as a complete one. Same for failed reads: a library that couldn't be read is reported as *read failed*, never as *nothing found*.
 - Review the code before running anything against a production tenant. Always.
 
+🎬 **[Terminal animations](media/)** — the three writing scripts as an animated console, so you can see how a run unfolds before you start one.
+
 📄 **[What the scripts actually print](sample-outputs.md)** — console output and CSV samples for every script, taken from real runs against a live tenant. Includes what they look like when a read is denied, which is the output you most need to recognise.
 
 ## Index

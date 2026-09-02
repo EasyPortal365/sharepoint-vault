@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 464" width="880" height="464" role="img" aria-label="Administrator: Windows PowerShell">
+  <style>
+    text { font-family: Consolas, "Cascadia Mono", "DejaVu Sans Mono", monospace; font-size: 13px; white-space: pre; }
+    .ln { opacity: 0; animation: reveal 10.00s linear infinite; }
+    @keyframes reveal {
+      0%   { opacity: 0; }
+      1.2% { opacity: 1; }
+      96%  { opacity: 1; }
+      100% { opacity: 0; }
+    }
+    .cur { animation: blink 1s steps(1) infinite; }
+    @keyframes blink { 0%,50% { opacity: 1; } 51%,100% { opacity: 0; } }
+    @media (prefers-reduced-motion: reduce) {
+      .ln { opacity: 1; animation: none; }
+      .cur { animation: none; }
+    }
+  </style>
+  <rect width="880" height="464" rx="8" fill="#012456"/>
+  <rect width="880" height="30" rx="8" fill="#1F3B6E"/>
+  <rect y="22" width="880" height="8" fill="#1F3B6E"/>
+  <text x="16" y="20" fill="#D6E0F5" font-size="12">Administrator: Windows PowerShell</text>
+  <g>
+  <g class="ln" style="animation-delay:0.00s">
+    <text x="16" y="46" fill="#FFFFFF">PS C:\&gt; .\Set-SiteAccessRequestSettings.ps1 `</text>
+  </g>
+  <g class="ln" style="animation-delay:0.34s">
+    <text x="16" y="66" fill="#FFFFFF">&gt;&gt;     -SiteUrl https://contoso.sharepoint.com/sites/projects -ClientId 0000... `</text>
+  </g>
+  <g class="ln" style="animation-delay:0.68s">
+    <text x="16" y="86" fill="#FFFFFF">&gt;&gt;     -AllowAccessRequests $true -AccessRequestEmail helpdesk@contoso.com `</text>
+  </g>
+  <g class="ln" style="animation-delay:1.02s">
+    <text x="16" y="106" fill="#FFFFFF">&gt;&gt;     -CustomMessage "Tell us which project you need."</text>
+  </g>
+  <g class="ln" style="animation-delay:1.36s">
+    <text x="16" y="126" fill="#CCCCCC"></text>
+  </g>
+  <g class="ln" style="animation-delay:1.70s">
+    <text x="16" y="146" fill="#F14C4C" font-weight="700">*** This script CHANGES site access request settings. Run with -WhatIf first. ***</text>
+  </g>
+  <g class="ln" style="animation-delay:2.04s">
+    <text x="16" y="166" fill="#23D18B">Backup written to .\AccessRequestSettings_Backup_20260901-101500.csv</text>
+  </g>
+  <g class="ln" style="animation-delay:2.38s">
+    <text x="16" y="186" fill="#CCCCCC"></text>
+  </g>
+  <g class="ln" style="animation-delay:2.72s">
+    <text x="16" y="206" fill="#29B8DB">https://contoso.sharepoint.com/sites/projects</text>
+  </g>
+  <g class="ln" style="animation-delay:3.06s">
+    <text x="16" y="226" fill="#CCCCCC">  current  MembersCanShare=True  MembersCanInvite=True</text>
+  </g>
+  <g class="ln" style="animation-delay:3.40s">
+    <text x="16" y="246" fill="#CCCCCC">           AccessRequests=owners group  Message=(none)</text>
+  </g>
+  <g class="ln" style="animation-delay:3.74s">
+    <text x="16" y="266" fill="#767676">  tenant   member sharing override: Unspecified (not overridden)</text>
+  </g>
+  <g class="ln" style="animation-delay:4.08s">
+    <text x="16" y="286" fill="#23D18B">  changed  access requests -&gt; helpdesk@contoso.com</text>
+  </g>
+  <g class="ln" style="animation-delay:4.42s">
+    <text x="16" y="306" fill="#23D18B">  changed  custom message set (31 chars)</text>
+  </g>
+  <g class="ln" style="animation-delay:4.76s">
+    <text x="16" y="326" fill="#CCCCCC"></text>
+  </g>
+  <g class="ln" style="animation-delay:5.10s">
+    <text x="16" y="346" fill="#29B8DB">Changed : 2 setting(s) across 1 site(s)</text>
+  </g>
+  <g class="ln" style="animation-delay:5.44s">
+    <text x="16" y="366" fill="#29B8DB">Skipped : 0</text>
+  </g>
+  <g class="ln" style="animation-delay:5.78s">
+    <text x="16" y="386" fill="#29B8DB">FAILED  : 0</text>
+  </g>
+  <g class="ln" style="animation-delay:6.12s">
+    <text x="16" y="406" fill="#CCCCCC"></text>
+  </g>
+  <g class="ln" style="animation-delay:6.46s">
+    <text x="16" y="426" fill="#FFFFFF">PS C:\&gt; </text>
+    <rect class="cur" x="95.7" y="415" width="8" height="15" fill="#FFFFFF"/>
+  </g>
+  </g>
+</svg>
