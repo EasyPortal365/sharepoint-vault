@@ -1,6 +1,16 @@
 // Generator animovanych SVG "terminalu" pro vault.
-// Radky se objevuji postupne (fade-in), kurzor blika, cyklus se opakuje.
-// CSS je uvnitr SVG, takze to funguje i kdyz je SVG vlozene jako <img>.
+//
+// Prubeh: administrator napise prikaz po slovech, odentruje, pak se vypisuje
+// vystup radek po radku. Animace probehne JEDNOU a zustane stat na hotovem
+// prepisu (animation-fill-mode: forwards) - neopakuje se.
+//
+// Proc jednorazove: pri `infinite` bezel kazdy prvek vlastni cyklus a uz po
+// prvnim pruchodu se rozesly z faze - misto vypisovani jen nesynchronne
+// blikaly. S jednim pruchodem staci animation-delay a nic se nerozejde.
+//
+// CSS je uvnitr SVG, takze animace funguje i kdyz je soubor vlozeny jako <img>.
+// Kdyz se CSS neuplatni vubec (GitHub ho z SVG odstranuje, tisk, nahled),
+// zustanou prvky na sve vychozi SVG neprusvitnosti = cely prepis je citelny.
 import { writeFileSync, mkdirSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 
@@ -14,95 +24,134 @@ const COL = {
   white:'#FFFFFF',
 };
 
-const CH_W = 7.15;     // zmerena sirka znaku pri 13px Consolas (canvas measureText)
+const CH_W   = 7.15;   // zmerena sirka znaku pri 13px Consolas (canvas measureText)
 const LINE_H = 20;
-const PAD_X = 16;
-const TOP = 46;        // pod title barem
-const STEP = 0.34;     // sekundy mezi radky
-const TAIL = 3.2;      // pauza na konci cyklu
+const PAD_X  = 16;
+const TOP    = 46;     // pod title barem
+
+const TYPE_STEP    = 0.17;  // sekundy na jedno napsane slovo
+const ENTER_PAUSE  = 0.5;   // pauza mezi Enterem a prvnim vystupem
+const OUT_STEP     = 0.13;  // sekundy na radek vystupu
+const BLANK_STEP   = 0.05;  // prazdny radek vystupu jde rychleji
 
 const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
-function build({ file, title, width, lines }) {
-  const total = lines.length * STEP + TAIL;
-  const height = TOP + lines.length * LINE_H + 18;
+// Rozdeli radek na tokeny tak, ze mezera patri k predchozimu slovu -
+// diky tomu sedi kumulativni offsety na sirku znaku.
+function tokenize(line) {
+  const out = [];
+  const re = /\S+\s*/g;
+  let m;
+  while ((m = re.exec(line)) !== null) out.push(m[0]);
+  return out;
+}
 
-  const body = lines.map((ln, i) => {
-    const delay = (i * STEP).toFixed(2);
-    const y = TOP + i * LINE_H;
-    const color = COL[ln.c || 'def'];
-    const weight = ln.b ? ' font-weight="700"' : '';
-    const text = esc(ln.t || '');
-    // Kurzor se veze na konci posledniho radku
-    const cursor = ln.cursor
-      ? `<rect class="cur" x="${(PAD_X + text.length * CH_W + 1).toFixed(1)}" y="${y - 11}" width="8" height="15" fill="${COL.white}"/>`
-      : '';
-    return `  <g class="ln" style="animation-name:ln${i}">
-    <text x="${PAD_X}" y="${y}" fill="${color}"${weight}>${text}</text>${cursor ? '\n    ' + cursor : ''}
-  </g>`;
-  }).join('\n');
+function build({ file, title, width, command, output }) {
+  const cmdLines = Array.isArray(command) ? command : [command];
 
-  // Kazdy radek ma VLASTNI keyframes, ale stejnou delku cyklu. S animation-delay
-  // + infinite by kazdy radek bezel svuj vlastni cyklus a uz po prvnim pruchodu
-  // by se rozesly z faze - misto vypisovani by jen nesynchronne blikaly.
-  // Cyklus zacina HOTOVYM stavem a teprve pak maze a vypisuje znovu.
-  // Duvod: cokoli, co vykresli jen prvni snimek (CDP screenshot, nahled,
-  // tisk), by u obracene faze ukazalo prazdne okno. Takhle je snimek v
-  // case 0 uplny prepis.
-  const holdPct = (TAIL / total) * 100;
-  const frames = lines.map((ln, i) => {
-    if (i === 0) {
-      // Prvni radek je zadany prikaz - ten z okna nikdy nemizi.
-      return `    @keyframes ln${i} { 0%, 100% { opacity: 1 } }`;
+  // --- rozlozeni prikazu na tokeny s casem a pozici -----------------------
+  let t = 0;
+  const tokens = [];
+  const caretStops = [];   // [cas, x, y] kam kurzor skoci po napsani tokenu
+
+  cmdLines.forEach((line, li) => {
+    const y = TOP + li * LINE_H;
+    let col = 0;
+    for (const tok of tokenize(line)) {
+      const x = PAD_X + col * CH_W;
+      tokens.push({ text: tok, x, y, at: t });
+      col += tok.length;
+      t += TYPE_STEP;
+      caretStops.push({ at: t, x: PAD_X + col * CH_W, y });
     }
-    const start = holdPct + (i * STEP) / total * 100;
-    const lit = Math.min(start + 0.8, 99);
-    return `    @keyframes ln${i} { 0%, ${holdPct.toFixed(2)}% { opacity: 1 } ${(holdPct + 0.01).toFixed(2)}%, ${start.toFixed(2)}% { opacity: 0 } ${lit.toFixed(2)}%, 100% { opacity: 1 } }`;
+  });
+
+  const enterAt = t;
+  t += ENTER_PAUSE;
+
+  // --- vystupni radky -----------------------------------------------------
+  const outStart = TOP + cmdLines.length * LINE_H;
+  const outRows = output.map((ln, i) => {
+    const row = { ...ln, y: outStart + i * LINE_H, at: t };
+    t += (ln.t && ln.t.length) ? OUT_STEP : BLANK_STEP;
+    return row;
+  });
+
+  const finalCaretY = outStart + output.length * LINE_H;
+  const endAt = t + 0.2;
+  const height = finalCaretY + 26;
+
+  // --- SVG ----------------------------------------------------------------
+  const cmdSvg = tokens.map((tok, i) =>
+    `    <text class="tok" style="animation-delay:${tok.at.toFixed(2)}s" x="${tok.x.toFixed(1)}" y="${tok.y}" fill="${COL.white}">${esc(tok.text)}</text>`
+  ).join('\n');
+
+  const outSvg = outRows.filter(r => r.t).map(r =>
+    `    <text class="tok" style="animation-delay:${r.at.toFixed(2)}s" x="${PAD_X}" y="${r.y}" fill="${COL[r.c || 'def']}"${r.b ? ' font-weight="700"' : ''}>${esc(r.t)}</text>`
+  ).join('\n');
+
+  // Kurzor pri psani: skace po koncich slov, po Enteru zmizi.
+  const caretFrames = caretStops.map(s => {
+    const pct = (s.at / endAt * 100).toFixed(2);
+    return `      ${pct}% { transform: translate(${(s.x - PAD_X).toFixed(1)}px, ${(s.y - TOP).toFixed(0)}px); }`;
   }).join('\n');
+  const enterPct = (enterAt / endAt * 100).toFixed(2);
 
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} ${height}" width="${width}" height="${height}" role="img" aria-label="${esc(title)}">
   <style>
     text { font-family: Consolas, "Cascadia Mono", "DejaVu Sans Mono", monospace; font-size: 13px; white-space: pre; }
-    /* Vychozi stav je VIDITELNY, ne skryty. Kdyz se animace neprehraje
-       (GitHub sanitizuje CSS v SVG, tisk, screenshot, nahled), zustane
-       cely prepis citelny misto prazdneho okna. Animace pak jen rizne
-       radky odhaluje - neni podminkou toho, aby slo neco precist. */
-    .ln { opacity: 1; animation-duration: ${total.toFixed(2)}s; animation-timing-function: linear; animation-iteration-count: infinite; }
-${frames}
-    .cur { animation: blink 1s steps(1) infinite; }
-    @keyframes blink { 0%,50% { opacity: 1; } 51%,100% { opacity: 0; } }
+
+    /* Kazdy prvek se objevi jednou a zustane. Bez CSS (GitHub, tisk) plati
+       vychozi SVG neprusvitnost, takze je videt cely prepis. */
+    .tok { opacity: 0; animation: show 0.01s linear forwards; }
+    @keyframes show { to { opacity: 1 } }
+
+    .caret { animation: caret ${endAt.toFixed(2)}s steps(1) forwards, blink 1s steps(1) ${enterPct}; }
+    @keyframes caret {
+${caretFrames}
+      ${enterPct}%, 100% { opacity: 0; }
+    }
+    .caret-end { opacity: 0; animation: show 0.01s linear ${(endAt - 0.15).toFixed(2)}s forwards, blink 1s steps(1) ${(endAt - 0.15).toFixed(2)}s infinite; }
+    @keyframes blink { 0%, 50% { opacity: 1 } 51%, 100% { opacity: 0 } }
+
     @media (prefers-reduced-motion: reduce) {
-      .ln { opacity: 1; animation: none !important; }
-      .cur { animation: none; }
+      .tok, .caret-end { opacity: 1; animation: none !important; }
+      .caret { display: none; }
     }
   </style>
   <rect width="${width}" height="${height}" rx="8" fill="#012456"/>
   <rect width="${width}" height="30" rx="8" fill="#1F3B6E"/>
   <rect y="22" width="${width}" height="8" fill="#1F3B6E"/>
   <text x="${PAD_X}" y="20" fill="#D6E0F5" font-size="12">${esc(title)}</text>
-  <g>
-${body}
-  </g>
+
+${cmdSvg}
+${outSvg}
+
+  <rect class="caret" x="${PAD_X}" y="${TOP - 11}" width="8" height="15" fill="${COL.white}"/>
+  <rect class="caret-end" x="${PAD_X}" y="${finalCaretY - 11}" width="8" height="15" fill="${COL.white}"/>
+  <text class="tok" style="animation-delay:${(endAt - 0.15).toFixed(2)}s" x="${PAD_X}" y="${finalCaretY}" fill="${COL.white}">PS C:\\&gt;</text>
 </svg>
 `;
   mkdirSync(dirname(file), { recursive: true });
   writeFileSync(file, svg, 'utf8');
-  console.log(`${file}  (${lines.length} lines, ${total.toFixed(1)}s loop)`);
+  console.log(`${file}  (${tokens.length} words typed, ${output.length} output lines, ${endAt.toFixed(1)}s once)`);
 }
 
 const OUT = process.argv[2];
 if (!OUT) { console.error('usage: node build-terminal-svg.mjs <output-dir>'); process.exit(1); }
 
-const P = { t: '', c: 'def' };
+const P = { t: '' };
 
 // ---------------------------------------------------------------- 1
 build({
   file: join(OUT, 'set-sharing-capability.svg'),
   title: 'Administrator: Windows PowerShell',
   width: 880,
-  lines: [
-    { t: 'PS C:\\> .\\Set-SiteSharingCapability.ps1 -TenantAdminUrl https://contoso-admin.sharepoint.com `', c: 'white' },
-    { t: '>>     -All -SharingCapability ExistingExternalUserSharingOnly -WhatIf', c: 'white' },
+  command: [
+    'PS C:\\> .\\Set-SiteSharingCapability.ps1 -TenantAdminUrl https://contoso-admin.sharepoint.com `',
+    '>>     -All -SharingCapability ExistingExternalUserSharingOnly -WhatIf',
+  ],
+  output: [
     P,
     { t: '*** This script CHANGES external sharing settings. Run with -WhatIf first. ***', c: 'red', b: 1 },
     { t: 'Connecting to https://contoso-admin.sharepoint.com ...', c: 'cyan' },
@@ -121,7 +170,6 @@ build({
     { t: 'Skipped : 13 (11 already at target, 2 locked)', c: 'cyan' },
     { t: 'FAILED  : 0', c: 'cyan' },
     P,
-    { t: 'PS C:\\> ', c: 'white', cursor: 1 },
   ],
 });
 
@@ -130,9 +178,11 @@ build({
   file: join(OUT, 'set-default-link-permission.svg'),
   title: 'Administrator: Windows PowerShell',
   width: 880,
-  lines: [
-    { t: 'PS C:\\> .\\Set-SiteDefaultLinkPermission.ps1 -TenantAdminUrl https://contoso-admin.sharepoint.com `', c: 'white' },
-    { t: '>>     -All -DefaultLinkPermission View -MaxSites 200', c: 'white' },
+  command: [
+    'PS C:\\> .\\Set-SiteDefaultLinkPermission.ps1 -TenantAdminUrl https://contoso-admin.sharepoint.com `',
+    '>>     -All -DefaultLinkPermission View -MaxSites 200',
+  ],
+  output: [
     P,
     { t: '*** This script CHANGES sharing defaults. Run with -WhatIf first. ***', c: 'red', b: 1 },
     { t: 'Tenant default link permission: Edit', c: 'cyan' },
@@ -149,7 +199,6 @@ build({
     { t: 'Skipped : 22 (14 already at target, 6 sharing disabled, 2 locked)', c: 'cyan' },
     { t: 'FAILED  : 0', c: 'cyan' },
     P,
-    { t: 'PS C:\\> ', c: 'white', cursor: 1 },
   ],
 });
 
@@ -158,11 +207,13 @@ build({
   file: join(OUT, 'set-access-request-settings.svg'),
   title: 'Administrator: Windows PowerShell',
   width: 880,
-  lines: [
-    { t: 'PS C:\\> .\\Set-SiteAccessRequestSettings.ps1 `', c: 'white' },
-    { t: '>>     -SiteUrl https://contoso.sharepoint.com/sites/projects -ClientId 0000... `', c: 'white' },
-    { t: '>>     -AllowAccessRequests $true -AccessRequestEmail helpdesk@contoso.com `', c: 'white' },
-    { t: '>>     -CustomMessage "Tell us which project you need."', c: 'white' },
+  command: [
+    'PS C:\\> .\\Set-SiteAccessRequestSettings.ps1 `',
+    '>>     -SiteUrl https://contoso.sharepoint.com/sites/projects -ClientId 0000... `',
+    '>>     -AllowAccessRequests $true -AccessRequestEmail helpdesk@contoso.com `',
+    '>>     -CustomMessage "Tell us which project you need."',
+  ],
+  output: [
     P,
     { t: '*** This script CHANGES site access request settings. Run with -WhatIf first. ***', c: 'red', b: 1 },
     { t: 'Backup written to .\\AccessRequestSettings_Backup_20260901-101500.csv', c: 'green' },
@@ -178,6 +229,5 @@ build({
     { t: 'Skipped : 0', c: 'cyan' },
     { t: 'FAILED  : 0', c: 'cyan' },
     P,
-    { t: 'PS C:\\> ', c: 'white', cursor: 1 },
   ],
 });

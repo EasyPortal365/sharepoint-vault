@@ -1,99 +1,67 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 444" width="880" height="444" role="img" aria-label="Administrator: Windows PowerShell">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 432" width="880" height="432" role="img" aria-label="Administrator: Windows PowerShell">
   <style>
     text { font-family: Consolas, "Cascadia Mono", "DejaVu Sans Mono", monospace; font-size: 13px; white-space: pre; }
-    /* Vychozi stav je VIDITELNY, ne skryty. Kdyz se animace neprehraje
-       (GitHub sanitizuje CSS v SVG, tisk, screenshot, nahled), zustane
-       cely prepis citelny misto prazdneho okna. Animace pak jen rizne
-       radky odhaluje - neni podminkou toho, aby slo neco precist. */
-    .ln { opacity: 1; animation-duration: 9.66s; animation-timing-function: linear; animation-iteration-count: infinite; }
-    @keyframes ln0 { 0%, 100% { opacity: 1 } }
-    @keyframes ln1 { 0%, 33.13% { opacity: 1 } 33.14%, 36.65% { opacity: 0 } 37.45%, 100% { opacity: 1 } }
-    @keyframes ln2 { 0%, 33.13% { opacity: 1 } 33.14%, 40.17% { opacity: 0 } 40.97%, 100% { opacity: 1 } }
-    @keyframes ln3 { 0%, 33.13% { opacity: 1 } 33.14%, 43.69% { opacity: 0 } 44.49%, 100% { opacity: 1 } }
-    @keyframes ln4 { 0%, 33.13% { opacity: 1 } 33.14%, 47.20% { opacity: 0 } 48.00%, 100% { opacity: 1 } }
-    @keyframes ln5 { 0%, 33.13% { opacity: 1 } 33.14%, 50.72% { opacity: 0 } 51.52%, 100% { opacity: 1 } }
-    @keyframes ln6 { 0%, 33.13% { opacity: 1 } 33.14%, 54.24% { opacity: 0 } 55.04%, 100% { opacity: 1 } }
-    @keyframes ln7 { 0%, 33.13% { opacity: 1 } 33.14%, 57.76% { opacity: 0 } 58.56%, 100% { opacity: 1 } }
-    @keyframes ln8 { 0%, 33.13% { opacity: 1 } 33.14%, 61.28% { opacity: 0 } 62.08%, 100% { opacity: 1 } }
-    @keyframes ln9 { 0%, 33.13% { opacity: 1 } 33.14%, 64.80% { opacity: 0 } 65.60%, 100% { opacity: 1 } }
-    @keyframes ln10 { 0%, 33.13% { opacity: 1 } 33.14%, 68.32% { opacity: 0 } 69.12%, 100% { opacity: 1 } }
-    @keyframes ln11 { 0%, 33.13% { opacity: 1 } 33.14%, 71.84% { opacity: 0 } 72.64%, 100% { opacity: 1 } }
-    @keyframes ln12 { 0%, 33.13% { opacity: 1 } 33.14%, 75.36% { opacity: 0 } 76.16%, 100% { opacity: 1 } }
-    @keyframes ln13 { 0%, 33.13% { opacity: 1 } 33.14%, 78.88% { opacity: 0 } 79.68%, 100% { opacity: 1 } }
-    @keyframes ln14 { 0%, 33.13% { opacity: 1 } 33.14%, 82.40% { opacity: 0 } 83.20%, 100% { opacity: 1 } }
-    @keyframes ln15 { 0%, 33.13% { opacity: 1 } 33.14%, 85.92% { opacity: 0 } 86.72%, 100% { opacity: 1 } }
-    @keyframes ln16 { 0%, 33.13% { opacity: 1 } 33.14%, 89.44% { opacity: 0 } 90.24%, 100% { opacity: 1 } }
-    @keyframes ln17 { 0%, 33.13% { opacity: 1 } 33.14%, 92.96% { opacity: 0 } 93.76%, 100% { opacity: 1 } }
-    @keyframes ln18 { 0%, 33.13% { opacity: 1 } 33.14%, 96.48% { opacity: 0 } 97.28%, 100% { opacity: 1 } }
-    .cur { animation: blink 1s steps(1) infinite; }
-    @keyframes blink { 0%,50% { opacity: 1; } 51%,100% { opacity: 0; } }
+
+    /* Kazdy prvek se objevi jednou a zustane. Bez CSS (GitHub, tisk) plati
+       vychozi SVG neprusvitnost, takze je videt cely prepis. */
+    .tok { opacity: 0; animation: show 0.01s linear forwards; }
+    @keyframes show { to { opacity: 1 } }
+
+    .caret { animation: caret 4.50s steps(1) forwards, blink 1s steps(1) 45.33; }
+    @keyframes caret {
+      3.78% { transform: translate(21.5px, 0px); }
+      7.56% { transform: translate(57.2px, 0px); }
+      11.33% { transform: translate(314.6px, 0px); }
+      15.11% { transform: translate(429.0px, 0px); }
+      18.89% { transform: translate(693.6px, 0px); }
+      22.67% { transform: translate(700.7px, 0px); }
+      26.44% { transform: translate(50.1px, 20px); }
+      30.22% { transform: translate(85.8px, 20px); }
+      34.00% { transform: translate(250.3px, 20px); }
+      37.78% { transform: translate(286.0px, 20px); }
+      41.56% { transform: translate(357.5px, 20px); }
+      45.33% { transform: translate(379.0px, 20px); }
+      45.33%, 100% { opacity: 0; }
+    }
+    .caret-end { opacity: 0; animation: show 0.01s linear 4.35s forwards, blink 1s steps(1) 4.35s infinite; }
+    @keyframes blink { 0%, 50% { opacity: 1 } 51%, 100% { opacity: 0 } }
+
     @media (prefers-reduced-motion: reduce) {
-      .ln { opacity: 1; animation: none !important; }
-      .cur { animation: none; }
+      .tok, .caret-end { opacity: 1; animation: none !important; }
+      .caret { display: none; }
     }
   </style>
-  <rect width="880" height="444" rx="8" fill="#012456"/>
+  <rect width="880" height="432" rx="8" fill="#012456"/>
   <rect width="880" height="30" rx="8" fill="#1F3B6E"/>
   <rect y="22" width="880" height="8" fill="#1F3B6E"/>
   <text x="16" y="20" fill="#D6E0F5" font-size="12">Administrator: Windows PowerShell</text>
-  <g>
-  <g class="ln" style="animation-name:ln0">
-    <text x="16" y="46" fill="#FFFFFF">PS C:\&gt; .\Set-SiteDefaultLinkPermission.ps1 -TenantAdminUrl https://contoso-admin.sharepoint.com `</text>
-  </g>
-  <g class="ln" style="animation-name:ln1">
-    <text x="16" y="66" fill="#FFFFFF">&gt;&gt;     -All -DefaultLinkPermission View -MaxSites 200</text>
-  </g>
-  <g class="ln" style="animation-name:ln2">
-    <text x="16" y="86" fill="#CCCCCC"></text>
-  </g>
-  <g class="ln" style="animation-name:ln3">
-    <text x="16" y="106" fill="#F14C4C" font-weight="700">*** This script CHANGES sharing defaults. Run with -WhatIf first. ***</text>
-  </g>
-  <g class="ln" style="animation-name:ln4">
-    <text x="16" y="126" fill="#29B8DB">Tenant default link permission: Edit</text>
-  </g>
-  <g class="ln" style="animation-name:ln5">
-    <text x="16" y="146" fill="#29B8DB">110 site(s) in scope.</text>
-  </g>
-  <g class="ln" style="animation-name:ln6">
-    <text x="16" y="166" fill="#23D18B">Backup written to .\DefaultLinkPermission_Backup_20260901-101500.csv</text>
-  </g>
-  <g class="ln" style="animation-name:ln7">
-    <text x="16" y="186" fill="#CCCCCC"></text>
-  </g>
-  <g class="ln" style="animation-name:ln8">
-    <text x="16" y="206" fill="#23D18B">  changed  https://contoso.sharepoint.com/sites/projects  Edit -&gt; View</text>
-  </g>
-  <g class="ln" style="animation-name:ln9">
-    <text x="16" y="226" fill="#23D18B">  changed  https://contoso.sharepoint.com/sites/finance   Edit -&gt; View</text>
-  </g>
-  <g class="ln" style="animation-name:ln10">
-    <text x="16" y="246" fill="#767676">  skipped  https://contoso.sharepoint.com/sites/wiki      already View</text>
-  </g>
-  <g class="ln" style="animation-name:ln11">
-    <text x="16" y="266" fill="#F5F543">  SKIPPED  https://contoso.sharepoint.com/sites/archive   sharing is Disabled -</text>
-  </g>
-  <g class="ln" style="animation-name:ln12">
-    <text x="16" y="286" fill="#F5F543">                                                          setting would have no effect</text>
-  </g>
-  <g class="ln" style="animation-name:ln13">
-    <text x="16" y="306" fill="#CCCCCC"></text>
-  </g>
-  <g class="ln" style="animation-name:ln14">
-    <text x="16" y="326" fill="#29B8DB">Changed : 88</text>
-  </g>
-  <g class="ln" style="animation-name:ln15">
-    <text x="16" y="346" fill="#29B8DB">Skipped : 22 (14 already at target, 6 sharing disabled, 2 locked)</text>
-  </g>
-  <g class="ln" style="animation-name:ln16">
-    <text x="16" y="366" fill="#29B8DB">FAILED  : 0</text>
-  </g>
-  <g class="ln" style="animation-name:ln17">
-    <text x="16" y="386" fill="#CCCCCC"></text>
-  </g>
-  <g class="ln" style="animation-name:ln18">
-    <text x="16" y="406" fill="#FFFFFF">PS C:\&gt; </text>
-    <rect class="cur" x="95.7" y="395" width="8" height="15" fill="#FFFFFF"/>
-  </g>
-  </g>
+
+    <text class="tok" style="animation-delay:0.00s" x="16.0" y="46" fill="#FFFFFF">PS </text>
+    <text class="tok" style="animation-delay:0.17s" x="37.5" y="46" fill="#FFFFFF">C:\&gt; </text>
+    <text class="tok" style="animation-delay:0.34s" x="73.2" y="46" fill="#FFFFFF">.\Set-SiteDefaultLinkPermission.ps1 </text>
+    <text class="tok" style="animation-delay:0.51s" x="330.6" y="46" fill="#FFFFFF">-TenantAdminUrl </text>
+    <text class="tok" style="animation-delay:0.68s" x="445.0" y="46" fill="#FFFFFF">https://contoso-admin.sharepoint.com </text>
+    <text class="tok" style="animation-delay:0.85s" x="709.6" y="46" fill="#FFFFFF">`</text>
+    <text class="tok" style="animation-delay:1.02s" x="16.0" y="66" fill="#FFFFFF">&gt;&gt;     </text>
+    <text class="tok" style="animation-delay:1.19s" x="66.1" y="66" fill="#FFFFFF">-All </text>
+    <text class="tok" style="animation-delay:1.36s" x="101.8" y="66" fill="#FFFFFF">-DefaultLinkPermission </text>
+    <text class="tok" style="animation-delay:1.53s" x="266.3" y="66" fill="#FFFFFF">View </text>
+    <text class="tok" style="animation-delay:1.70s" x="302.0" y="66" fill="#FFFFFF">-MaxSites </text>
+    <text class="tok" style="animation-delay:1.87s" x="373.5" y="66" fill="#FFFFFF">200</text>
+    <text class="tok" style="animation-delay:2.59s" x="16" y="106" fill="#F14C4C" font-weight="700">*** This script CHANGES sharing defaults. Run with -WhatIf first. ***</text>
+    <text class="tok" style="animation-delay:2.72s" x="16" y="126" fill="#29B8DB">Tenant default link permission: Edit</text>
+    <text class="tok" style="animation-delay:2.85s" x="16" y="146" fill="#29B8DB">110 site(s) in scope.</text>
+    <text class="tok" style="animation-delay:2.98s" x="16" y="166" fill="#23D18B">Backup written to .\DefaultLinkPermission_Backup_20260901-101500.csv</text>
+    <text class="tok" style="animation-delay:3.16s" x="16" y="206" fill="#23D18B">  changed  https://contoso.sharepoint.com/sites/projects  Edit -&gt; View</text>
+    <text class="tok" style="animation-delay:3.29s" x="16" y="226" fill="#23D18B">  changed  https://contoso.sharepoint.com/sites/finance   Edit -&gt; View</text>
+    <text class="tok" style="animation-delay:3.42s" x="16" y="246" fill="#767676">  skipped  https://contoso.sharepoint.com/sites/wiki      already View</text>
+    <text class="tok" style="animation-delay:3.55s" x="16" y="266" fill="#F5F543">  SKIPPED  https://contoso.sharepoint.com/sites/archive   sharing is Disabled -</text>
+    <text class="tok" style="animation-delay:3.68s" x="16" y="286" fill="#F5F543">                                                          setting would have no effect</text>
+    <text class="tok" style="animation-delay:3.86s" x="16" y="326" fill="#29B8DB">Changed : 88</text>
+    <text class="tok" style="animation-delay:3.99s" x="16" y="346" fill="#29B8DB">Skipped : 22 (14 already at target, 6 sharing disabled, 2 locked)</text>
+    <text class="tok" style="animation-delay:4.12s" x="16" y="366" fill="#29B8DB">FAILED  : 0</text>
+
+  <rect class="caret" x="16" y="35" width="8" height="15" fill="#FFFFFF"/>
+  <rect class="caret-end" x="16" y="395" width="8" height="15" fill="#FFFFFF"/>
+  <text class="tok" style="animation-delay:4.35s" x="16" y="406" fill="#FFFFFF">PS C:\&gt;</text>
 </svg>
