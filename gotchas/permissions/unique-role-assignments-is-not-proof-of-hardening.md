@@ -2,7 +2,7 @@
 title: "HasUniqueRoleAssignments proves the break, not the hardening — and a half-done break is worse than inheritance"
 tags: [permissions, security, rest-api, provisioning, verification]
 applies-to: SharePoint Online, SharePoint Server (list/library/item scope)
-last-reviewed: 2026-09-02
+last-reviewed: 2026-09-03
 ---
 
 # `HasUniqueRoleAssignments` proves the break, not the hardening
@@ -98,3 +98,26 @@ fail. If removing the trim step still passes, the test is measuring the flag aga
 - [Breaking inheritance without copying keeps only you](break-without-copy-keeps-only-you.md) — why `copy=true` is the safe form in the first place.
 - [`WriteSecurity: 4` needs ManageLists](write-security-4-needs-managelists.md) — why the copied `Edit` role also disables item-level settings.
 - [A one-sided permission check passes on an empty ACL](one-sided-permission-check-passes-on-an-empty-acl.md) — the `unknown` state, from the other direction.
+
+## Item scope: presence is not the level, and "Limited Access" is not a hole
+
+The same trap returns one level down when you isolate a single item (a ticket, an internal
+article) with `breakroleinheritance(copyRoleAssignments=false)` + `addroleassignment(...)`
+per principal, and then verify by listing `roleassignments?$select=PrincipalId`:
+
+- **A principal being present says nothing about *which* level it holds.** A requester who
+  was supposed to get *Read* but still carries *Edit* (a stale grant, a failed remove) shows
+  up in the list exactly like a correct one. Verify the grant as the **exact role definition**:
+  `$expand=RoleDefinitionBindings&$select=PrincipalId,RoleDefinitionBindings/Id` and require
+  `Id === roleDefId` you wrote — not "the principal is there".
+- **A broad group being present is not automatically a leak.** SharePoint adds *Limited
+  Access* to parent-scope principals by itself, and that binding grants none of
+  `ViewListItems | AddListItems | EditListItems | DeleteListItems | ManageLists | ManagePermissions`.
+  Treat a broad group as a hole only when at least one of its bindings sets one of those
+  bits — and decide by the bits, not by `RoleTypeKind === 1`, because a customer's custom
+  level with read bits and no `RoleTypeKind` would otherwise pass as harmless.
+
+A seven-scenario harness against a fake `roleassignments` endpoint (healthy; requester with
+Edit instead of Read; Members with Read; Members with Limited Access only; Customers with
+Read; a custom level with read bits; admins missing) is enough to pin both directions — and
+the pre-fix code failed exactly the two scenarios above.
