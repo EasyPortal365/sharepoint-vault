@@ -4,11 +4,14 @@ Slide decks from public talks and conferences — the same material as the rest 
 
 The decks are **in Czech**; this page describes them in English so the index stays consistent. Each links straight to the PDF.
 
+Both decks below were given at **[WUG Days 2026](https://www.wug.cz/brno/akce/1875-WUG-Days-2026)** (2–3 September 2026, Faculty of Information Technology, Brno University of Technology) — the largest free Czech conference for developers and administrators working with Microsoft technology, run by the Windows User Group. It is deliberately in-person only, with recordings of selected talks published afterwards.
+
 ## Decks
 
 ### Zápisky z bojového pole — 20 let se SharePointem
 
-**[Download PDF](zapisky-z-bojoveho-pole-20-let-se-sharepointem.pdf)** · 22 slides · Czech
+**[Download PDF](/talks/zapisky-z-bojoveho-pole-20-let-se-sharepointem.pdf ':ignore :target=_blank')** · 22 slides · Czech
+📍 [WUG Days 2026](https://www.wug.cz/brno/akce/1875-WUG-Days-2026), 2–3 September 2026, Brno
 
 *Notes from the field — 20 years with SharePoint, and what I would do differently today.*
 
@@ -18,7 +21,8 @@ The myths chapter alone is worth the read if you have ever heard "we will buy it
 
 ### SharePoint jako znalostní platforma pro firemní AI
 
-**[Download PDF](sharepoint-jako-znalostni-platforma-pro-firemni-ai.pdf)** · 25 slides · Czech
+**[Download PDF](/talks/sharepoint-jako-znalostni-platforma-pro-firemni-ai.pdf ':ignore :target=_blank')** · 25 slides · Czech
+📍 [WUG Days 2026](https://www.wug.cz/brno/akce/1875-WUG-Days-2026), 2–3 September 2026, Brno
 
 *SharePoint as the knowledge platform for enterprise AI — what to do before you buy Copilot licences, and why it need not be Copilot at all.*
 

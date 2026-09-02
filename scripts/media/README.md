@@ -6,9 +6,11 @@ Each is a plain SVG with the CSS animation inside it — no JavaScript, no exter
 
 | Animation | Script |
 |---|---|
-| [set-sharing-capability.svg](set-sharing-capability.svg) | [Set-SiteSharingCapability.ps1](../permissions/Set-SiteSharingCapability.ps1) — a `-WhatIf` dry run |
-| [set-default-link-permission.svg](set-default-link-permission.svg) | [Set-SiteDefaultLinkPermission.ps1](../permissions/Set-SiteDefaultLinkPermission.ps1) — a real tenant-wide run |
-| [set-access-request-settings.svg](set-access-request-settings.svg) | [Set-SiteAccessRequestSettings.ps1](../permissions/Set-SiteAccessRequestSettings.ps1) — one site, two settings changed |
+| [set-sharing-capability.svg](/scripts/media/set-sharing-capability.svg ':ignore :target=_blank') | [Set-SiteSharingCapability.ps1](../permissions/Set-SiteSharingCapability.ps1) — a `-WhatIf` dry run |
+| [set-default-link-permission.svg](/scripts/media/set-default-link-permission.svg ':ignore :target=_blank') | [Set-SiteDefaultLinkPermission.ps1](../permissions/Set-SiteDefaultLinkPermission.ps1) — a real tenant-wide run |
+| [set-access-request-settings.svg](/scripts/media/set-access-request-settings.svg ':ignore :target=_blank') | [Set-SiteAccessRequestSettings.ps1](../permissions/Set-SiteAccessRequestSettings.ps1) — one site, two settings changed |
+
+They are also embedded in [sample-outputs.md](../sample-outputs.md) next to the written transcript of each script — that is the page to read if you want the animation and the copy-pasteable text side by side.
 
 The transcripts are the sanitised output from [sample-outputs.md](../sample-outputs.md), so the animation and the written sample never drift apart.
 

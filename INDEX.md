@@ -244,8 +244,8 @@ Every single thing in the vault, on one page. Section names link to folder READM
   - [08 · SharePoint reporting](course/08-reporting.md) — Admin Center reports, usage, Microsoft Purview auditing, alert policies
   - [09 · PowerShell](course/09-powershell.md) — SPO Management Shell + PnP PowerShell, admin/reporting scripts (storage, guests, duplicates, long URLs, provisioning)
 - 🎤 **[talks/](talks/)** — slide decks from public talks and conferences (CZ)
-  - [Zápisky z bojového pole — 20 let se SharePointem](talks/zapisky-z-bojoveho-pole-20-let-se-sharepointem.pdf) — 22 slides of war stories as *symptom → cause → lesson*: the myths that persist, where permissions are lost, security without varnish
-  - [SharePoint jako znalostní platforma pro firemní AI](talks/sharepoint-jako-znalostni-platforma-pro-firemni-ai.pdf) — 25 slides on what to do before buying Copilot licences; AI amplifies your content's current state rather than improving it
+  - [Zápisky z bojového pole — 20 let se SharePointem](/talks/zapisky-z-bojoveho-pole-20-let-se-sharepointem.pdf ':ignore :target=_blank') — 22 slides of war stories as *symptom → cause → lesson*: the myths that persist, where permissions are lost, security without varnish · WUG Days 2026, Brno
+  - [SharePoint jako znalostní platforma pro firemní AI](/talks/sharepoint-jako-znalostni-platforma-pro-firemni-ai.pdf ':ignore :target=_blank') — 25 slides on what to do before buying Copilot licences; AI amplifies your content's current state rather than improving it · WUG Days 2026, Brno
 - ✂️ **[snippets/](snippets/)** — small copy-paste fragments
   - **rest/**
     - [Read all items from a large list — paging done right](snippets/rest/get-all-list-items-paged.md) — `$top` caps at 5,000, `$skip` is ignored; follow `odata.nextLink`. Also: why `break` on an error is worse than throwing, and a `{ ok, items, truncated }` shape for callers that must not throw
