@@ -25,6 +25,9 @@
 - **🧰 Scripts**
   - [All scripts](/scripts/README.md)
 
+- **🎤 Talks**
+  - [Conference decks](/talks/README.md)
+
 - **✂️ Snippets**
   - [All snippets](/snippets/README.md)
 
