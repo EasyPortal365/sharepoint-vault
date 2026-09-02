@@ -9,7 +9,7 @@ last-reviewed: 2026-09-02
 
 > **Bottom line.** Every version of a file counts against your storage quota at the *full* size of the file, not as a difference from the previous version. Changing only a column value — no content edit at all — creates a version that costs another full copy, which makes bulk metadata updates one of the most expensive operations you can run on a library. "SharePoint uses shredded storage so versions are deltas" conflates a SQL-level mechanism in on-premises SharePoint with quota accounting; Microsoft's own KB says the quota component has no direct relationship to it.
 >
-> **Ve zkratce.** Každá verze souboru se do kvóty počítá v *plné* velikosti souboru, ne jako rozdíl proti předchozí verzi. Změna pouhé hodnoty sloupce – bez jediného zásahu do obsahu – vytvoří verzi, která stojí další plnou kopii, takže hromadné úpravy metadat patří k nejdražším operacím nad knihovnou. Tvrzení „SharePoint používá shredded storage, takže verze jsou delty" míchá dohromady mechanismus uvnitř SQL Serveru u on-premises SharePointu a účtování kvóty; vlastní KB Microsoftu říká, že kvótová komponenta s ním nemá přímý vztah.
+> **Ve zkratce.** Každá verze souboru se do kvóty počítá v *plné* velikosti souboru, ne jako rozdíl proti předchozí verzi. Změna pouhé hodnoty sloupce – bez jediného zásahu do obsahu – vytvoří verzi, která stojí další plnou kopii, takže hromadné úpravy metadat patří k nejdražším operacím nad knihovnou. Tvrzení „SharePoint používá shredded storage, takže verze jsou delty“ míchá dohromady mechanismus uvnitř SQL Serveru u on-premises SharePointu a účtování kvóty; vlastní KB Microsoftu říká, že kvótová komponenta s ním nemá přímý vztah.
 
 ## Symptom
 
@@ -74,6 +74,16 @@ That sentence is routinely quoted as proof that versions are cheap. It says the 
 - **Trim existing versions** to reclaim space — but note this bypasses the recycle bin and is irreversible. Versions a *user* deletes by hand do go to the recycle bin and keep holding space until it is emptied.
 - Before a bulk metadata update or a migration script, consider whether versioning needs to stay on for the duration. This is the single cheapest way to multiply a library's footprint without adding any content.
 - Expect exceptions: version limits are ignored for content under a retention policy or eDiscovery hold, and version deletion is blocked outright on items marked as records.
+
+## Is it physically four copies?
+
+Worth separating from the quota question, because the answer differs by platform.
+
+**On-premises (SharePoint Server 2013+):** no. A document is split into shreds stored row by row in the `DocStreams` table of the content database; a new version writes only the changed shreds and the unchanged ones are associated with both versions. Physically that is roughly one copy plus the changes. Two things erode the saving, though: Office files are ZIP containers, so a small logical edit can rewrite compression across a large part of the archive and change far more shreds than the edit size suggests — and a metadata-only change writes nothing from the content at all, yet the quota still jumps by a full file size.
+
+**SharePoint Online:** unknown. Microsoft does not document SPO's internal storage layout, its databases are not reachable, and no interface returns physical allocation. Anything claimed about it is inference from the on-premises product, not measurement.
+
+Either way the quota counts every version as though it were stored separately as a complete file, and the quota is what the customer sees and pays for.
 
 ## What this does not prove
 
