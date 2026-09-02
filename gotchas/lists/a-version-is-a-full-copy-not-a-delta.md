@@ -71,7 +71,7 @@ That sentence is routinely quoted as proof that versions are cheap. It says the 
 
 - Switch version history limits to **Automatic** at organisation level. Under that algorithm users keep all versions within the 500 limit for 30 days, hourly versions to day 60, daily versions to day 180, and weekly versions beyond that.
 - Run a **version storage usage report** and a *what-if* analysis before changing limits (`New-SPOSiteFileVersionExpirationReportJob`, `New-SPOListFileVersionExpirationReportJob`). On large sites the job takes days.
-- **Trim existing versions** to reclaim space — but note this bypasses the recycle bin and is irreversible. Versions a *user* deletes by hand do go to the recycle bin and keep holding space until it is emptied.
+- **Trim existing versions** to reclaim space, but know which deletion path you are on. Limit-driven and trim-job deletions bypass the recycle bin per Microsoft's documentation, and an API delete does too — measured: `POST /Versions/DeleteByLabel(...)` left both recycle bins unchanged. Microsoft separately documents that a *user* deleting a version in the UI sends it to the site recycle bin, where it keeps holding space until the bin is emptied. The documented UI behaviour and the measured API behaviour differ, so verify the path you actually use before promising anyone reclaimed storage.
 - Before a bulk metadata update or a migration script, consider whether versioning needs to stay on for the duration. This is the single cheapest way to multiply a library's footprint without adding any content.
 - Expect exceptions: version limits are ignored for content under a retention policy or eDiscovery hold, and version deletion is blocked outright on items marked as records.
 

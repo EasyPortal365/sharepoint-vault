@@ -2,7 +2,7 @@
 title: "`MajorVersionLimit: 0` means unlimited, not none"
 tags: [lists, libraries, versioning, storage, governance]
 applies-to: SharePoint Online
-last-reviewed: 2026-07-29
+last-reviewed: 2026-09-02
 ---
 
 # `MajorVersionLimit: 0` means unlimited, not none
@@ -68,5 +68,5 @@ Sorting a governance report by `MajorVersionLimit` ascending puts the worst offe
 
 - SharePoint Online now defaults new libraries to *automatic* version limits (an age- and count-based expiration managed by the service) rather than a fixed number. Libraries created before that, and any library where somebody set a limit by hand, keep the classic behaviour — so a tenant contains both, and the report has to survive both.
 - Setting a limit does not trim what is already there. Applying `MajorVersionLimit = 10` to a library holding 400 versions per file reclaims nothing until each file is next edited, or until you trim history explicitly.
-- Deleted versions do not go to the recycle bin. Measure before you trim: [Get-FileVersionBloatReport.ps1](../../scripts/cleanup/Get-FileVersionBloatReport.ps1), then [Remove-ExcessFileVersions.ps1](../../scripts/cleanup/Remove-ExcessFileVersions.ps1) with `-WhatIf`.
+- Versions deleted through the API do not go to the recycle bin — measured on a live tenant: `POST /Versions/DeleteByLabel(versionlabel='1.0')` removed the version and neither the web nor the site collection recycle bin gained an entry. Do not generalise that to the UI: Microsoft documents that when *a user* deletes a version from a file's version history, "the deleted version is moved to the site's recycle bin and can be recovered for a period". Treat the two paths as different until you have tested the one you rely on. Measure before you trim: [Get-FileVersionBloatReport.ps1](../../scripts/cleanup/Get-FileVersionBloatReport.ps1), then [Remove-ExcessFileVersions.ps1](../../scripts/cleanup/Remove-ExcessFileVersions.ps1) with `-WhatIf`.
 - The general class — an API where one value means "unset", "unlimited" and "genuinely zero" — is worth a second look wherever a report turns numbers into advice. Related in spirit: [`GetStorageEntity` returns 200 for a missing key](../rest-api/getstorageentity-returns-200-for-missing-key.md).

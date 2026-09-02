@@ -31,7 +31,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [Get-LongFileUrlReport.ps1](scripts/lists-and-libraries/Get-LongFileUrlReport.ps1) — the ~400-char path and 255-char name limits, plus the characters that break sync clients
   - **cleanup/**
     - [Get-FileVersionBloatReport.ps1](scripts/cleanup/Get-FileVersionBloatReport.ps1) — what version history really costs, per library and per file; unreadable history is skipped, not counted as zero
-    - [Remove-ExcessFileVersions.ps1](scripts/cleanup/Remove-ExcessFileVersions.ps1) — ⚠️ **writes**: trims to the newest N versions, `-WhatIf` supported; deleted versions never reach the recycle bin
+    - [Remove-ExcessFileVersions.ps1](scripts/cleanup/Remove-ExcessFileVersions.ps1) — ⚠️ **writes**: trims to the newest N versions, `-WhatIf` supported; API-deleted versions never reach the recycle bin (measured; the UI path differs)
     - [Get-RecycleBinReport.ps1](scripts/cleanup/Get-RecycleBinReport.ps1) — both stages, grouped by who deleted what, with the 93-day purge countdown
     - [Get-DeletedSitesReport.ps1](scripts/cleanup/Get-DeletedSitesReport.ps1) — deleted site collections still burning quota, and the restore-or-lose deadline
     - [Get-DuplicateFilesReport.ps1](scripts/cleanup/Get-DuplicateFilesReport.ps1) — duplicates by name + byte size through the index; `TrimDuplicates` off, and it aborts rather than call a `Size`-less result set clean
