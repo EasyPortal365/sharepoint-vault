@@ -2,7 +2,7 @@
 title: Building a people picker in SPFx — the endpoints that actually work
 tags: [spfx, rest-api, search, people-picker]
 applies-to: SharePoint Online (SPFx)
-last-reviewed: 2026-07-15
+last-reviewed: 2026-09-03
 ---
 
 # Building a people picker in SPFx — the endpoints that actually work
@@ -96,3 +96,18 @@ const spUserId = (await eu.json()).Id;
 - Results depend on the search index; brand-new users can take a while to appear.
 - Searching **Entra groups** is a different road: Microsoft Graph `GET /v1.0/groups?$filter=startswith(displayName,'…')` via `AadHttpClient` (needs an approved `Group.Read.All` API permission request).
 - Rendering the dropdown? Mind the [CSS transform trap](fixed-dropdowns-in-transformed-panels.md) — inside animated panels it will position itself off-screen.
+
+## Adding the picked group to a SharePoint group — and checking membership afterwards (2026-09-03)
+
+The `Key` the picker returns for an Entra ID group is a claim — `c:0t.c|tenant|<objectId>` for a security group, `c:0o.c|federateddirectoryclaimprovider|<objectId>` for a Microsoft 365 group — and that claim is exactly what the group-membership endpoint accepts:
+
+```http
+POST {web}/_api/web/sitegroups/getbyname('App Users')/users
+{ "LoginName": "c:0t.c|tenant|00000000-0000-0000-0000-000000000000" }
+```
+
+Two things to keep in mind, both verified on a live tenant:
+
+- **`removebyid` (and other action endpoints) return an empty body.** `response.json()` throws `Unexpected end of JSON input` although the member *was* removed — decide by the status code and only parse a body you actually read.
+- **Do not gate your app on `web/currentuser/groups` alone.** If your app decides "is this user allowed?" from the SharePoint group, resolve membership *through* the nested Entra ID group as well: take the object IDs from the member claims and call Graph `POST /me/checkMemberGroups` (delegated `GroupMember.Read.All`). A member of a nested group reached the gated app only through that check in our test; and because the Graph call is fail-safe (an outage looks like "not a member"), never cache an empty answer.
+- Offer only Entra ID groups, not SharePoint groups: SharePoint cannot nest its own groups and Graph cannot verify membership in them.
