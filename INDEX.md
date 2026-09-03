@@ -2,7 +2,7 @@
 
 Every single thing in the vault, on one page. Section names link to folder READMEs; leaves link straight to the content.
 
-*Last updated: 2026-09-02*
+*Last updated: 2026-09-03*
 
 - 🧰 **[scripts/](scripts/)** — PowerShell scripts with comment-based help, read-only unless stated
   - [Terminal animations](scripts/media/) — the writing scripts as an animated PowerShell console; plain SVG, no JavaScript, respects `prefers-reduced-motion`
@@ -118,6 +118,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [Teams mobile webview renders desktop width](gotchas/spfx/teams-mobile-webview-renders-desktop-width.md) — ~980px layout; fix the viewport meta in Teams first
     - [Shared component measures the viewport, not its container](gotchas/spfx/shared-component-measures-viewport-not-container.md) — `@media` never sees the narrow panel you were reused in; measure the element with `ResizeObserver` and switch every child together
     - [CDN-hosted bundle still needs a new `.sppkg`](gotchas/spfx/cdn-hosted-bundle-still-needs-new-sppkg.md) — `includeClientSideAssets: false` moves assets, not versioning; the manifest pins a content-hashed filename, so old packages never request the new bundle
+    - [CDN pruning deleted the extension bundle the .sppkg still referenced](gotchas/spfx/cdn-pruning-deletes-extension-bundles-the-sppkg-still-references.md) — with `includeClientSideAssets: false` the catalog pins hashed names for customizers and command sets too; a "keep N newest" prune evicts the referenced hash and the extension 404s for days — protect extension bundles by name pattern or give them stable names
     - [`npm audit --omit=dev` overstates shipped risk](gotchas/spfx/npm-audit-omit-dev-overstates-shipped-risk.md) — SPFx keeps its Node build toolchain in `dependencies`, so 229 „production“ findings can hide a single real one; grep the published bundle and always include a control sample
     - [Office file extraction needs a decompressed-size cap](gotchas/spfx/office-file-extraction-needs-a-decompressed-size-cap.md) — an upload-size limit only bounds the compressed archive; a crafted `!ref` still OOMs the tab
     - [A Promise over img.onload can hang forever](gotchas/spfx/image-promise-without-a-timeout-hangs-forever.md) — onload/onerror are not guaranteed to fire; try/catch guards rejection, not a Promise that never settles
