@@ -2,7 +2,7 @@
 
 Every single thing in the vault, on one page. Section names link to folder READMEs; leaves link straight to the content.
 
-*Last updated: 2026-09-03*
+*Last updated: 2026-09-04*
 
 - 🧰 **[scripts/](scripts/)** — PowerShell scripts with comment-based help, read-only unless stated
   - [Terminal animations](scripts/media/) — the writing scripts as an animated PowerShell console; plain SVG, no JavaScript, respects `prefers-reduced-motion`
@@ -104,6 +104,8 @@ Every single thing in the vault, on one page. Section names link to folder READM
   - **spfx/**
     - [Hand-built .docx / .pptx: the parts Office demands](gotchas/spfx/hand-built-ooxml-missing-parts.md) — header images are referenced from the header's own rels, Content_Types must know the image extension, namespaces are per part, and a .pptx without theme + master + layout is invalid; split parts from zipping so a strict XML parser can check them in tests
     - [Graph grants are tenant-wide](gotchas/spfx/graph-permission-grants-are-tenant-wide.md) — `webApiPermissionRequests` is a request, not a grant; an approval lands on one tenant-wide principal, so a scope another solution had approved already works in yours (and may be missing at the customer)
+    - [Protocol-relative URL defeats a host allowlist](gotchas/spfx/protocol-relative-url-defeats-a-host-allowlist.md) — a host check built on `^https?://` reads `//evil.example/…` as relative and lets it through; the browser then supplies the scheme and the request leaves for a foreign origin
+    - [A test outside the release command guards nothing](gotchas/spfx/a-test-outside-the-release-command-guards-nothing.md) — `heft build` runs no Jest and the two prebuild scripts drift, so a rule can look covered while never executing on the release path
     - [Custom API permission request is "not valid"](gotchas/spfx/custom-api-permission-request-invalid.md) — API access resolves `resource` to a service principal, so the app registration must exist before the `.sppkg` is uploaded
     - [A global kill-switch must not block its own fix](gotchas/spfx/kill-switch-must-not-block-its-own-fix.md) — the lock defends itself against being lifted; infrastructure operations (version pin, re-check, config, diagnostics) belong outside it
     - [The ES2015 `lib` trap](gotchas/spfx/es2015-lib-forbidden-apis.md) — TS2550 on `padStart` & friends, and the safe equivalents

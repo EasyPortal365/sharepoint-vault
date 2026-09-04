@@ -2,7 +2,7 @@
 title: A Graph scope your SPFx solution never asked for may already work — grants are tenant-wide
 tags: [spfx, graph, permissions, deployment]
 applies-to: SharePoint Online
-last-reviewed: 2026-08-22
+last-reviewed: 2026-09-04
 ---
 
 # Graph permission grants belong to the tenant, not to your solution
@@ -34,6 +34,24 @@ Delegated permissions for SPFx are not granted per solution. The approval is rec
 - **Keep a fail-safe branch for the missing grant, and make it visible.** On a clean tenant this is the only thing that separates "no permission" from "no data" — silently returning an empty result turns a consent problem into a phantom bug. Surface the real error text; a `403` may equally mean a licensing gate, not a missing scope.
 - **Audit the other direction too.** Because a foreign grant can carry your code, an app may be running on a scope it never declared — and break at the first customer who has a tidier tenant. When a feature depends on Graph, verify the scope is actually in your manifest even though everything works.
 - Practical upside in a versioned-runtime setup: adding a scope does not block a release. The package carrying the new request can be uploaded later; until then the feature runs wherever the grant already exists.
+
+## The request only appears if the package version changed
+
+Measured on a live tenant, 2026-09-04. Adding a scope to a solution that is **already deployed** and re-uploading the package **without bumping `solution.version`** produces **no request at all** in API access. The App Catalog treats a same-version upload as a replacement, not an upgrade, so nothing new is ever surfaced for approval.
+
+That combines badly with the tenant-wide rule above, because the two failure modes look identical from your desk:
+
+- The scope was already granted for another solution, so no request appears — and everything works.
+- The version did not change, so no request appears — and nothing works on a tenant that lacks the grant.
+
+**Check the grant before concluding anything from a missing request.** If `Microsoft Graph / <scope>` is already listed as approved in API access, you are in the first case and there is nothing to do. If it is not, bump `solution.version` and upload again, or grant the scope directly:
+
+```powershell
+Connect-PnPOnline -Url "https://<tenant>-admin.sharepoint.com" -Interactive
+Grant-PnPTenantServicePrincipalPermission -Scope "GroupMember.Read.All" -Resource "Microsoft Graph"
+```
+
+The official SPO Management Shell can only approve a request that already exists (`Approve-SPOTenantServicePrincipalPermissionRequest`); it cannot create a grant from nothing, which is why PnP is used here. The clickable equivalent is Entra ID → Enterprise applications → *SharePoint Online Client Extensibility Web Application Principal* → Permissions → grant admin consent.
 
 ## Notes
 
