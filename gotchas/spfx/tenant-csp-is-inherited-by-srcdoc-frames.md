@@ -53,6 +53,7 @@ A `.js` file in a document library is served with `Content-Type: application/jav
 
 ## Do not
 
+- Do not expect `<iframe src="…/SiteAssets/page.html">` to be the way out. SharePoint serves `.html` stored in a library **as a download** (`Content-Disposition: attachment`), so the frame stays blank — that is why the content goes through REST and `srcdoc` in the first place, and why the script has to be a separate `.js` file (served as `application/javascript`) rather than markup.
 - Do not test only outside SharePoint. A file that works from `file://` or `localhost` proves nothing about the frame inside a modern page — the policy that breaks it exists only there.
 - Do not reach for `blob:` or `data:` URLs as a workaround; they are local-scheme documents and inherit the policy exactly like `srcdoc`.
 - Do not ask customers to add `'unsafe-inline'` to their tenant policy. It disables the protection for every page in the tenant to make one embedded page work.
