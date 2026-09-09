@@ -15,9 +15,18 @@ const notes = [];
 const read = (p) => readFileSync(join(ROOT, p), 'utf8');
 const has = (p) => existsSync(join(ROOT, p));
 
+/** Sekce, ktere v repu MUSI byt — jejich zmizeni je nalez, ne prazdny vysledek. */
+const POVINNE_SEKCE = ['scripts', 'gotchas', 'guides', 'snippets', 'talks'];
+const chybejiciSekce = [];
+
 function walk(dir, filter, out = []) {
   const abs = join(ROOT, dir);
-  if (!existsSync(abs)) return out;
+  if (!existsSync(abs)) {
+    // Tiche `[]` u chybejici slozky delalo z prejmenovane sekce „nic k hlaseni":
+    // pocty sedely, mrtve odkazy se nekontrolovaly a skript vypsal OK (#325).
+    if (POVINNE_SEKCE.indexOf(dir.split('/')[0]) !== -1) chybejiciSekce.push(dir);
+    return out;
+  }
   for (const e of readdirSync(abs, { withFileTypes: true })) {
     const rel = `${dir}/${e.name}`;
     if (e.isDirectory()) walk(rel, filter, out);
@@ -139,4 +148,9 @@ if (problems.length === 0) {
 }
 console.log(`NALEZENO ${problems.length} rozchazeni:`);
 for (const p of problems) console.log(`  x ${p}`);
+
+if (chybejiciSekce.length) {
+  console.error('CHYBA: chybi sekce ' + chybejiciSekce.join(', ') + ' — meridlo je rozbite, ne vault cisty.');
+  process.exit(1);
+}
 process.exit(1);
