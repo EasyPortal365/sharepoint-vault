@@ -8,7 +8,10 @@
 import { readdirSync, readFileSync, existsSync, statSync } from 'node:fs';
 import { join, relative, dirname, resolve } from 'node:path';
 
-const ROOT = resolve(process.argv[2] || '.');
+// Prepinace (--selftest) NEJSOU cesta. Bez tohohle filtru se prepinac vzal jako ROOT,
+// walk() nenasel nic a selftest merl prazdny strom misto vaultu.
+const ARGY = process.argv.slice(2).filter((a) => a.indexOf('--') !== 0);
+const ROOT = resolve(ARGY[0] || '.');
 const problems = [];
 const notes = [];
 
@@ -33,6 +36,27 @@ function walk(dir, filter, out = []) {
     else if (filter(e.name)) out.push(rel);
   }
   return out;
+}
+
+/**
+ * PROTIPŘÍKLAD (`--selftest`): chybějící sekce se MUSÍ ohlásit, existující ne.
+ * Přesně tahle díra tu byla — `walk()` vracel tiché `[]` a přejmenovaná sekce se
+ * proměnila v „nic k hlášení".
+ */
+if (process.argv.indexOf('--selftest') !== -1) {
+  let chyb = 0;
+  const pred = walk('rozhodne-neexistujici-sekce', () => true).length;
+  if (pred !== 0) { console.error('  x  selftest: neexistujici slozka vratila polozky'); chyb++; }
+  if (chybejiciSekce.indexOf('rozhodne-neexistujici-sekce') !== -1) {
+    console.error('  x  selftest: nepovinna sekce se zapsala mezi chybejici'); chyb++;
+  }
+  const skutecne = walk('gotchas', (n) => n.endsWith('.md'));
+  if (skutecne.length === 0) { console.error('  x  selftest: gotchas/ je prazdna — merilo by se nic'); chyb++; }
+  const stav = chybejiciSekce.length;
+  walk('guides-podvrzeno-neexistuje', () => true);
+  if (chybejiciSekce.length !== stav) { console.error('  x  selftest: cizi jmeno oznaceno za povinnou sekci'); chyb++; }
+  console.log(chyb ? 'check-vault --selftest: SELHAL' : 'check-vault --selftest: OK (4 tvrzeni vcetne obou polarit)');
+  process.exit(chyb ? 1 : 0);
 }
 
 // ── 1. Kazdy skript je v sekcnim README i v INDEX.md ─────────────────────
