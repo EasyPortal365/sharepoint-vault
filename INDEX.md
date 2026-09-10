@@ -2,7 +2,7 @@
 
 Every single thing in the vault, on one page. Section names link to folder READMEs; leaves link straight to the content.
 
-*Last updated: 2026-09-04*
+*Last updated: 2026-09-10*
 
 - 🧰 **[scripts/](scripts/)** — PowerShell scripts with comment-based help, read-only unless stated
   - [Terminal animations](scripts/media/) — the writing scripts as an animated PowerShell console; plain SVG, no JavaScript, respects `prefers-reduced-motion`
@@ -110,6 +110,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [Graph grants are tenant-wide](gotchas/spfx/graph-permission-grants-are-tenant-wide.md) — `webApiPermissionRequests` is a request, not a grant; an approval lands on one tenant-wide principal, so a scope another solution had approved already works in yours (and may be missing at the customer)
     - [Protocol-relative URL defeats a host allowlist](gotchas/spfx/protocol-relative-url-defeats-a-host-allowlist.md) — a host check built on `^https?://` reads `//evil.example/…` as relative and lets it through; the browser then supplies the scheme and the request leaves for a foreign origin
     - [A test outside the release command guards nothing](gotchas/spfx/a-test-outside-the-release-command-guards-nothing.md) — `heft build` runs no Jest and the two prebuild scripts drift, so a rule can look covered while never executing on the release path
+    - [Polling the manifest proves nothing](gotchas/spfx/static-host-serves-manifest-before-bundle.md) — a static host publishes the small manifest before the large entry bundle, so the component loads nothing and logs nothing; and an A/B against the previously deployed version compares deploy age, not code
     - [An unparseable JSON column is not an empty column](gotchas/spfx/unparseable-json-column-is-not-an-empty-column.md) — `catch → {}` turns "could not read" into "is empty" and the next save writes the emptiness back over the record; keep three states, refuse the write before the first PATCH, lock the form visibly, and make recovery an explicit action
     - [The tenant's CSP is inherited by `srcdoc` frames](gotchas/spfx/tenant-csp-is-inherited-by-srcdoc-frames.md) — modern pages send `script-src` without `'unsafe-inline'`, and a document you build yourself (`srcdoc`, `blob:`, `data:`) inherits it, so every inline script in the embedded HTML is dropped; an external file from an allow-listed source (including `'self'`) still runs
     - [Custom API permission request is "not valid"](gotchas/spfx/custom-api-permission-request-invalid.md) — API access resolves `resource` to a service principal, so the app registration must exist before the `.sppkg` is uploaded
