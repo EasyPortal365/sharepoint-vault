@@ -54,6 +54,7 @@ Every article carries frontmatter with `tags` and `applies-to`, so repo search g
 
 | Gotcha | TL;DR |
 |---|---|
+| [`.html` in a library cannot be iframed](lists/html-in-a-library-cannot-be-iframed.md) | SharePoint sends library HTML as `Content-Disposition: attachment`, so the iframe loads an empty document — host it elsewhere and add that host to the site’s HTML Field Security list |
 | [Seed idempotency must key on the item](lists/seed-idempotency-must-key-on-the-item.md) | A per-SET presence check re-inserts the whole block when another path creates it — key on set+value, and ship a cleanup |
 | [Version-gated provisioning drops elevated settings](lists/version-gated-provisioning-drops-elevated-settings.md) | `Hidden`/`ReadSecurity` are a PATCH needing Manage Lists — if a member opens the app first, the 403 is swallowed, the version is stored and the setting never applies again |
 | [Item-level permission defaults on provisioned lists](lists/item-level-permissions-defaults-on-provisioned-lists.md) | `ReadSecurity=2` returns 200 + zero items to members while admins bypass it; `WriteSecurity=2` breaks approvals and shared edits |

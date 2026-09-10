@@ -2,7 +2,7 @@
 title: "Performance measurements taken in a hidden browser tab are worthless — and they look like a freeze"
 tags: [tooling, debugging, performance, devtools, requestanimationframe, timers, automation]
 applies-to: Any browser automation or console-driven measurement (Chrome/Edge; SPFx pages included)
-last-reviewed: 2026-08-24
+last-reviewed: 2026-09-10
 ---
 
 # Performance measurements taken in a hidden browser tab are worthless — and they look like a freeze
@@ -53,6 +53,14 @@ Then:
 
 - **Run interactive/timing measurements only in a foreground tab.** If your automation cannot guarantee focus, say so in the write-up rather than reporting the numbers.
 - **In a hidden tab, measure synchronously.** One block, no `await`. Reading layout (`getComputedStyle`, `offsetHeight`) forces a synchronous reflow, so you can still measure the *cost* of a DOM operation; you just cannot measure anything that depends on frames or timers elapsing.
+- **Layout reads are trustworthy — *transitioned* layout reads are not.** Forcing a reflow gives you real numbers for anything you set directly, but a property under a CSS `transition` or `animation` needs frames to move, and a hidden tab paints none. `getBoundingClientRect()` on such an element keeps returning the geometry from **before** your change, indefinitely, while `element.style.top` already holds the new value. Read the inline style (or the model behind it) rather than the box, or drop the transition for the duration of the measurement:
+
+  ```js
+  el.style.transition = 'none';   // then the box and the style agree again
+  ```
+
+  This one is nastier than the timer clamp, because the numbers look plausible: every measurement returns the *previous* step's position, so a walkthrough of N steps reports N sane-looking rectangles that are all off by one.
+
 - **Treat zeros with suspicion.** In a hidden tab, "0 redraws, 0 observer wake-ups, flat heap" is more likely to mean *suspended* than *healthy*. A negative result from a suspended tab is not evidence of absence.
 - **Prefer in-page instrumentation over remote driving** for anything that must run over time: have the page count events into a global itself, then read that global later in a single synchronous call. The counters keep working across your own tool's round-trips, and the numbers come from whatever the tab actually did.
 
