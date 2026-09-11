@@ -253,6 +253,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
   - [Ship SPFx updates without re-uploading .sppkg](guides/runtime-app-versions-without-sppkg-reuploads.md) — permanent loader webpart + Library component from a versioned CDN folder via `SPComponentLoader.loadComponent`; admin-controlled activate/rollback, retention, and the pitfalls from the first live run
   - [Token cost of content formats (measured)](guides/token-cost-of-sharepoint-content-formats.md) — real tokens for the same article as `.md`/`.docx`/`.pdf`/a SharePoint page; extraction beats format, a CZ-vs-EN language tax, and a reproducible harness
   - [Reverse-engineering Plumsail Forms apps](guides/reverse-engineering-plumsail-forms-apps.md) — definitions live in `SitePages/PlumsailForms/` (layout + full JS + CSS); read-only extraction routine and client-side patterns to flag before migration
+  - [Provisioning folder trees at scale](guides/provisioning-folder-trees-at-scale.md) — measured cost of creating 86 folders with unique permissions (no throttling); the alias-parameter syntax, reading a tree in one query instead of ninety, and `copyRoleAssignments=false` silently dropping the owners group
 - 🎓 **[course/](course/)** — *SharePoint Online – administrace od A do Z* (CZ course materials)
   - [Course overview](course/README.md) — 9 chapters, what you'll learn, lecturer
   - [01 · Představení SharePointu](course/01-predstaveni-sharepoint.md) — positioning, scenarios, editions, SP Online vs Server, governance, roadmap

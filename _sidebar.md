@@ -7,6 +7,7 @@
   - [REST vs Microsoft Graph](/guides/sharepoint-rest-vs-microsoft-graph.md)
   - [Knowledge formats for RAG](/guides/choosing-a-knowledge-format-for-sharepoint-rag.md)
   - [Token cost of formats (measured)](/guides/token-cost-of-sharepoint-content-formats.md)
+  - [Folder trees at scale (measured)](/guides/provisioning-folder-trees-at-scale.md)
 
 - **🎓 Course (CZ)**
   - [SharePoint od A do Z](/course/README.md)
