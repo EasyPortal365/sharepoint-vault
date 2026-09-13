@@ -43,9 +43,10 @@ neighbour with capacity.
 
 ## Cause
 
-**1. The Consumption (`Y1`) quota starts at zero on new subscriptions.** App Service keeps its own
-per-SKU worker quotas, separate from Compute quotas, and newly created subscriptions are provisioned
-with zero of them until you ask. The quota is tracked **per subscription _and_ per region**: on one
+**1. The Consumption (`Y1`) quota is usually zero on a new subscription.** On both new subscriptions we
+deployed to (2026-09), `Y1` was at zero in most regions we tried — but on one of them `westeurope` had
+capacity without anyone requesting it, so treat zero as likely, not certain. App Service keeps its own
+per-SKU worker quotas, separate from Compute quotas; the allocation rule we do not know. The quota is tracked **per subscription _and_ per region**: on one
 new subscription, `northeurope` was at zero while `westeurope` on the *same* subscription had capacity
 and deployed fine. The error message doesn't help you see that — its `Location:` field comes back
 **empty**, which reads as "region-independent" and invites exactly the wrong conclusion.
@@ -82,8 +83,8 @@ metadata and the resources themselves are placed by the template's own `location
 
 ## Fix
 
-**Register the providers before you touch anything.** Registration is idempotent, free, one-time and
-takes tens of seconds. Do it in the script rather than documenting it in a troubleshooting section:
+**Register the providers before you touch anything.** Registration is idempotent, free and one-time;
+ours completed in single-digit minutes, so poll with a deadline rather than assuming seconds. Do it in the script rather than documenting it in a troubleshooting section:
 
 ```powershell
 $required = @(
@@ -110,7 +111,7 @@ account doesn't have it, say so — don't silently continue into a deployment th
 **Try another region first, then another SKU family, and only then ask for quota.** In that order,
 because it's also the order of increasing cost and delay:
 
-1. **Another region** — free and instant when it works (see the validation probe above).
+1. **Another region** — costs nothing and needs nobody's approval (see the validation probe above).
 2. **A dedicated plan** (`B1`) is a different quota family and may go through where `Y1` doesn't —
    but it is not a guaranteed escape, because `Basic VMs` can be zero on a new subscription too.
 3. **A quota increase** — Azure Portal → *Quotas* → App Service (or *Subscriptions* → subscription →
@@ -120,8 +121,9 @@ because it's also the order of increasing cost and delay:
 are auto-approved within minutes; measured on a new subscription (2026-09), the self-service request
 was **auto-rejected** for both `Y1` and `B1` — "Unsuccessful — Received 0 of 1", with the portal
 offering only *Help + support* → *Create support request* → "Service and subscription limits
-(quotas)", which a human approves in hours to days. Treat the fast path as a possibility, not a
-plan, and raise quota **before** the deployment window rather than during it.
+(quotas)", which a human approves. We have not measured how long that takes — just don't plan
+around minutes. Treat the fast path as a possibility, not a plan, and raise quota **before**
+the deployment window rather than during it.
 
 Parameterizing the plan SKU is worth doing anyway, but mind what else changes with it:
 
