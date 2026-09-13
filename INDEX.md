@@ -2,7 +2,7 @@
 
 Every single thing in the vault, on one page. Section names link to folder READMEs; leaves link straight to the content.
 
-*Last updated: 2026-09-12*
+*Last updated: 2026-09-13*
 
 - 🧰 **[scripts/](scripts/)** — PowerShell scripts with comment-based help, read-only unless stated
   - [Terminal animations](scripts/media/) — the writing scripts as an animated PowerShell console; plain SVG, no JavaScript, respects `prefers-reduced-motion`
@@ -175,6 +175,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [A mail-permission probe that can't tell "no mailbox" from "no consent" lies to admins](gotchas/graph/mail-probe-no-mailbox-vs-no-consent.md) — `/me/messages` 404 `MailboxNotEnabled*` on mailbox-less accounts ≠ missing consent; three verdicts, and never cache a negative probe result
     - [Purview Audit Query API is async](gotchas/graph/purview-audit-query-api-is-async.md) — hour-long queries; attach to the last succeeded, create in background
     - [`dont have any permissions` rejects the user, not the app](gotchas/graph/audit-query-permission-vs-audit-role.md) — consent vs. Exchange audit role; Global Admin usually inherits it, so compare accounts
+    - [A Teams channel exists immediately — its folder does not](gotchas/graph/channel-created-but-its-sharepoint-folder-is-not.md) — `POST /channels` returns 201 while SharePoint provisions the folder minutes later; never hand-make the folder, report the pending state and let an idempotent rerun finish it
     - [Office files: property demotion changes the hash](gotchas/graph/office-files-property-demotion.md) — metadata PATCH rewrites docx bytes; key change detection on `lastModifiedBy`
     - [Usage reports are CORS-blocked in the browser](gotchas/graph/usage-reports-cors-blocked-in-browser.md) — fetch server-side; browser inventory = SP Search + `/_api/site/usage`
     - [Tenant-wide enumeration is app-only](gotchas/graph/tenant-wide-enumeration-is-app-only.md) — `getAllSites` rejects delegated tokens; check the Permissions table first
