@@ -40,6 +40,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
 - 💥 **[gotchas/](gotchas/)** — real-world traps as *symptom → cause → fix*
   - **rest-api/**
     - [Unbounded `Promise.all` fan-out invites 429](gotchas/rest-api/unbounded-promise-all-fanout-throttling.md) — fan-out is safe when YOUR code decides the count, dangerous when the customer's data does; bounded batch and worker-pool patterns
+    - [`POST /views` takes an `SP.View` body](gotchas/rest-api/creating-a-view-posts-sp-view-not-viewcreationinformation.md) — `ViewTypeKind` from the creation-information docs 400s, and `@odata.type` is rejected outright in nometadata; measured recipe for view + scope + column order
     - [Get lists by URL, not by title](gotchas/rest-api/get-list-by-url-not-by-title.md) — `getbytitle()` breaks the moment someone renames a list; resolve by URL (bonus: `GetList` normalises folder paths to their list)
     - [Actions go before the alias query string](gotchas/rest-api/actions-must-precede-the-alias-query-string.md) — Appending `/breakroleinheritance(...)` to a `GetList(@u)?@u=...` URL buries the action inside the parameter — splice it in before the `?`
     - [FieldValuesAsText re-encodes underscores in JSON keys](gotchas/rest-api/fieldvaluesastext-reencodes-underscores.md) — `A_x0020_B` comes back as `A_x005f_x0020_x005f_B`; decode `_x005f_` before matching
