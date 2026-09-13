@@ -2,14 +2,14 @@
 title: A brand-new Azure subscription blocks your first Function App deployment
 tags: [azure-functions, deployment, quota, arm, bicep, powershell]
 applies-to: First deployment of a Function App (ARM/Bicep or CLI) into a newly created Azure subscription
-last-reviewed: 2026-09-11
+last-reviewed: 2026-09-13
 ---
 
 # A brand-new Azure subscription blocks your first Function App deployment
 
-> **Bottom line.** A deploy script that works on every established subscription can fail four different ways on a brand-new one — and the loudest failure, `Current Limit (Y1 VMs): 0`, looks like a region problem but is a **subscription** quota that no region change will fix. Register the resource providers up front, and turn the deployment's raw ARM error into a diagnosis instead of forwarding it.
+> **Bottom line.** A deploy script that works on every established subscription can fail four different ways on a brand-new one. The loudest failure, `Current Limit (Y1 VMs): 0`, is an App Service quota tracked **per subscription _and_ per region** — a neighbouring region may well have capacity, so trying one is the cheapest first move, not a last resort. Register the resource providers up front, and turn the deployment's raw ARM error into a diagnosis instead of forwarding it.
 >
-> **Ve zkratce.** Deploy skript, který funguje na zaběhnutých subscription, může na čerstvé selhat čtyřmi různými způsoby – a ten nejhlasitější, `Current Limit (Y1 VMs): 0`, vypadá jako problém regionu, ale je to kvóta **subscription**, se kterou změna regionu nepohne. Resource providery registruj předem a chybu deploymentu rozeber, místo abys ji jen přeposlal.
+> **Ve zkratce.** Deploy skript, který funguje na zaběhnutých subscription, může na čerstvé selhat čtyřmi různými způsoby. Ten nejhlasitější, `Current Limit (Y1 VMs): 0`, je kvóta App Service vedená na subscription **i na regionu** – ve vedlejším regionu může být volná, takže zkusit ho je nejlevnější první krok, ne poslední možnost. Resource providery registruj předem a chybu deploymentu rozeber, místo abys ji jen přeposlal.
 
 A deployment script that had run cleanly at several customers was pointed at a subscription created
 the same week. Six runs, four distinct errors, nothing deployed. None of them were bugs in the
@@ -37,17 +37,34 @@ Amount required for this deployment (Y1 VMs): 1"}
 ```
 
 The last one repeated in three different regions. The operator did the reasonable thing —
-tried another region each time — and got the same wall.
+tried another region each time — and got the same wall. **That coincidence is a trap:** see the
+quota section below, where a later run on a different subscription found one region at zero and its
+neighbour with capacity.
 
 ## Cause
 
 **1. The Consumption (`Y1`) quota starts at zero on new subscriptions.** App Service keeps its own
 per-SKU worker quotas, separate from Compute quotas, and newly created subscriptions are provisioned
-with zero of them until you ask. The quota is tracked **per subscription**, so every region fails
-identically — and the error message shows an empty `Location:` field, which makes it read like a
-regional issue. Worse, it can't be probed reliably up front: `az appservice list-locations --sku Y1`
-lists regions the SKU exists in, not regions where your limit is non-zero, so it happily lists a
-region you cannot deploy into.
+with zero of them until you ask. The quota is tracked **per subscription _and_ per region**: on one
+new subscription, `northeurope` was at zero while `westeurope` on the *same* subscription had capacity
+and deployed fine. The error message doesn't help you see that — its `Location:` field comes back
+**empty**, which reads as "region-independent" and invites exactly the wrong conclusion.
+
+Nor can you settle it with a quota lookup: `az appservice list-locations --sku Y1` lists regions where
+the SKU *exists*, not where your limit is non-zero, so it happily lists a region you cannot deploy
+into; and `az quota` is an extension with no documented `Microsoft.Web` support. What does work is a
+**dry run of the operation that fails** — `az deployment group validate` with a different `location`
+returns the same quota error without creating anything:
+
+```powershell
+# Same template, same parameters, only `location` swapped. Nothing is created.
+$out = az deployment group validate --resource-group $rg --template-file $tpl `
+          --parameters ($params -replace '^location=.*', "location=$region") -o none 2>&1
+# exit 0 = quota available here; 'SubscriptionIsOverQuotaForSku' = zero; anything else = unknown
+```
+
+Classify only what you can prove, and stay silent about the rest: a region you couldn't validate for
+an unrelated reason is *unknown*, not *available*.
 
 **2. Resource providers are not registered.** For a resource you create directly (a Cognitive
 Services account, say) the error says so plainly. For a resource created *inside* an ARM deployment,
@@ -90,12 +107,21 @@ foreach ($ns in $required) {
 Note the failure branch: registration needs `*/register/action` on the subscription. If the deploying
 account doesn't have it, say so — don't silently continue into a deployment that will fail later.
 
-**Raise the quota, or pick a different SKU family.** Azure Portal → *Quotas* → App Service (or
-*Subscriptions* → subscription → *Usage + quotas*) → the entry for your SKU in the target region →
-request at least 1. Requests of this size are typically auto-approved within minutes; the support
-route is *Help + support* → *Create support request* → "Service and subscription limits (quotas)".
-If you can't wait, a dedicated plan (`B1`) is a different quota family and may go through — but it is
-not a guaranteed escape, because `Basic VMs` can be zero on a new subscription too.
+**Try another region first, then another SKU family, and only then ask for quota.** In that order,
+because it's also the order of increasing cost and delay:
+
+1. **Another region** — free and instant when it works (see the validation probe above).
+2. **A dedicated plan** (`B1`) is a different quota family and may go through where `Y1` doesn't —
+   but it is not a guaranteed escape, because `Basic VMs` can be zero on a new subscription too.
+3. **A quota increase** — Azure Portal → *Quotas* → App Service (or *Subscriptions* → subscription →
+   *Usage + quotas*) → the entry for your SKU in the target region → *Request adjustment*.
+
+**Do not promise the operator that step 3 is quick.** Community write-ups say requests of this size
+are auto-approved within minutes; measured on a new subscription (2026-09), the self-service request
+was **auto-rejected** for both `Y1` and `B1` — "Unsuccessful — Received 0 of 1", with the portal
+offering only *Help + support* → *Create support request* → "Service and subscription limits
+(quotas)", which a human approves in hours to days. Treat the fast path as a possibility, not a
+plan, and raise quota **before** the deployment window rather than during it.
 
 Parameterizing the plan SKU is worth doing anyway, but mind what else changes with it:
 
@@ -149,3 +175,11 @@ A subscription in which nothing has ever been created is a **different class of 
 ones you tested on, and your prerequisites list only ever describes environments you have actually
 met. When a new class shows up, walk the prerequisites in *every* document that describes the
 deployment, not just the one you happen to have open.
+
+And a companion rule, learned the expensive way on this very page: **N failures across N values of a
+parameter do not prove the parameter is irrelevant** — they prove those N values failed. Three regions
+returning `Current Limit (Y1 VMs): 0` was written up here as "the quota is per subscription, so region
+changes won't help", which is the stronger claim the sample never supported; a later run found a region
+with capacity on a subscription where another region had none. Phrasing matters more than it looks:
+"X won't help" doesn't just inform the reader, it *forbids* them the cheapest fix. Unless you can
+demonstrate the mechanism, write "it didn't help for us" and leave the door open.
