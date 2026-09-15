@@ -1,0 +1,68 @@
+# ep365-attribution-workflow — generovano install-pr-attribution-workflow.js, needituj rucne.
+#
+# Hlida, ze telo pull requestu nenese atribuci asistenta (pokyn Kamiho, CLAUDE.md).
+# Lokalni commit-msg hook na telo PR nedosahne: pise se az na GitHubu.
+name: Bez atribuce asistenta
+
+on:
+  pull_request:
+    types: [opened, edited, reopened, synchronize]
+
+permissions:
+  contents: read
+
+jobs:
+  telo-pr:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Kontrola tela pull requestu
+        env:
+          # 🔒 Telo jde ENV promennou, NIKDY interpolaci do shellu (jinak je cizi
+          #    text v PR spustitelny kod v nasem CI).
+          PR_BODY: ${{ github.event.pull_request.body }}
+        run: |
+          cat > check.js <<'EOF'
+          // Generovano z ep365-docs/scripts/check-commit-attribution.js — needituj tady.
+          const PRAVIDLA = [
+            { id: "co-authored-by", re: /^\s*co-?authored-by\s*:.*(claude|anthropic)/i, popis: "patickovy radek Co-authored-by s asistentem" },
+            { id: "anthropic-noreply", re: /noreply@anthropic\.com/i, popis: "adresa noreply@anthropic.com" },
+            { id: "generated-with", re: /^\s*\S{0,3}\s*generated with\s*\[?\s*claude/i, popis: "paticka „Generated with Claude…\"" }
+          ];
+
+          function telaPRRadky(raw) {
+            const bezKomentaru = String(raw).replace(/<!--[\s\S]*?-->/g, '');
+            const out = [];
+            let vBloku = false;
+            bezKomentaru.split(/\r?\n/).forEach(l => {
+              if (/^\s*(```|~~~)/.test(l)) { vBloku = !vBloku; return; }
+              if (!vBloku) out.push(l);
+            });
+            return out;
+          }
+
+          function zmer(radky) {
+            const nalezy = [];
+            radky.forEach(radek => {
+              PRAVIDLA.forEach(p => {
+                if (p.re.test(radek)) nalezy.push({ id: p.id, popis: p.popis, radek: radek.trim() });
+              });
+            });
+            return nalezy;
+          }
+
+          const telo = process.env.PR_BODY || "";
+          const nalezy = zmer(telaPRRadky(telo));
+          if (!nalezy.length) {
+            console.log("OK — v tele pull requestu neni atribuce asistenta.");
+            process.exit(0);
+          }
+          console.error("");
+          console.error("  Telo pull requestu nese atribuci asistenta:");
+          nalezy.forEach(function (n) { console.error("    - " + n.popis + ":  " + n.radek); });
+          console.error("");
+          console.error("  Pravidlo: PR bodies nikdy nekonci Co-Authored-By ani \"Generated with...\".");
+          console.error("  Oprava: uprav popis pull requestu a kontrola se pusti znovu.");
+          console.error("");
+          process.exit(1);
+          EOF
+          node check.js
