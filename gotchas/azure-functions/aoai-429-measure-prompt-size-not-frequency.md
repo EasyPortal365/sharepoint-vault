@@ -2,7 +2,7 @@
 title: "Azure OpenAI 429 on a single request is a TPM ceiling, not a busy service — measure size, not frequency"
 tags: [azure-functions, azure-openai, quota, rate-limiting, diagnostics, rag]
 applies-to: Any app calling Azure OpenAI chat completions through a Function App (RAG, document Q&A)
-last-reviewed: 2026-09-17
+last-reviewed: 2026-09-18
 ---
 
 # Azure OpenAI 429: measure prompt size, not request frequency
@@ -85,9 +85,15 @@ chat hides the problem.
    per-message character budget, convert conservatively (Czech and other diacritic-heavy languages
    run near ~1.6 characters per token, far denser than the usual "4 characters" rule of thumb), and
    make sure a single request fits with room to spare.
-5. **Check capacity on deployments that already exist.** A provisioning script that "skips" an
-   existing deployment leaves an undersized one in place forever, silently, across re-runs. Read
-   `sku.capacity` and report it:
+5. **Check capacity on deployments that already exist — and raise it, don't just warn.** A
+   provisioning script that "skips" an existing deployment leaves an undersized one in place
+   forever, silently, across re-runs. Warning about it is barely better: a warning nobody acts on
+   is as good as none, and on a deployment the script itself creates, capacity is part of the
+   deployment rather than someone else's setting. Two safeguards make it safe: **never lower it**
+   (leave equal-or-higher alone, so a re-run cannot make things worse), and **read the model and
+   its version off the live deployment and send them back unchanged** — the call is an ARM PUT, so
+   a missing parameter would silently rewrite which model version is deployed; if you cannot read
+   them, do nothing and report. Read `sku.capacity` first:
    ```powershell
    az cognitiveservices account deployment show `
      --resource-group <rg> --name <account> --deployment-name <deployment> `

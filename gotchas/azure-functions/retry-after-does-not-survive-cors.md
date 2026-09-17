@@ -2,7 +2,7 @@
 title: "`Retry-After` does not survive CORS — a header you send and the client reads can still arrive as null"
 tags: [azure-functions, cors, rate-limiting, spfx, browser, headers]
 applies-to: Any browser client reading a response header from a cross-origin API (Azure Functions, any stack)
-last-reviewed: 2026-09-17
+last-reviewed: 2026-09-18
 ---
 
 # `Retry-After` does not survive CORS
