@@ -2,7 +2,7 @@
 
 Every single thing in the vault, on one page. Section names link to folder READMEs; leaves link straight to the content.
 
-*Last updated: 2026-09-13*
+*Last updated: 2026-09-17*
 
 - 🧰 **[scripts/](scripts/)** — PowerShell scripts with comment-based help, read-only unless stated
   - [Terminal animations](scripts/media/) — the writing scripts as an animated PowerShell console; plain SVG, no JavaScript, respects `prefers-reduced-motion`
@@ -138,6 +138,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [Office file extraction needs a decompressed-size cap](gotchas/spfx/office-file-extraction-needs-a-decompressed-size-cap.md) — an upload-size limit only bounds the compressed archive; a crafted `!ref` still OOMs the tab
     - [A Promise over img.onload can hang forever](gotchas/spfx/image-promise-without-a-timeout-hangs-forever.md) — onload/onerror are not guaranteed to fire; try/catch guards rejection, not a Promise that never settles
     - [Shared package's dynamic import ships inlined](gotchas/spfx/shared-package-dynamic-import-inlines-with-commonjs.md) — a linked TS package built with module:commonjs turns import() into require(), so webpack can't lazy-chunk the lib into a separate file; set the package's module:esnext
+    - [cultureInfo returns the web or the user language](gotchas/spfx/culture-info-returns-web-or-user-language.md) — the same page loads English once and Czech the next time; cache the resolved language per web instead
     - [Centered flex clips on mobile](gotchas/spfx/centered-flex-clips-on-mobile.md) — centering + overflow cuts content above the scroll; flex "springs"
     - [JSX attributes and smart quotes](gotchas/spfx/jsx-attributes-and-smart-quotes.md) — typographic quotes in attributes = TS1003; wrap as `{'…'}`
     - [A conditional spread hides a phantom list column](gotchas/spfx/conditional-spread-hides-a-phantom-list-column.md) — `...(cond ? {…} : {})` bypasses the excess-property check, so a field the list doesn't have reaches the POST and 400s; two scripted sweeps find the rest
