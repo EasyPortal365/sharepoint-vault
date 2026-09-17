@@ -85,7 +85,20 @@ be on the response the client reads — putting it only on the `OPTIONS` branch 
    A text scan sees only the shape written today, so prove the detector by **sabotage**: inject an
    extra header into a copy of the real bundle and assert the check reports it. A green guard that
    was never shown to fail proves nothing.
-4. **When a header "disappears", suspect the boundary, not the two ends.** Grepping the name finds
+   **And cut comments out of whatever window you scan.** Our first guard searched the lines
+   around `status: 429` for the text `Retry-After` and passed over a sabotaged bundle — because
+   the comment three lines above the return *mentions* the header. It was measuring the comment
+   about the fix rather than the fix, and would have stayed silent over code with the header
+   removed. Strip line comments and match syntax (the header as an object key), not a word.
+4. **Sending the header is a separate rule from exposing it.** Our own per-IP rate limiter
+   returned 429 with no `Retry-After` at all, and because its window is 60 s while the client
+   retried at 0/2/6 s, all three attempts fell inside the same window — the user got an error
+   for something the app had just failed three times in a row, and a manual retry was no help
+   either. The honest value is not a flat minute but the time until the oldest timestamp
+   leaves the sliding window. Make the rule exceptionless — *every* 429 carries `Retry-After`,
+   including daily caps where the value runs to thousands of seconds — because an exception
+   you cannot state is an exception nobody can guard.
+5. **When a header "disappears", suspect the boundary, not the two ends.** Grepping the name finds
    the send and the read and looks complete; the defect lives in neither file.
 
 ## See also
