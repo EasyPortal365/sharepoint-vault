@@ -1,8 +1,8 @@
 ---
 title: A library with NoCrawl returns nothing from Search — and silently blinds anything built on Search
-tags: [search, crawl, indexing, rag, ai, provisioning, governance]
+tags: [search, crawl, indexing, rag, ai, provisioning, governance, hidden]
 applies-to: SharePoint Online
-last-reviewed: 2026-07-30
+last-reviewed: 2026-09-17
 ---
 
 # A library with `NoCrawl` returns nothing from Search — and silently blinds anything built on Search
@@ -91,6 +91,40 @@ No — and this is worth saying out loud, because "let's keep it out of the inde
 SharePoint Search is **security-trimmed at query time**: results are filtered to what the asking user already has permission to read. Indexing a library with broken inheritance does not expose it to people outside those permissions. `NoCrawl` is a *discoverability* setting, not an access control — anyone with read access could always reach the content by direct URL.
 
 The corollary matters too: if content genuinely must not be seen, `NoCrawl` was never protecting it. Fix the permissions.
+
+## `Hidden` and `NoCrawl` are independent axes
+
+These two get conflated constantly, in both directions:
+
+- *"We cannot hide the library, it has to stay in the index."* — false.
+- *"We hid the library, so it is out of the index."* — also false.
+
+`Hidden` is a UI property: it removes the list or library from **Site contents**
+and navigation. `NoCrawl` is what the crawler reads. A hidden library with
+`NoCrawl: false` keeps feeding the index exactly as before.
+
+Measured on a live tenant, same query before and after (only `Hidden` changed):
+
+```
+PATCH /_api/web/lists/getbytitle('<library>')   { "Hidden": true }   → 204
+
+GET  /_api/search/query?querytext='<word> IsDocument:1 Path:<library-url>*'
+  before: TotalRows 1
+  after : TotalRows 1        ← unchanged, immediately
+```
+
+Two caveats worth stating with it:
+
+- **Hiding is not an access boundary.** Anyone with read permission still reaches
+  the files by direct URL or over `/_api`. Hiding tidies Site contents; it does
+  not restrict anything. (Same point as the section above, from the other side.)
+- **Hiding does cost something real:** a hidden library cannot be opened from Site
+  contents and cannot be synced to OneDrive. Hide the ones only your app touches;
+  leave the ones people work in directly.
+
+From the browser, remember the OData shape: a raw `fetch` against `_api` rejects
+`@odata.type` (`400 '@odata.type' is an invalid instance annotation name`) — send
+the bare property. From SPFx `SPHttpClient`, send `@odata.type` as usual.
 
 ## Rule of thumb
 
