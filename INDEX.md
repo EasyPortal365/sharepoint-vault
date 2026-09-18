@@ -2,7 +2,7 @@
 
 Every single thing in the vault, on one page. Section names link to folder READMEs; leaves link straight to the content.
 
-*Last updated: 2026-09-17*
+*Last updated: 2026-09-18*
 
 - 🧰 **[scripts/](scripts/)** — PowerShell scripts with comment-based help, read-only unless stated
   - [Terminal animations](scripts/media/) — the writing scripts as an animated PowerShell console; plain SVG, no JavaScript, respects `prefers-reduced-motion`
@@ -90,6 +90,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [Non-web protocol in `href` drops the whole element](gotchas/lists/formatter-href-non-web-protocol-drops-element.md) — `ms-word:` in a formatter link removes the element with all children, per item, no error; open-in-app = `openContextMenu`
     - [`.html` in a library cannot be iframed](gotchas/lists/html-in-a-library-cannot-be-iframed.md) — SharePoint serves library HTML as an attachment, so the iframe loads empty; host it elsewhere and allow that host in HTML Field Security
     - [Seed idempotency must key on the item](gotchas/lists/seed-idempotency-must-key-on-the-item.md) — a per-SET presence check re-inserts the whole block; lists have no unique constraint
+    - [A Choice value the field does not know fails silently](gotchas/lists/choice-value-missing-from-the-field-fails-silently.md) — HTTP 400 swallowed by a best-effort logger; machine-check the type-to-schema contract
     - [Version-gated provisioning drops elevated settings](gotchas/lists/version-gated-provisioning-drops-elevated-settings.md) — a settings PATCH needs Manage Lists; the first member to open the app after an upgrade burns the one attempt and the version is stored anyway
     - [Item-level permission defaults on provisioned lists](gotchas/lists/item-level-permissions-defaults-on-provisioned-lists.md) — ReadSecurity=2 looks perfect to an admin and empty to everyone else; WriteSecurity=2 breaks collaborative edits only
   - **permissions/**
@@ -232,6 +233,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
   - **security/**
     - [Sanitizer keeps script and style TEXT](gotchas/security/sanitizer-keeps-script-and-style-text.md) — an allowlist needs two sets: tags to keep, and tags to drop WITH their subtree; otherwise a pasted web page dumps its stylesheet into the article as visible text
     - [Stored XSS via list content](gotchas/security/stored-xss-from-list-content.md) — React doesn't block `javascript:` hrefs; allowlist `safeHref` with C0-strip at every sink
+    - [A formatter that returns raw input is a hole in your escaping](gotchas/security/a-formatter-is-a-hole-in-your-escaping.md) — the unhappy branch returns the value verbatim; `about:blank` inherits your origin
     - [Field hiding is not a permission](gotchas/security/field-hiding-is-not-a-permission.md) — role-based UI field hiding is cosmetic; Read on the list = REST/Export/other web parts see it; confidentiality needs a separate list, item perms, or a server tier
     - [Fewer sites and sudden 403s mean a different account](gotchas/security/fewer-sites-and-403s-mean-a-different-account.md) — a tenant-wide snippet run from a second browser window executes as whoever is signed in there; print `currentuser` and the visible-site count before you blame the tenant
     - [Effective permissions come as a bitmask](gotchas/security/effective-permissions-bitmask-off-by-one.md) — `ViewListItems` is bit 0, `Low`/`High` are decimal strings; decode off by one and every ordinary member looks locked out. Sanity-check the decoder against a site admin AND a known Read user
