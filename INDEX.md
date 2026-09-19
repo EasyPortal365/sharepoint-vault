@@ -2,7 +2,7 @@
 
 Every single thing in the vault, on one page. Section names link to folder READMEs; leaves link straight to the content.
 
-*Last updated: 2026-09-18*
+*Last updated: 2026-09-19*
 
 - 🧰 **[scripts/](scripts/)** — PowerShell scripts with comment-based help, read-only unless stated
   - [Terminal animations](scripts/media/) — the writing scripts as an animated PowerShell console; plain SVG, no JavaScript, respects `prefers-reduced-motion`
@@ -42,6 +42,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [Unbounded `Promise.all` fan-out invites 429](gotchas/rest-api/unbounded-promise-all-fanout-throttling.md) — fan-out is safe when YOUR code decides the count, dangerous when the customer's data does; bounded batch and worker-pool patterns
     - [`POST /views` takes an `SP.View` body](gotchas/rest-api/creating-a-view-posts-sp-view-not-viewcreationinformation.md) — `ViewTypeKind` from the creation-information docs 400s, and `@odata.type` is rejected outright in nometadata; measured recipe for view + scope + column order
     - [Get lists by URL, not by title](gotchas/rest-api/get-list-by-url-not-by-title.md) — `getbytitle()` breaks the moment someone renames a list; resolve by URL (bonus: `GetList` normalises folder paths to their list)
+    - [REST `DELETE` on an item is permanent](gotchas/rest-api/delete-is-permanent-recycle-is-the-bin.md) — the usual delete call skips BOTH recycle bins; `/items(id)/recycle()` is what a “restorable for 93 days” promise needs
     - [Actions go before the alias query string](gotchas/rest-api/actions-must-precede-the-alias-query-string.md) — Appending `/breakroleinheritance(...)` to a `GetList(@u)?@u=...` URL buries the action inside the parameter — splice it in before the `?`
     - [FieldValuesAsText re-encodes underscores in JSON keys](gotchas/rest-api/fieldvaluesastext-reencodes-underscores.md) — `A_x0020_B` comes back as `A_x005f_x0020_x005f_B`; decode `_x005f_` before matching
     - [`GetObjectSharingInformation` traps](gotchas/rest-api/getobjectsharinginformation-traps.md) — GET is 405 every time (stop retrying it: 2.7× slower), `CreatedBy` is always null, `$expand` is dead weight
