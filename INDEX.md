@@ -2,7 +2,7 @@
 
 Every single thing in the vault, on one page. Section names link to folder READMEs; leaves link straight to the content.
 
-*Last updated: 2026-09-19*
+*Last updated: 2026-09-20*
 
 - 🧰 **[scripts/](scripts/)** — PowerShell scripts with comment-based help, read-only unless stated
   - [Terminal animations](scripts/media/) — the writing scripts as an animated PowerShell console; plain SVG, no JavaScript, respects `prefers-reduced-motion`
@@ -237,7 +237,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [Sanitizer keeps script and style TEXT](gotchas/security/sanitizer-keeps-script-and-style-text.md) — an allowlist needs two sets: tags to keep, and tags to drop WITH their subtree; otherwise a pasted web page dumps its stylesheet into the article as visible text
     - [Stored XSS via list content](gotchas/security/stored-xss-from-list-content.md) — React doesn't block `javascript:` hrefs; allowlist `safeHref` with C0-strip at every sink
     - [A formatter that returns raw input is a hole in your escaping](gotchas/security/a-formatter-is-a-hole-in-your-escaping.md) — the unhappy branch returns the value verbatim; `about:blank` inherits your origin
-    - [Field hiding is not a permission](gotchas/security/field-hiding-is-not-a-permission.md) — role-based UI field hiding is cosmetic; Read on the list = REST/Export/other web parts see it; confidentiality needs a separate list, item perms, or a server tier
+    - [Field hiding is not a permission](gotchas/security/field-hiding-is-not-a-permission.md) — role-based UI field hiding is cosmetic; Read on the list = REST/Export/other web parts see it; confidentiality needs a separate list, item perms, or a server tier — plus the two traps the separate list creates: a sibling column that still holds the number, and "not allowed to read" arriving as a legitimate 0 in every aggregate and downloaded file
     - [Fewer sites and sudden 403s mean a different account](gotchas/security/fewer-sites-and-403s-mean-a-different-account.md) — a tenant-wide snippet run from a second browser window executes as whoever is signed in there; print `currentuser` and the visible-site count before you blame the tenant
     - [Effective permissions come as a bitmask](gotchas/security/effective-permissions-bitmask-off-by-one.md) — `ViewListItems` is bit 0, `Low`/`High` are decimal strings; decode off by one and every ordinary member looks locked out. Sanity-check the decoder against a site admin AND a known Read user
     - [CSV export executes formulas](gotchas/security/csv-export-of-list-data-executes-formulas.md) — a member-written cell starting `= + - @` (or TAB/CR) runs in Excel on the reader's machine; quoting doesn't disarm it, an apostrophe prefix does
