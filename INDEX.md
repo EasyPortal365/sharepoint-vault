@@ -2,7 +2,7 @@
 
 Every single thing in the vault, on one page. Section names link to folder READMEs; leaves link straight to the content.
 
-*Last updated: 2026-09-20*
+*Last updated: 2026-09-21*
 
 - 🧰 **[scripts/](scripts/)** — PowerShell scripts with comment-based help, read-only unless stated
   - [Terminal animations](scripts/media/) — the writing scripts as an animated PowerShell console; plain SVG, no JavaScript, respects `prefers-reduced-motion`
@@ -152,7 +152,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [A theme override on your app root can't reach tokens declared on `:root`](gotchas/spfx/theme-override-cant-reach-root-declared-tokens.md) — the accent inherits, everything derived from it doesn't; substitution happens where the token is declared, portals miss the override entirely, and a colour written as a literal hex is unreachable either way
     - [An element selector outranks your button class](gotchas/spfx/element-selector-outranks-your-button-class.md) — `.app-root a { color: inherit }` beats `.btn--accent`, so link-styled buttons get an unreadable label — but only on a tenant whose accent needs white text
     - [`behavior: 'smooth'` is silently ignored inside a portaled overlay](gotchas/spfx/smooth-scroll-ignored-in-portaled-overlay.md) — jump-to-section does nothing in a modal/reader; drop the flag and set `scrollTop` directly
-    - [Previewing library files in your own app](gotchas/spfx/previewing-library-files-in-your-app.md) — PDF embeds directly, Office needs WOPI by `{UniqueId}`, HTML is served as an attachment and never renders from `src`
+    - [Previewing library files in your own app](gotchas/spfx/previewing-library-files-in-your-app.md) — PDF embeds directly, Office needs WOPI by `{UniqueId}`, HTML is served as an attachment and never renders from `src`; SVG and HTML must never be framed from your own origin (uploader script runs in the viewer session) and OneDrive refuses framing with no way to detect it
     - [Auto-save must wait for async inputs](gotchas/spfx/autosave-effect-must-wait-for-async-inputs.md) — computed-from-async auto-save fires on mount with empty inputs and persists garbage; gate on a loaded flag
     - [Mermaid clips node text with a web font](gotchas/spfx/mermaid-text-clipping-webfont.md) — measure-before-load (FOUT) sizes boxes for the fallback font; use a system font stack
     - [rules-of-hooks false-positive from a JSX `&&` chain](gotchas/spfx/rules-of-hooks-false-positive-from-jsx-chain.md) — a complex conditional in your render blames the *wrong* hook; extract it to a `const`. Second trigger: sheer component *size* — there extracting conditions doesn't help, splitting the component does. Third trigger: the recommended `const` extraction ITSELF — only block-by-block bisection from a clean HEAD finds the guilty line
