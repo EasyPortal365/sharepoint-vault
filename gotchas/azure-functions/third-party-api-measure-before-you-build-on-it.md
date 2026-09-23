@@ -9,7 +9,7 @@ last-reviewed: 2026-08-08
 
 > **Bottom line.** "Everyone uses it" says nothing about whether it answers: the canonical free API returned 404/502/timeout on 7 of 8 live calls while a lesser-known alternative answered all 8 in under 2.6 s — measure latency *and* error rate on real data before you ship, because a green test suite only proves your stub matches your assumption.
 >
-> **Ve zkratce.** „Používají to všichni" nevypovídá o tom, jestli to odpovídá: kanonické veřejné API vrátilo na 7 z 8 živých volání 404/502/timeout, zatímco méně známá alternativa odpověděla na všech 8 do 2,6 s – změř latenci *i* chybovost na reálných datech dřív, než to nasadíš, protože zelené testy dokazují jen shodu stubu s tvým předpokladem.
+> **Ve zkratce.** „Používají to všichni“ nevypovídá o tom, jestli to odpovídá: kanonické veřejné API vrátilo na 7 z 8 živých volání 404/502/timeout, zatímco méně známá alternativa odpověděla na všech 8 do 2,6 s – změř latenci *i* chybovost na reálných datech dřív, než to nasadíš, protože zelené testy dokazují jen shodu stubu s tvým předpokladem.
 
 A user-facing feature needed data from a free public API. The obvious choice was the
 canonical one — the service everyone links to, free, no key required, first hit in

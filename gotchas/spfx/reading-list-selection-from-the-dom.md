@@ -9,7 +9,7 @@ last-reviewed: 2026-08-13
 
 > **Bottom line.** Only a `ListViewCommandSet` gets `selectedRows`. An Application Customizer can still read the selection from the DOM — but take **names only** (the file name is a `button`, not a link, so there is no path to scrape), resolve the path with one folder-scoped REST call, and get the **real count** from the "clear selection" button, because the view is virtualized and `aria-selected` only marks rendered rows.
 >
-> **Ve zkratce.** `selectedRows` dostane jen `ListViewCommandSet`. Application Customizer si výběr může přečíst z DOM — ale ber **jen názvy** (název souboru je `button`, ne odkaz, takže cesta tam není), cestu si doptej jedním REST čtením složky a **skutečný počet** vezmi z tlačítka „zrušit výběr": zobrazení je virtualizované a `aria-selected` nesou jen vykreslené řádky.
+> **Ve zkratce.** `selectedRows` dostane jen `ListViewCommandSet`. Application Customizer si výběr může přečíst z DOM – ale ber **jen názvy** (název souboru je `button`, ne odkaz, takže cesta tam není), cestu si doptej jedním REST čtením složky a **skutečný počet** vezmi z tlačítka „zrušit výběr“: zobrazení je virtualizované a `aria-selected` nesou jen vykreslené řádky.
 
 ## Symptom
 

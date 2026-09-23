@@ -2,14 +2,14 @@
 title: A new Choice value in your provisioning code never reaches already-deployed sites
 tags: [rest-api, fields, provisioning]
 applies-to: SharePoint Online, SharePoint Server
-last-reviewed: 2026-09-01
+last-reviewed: 2026-09-24
 ---
 
 # A new Choice value in your provisioning code never reaches already-deployed sites
 
-> **Bottom line.** Idempotent "create the field if it's missing" provisioning never *updates* a field that already exists — so a new Choice value (or any schema change) you add to the manifest silently no-ops on every site that already had the field. Reconcile existing fields with a targeted post-provisioning PATCH, sent `odata=verbose` with `SP.FieldChoice`.
+> **Bottom line.** Idempotent "create the field if it's missing" provisioning never *updates* a field that already exists — so a new Choice value (or any schema change) you add to the manifest silently no-ops on every site that already had the field. Reconcile existing fields with a targeted post-provisioning MERGE — under `SPHttpClient` a plain JSON body with `'@odata.type': '#SP.FieldChoice'`, not the verbose `__metadata` form, which 400s there.
 >
-> **Ve zkratce.** Idempotentní provisioning „vytvoř pole, když chybí" už existující pole nikdy neaktualizuje – nová hodnota Choice (nebo jakákoli změna schématu) přidaná do manifestu se na webech, kde pole už bylo, tiše přeskočí. Existující pole dorovnej cíleným post-provisioning PATCHem ve formátu `odata=verbose` s typem `SP.FieldChoice`.
+> **Ve zkratce.** Idempotentní provisioning „vytvoř pole, když chybí“ už existující pole nikdy neaktualizuje – nová hodnota Choice (nebo jakákoli změna schématu) přidaná do manifestu se na webech, kde pole už bylo, tiše přeskočí. Existující pole dorovnej cíleným post-provisioning MERGE – pod `SPHttpClient` prostým JSON s `'@odata.type': '#SP.FieldChoice'`, ne verbose tvarem s `__metadata`, který tam končí na 400.
 
 ## Symptom
 
@@ -34,7 +34,7 @@ Bumping a "schema version" gate doesn't help either: it re-runs provisioning, bu
 
 ## Fix
 
-Add a targeted **post-provisioning migration** that reconciles just the field you changed. Read the current choices, and if the new value is missing, PATCH the field. The PATCH must be verbose because it carries `__metadata`:
+Add a targeted **post-provisioning migration** that reconciles just the field you changed. Read the current choices, and if the new value is missing, MERGE the field. Under `SPHttpClient` the MERGE is plain JSON in the OData v4 shape — a verbose body with `__metadata` fails there with HTTP 400, because the client sends `odata-version: 4.0` ([Drop `__metadata` from write bodies](metadata-body-requires-verbose.md)):
 
 ```ts
 // 1) read current choices
@@ -51,12 +51,12 @@ const desired = ['Draft', 'PendingApproval', 'Scheduled', 'Published', 'Archived
 current.forEach(c => { if (desired.indexOf(c) === -1) desired.push(c); }); // keep unknown legacy values
 await sp.post(url, cfg, {
   headers: {
-    Accept: 'application/json;odata=verbose',
-    'Content-Type': 'application/json;odata=verbose',
+    Accept: 'application/json',
+    'Content-Type': 'application/json',
     'X-HTTP-Method': 'MERGE',
     'IF-MATCH': '*'
   },
-  body: JSON.stringify({ __metadata: { type: 'SP.FieldChoice' }, Choices: { results: desired } })
+  body: JSON.stringify({ '@odata.type': '#SP.FieldChoice', Choices: desired })   // a plain array in v4
 });
 ```
 
@@ -92,6 +92,7 @@ So: check `res.ok` (and the parsed shape) before computing the union, and treat 
 ## Notes
 
 - The same pattern fixes any existing-field schema drift: a `Required` toggle, a new calculated formula, an added lookup — the create-if-missing step won't apply them, a post-hook MERGE will.
-- The MERGE `type` must match the field — `SP.FieldChoice` (or `SP.FieldMultiChoice`), `SP.FieldText`, `SP.FieldNumber`, and so on. The wrong `type` 400s. (`__metadata` also requires `odata=verbose` on both headers — see [`__metadata` body requires verbose](metadata-body-requires-verbose.md).)
+- The `@odata.type` must match the field — `#SP.FieldChoice` for a Choice column, `#SP.FieldMultiChoice` for a multi-choice one. The wrong type 400s.
+- An earlier version of this article sent the MERGE as `odata=verbose` with `__metadata` and `Choices: { results: [...] }`. Through `SPHttpClient` that body fails with HTTP 400, and a fail-safe reconcile that only warns never succeeds even once — in our case it went unnoticed for about a year, until an unrelated audit found it.
 - Related trap, opposite direction: [Choice fields accept any value over REST](choice-fields-accept-any-value.md). The two compound — even where a raw write would otherwise slip an unknown value through, the field on already-deployed sites still lacks it in its *definition*, so forms won't offer it and group-bys ignore it. Keep the field definition and your app's vocabulary in lockstep.
 - Don't "fix" it by deleting and recreating the field — that destroys every value already stored in the column. Reconcile in place.

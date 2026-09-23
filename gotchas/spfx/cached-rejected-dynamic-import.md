@@ -9,7 +9,7 @@ last-reviewed: 2026-07-24
 
 > **Bottom line.** The common "load the library once" pattern — `let p = null; if (!p) p = import('x')` — caches the *promise*, and a rejected promise stays rejected forever. One transient chunk-load failure (flaky network, a CDN/Pages build not live yet) then disables the feature for the rest of the session, even after connectivity is back. Reset the cache to `null` in a `.catch` so the next call retries.
 >
-> **Ve zkratce.** Oblíbený vzor „načti knihovnu jen jednou" — `let p = null; if (!p) p = import('x')` — cachuje *Promise*, a jednou odmítnutý Promise zůstane odmítnutý navždy. Jediný přechodný výpadek načtení chunku (kolísavá síť, CDN/Pages build ještě není live) pak feature vypne do konce session, i když je síť zpět. Na `.catch` cache vynuluj na `null`, ať příští volání zkusí import znovu.
+> **Ve zkratce.** Oblíbený vzor „načti knihovnu jen jednou“ – `let p = null; if (!p) p = import('x')` – cachuje *Promise*, a jednou odmítnutý Promise zůstane odmítnutý navždy. Jediný přechodný výpadek načtení chunku (kolísavá síť, CDN/Pages build ještě není live) pak feature vypne do konce session, i když je síť zpět. Na `.catch` cache vynuluj na `null`, ať příští volání zkusí import znovu.
 
 ## Symptom
 

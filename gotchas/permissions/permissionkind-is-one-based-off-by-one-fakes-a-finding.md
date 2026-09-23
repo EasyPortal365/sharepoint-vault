@@ -9,7 +9,7 @@ last-reviewed: 2026-09-04
 
 > **Bottom line.** `BasePermissions` is a bit mask, but `PermissionKind` is **1-based**: the flag for kind *k* is `1 << (k - 1)`. Decode it with `1 << k` and every permission shifts by one place — so a role that merely has `ViewFormPages` reports as having `ManageLists`, and a correctly hardened list looks wide open.
 >
-> **Ve zkratce.** `PermissionKind` je 1-based, bit je `1 << (kind − 1)`. S `1 << kind` se všechna oprávnění posunou o jedno a role, která má jen `ViewFormPages`, se ohlásí jako by měla `ManageLists` — správně zpevněný seznam pak vypadá jako díra.
+> **Ve zkratce.** `PermissionKind` je 1-based, bit je `1 << (kind − 1)`. S `1 << kind` se všechna oprávnění posunou o jedno a role, která má jen `ViewFormPages`, se ohlásí jako by měla `ManageLists` – správně zpevněný seznam pak vypadá jako díra.
 
 ## Symptom
 

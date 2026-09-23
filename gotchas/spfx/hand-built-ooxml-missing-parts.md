@@ -9,7 +9,7 @@ last-reviewed: 2026-08-28
 
 > **Bottom line.** Generating Office files client-side with JSZip is a few hundred lines and needs no new dependency — but the package is validated as a whole. A header image referenced from the wrong `.rels`, a missing `<Default Extension="png">`, a namespace declared on the document instead of the header, or a `.pptx` without a theme and a slide master: each one produces the same useless message, *"the file is corrupt"*, with no hint which part is at fault. Split the package assembly from the zipping so the parts can be asserted and run through a real XML parser in a unit test.
 >
-> **Ve zkratce.** Skládat Office soubory v prohlížeči přes JSZip jde bez nové závislosti, ale balíček se ověřuje jako celek. Obrázek odkázaný z nesprávného `.rels`, chybějící `<Default Extension="png">`, namespace deklarovaný na dokumentu místo na hlavičce nebo `.pptx` bez motivu a předlohy — všechno skončí toutéž hláškou „soubor je poškozen" bez nápovědy, co konkrétně. Odděl skládání částí od zipování, ať jdou části testovat a prohnat skutečným XML parserem.
+> **Ve zkratce.** Skládat Office soubory v prohlížeči přes JSZip jde bez nové závislosti, ale balíček se ověřuje jako celek. Obrázek odkázaný z nesprávného `.rels`, chybějící `<Default Extension="png">`, namespace deklarovaný na dokumentu místo na hlavičce nebo `.pptx` bez motivu a předlohy – všechno skončí toutéž hláškou „soubor je poškozen“ bez nápovědy, co konkrétně. Odděl skládání částí od zipování, ať jdou části testovat a prohnat skutečným XML parserem.
 
 ## The traps, in the order they bite
 

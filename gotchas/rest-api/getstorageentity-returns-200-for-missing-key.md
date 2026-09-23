@@ -9,7 +9,7 @@ last-reviewed: 2026-08-22
 
 > **Bottom line.** A tenant property that was never set answers `HTTP 200 {"odata.null":true}`, so status codes cannot tell "not configured" apart from "read failed" — and writing one needs Tenant Admin, so an app can never provision its own.
 >
-> **Ve zkratce.** Nenastavená tenant property vrací `HTTP 200 {"odata.null":true}`, takže podle status kódu nerozlišíš „není nakonfigurováno" od „čtení selhalo" – a zápis vyžaduje Tenant Admin, takže si aplikace vlastní property nikdy nezaloží sama.
+> **Ve zkratce.** Nenastavená tenant property vrací `HTTP 200 {"odata.null":true}`, takže podle status kódu nerozlišíš „není nakonfigurováno“ od „čtení selhalo“ – a zápis vyžaduje Tenant Admin, takže si aplikace vlastní property nikdy nezaloží sama.
 
 ## Symptom
 

@@ -9,7 +9,7 @@ last-reviewed: 2026-08-22
 
 > **Bottom line.** A `<div>` appended to a `[role="row"]` lands in the wrong place and shifts the whole table — not because the grid is "too virtualized to touch", but because rows are `display: contents` and every real cell carries an **explicit** `grid-column` / `grid-row`. Add a track to the grid, set both properties on your own cells, push the trailing `addColumnCell_*` right, and it lays out exactly.
 >
-> **Ve zkratce.** `<div>` přidaný do `[role="row"]` se usadí špatně a rozhodí tabulku — ne proto, že by mřížka byla „moc virtualizovaná", ale protože řádky mají `display: contents` a každá skutečná buňka má **explicitní** `grid-column` / `grid-row`. Přidej mřížce dráhu, nastav své buňce obě vlastnosti a odsuň koncovou `addColumnCell_*` doprava — pak sedí přesně.
+> **Ve zkratce.** `<div>` přidaný do `[role="row"]` se usadí špatně a rozhodí tabulku – ne proto, že by mřížka byla „moc virtualizovaná“, ale protože řádky mají `display: contents` a každá skutečná buňka má **explicitní** `grid-column` / `grid-row`. Přidej mřížce dráhu, nastav své buňce obě vlastnosti a odsuň koncovou `addColumnCell_*` doprava – pak sedí přesně.
 
 ## Symptom
 

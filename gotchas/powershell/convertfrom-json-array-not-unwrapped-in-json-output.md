@@ -9,7 +9,7 @@ last-reviewed: 2026-08-01
 
 > **Bottom line.** In Windows PowerShell 5.1, `ConvertFrom-Json` returns a JSON array as a *PSObject-wrapped* array. Wrapping the **pipeline** in `@(...)` does not enumerate it — you get an array whose single element is the whole inner array. Concatenating (`@($newItem) + $parsed`) then nests that array as one item, and `ConvertTo-Json` happily serializes the wrapper as `{"value":[…],"Count":1}`. Enumerate explicitly (`$parsed | ForEach-Object { $_ }`) and filter for the shape you expect before writing anything back.
 >
-> **Ve zkratce.** Ve Windows PowerShellu 5.1 vrací `ConvertFrom-Json` pole obalené v PSObjectu. `@(...)` KOLEM PIPELINE ho neenumeruje — vznikne pole, jehož jediný prvek je celé vnitřní pole. Následné `@($novy) + $parsed` pak vnoří pole jako jeden prvek a `ConvertTo-Json` vypíše `{"value":[…],"Count":1}`. Enumeruj explicitně (`$parsed | ForEach-Object { $_ }`) a před zápisem filtruj na očekávaný tvar.
+> **Ve zkratce.** Ve Windows PowerShellu 5.1 vrací `ConvertFrom-Json` pole obalené v PSObjectu. `@(...)` KOLEM PIPELINE ho neenumeruje – vznikne pole, jehož jediný prvek je celé vnitřní pole. Následné `@($novy) + $parsed` pak vnoří pole jako jeden prvek a `ConvertTo-Json` vypíše `{"value":[…],"Count":1}`. Enumeruj explicitně (`$parsed | ForEach-Object { $_ }`) a před zápisem filtruj na očekávaný tvar.
 
 ## Symptom
 

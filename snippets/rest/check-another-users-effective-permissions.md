@@ -9,7 +9,7 @@ last-reviewed: 2026-07-29
 
 > **Bottom line.** `getusereffectivepermissions` returns the resolved permission mask for **any** user, so you can verify "will a normal employee actually be able to read this?" from your own admin session — no test account, no password sharing.
 >
-> **Ve zkratce.** `getusereffectivepermissions` vrátí výslednou masku oprávnění pro **libovolného** uživatele, takže si z vlastní admin session ověříš „dostane se sem běžný zaměstnanec?" – bez testovacího účtu a bez sdílení hesla.
+> **Ve zkratce.** `getusereffectivepermissions` vrátí výslednou masku oprávnění pro **libovolného** uživatele, takže si z vlastní admin session ověříš „dostane se sem běžný zaměstnanec?“ – bez testovacího účtu a bez sdílení hesla.
 
 ## Why you want this
 
@@ -76,4 +76,4 @@ GET /_api/web?$select=Title,HasUniqueRoleAssignments
 GET /_api/web/roleassignments?$expand=Member,RoleDefinitionBindings
 ```
 
-If `HasUniqueRoleAssignments` is true and the assignments don't include *Everyone except external users*, don't assume ordinary users can read that web — a surprising number of tenants have a locked-down root site.
+If `HasUniqueRoleAssignments` is true and the assignments don't include *Everyone except external users*, don't assume ordinary users can read that web — a surprising number of tenants have a locked-down root site ([The tenant root site is not necessarily readable by everyone](../../gotchas/permissions/tenant-root-site-is-not-readable-by-everyone.md)).

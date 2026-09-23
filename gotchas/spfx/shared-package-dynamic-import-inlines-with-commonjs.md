@@ -9,7 +9,7 @@ last-reviewed: 2026-07-20
 
 > **Bottom line.** A linked TS package that `import()`s a heavy library is meant to code-split it into a lazy chunk. If the package is compiled with `module: commonjs`, `tsc` rewrites `import()` to `require()`, which webpack can't split — the library lands in the host app's **main** bundle instead. Set the package's own `module: esnext` so the dynamic import survives into `lib/`.
 >
-> **Ve zkratce.** Linkovaný TS balíček, který `import()`uje těžkou knihovnu, ji má odštěpit do lazy chunku. Když se balíček kompiluje s `module: commonjs`, `tsc` přepíše `import()` na `require()`, který webpack neumí odštěpit — knihovna skončí v **main** bundlu hostitelské appky. Nastav balíčku vlastní `module: esnext`, ať dynamický import přežije do `lib/`.
+> **Ve zkratce.** Linkovaný TS balíček, který `import()`uje těžkou knihovnu, ji má odštěpit do lazy chunku. Když se balíček kompiluje s `module: commonjs`, `tsc` přepíše `import()` na `require()`, který webpack neumí odštěpit – knihovna skončí v **main** bundlu hostitelské appky. Nastav balíčku vlastní `module: esnext`, ať dynamický import přežije do `lib/`.
 
 ## Symptom
 

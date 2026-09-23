@@ -9,7 +9,7 @@ last-reviewed: 2026-08-10
 
 > **Bottom line.** A "was this helpful?" button or a view counter is written by the **reader**, not by the author. If that counter is a column on the content list — and that list is protected with `WriteSecurity: 4` so ordinary users cannot rewrite the content — every reader's click returns `403`, the app swallows it, and the UI still says "thanks for your feedback". Your analytics then measure the editorial team only.
 >
-> **Ve zkratce.** Počítadlo zobrazení a hodnocení zapisuje ČTENÁŘ. Když leží ve sloupci chráněného obsahového listu, běžný uživatel dostane 403, appka ho spolkne a ještě poděkuje — statistiky pak měří jen redakci.
+> **Ve zkratce.** Počítadlo zobrazení a hodnocení zapisuje ČTENÁŘ. Když leží ve sloupci chráněného obsahového listu, běžný uživatel dostane 403, appka ho spolkne a ještě poděkuje – statistiky pak měří jen redakci.
 
 ## Symptom
 

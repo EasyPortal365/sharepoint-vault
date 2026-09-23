@@ -9,7 +9,7 @@ last-reviewed: 2026-09-23
 
 > **Bottom line.** Emptying a list does **not** rewind its ID counter: delete every item and the next one still gets the next number. So rows in a *second* list that reference the purged items by ID become dead weight, not silently reattached data. That changes the moment somebody deletes the list itself and lets provisioning recreate it — the new list starts at `1`, and every orphaned reference suddenly points at a real, unrelated item.
 >
-> **Ve zkratce.** Vyprázdnění listu čítač Id nevynuluje — osiřelé odkazy z jiného listu jsou mrtvá data, ne záměna. Záměna hrozí až když se list smaže a znovu vytvoří: nový začne od 1.
+> **Ve zkratce.** Vyprázdnění listu čítač Id nevynuluje – osiřelé odkazy z jiného listu jsou mrtvá data, ne záměna. Záměna hrozí až když se list smaže a znovu vytvoří: nový začne od 1.
 
 ## Symptom
 

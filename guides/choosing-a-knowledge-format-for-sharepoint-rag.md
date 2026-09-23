@@ -2,7 +2,7 @@
 title: "Markdown vs DOCX vs site pages: choosing a knowledge format for RAG on SharePoint"
 tags: [search, rag, files, markdown, architecture]
 applies-to: SharePoint Online
-last-reviewed: 2026-07-16
+last-reviewed: 2026-09-24
 ---
 
 # Markdown vs DOCX vs site pages: choosing a knowledge format for RAG on SharePoint
@@ -27,15 +27,9 @@ The candidates people actually consider: **site pages** (modern .aspx), **Word d
 
 For the machine half of the pipeline, Markdown wins outright: it reads best by a wide margin (extraction quality, token efficiency) **and** — despite what the official parsed-file-types table implies — SharePoint Online full-text indexes it, so discovery works too. The real trade-off left on the table is **authoring UX**: pages and Word are where humans write comfortably, Markdown isn't (yet) first-class to edit in M365.
 
-## How a query-time RAG pipeline sees SharePoint
+## Where the format matters
 
-The common shape — no separate vector index, everything security-trimmed at query time:
-
-1. **Discover** candidates via `/_api/search/query` (KQL, often filtered `IsDocument:1`).
-2. **Deep-read** the top few hits: download the file and extract text into a fixed character/token budget.
-3. **Synthesize** with the extracted text as numbered sources.
-
-Each format behaves very differently in steps 1 and 2.
+However a pipeline is built, knowledge reaches the model in two moves: something has to **find** it — usually the search index, trimmed to what the user may see — and something has to **read** it into a limited budget of characters or tokens. The four formats behave very differently in both.
 
 ## Format by format
 
@@ -61,7 +55,7 @@ For the reading half, Markdown is close to ideal:
 
 And the discovery half works too — with an asterisk worth knowing about. The official parsed-file-types table doesn't list `.md`, which reads as "bodies never reach the index". **A live probe says otherwise: SharePoint Online full-text indexes `.md` bodies** (verified via `/_api/search/query` with the hit highlight coming from the body — [full story](../gotchas/search/md-is-fulltext-indexed-despite-the-docs.md)). If this is load-bearing for your design, spend the two minutes re-running that probe on your tenant; the docs and the service clearly move at different speeds.
 
-Metadata still pays off — not as a workaround, but as quality: rich Title/description/keyword columns (or a precomputed AI summary column written by a background job) lift ranking and give the pipeline a cheap high-signal snippet without re-reading the file.
+Metadata still pays off — not as a workaround, but as quality: rich Title/description/keyword columns lift ranking and give a reader a cheap high-signal snippet without re-reading the file.
 
 Markdown's real weakness in M365 is authoring: there's no first-class browser editor, so either your authors are comfortable in VS Code/Typora-land, or an app generates the files (see below).
 
@@ -77,16 +71,9 @@ Deep-read budgets are finite (thousands of characters per source, not millions),
 
 The lesson isn't "pick a format", it's "**extract cleanly, whatever the format**". Full method, per-format breakdown, a Czech-vs-English language tax, and a reproducible harness: **[What each format costs the model](token-cost-of-sharepoint-content-formats.md)**.
 
-## A pragmatic architecture
+## The practical upshot
 
-**Author where the UX is; publish where the machine reads.**
-
-1. Keep authoring in whatever has the best human workflow — Word, a page editor, or an app with forms and approval.
-2. On publish/approve, **generate a Markdown derivative** into a dedicated document library (one file per article, front-matter or columns for category/tags/owner). The source of truth stays where it was; the `.md` file is a build artifact, regenerated on every change.
-3. Add **summary/keyword metadata columns** to the library (precomputed if you can) — bodies are indexed, but curated metadata lifts ranking and gives the pipeline a cheap high-signal snippet.
-4. Point your RAG pipeline (or its "authoritative sources" allowlist, if it has one) at that library.
-
-This gets you page/Word-grade authoring, Markdown-grade extraction, and metadata-grade discovery — without asking either your authors or your pipeline to compromise.
+**Author where the UX is; give the machine clean text.** Keep writing in whatever has the best human workflow — Word, the page editor, an app with forms and approval — and wherever a machine reads the knowledge, make a clean text rendition available next to the original (Markdown is the natural choice), regenerated whenever the source changes. Good titles and descriptions help discovery whichever format you pick.
 
 ## Related
 

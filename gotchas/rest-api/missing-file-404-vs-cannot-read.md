@@ -9,7 +9,7 @@ last-reviewed: 2026-08-26
 
 > **Bottom line.** A per-user JSON file in a library is a legitimate storage pattern — the file path *is* the filter, so everyone physically reads only their own. But a missing file (404) is a normal, meaningful state, while 403/500/network failure is not. If your read helper returns `T | null`, both land on `null`, and a friendly empty state ("Nothing is waiting — you are all done") ends up telling the exact opposite of the truth to the one person who has something overdue.
 >
-> **Ve zkratce.** Osobní JSON soubor v knihovně je legitimní vzor — cesta k souboru je zároveň filtrem, takže každý fyzicky čte jen svůj. Jenže „soubor neexistuje" (404) je normální stav, kdežto 403/500/výpadek sítě ne. Když čtecí helper vrací `T | null`, obojí skončí jako `null` a vlídný prázdný stav („Nic vás nečeká") pak lže právě tomu, kdo má něco po termínu.
+> **Ve zkratce.** Osobní JSON soubor v knihovně je legitimní vzor – cesta k souboru je zároveň filtrem, takže každý fyzicky čte jen svůj. Jenže „soubor neexistuje“ (404) je normální stav, kdežto 403/500/výpadek sítě ne. Když čtecí helper vrací `T | null`, obojí skončí jako `null` a vlídný prázdný stav („Nic vás nečeká“) pak lže právě tomu, kdo má něco po termínu.
 
 ## Symptom
 

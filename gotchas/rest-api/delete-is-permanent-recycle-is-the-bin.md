@@ -9,7 +9,7 @@ last-reviewed: 2026-09-19
 
 > **Bottom line.** `X-HTTP-Method: DELETE` on `/items(id)` removes the item **for good**: it shows up in neither the site recycle bin nor the site-collection one. If your UI promises "it goes to the recycle bin, you can restore it", you must call `POST /items(id)/recycle()` instead.
 >
-> **Ve zkratce.** `X-HTTP-Method: DELETE` na `/items(id)` maže položku **natrvalo** – není pak ani v koši webu, ani v koši kolekce. Když UI slibuje „jde to do koše, dá se to obnovit", musí se volat `POST /items(id)/recycle()`.
+> **Ve zkratce.** `X-HTTP-Method: DELETE` na `/items(id)` maže položku **natrvalo** – není pak ani v koši webu, ani v koši kolekce. Když UI slibuje „jde to do koše, dá se to obnovit“, musí se volat `POST /items(id)/recycle()`.
 
 ## Symptom
 

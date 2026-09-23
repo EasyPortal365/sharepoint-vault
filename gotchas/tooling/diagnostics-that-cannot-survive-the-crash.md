@@ -9,7 +9,7 @@ last-reviewed: 2026-08-26
 
 > **Bottom line.** An in-page diagnostic that reports through the UI, is gated on a flag in `sessionStorage`, or writes its findings to a single last-write-wins slot will produce **nothing at all** in the one situation it was built for. A frozen main thread stops repainting and stops timers; a closed tab wipes `sessionStorage`; and the healthy run that follows the crash overwrites the crash data before anyone reads it. Persist synchronously, key the recovery on the data rather than on a flag, and never let a later run clobber an earlier crash report.
 >
-> **Ve zkratce.** Diagnostika, která hlásí přes UI, je podmíněná příznakem v `sessionStorage` nebo zapisuje do jediného slotu „poslední zápis vyhrává", nedodá **vůbec nic** právě v situaci, kvůli které vznikla. Zablokované hlavní vlákno přestane překreslovat i pouštět časovače, zavřená karta smaže `sessionStorage` a zdravý běh po pádu přepíše data z pádu dřív, než je někdo přečte. Zapisujte synchronně, záchranu podmiňte DATY, ne příznakem, a nedovolte pozdějšímu běhu přemazat starší hlášení o pádu.
+> **Ve zkratce.** Diagnostika, která hlásí přes UI, je podmíněná příznakem v `sessionStorage` nebo zapisuje do jediného slotu „poslední zápis vyhrává“, nedodá **vůbec nic** právě v situaci, kvůli které vznikla. Zablokované hlavní vlákno přestane překreslovat i pouštět časovače, zavřená karta smaže `sessionStorage` a zdravý běh po pádu přepíše data z pádu dřív, než je někdo přečte. Zapisujte synchronně, záchranu podmiňte DATY, ne příznakem, a nedovolte pozdějšímu běhu přemazat starší hlášení o pádu.
 
 ## Symptom
 

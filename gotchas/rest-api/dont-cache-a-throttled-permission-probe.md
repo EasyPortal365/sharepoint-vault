@@ -9,7 +9,7 @@ last-reviewed: 2026-07-23
 
 > **Bottom line.** Resolving a user's role from `/_api/web/currentuser/groups` (plus `IsSiteAdmin`) and caching it is fine — until that call is throttled (429) or forbidden (403), your code reads "no groups" as "not privileged", resolves the lowest role, and the cache pins the user there for the whole TTL. Only persist a role when the probe actually returned 200; on failure, degrade for this render but never cache it.
 >
-> **Ve zkratce.** Odvodit roli z `/_api/web/currentuser/groups` (a `IsSiteAdmin`) a zacachovat ji je v pořádku – dokud ten dotaz neškrtne 429 nebo 403, kód nepřečte „žádné skupiny" jako „bez oprávnění", nespadne na nejnižší roli a cache uživatele v ní nezamkne na celé TTL. Cachuj roli jen když probe vrátil 200; při selhání degraduj jen pro tento render, ale nikdy to neukládej.
+> **Ve zkratce.** Odvodit roli z `/_api/web/currentuser/groups` (a `IsSiteAdmin`) a zacachovat ji je v pořádku – dokud ten dotaz neškrtne 429 nebo 403, kód nepřečte „žádné skupiny“ jako „bez oprávnění“, nespadne na nejnižší roli a cache uživatele v ní nezamkne na celé TTL. Cachuj roli jen když probe vrátil 200; při selhání degraduj jen pro tento render, ale nikdy to neukládej.
 
 ## Symptom
 

@@ -9,7 +9,7 @@ last-reviewed: 2026-07-26
 
 > **Bottom line.** In PowerShell 7 a `[ref]`-wrapped argument reaches the COM binder as a `PSObject` it cannot convert, so VBA-style calls like `$doc.SaveAs2([ref]$path, [ref]$format)` die with "Cannot convert … type psobject to type Object" — pass the values directly (`$doc.SaveAs2($path, $format)`); Office COM methods take them positionally just fine.
 >
-> **Ve zkratce.** V PowerShellu 7 dorazí argument zabalený do `[ref]` do COM binderu jako `PSObject`, který neumí převést, takže volání ve stylu VBA `$doc.SaveAs2([ref]$path, [ref]$format)` spadne na „Cannot convert … type psobject to type Object" – předávej hodnoty přímo (`$doc.SaveAs2($path, $format)`); pozičně je COM metody Office berou bez problému.
+> **Ve zkratce.** V PowerShellu 7 dorazí argument zabalený do `[ref]` do COM binderu jako `PSObject`, který neumí převést, takže volání ve stylu VBA `$doc.SaveAs2([ref]$path, [ref]$format)` spadne na „Cannot convert … type psobject to type Object“ – předávej hodnoty přímo (`$doc.SaveAs2($path, $format)`); pozičně je COM metody Office berou bez problému.
 
 ## Symptom
 

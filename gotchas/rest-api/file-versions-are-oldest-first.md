@@ -9,7 +9,7 @@ last-reviewed: 2026-08-16
 
 > **Bottom line.** `/Versions` returns the version history in **ascending** order. Pair that with a `$top` and you silently drop the **newest** versions — the exact ones a "compare with the previous version" or "restore recent" feature needs. Sorting the result descending afterwards hides the damage: the list looks freshly ordered while the recent half never arrived.
 >
-> **Ve zkratce.** `/Versions` vrací historii **vzestupně**. Když k tomu přidáš `$top`, tiše přijdeš o ty **nejnovější** verze – přesně o ty, kvůli kterým funkce typu „porovnej s předchozí verzí" existuje. Lokální seřazení sestupně škodu zamaskuje: seznam vypadá čerstvě seřazený, jenže novější polovina nikdy nedorazila.
+> **Ve zkratce.** `/Versions` vrací historii **vzestupně**. Když k tomu přidáš `$top`, tiše přijdeš o ty **nejnovější** verze – přesně o ty, kvůli kterým funkce typu „porovnej s předchozí verzí“ existuje. Lokální seřazení sestupně škodu zamaskuje: seznam vypadá čerstvě seřazený, jenže novější polovina nikdy nedorazila.
 
 ## Symptom
 

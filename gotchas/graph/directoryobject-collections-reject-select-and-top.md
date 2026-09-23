@@ -9,7 +9,7 @@ last-reviewed: 2026-07-25
 
 > **Bottom line.** On heterogeneous directoryObject collections (`/members`, `/memberOf`, `/owners`, `/transitiveMembers`), `$select=displayName,userPrincipalName,…` returns **HTTP 400** because the base type only has `id`. An **OData cast** (`/members/microsoft.graph.user`) fixes that everywhere — but it does **not** unlock `$top`, which some endpoints refuse independently (`/directoryRoles/{id}/members` → `400 Request_UnsupportedQuery`). Both are runtime-only: your compiler and linter pass, the call fails in production.
 >
-> **Ve zkratce.** U heterogenních directoryObject kolekcí (`/members`, `/memberOf`, `/owners`, `/transitiveMembers`) vrátí `$select` user-polí **HTTP 400** — bázový typ má jen `id`. **OData cast** (`/members/microsoft.graph.user`) tuhle past odstraní všude, ale **neodemkne `$top`**, který některé endpointy odmítají nezávisle (`/directoryRoles/{id}/members` → `400 Request_UnsupportedQuery`). Obojí selže až za běhu — kompilátor ani linter to nechytí.
+> **Ve zkratce.** U heterogenních directoryObject kolekcí (`/members`, `/memberOf`, `/owners`, `/transitiveMembers`) vrátí `$select` user-polí **HTTP 400** – bázový typ má jen `id`. **OData cast** (`/members/microsoft.graph.user`) tuhle past odstraní všude, ale **neodemkne `$top`**, který některé endpointy odmítají nezávisle (`/directoryRoles/{id}/members` → `400 Request_UnsupportedQuery`). Obojí selže až za běhu – kompilátor ani linter to nechytí.
 
 ## Symptom
 

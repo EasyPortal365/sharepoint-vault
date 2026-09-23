@@ -2,21 +2,21 @@
 title: PowerShell 7 treats typographic quotes as string delimiters
 tags: [powershell, encoding, localization]
 applies-to: PowerShell 7 (and Windows PowerShell 5.1)
-last-reviewed: 2026-08-05
+last-reviewed: 2026-09-24
 ---
 
 # PowerShell 7 treats typographic quotes as string *delimiters*
 
-> **Bottom line.** PowerShell's parser treats typographic quotes (`„ " ' '`) as string delimiters, so localized text ends the string mid-sentence and breaks the parse — put any prose with curly quotes into a single-quoted here-string `@'…'@`.
+> **Bottom line.** PowerShell's parser treats typographic quotes (`„ “ ” ‘ ’`) as string delimiters, so localized text ends the string mid-sentence and breaks the parse — put any prose with curly quotes into a single-quoted here-string `@'…'@`.
 >
-> **Ve zkratce.** Parser PowerShellu bere typografické uvozovky (`„ " ' '`) jako oddělovače řetězců, takže lokalizovaný text ukončí řetězec uprostřed věty a rozbije parsování – jakoukoli prózu s kudrnatými uvozovkami vlož do single-quoted here-stringu `@'…'@`.
+> **Ve zkratce.** Parser PowerShellu bere typografické uvozovky (`„ “ ” ‘ ’`) jako oddělovače řetězců, takže lokalizovaný text ukončí řetězec uprostřed věty a rozbije parsování – jakoukoli prózu s kudrnatými uvozovkami vlož do single-quoted here-stringu `@'…'@`.
 
 ## Symptom
 
 A script assembles localized text (release notes, issue bodies, e-mail copy):
 
 ```powershell
-$body = "After clicking „Reserve vehicle" the driver sees a banner…"
+$body = "After clicking „Reserve vehicle“ the driver sees a banner…"
 ```
 
 and dies with a parser error in the middle of the sentence:
@@ -29,8 +29,8 @@ Replacing one kind of curly quote with another doesn't help.
 
 PowerShell's parser accepts **Unicode typographic quotes as string delimiters**, equivalent to their ASCII cousins:
 
-- `"` (U+201C), `"` (U+201D), `„` (U+201E) all behave like `"`
-- `'` (U+2018), `'` (U+2019) behave like `'`
+- `“` (U+201C), `”` (U+201D), `„` (U+201E) all behave like `"`
+- `‘` (U+2018), `’` (U+2019) behave like `'`
 
 So a double-quoted string containing `„` ends right there, and the rest of your prose is parsed as code. Any language whose typography uses these marks (German, Czech, and curly-quoted English from Word) triggers it.
 
@@ -40,7 +40,7 @@ Text with typographic quotes goes into a **single-quoted here-string** — fully
 
 ```powershell
 $body = @'
-After clicking „Reserve vehicle" the driver sees a banner…
+After clicking „Reserve vehicle“ the driver sees a banner…
 
 Shipped in 1.2.0.
 '@

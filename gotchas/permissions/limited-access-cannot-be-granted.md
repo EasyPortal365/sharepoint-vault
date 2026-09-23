@@ -9,7 +9,7 @@ last-reviewed: 2026-09-12
 
 > **Bottom line.** `Limited Access` (`RoleTypeKind: 1`) is not a permission level an administrator hands out — SharePoint maintains it itself so that people can *traverse* to a child object that has its own permissions. An explicit `addroleassignment` with its `roledefid` is **accepted and discarded**: HTTP 200, no change. Any code that copies role assignments from one object to another must strip it, or its own verification pass will report a mismatch that is not a mismatch.
 >
-> **Ve zkratce.** `Limited Access` (`RoleTypeKind: 1`) není úroveň, kterou uděluje správce — SharePoint si ji spravuje sám, aby se dalo projít k potomkovi, který má vlastní oprávnění. Explicitní `addroleassignment` s jejím `roledefid` server **přijme a zahodí**: HTTP 200, žádná změna. Kód, který kopíruje přiřazení rolí mezi objekty, ji musí odfiltrovat — jinak jeho vlastní ověření nahlásí neshodu, která žádnou neshodou není.
+> **Ve zkratce.** `Limited Access` (`RoleTypeKind: 1`) není úroveň, kterou uděluje správce – SharePoint si ji spravuje sám, aby se dalo projít k potomkovi, který má vlastní oprávnění. Explicitní `addroleassignment` s jejím `roledefid` server **přijme a zahodí**: HTTP 200, žádná změna. Kód, který kopíruje přiřazení rolí mezi objekty, ji musí odfiltrovat – jinak jeho vlastní ověření nahlásí neshodu, která žádnou neshodou není.
 
 ## Symptom
 

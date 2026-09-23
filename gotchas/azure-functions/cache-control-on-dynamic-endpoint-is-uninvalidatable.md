@@ -9,7 +9,7 @@ last-reviewed: 2026-08-08
 
 > **Bottom line.** Putting `Cache-Control: max-age=…` on a dynamic aggregate hands every shared cache permission to hold that response keyed by URL — and then neither restarting the app nor deleting the underlying data clears it; only expiry does. Serve live data with `no-store`, cache server-side where you control invalidation, and have the consumer call with a cache-buster.
 >
-> **Ve zkratce.** `Cache-Control: max-age=…` na dynamickém agregátu dá každé sdílené cache právo držet odpověď klíčovanou na URL — a pak ji nesmaže ani restart appky, ani smazání zdrojových dat; jen expirace. Živá data servíruj s `no-store`, cachuj server-side (kde invalidaci ovládáš) a konzument ať volá s cache-busterem.
+> **Ve zkratce.** `Cache-Control: max-age=…` na dynamickém agregátu dá každé sdílené cache právo držet odpověď klíčovanou na URL – a pak ji nesmaže ani restart appky, ani smazání zdrojových dat; jen expirace. Živá data servíruj s `no-store`, cachuj server-side (kde invalidaci ovládáš) a konzument ať volá s cache-busterem.
 
 A public endpoint returned an aggregate — "X % of checked domains lack DMARC", computed
 from stored rows. To lighten the Function App it got, almost reflexively:

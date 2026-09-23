@@ -9,7 +9,7 @@ last-reviewed: 2026-08-31
 
 > **Bottom line.** The cheapest way to make a web part read-only — an admin previewing the app as someone else, a demo mode, a locked licence — is to wrap `SPHttpClient` once and let it reject everything that isn't a GET. It works, and it's much safer than sprinkling `if (readOnly)` through twenty handlers. But a typical SPFx app writes through **two** independent clients: `SPHttpClient` for SharePoint and `MSGraphClientFactory` for mail, calendar, Planner and groups. The wrapper never sees the second one, so "read-only" mode happily sends notification e-mail on somebody else's behalf.
 >
-> **Ve zkratce.** Nejlevnější způsob, jak z webpartu udělat režim jen pro čtení (náhled správce očima jiného uživatele, demo, uzamčená licence), je obalit `SPHttpClient` a odmítnout všechno kromě GET. Funguje to a je to bezpečnější než dvacet `if (readOnly)` v handlerech. Jenže SPFx appka běžně zapisuje **dvěma** nezávislými klienty: `SPHttpClient` do SharePointu a `MSGraphClientFactory` na poštu, kalendář, Planner a skupiny. Obal ten druhý nikdy neuvidí — a „režim jen pro čtení" v klidu odešle notifikační e-mail jménem někoho jiného.
+> **Ve zkratce.** Nejlevnější způsob, jak z webpartu udělat režim jen pro čtení (náhled správce očima jiného uživatele, demo, uzamčená licence), je obalit `SPHttpClient` a odmítnout všechno kromě GET. Funguje to a je to bezpečnější než dvacet `if (readOnly)` v handlerech. Jenže SPFx appka běžně zapisuje **dvěma** nezávislými klienty: `SPHttpClient` do SharePointu a `MSGraphClientFactory` na poštu, kalendář, Planner a skupiny. Obal ten druhý nikdy neuvidí – a „režim jen pro čtení“ v klidu odešle notifikační e-mail jménem někoho jiného.
 
 ## Symptom
 

@@ -9,7 +9,7 @@ last-reviewed: 2026-08-29
 
 > **Bottom line.** `GET /_api/HubSites` is security-trimmed: it lists only hubs whose hub site the caller may read. Missing permission shows up as `value: []` with **HTTP 200**, not as 403 — so "the tenant has no hubs" and "this account sees no hubs" are indistinguishable from the response alone. Never derive *"this site has no hub"* or *"nothing is inherited from a hub"* from an empty list.
 >
-> **Ve zkratce.** `GET /_api/HubSites` je ořezaný podle oprávnění: vrátí jen huby, na jejichž web volající vidí. Chybějící právo se projeví jako `value: []` se stavem **200**, ne jako 403 – z odpovědi samotné tedy nerozlišíš „tenant huby nemá" od „tenhle účet na ně nevidí". Z prázdného seznamu nikdy nevyvozuj, že web žádný hub nemá.
+> **Ve zkratce.** `GET /_api/HubSites` je ořezaný podle oprávnění: vrátí jen huby, na jejichž web volající vidí. Chybějící právo se projeví jako `value: []` se stavem **200**, ne jako 403 – z odpovědi samotné tedy nerozlišíš „tenant huby nemá“ od „tenhle účet na ně nevidí“. Z prázdného seznamu nikdy nevyvozuj, že web žádný hub nemá.
 
 ## Symptom
 

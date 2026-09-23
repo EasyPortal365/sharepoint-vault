@@ -9,7 +9,7 @@ last-reviewed: 2026-09-23
 
 > **Bottom line.** A library that answers `EnableVersioning: true, MajorVersionLimit: 0` keeps **every version forever** — the zero is the API's way of writing "no limit", so a governance report that prints the raw number tells its reader the exact opposite of the truth about the libraries eating their tenant quota.
 >
-> **Ve zkratce.** Knihovna, která vrátí `EnableVersioning: true, MajorVersionLimit: 0`, si drží **všechny verze navždy** – nula je způsob, jakým API zapisuje „bez limitu", takže governance report tisknoucí syrové číslo říká čtenáři pravý opak pravdy o knihovnách, které mu žerou kvótu tenantu.
+> **Ve zkratce.** Knihovna, která vrátí `EnableVersioning: true, MajorVersionLimit: 0`, si drží **všechny verze navždy** – nula je způsob, jakým API zapisuje „bez limitu“, takže governance report tisknoucí syrové číslo říká čtenáři pravý opak pravdy o knihovnách, které mu žerou kvótu tenantu.
 
 ## Symptom
 

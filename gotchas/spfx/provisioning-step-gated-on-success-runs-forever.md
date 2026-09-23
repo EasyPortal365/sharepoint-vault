@@ -9,7 +9,7 @@ last-reviewed: 2026-08-24
 
 > **Bottom line.** If a startup step needs `ManageLists` (or `ManagePermissions`) and you only record it as done when it fully succeeded, every ordinary member fails it, records nothing, and pays the whole batch of calls again on the *next* page load — forever. The marker needs two states, not one: *done* (permanent) and *tried and failed* (short-lived).
 >
-> **Ve zkratce.** Když startovní krok potřebuje `ManageLists` (nebo `ManagePermissions`) a značku „hotovo" zapíšeš jen po úplném úspěchu, běžnému členovi selže vždycky, nic si nezapíše a celou dávku volání zaplatí znovu při příštím načtení stránky — napořád. Značka potřebuje dva stavy, ne jeden: *hotovo* (trvale) a *zkoušeno a nepovedlo se* (krátkodobě).
+> **Ve zkratce.** Když startovní krok potřebuje `ManageLists` (nebo `ManagePermissions`) a značku „hotovo“ zapíšeš jen po úplném úspěchu, běžnému členovi selže vždycky, nic si nezapíše a celou dávku volání zaplatí znovu při příštím načtení stránky – napořád. Značka potřebuje dva stavy, ne jeden: *hotovo* (trvale) a *zkoušeno a nepovedlo se* (krátkodobě).
 
 ## Symptom
 

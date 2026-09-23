@@ -9,7 +9,7 @@ last-reviewed: 2026-09-20
 
 > **Bottom line.** Role-based field hiding in a client-side web part is cosmetic — anyone with Read on the list pulls the "hidden" column straight from `_api`, Export to Excel, or a second web part. For real confidentiality the data has to live somewhere the role has no Read (a separate list/library with unique permissions, item-level permissions, or behind a server-side tier); the UI toggle is hygiene, not a boundary.
 >
-> **Ve zkratce.** Skrytí pole podle role v klientském web partu je jen kosmetika – kdokoli s právem Read na list si „skrytý" sloupec vytáhne přes `_api`, přes Export do Excelu nebo druhým web partem. Pro skutečnou důvěrnost musí data ležet tam, kde role nemá Read (samostatný list/knihovna s vlastními právy, oprávnění na úrovni položky, nebo za serverovou vrstvou); přepínač v UI je hygiena, ne hranice.
+> **Ve zkratce.** Skrytí pole podle role v klientském web partu je jen kosmetika – kdokoli s právem Read na list si „skrytý“ sloupec vytáhne přes `_api`, přes Export do Excelu nebo druhým web partem. Pro skutečnou důvěrnost musí data ležet tam, kde role nemá Read (samostatný list/knihovna s vlastními právy, oprávnění na úrovni položky, nebo za serverovou vrstvou); přepínač v UI je hygiena, ne hranice.
 
 ## Symptom
 

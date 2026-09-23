@@ -2,14 +2,14 @@
 title: Provisioning folder trees at scale in SharePoint Online
 tags: [rest-api, permissions, provisioning, guide]
 applies-to: SharePoint Online
-last-reviewed: 2026-09-11
+last-reviewed: 2026-09-24
 ---
 
 # Provisioning folder trees at scale in SharePoint Online
 
-> **Bottom line.** SharePoint Online will happily create 86 folders with unique permissions from a single browser tab in about half a minute, with no throttling — so batching is an optimisation, not a prerequisite. The three things that *will* bite you are the alias-parameter syntax, walking the tree one folder at a time, and `copyRoleAssignments=false` quietly removing the owners group.
+> **Bottom line.** SharePoint Online will happily create 86 folders from a single browser tab in about half a minute, and break inheritance on 18 of them in another six seconds, without a single throttling response — so for a single site, batching is an optimisation, not a prerequisite. The three things that *will* bite you are the alias-parameter syntax, walking the tree one folder at a time, and `copyRoleAssignments=false` quietly removing the owners group.
 >
-> **Ve zkratce.** SharePoint Online zvládne založit 86 složek s vlastními oprávněními z jedné záložky prohlížeče zhruba za půl minuty a bez škrcení – dávkování je tedy optimalizace, ne podmínka. Tři věci, které vás naopak potrápí, jsou syntaxe alias parametru, procházení stromu složku po složce a `copyRoleAssignments=false`, které tiše odebere skupinu vlastníků.
+> **Ve zkratce.** SharePoint Online zvládne z jedné záložky prohlížeče založit 86 složek zhruba za půl minuty a 18 z nich za dalších šest sekund dát vlastní oprávnění, a to bez jediného škrcení – u jednoho webu je tedy dávkování optimalizace, ne podmínka. Tři věci, které vás naopak potrápí, jsou syntaxe alias parametru, procházení stromu složku po složce a `copyRoleAssignments=false`, které tiše odebere skupinu vlastníků.
 
 Plenty of solutions need to stamp the same folder structure onto many sites: a project template, a case-file layout, a per-customer workspace. The docs tell you which endpoints exist; they don't tell you what it costs, where the throttling ceiling is, or which of the two obvious approaches is forty-five times cheaper.
 
@@ -60,7 +60,7 @@ One name SharePoint will never accept, however you encode it: anything containin
 
 ## Trap 2: don't walk the tree
 
-The obvious way to read a folder structure is to `GET …/Folders`, then recurse into each child. It works, and it costs one request per folder — 90 requests and 13 seconds for our 86 folders.
+The obvious way to read a folder structure is to `GET …/Folders`, then recurse into each child. It works, and it costs one request per folder — 90 requests and 13 seconds for the 88 folders the library held when we read it (two more than the 86 our structure creates).
 
 Every folder in a library is also a list item with `FSObjType eq 1`. One query returns the lot:
 
@@ -99,7 +99,7 @@ This is nasty precisely because the person testing it never sees it. A site coll
 
 Worth knowing before you decide how deep to go: second-level folders inherit from a broken first-level parent. Breaking at the top level creates a permission zone that everything underneath picks up for free.
 
-So unique permissions on the second level are only needed where a specific subfolder must differ from its parent. Applying them everywhere is not a performance problem — 86 breaks cost about 29 seconds — it's a *maintenance* problem: every subsequent role change means walking every folder on every site instead of a handful.
+So unique permissions on the second level are only needed where a specific subfolder must differ from its parent. Applying them everywhere is not a performance problem — at the ~170 ms per call we measured, breaking and granting on all 86 folders works out at about half a minute — it's a *maintenance* problem: every subsequent role change means walking every folder on every site instead of a handful.
 
 ## Three smaller things, while you're here
 

@@ -9,7 +9,7 @@ last-reviewed: 2026-08-27
 
 > **Bottom line.** When search returns zero for content a user is plainly looking at, measure **search itself** before touching your code: query the target path, then `*`, then `contentclass:STS_Site`. If the last two return numbers and the first returns zero, your app is innocent — the site is not in the index, and no amount of query tuning will help. Never phrase an empty result as "nothing you have access to": that sends people to check permissions that were never broken.
 >
-> **Ve zkratce.** Když hledání vrátí nulu pro obsah, na který se uživatel právě dívá, změřte nejdřív **samotné hledání**, ne svůj kód: dotaz na cílovou cestu, pak `*` a pak `contentclass:STS_Site`. Když poslední dva vrátí čísla a první nulu, vaše aplikace je nevinná – web není v indexu a ladění dotazu nepomůže. Prázdný výsledek nikdy neformulujte jako „nic, k čemu máte přístup": pošlete tím lidi kontrolovat oprávnění, která byla celou dobu v pořádku.
+> **Ve zkratce.** Když hledání vrátí nulu pro obsah, na který se uživatel právě dívá, změřte nejdřív **samotné hledání**, ne svůj kód: dotaz na cílovou cestu, pak `*` a pak `contentclass:STS_Site`. Když poslední dva vrátí čísla a první nulu, vaše aplikace je nevinná – web není v indexu a ladění dotazu nepomůže. Prázdný výsledek nikdy neformulujte jako „nic, k čemu máte přístup“: pošlete tím lidi kontrolovat oprávnění, která byla celou dobu v pořádku.
 
 ## Symptom
 

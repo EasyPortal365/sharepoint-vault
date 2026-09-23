@@ -9,7 +9,7 @@ last-reviewed: 2026-07-25
 
 > **Bottom line.** A test suite for a service that touches `SPHttpClient` dies with `Cannot find module '@msinternal/ecs-flight'` before the first test runs — and adding `jest.mock('@microsoft/sp-http', …)` doesn't fix it, because Heft runs Jest over pre-compiled `lib-commonjs` **without Babel**, so `jest.mock()` never hoists above `require()`. Use `moduleNameMapper` in the project's `config/jest.config.json` instead.
 >
-> **Ve zkratce.** Testovací sada služby, která sahá na `SPHttpClient`, spadne na `Cannot find module '@msinternal/ecs-flight'` ještě před prvním testem — a `jest.mock('@microsoft/sp-http', …)` to NEspraví, protože Heft pouští Jest nad předkompilovaným `lib-commonjs` **bez Babelu**, takže se `jest.mock()` nikdy nehoistne nad `require()`. Použij `moduleNameMapper` v projektovém `config/jest.config.json`.
+> **Ve zkratce.** Testovací sada služby, která sahá na `SPHttpClient`, spadne na `Cannot find module '@msinternal/ecs-flight'` ještě před prvním testem – a `jest.mock('@microsoft/sp-http', …)` to NEspraví, protože Heft pouští Jest nad předkompilovaným `lib-commonjs` **bez Babelu**, takže se `jest.mock()` nikdy nehoistne nad `require()`. Použij `moduleNameMapper` v projektovém `config/jest.config.json`.
 
 ## Symptom
 

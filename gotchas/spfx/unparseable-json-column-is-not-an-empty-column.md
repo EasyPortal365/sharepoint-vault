@@ -9,7 +9,7 @@ last-reviewed: 2026-09-06
 
 > **Bottom line.** `try { JSON.parse(col) } catch { {} }` turns "could not read" into "is empty", and the next save of that record writes the emptiness back — a corrupt theme, vote, thread or targeting column silently becomes a blank one. Carry an `unreadable` flag from the read, refuse to write over it before the first PATCH, lock the form with a visible notice, and make recovery an explicit action.
 >
-> **Ve zkratce.** `try { JSON.parse(col) } catch { {} }` udělá z „nepřečteno" „prázdné" a další uložení záznamu to prázdno zapíše zpět – poškozený motiv, hlas, vlákno nebo cílení se tiše promění v prázdný sloupec. Čtení ať nese příznak `unreadable`, zápis nad ním odmítni ještě před prvním PATCH, formulář zamkni s viditelnou hláškou a obnovu udělej výslovnou akcí.
+> **Ve zkratce.** `try { JSON.parse(col) } catch { {} }` udělá z „nepřečteno“ „prázdné“ a další uložení záznamu to prázdno zapíše zpět – poškozený motiv, hlas, vlákno nebo cílení se tiše promění v prázdný sloupec. Čtení ať nese příznak `unreadable`, zápis nad ním odmítni ještě před prvním PATCH, formulář zamkni s viditelnou hláškou a obnovu udělej výslovnou akcí.
 
 ## Symptom
 

@@ -9,7 +9,7 @@ last-reviewed: 2026-09-17
 
 > **Bottom line.** Never make `cultureInfo.currentUICultureName` the sole input to "automatic language". The same page can load English once and Czech the next time with nothing changed. Remember the last *resolved* language in `localStorage`, keyed by web URL, and start from it — the network answer then confirms or corrects it.
 >
-> **Ve zkratce.** Nestavěj volbu „jazyk automaticky" jen na `cultureInfo.currentUICultureName`. Tatáž stránka se načte jednou anglicky a podruhé česky, aniž se cokoli změní. Poslední VYŘEŠENÝ jazyk si zapamatuj v `localStorage` pod klíčem s URL webu a startuj z něj.
+> **Ve zkratce.** Nestavěj volbu „jazyk automaticky“ jen na `cultureInfo.currentUICultureName`. Tatáž stránka se načte jednou anglicky a podruhé česky, aniž se cokoli změní. Poslední VYŘEŠENÝ jazyk si zapamatuj v `localStorage` pod klíčem s URL webu a startuj z něj.
 
 ## Symptom
 

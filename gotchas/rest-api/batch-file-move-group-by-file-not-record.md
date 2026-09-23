@@ -9,7 +9,7 @@ last-reviewed: 2026-09-18
 
 > **Bottom line.** When several list items store the same file URL, a loop that moves "each item's file" moves the file once and then 404s on every sibling — leaving their links pointing at a path that no longer exists. Group the batch by file URL, move once, and write the new URL to every record that pointed at it.
 >
-> **Ve zkratce.** Když stejnou cestu k souboru nese víc položek seznamu, smyčka „přesuň soubor každé položky" přesune soubor jednou a u zbytku dostane 404 – a jejich odkazy zůstanou viset na cestě, která už neexistuje. Seskup dávku podle souboru, přesuň jednou a novou adresu zapiš všem záznamům, které na něj ukazovaly.
+> **Ve zkratce.** Když stejnou cestu k souboru nese víc položek seznamu, smyčka „přesuň soubor každé položky“ přesune soubor jednou a u zbytku dostane 404 – a jejich odkazy zůstanou viset na cestě, která už neexistuje. Seskup dávku podle souboru, přesuň jednou a novou adresu zapiš všem záznamům, které na něj ukazovaly.
 
 ## Symptom
 
@@ -92,3 +92,4 @@ async function fileExists(url: string): Promise<boolean | undefined> {
 
 * [Get lists by URL, not by title](get-list-by-url-not-by-title.md) — the same instinct applied to lists: address the thing, not a label that can change.
 * [A silently-failed read turns reconciliation into delete-everything](silent-read-failure-drives-delete-all.md) — the other half of the rule: never let "I could not read it" become "there is nothing there".
+* [`moveto` succeeds and your code reports a failure](action-endpoints-return-an-empty-body.md) — `moveto` answers with an empty body, so a helper that always calls `response.json()` turns every successful move into an error.

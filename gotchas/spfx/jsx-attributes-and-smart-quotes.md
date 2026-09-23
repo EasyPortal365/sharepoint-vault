@@ -13,7 +13,7 @@ last-reviewed: 2026-07-16
 
 ## Symptom
 
-You paste properly typeset copy (German „…", Czech „…", French «…», or curly English "…") into a JSX attribute:
+You paste properly typeset copy (German „…“, Czech „…“, French «…», or curly English “…”) into a JSX attribute:
 
 ```tsx
 <Header sub="Changes are saved when you click „Save"." />

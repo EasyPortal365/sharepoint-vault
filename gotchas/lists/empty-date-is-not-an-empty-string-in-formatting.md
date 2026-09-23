@@ -9,7 +9,7 @@ last-reviewed: 2026-07-25
 
 > **Bottom line.** `@currentField == ''` does not detect an empty Date/Time field, so every item without a date falls through to the "past due" branch and lights up red — test emptiness with `.displayValue`, written as `@currentField.displayValue` in column formatting and `[$FieldName.displayValue]` in row formatting.
 >
-> **Ve zkratce.** `@currentField == ''` u prázdného pole typu Datum neplatí, takže každá položka bez data propadne do větve „po termínu" a zčervená – prázdnotu testuj přes `.displayValue`, a to zápisem `@currentField.displayValue` v column formattingu a `[$FieldName.displayValue]` v row formattingu.
+> **Ve zkratce.** `@currentField == ''` u prázdného pole typu Datum neplatí, takže každá položka bez data propadne do větve „po termínu“ a zčervená – prázdnotu testuj přes `.displayValue`, a to zápisem `@currentField.displayValue` v column formattingu a `[$FieldName.displayValue]` v row formattingu.
 
 ## Symptom
 

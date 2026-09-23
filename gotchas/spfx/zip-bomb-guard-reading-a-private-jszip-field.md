@@ -9,7 +9,7 @@ last-reviewed: 2026-09-19
 
 > **Bottom line.** A size cap that reads `entry._data.uncompressedSize` from JSZip and treats `undefined` as "let it through" disappears the day the library renames that field — silently, with no crash and no log. Read the declared sizes from the ZIP central directory instead: it is the standard format, so a library upgrade cannot move it.
 >
-> **Ve zkratce.** Strop, který čte `entry._data.uncompressedSize` z JSZipu a `undefined` překládá na „pusť to dál", zmizí v den, kdy knihovna to pole přejmenuje – tiše, bez pádu a bez záznamu. Čti deklarované velikosti z centrálního adresáře ZIPu: to je standardní formát, který upgrade knihovny neposune.
+> **Ve zkratce.** Strop, který čte `entry._data.uncompressedSize` z JSZipu a `undefined` překládá na „pusť to dál“, zmizí v den, kdy knihovna to pole přejmenuje – tiše, bez pádu a bez záznamu. Čti deklarované velikosti z centrálního adresáře ZIPu: to je standardní formát, který upgrade knihovny neposune.
 
 ## Symptom
 

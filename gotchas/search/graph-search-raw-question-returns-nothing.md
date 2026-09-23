@@ -2,14 +2,14 @@
 title: Graph Search returns 0 hits — you passed the user's question as the queryString
 tags: [search, graph, kql, ai, rag]
 applies-to: Microsoft Graph Search API (v1.0), Exchange Online, Teams
-last-reviewed: 2026-07-17
+last-reviewed: 2026-09-24
 ---
 
 # Graph Search returns 0 hits — you passed the user's question as the `queryString`
 
 > **Bottom line.** Graph Search treats `queryString` as full text, so a user's raw question matches nothing and fails silently — translate the question into keywords first, and answer "what's new" with a date-sorted listing rather than a keyword search.
 >
-> **Ve zkratce.** Graph Search bere `queryString` jako plný text, takže syrová otázka uživatele nenajde nic a selže potichu – nejdřív otázku přelož na klíčová slova a „co je nového" řeš výpisem řazeným podle data, ne hledáním klíčových slov.
+> **Ve zkratce.** Graph Search bere `queryString` jako plný text, takže syrová otázka uživatele nenajde nic a selže potichu – nejdřív otázku přelož na klíčová slova a „co je nového“ řeš výpisem řazeným podle data, ne hledáním klíčových slov.
 
 ## Symptom
 
@@ -44,22 +44,14 @@ Two distinct problems hide in one sentence like that:
 
 ## Fix
 
-### 1. Translate the question into keywords (LLM step)
+### 1. Translate the question into keywords
 
-Add a cheap model call that turns the question into keywords, and let it return **three** outcomes,
-not one:
+Put a translation step between the question and `queryString` — a cheap model call or plain rules —
+and let "no keywords" be a legitimate outcome: a question that asks only about recency ("what's
+new?") has nothing to search for and belongs to the listing approach below. **Never fall back to the
+raw question** when the translation comes back empty; that is the bug you are fixing.
 
-| Outcome | Meaning | queryString |
-|---|---|---|
-| keywords | question has a topic | `budget marketing` |
-| **empty** | question asks about recency only | `*` (see below) |
-| skip | question isn't about the user's data at all ("translate this") | *don't call Search* |
-
-**Empty keywords are a valid result, not a failure** — do not "fall back" to the raw question there,
-that's the bug you're fixing. The `skip` outcome is worth having on its own: it saves one Search call
-per enabled source and answers faster.
-
-Tip: a person's name works as a plain keyword — Teams search matches the **sender name** too, so you
+A person's name works as a plain keyword — Teams search matches the **sender name** too, so you
 rarely need `from:`.
 
 ### 2. For recency, lean on the default sort — don't sort yourself

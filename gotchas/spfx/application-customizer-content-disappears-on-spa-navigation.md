@@ -2,14 +2,14 @@
 title: "Your Application Customizer's floating UI disappears when navigating the site"
 tags: [spfx, application-customizer, extensions, spa, navigation, ui]
 applies-to: SharePoint Online (SPFx Application Customizer / any extension rendering persistent floating UI)
-last-reviewed: 2026-08-09
+last-reviewed: 2026-09-24
 ---
 
 # Your Application Customizer's floating UI disappears when navigating the site
 
-> **Bottom line.** Modern SharePoint pages are a SPA — moving between pages is **not** a full reload, so your Application Customizer's `onInit` does not run again, yet SharePoint tears your hand-appended node out of the DOM. Re-render on `this.context.application.navigatedEvent`, not on `visibilitychange` (which never fires on in-page navigation). Add a `MutationObserver` on `document.body` as a safety net for non-navigation removals.
+> **Bottom line.** Modern SharePoint pages are a SPA — moving between pages is **not** a full reload, so your Application Customizer's `onInit` does not run again, yet SharePoint tears your hand-appended node out of the DOM. Re-render on `this.context.application.navigatedEvent`, not on `visibilitychange` (which never fires on in-page navigation). Add a `MutationObserver` on `document.body` as a safety net for non-navigation removals — one that stops asking after a definitive 404/403 and never reacts to its own writes.
 >
-> **Ve zkratce.** Moderní stránky SharePointu jsou SPA – přechod mezi stránkami NENÍ full reload, takže `onInit` Application Customizeru se znovu nespustí, ale SharePoint váš ručně vložený uzel z DOM sundá. Re-render napojte na `this.context.application.navigatedEvent`, ne na `visibilitychange` (ten se u in-page navigace nespustí). Jako pojistku na ne-navigační odstranění přidejte `MutationObserver` na `document.body`.
+> **Ve zkratce.** Moderní stránky SharePointu jsou SPA – přechod mezi stránkami NENÍ full reload, takže `onInit` Application Customizeru se znovu nespustí, ale SharePoint váš ručně vložený uzel z DOM sundá. Re-render napojte na `this.context.application.navigatedEvent`, ne na `visibilitychange` (ten se u in-page navigace nespustí). Jako pojistku na ne-navigační odstranění přidejte `MutationObserver` na `document.body` – takový, který po definitivním 404/403 přestane konfiguraci číst a nereaguje na vlastní zápisy.
 
 ## Symptom
 
@@ -45,6 +45,7 @@ public async onInit(): Promise<void> {
   if (typeof MutationObserver !== 'undefined') {
     this._observer = new MutationObserver(() => {
       if (this._rendering) return;
+      if (this._skipUntilNavigation) return;                  // a definitive "no" (404/403, feature off) — see below
       if (this._shouldSkip()) return;                         // cheap sync hide-checks
       if (document.getElementById(CONTAINER_ID)) return;      // still there → nothing to do
       void this._tryRender();
@@ -54,6 +55,8 @@ public async onInit(): Promise<void> {
 }
 
 private _onNavigated = (): void => {
+  this._skipUntilNavigation = false;                          // a definitive "no" holds only until the next page
+  if (this._observer) this._observer.observe(document.body, { childList: true });  // re-arm after a disconnect
   if (this._shouldSkip()) return;
   void this._tryRender();
 };
@@ -78,6 +81,15 @@ Notes:
 `MutationObserver(document.body, { childList: true })` only fires on **direct** body children. If your re-render depends on some *other* element disappearing deep in the page — e.g. you hide the floating button while a full-app web part is present and wait for that web part's marker to be removed on navigation — the observer never wakes, because the marker lives deep in the canvas, not as a body child. The button then stays gone until an unrelated body-child mutation happens to fire.
 
 Fix: after navigation, run a short **bounded poll** (e.g. every 500 ms for ~5 s) that re-checks the condition and renders once the deep node is gone. A poll beats `subtree: true` here, which would fire the callback — and any `querySelector` inside it — on *every* DOM mutation anywhere (expensive on busy pages). Async component loading (a bundle fetched from a CDN) slows teardown and widens this race, so the symptom can appear only after such a change.
+
+## The observer must stop asking — and must not wake itself up
+
+Two more traps live in the same `MutationObserver`:
+
+1. **Remember a definitive "no".** SharePoint adds and removes direct `body` children all the time — callouts, tooltips, layers — so the callback fires constantly. If a missing container sends it to `_tryRender`, and `_tryRender` reads configuration, then on every site where the extension is deployed but the app is not set up (settings list 404 or 403, feature switched off) each user re-reads that configuration every throttle window, for the whole session, on every site of the tenant. Treat 404/403 and "feature off" as final until the next navigation: set `_skipUntilNavigation`, `disconnect()` the observer, and re-arm it from `navigatedEvent` as in the code above. A network failure, a 429 or a 5xx is not final — keep observing. The full three-outcome version (`shown` / `hidden-final` / `hidden-retry`) is in [Application Customizer runs again inside dialog iframes](application-customizer-runs-in-dialog-iframe.md).
+2. **A synchronous "I'm writing" flag does not protect you from your own mutations.** Mutation records are delivered *after* the synchronous code that caused them has finished, so by the time the callback runs, a `try { writing = true; … } finally { writing = false; }` flag is already back to `false`. The callback takes your own writes for somebody else's, schedules another render, which writes again — an endless loop at animation-frame speed that can take a tab to gigabytes of memory. When the callback's work writes into the node it observes, call `observer.takeRecords()` just before clearing the flag, or `disconnect()` before the write and `observe()` again after it.
+
+In the code above, the early `getElementById(CONTAINER_ID)` return keeps the observer from reacting to its own re-append; the second trap appears as soon as the callback does more than check and re-add one node.
 
 ## How to verify
 

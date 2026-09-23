@@ -9,7 +9,7 @@ last-reviewed: 2026-08-13
 
 > **Bottom line.** `.app-root a { color: inherit }` (0,0,1,1) beats `.btn--accent { color: var(--on-accent) }` (0,0,1,0), so a link styled as a button inherits the surrounding text colour instead of its own. With your default palette the two colours are nearly identical and nobody notices — the bug surfaces only on a tenant whose accent needs *white* label text. Exclude component classes from the blanket rule: `.app-root a:not(.btn)`.
 >
-> **Ve zkratce.** `.app-root a { color: inherit }` má vyšší specificitu než `.btn--accent`, takže odkaz stylovaný jako tlačítko zdědí barvu okolního textu místo své vlastní. U výchozí palety je rozdíl neznatelný, takže si toho roky nikdo nevšimne — projeví se až u zákazníka, jehož akcent potřebuje BÍLÝ popisek. Obecné pravidlo omez: `.app-root a:not(.btn)`.
+> **Ve zkratce.** `.app-root a { color: inherit }` má vyšší specificitu než `.btn--accent`, takže odkaz stylovaný jako tlačítko zdědí barvu okolního textu místo své vlastní. U výchozí palety je rozdíl neznatelný, takže si toho roky nikdo nevšimne – projeví se až u zákazníka, jehož akcent potřebuje BÍLÝ popisek. Obecné pravidlo omez: `.app-root a:not(.btn)`.
 
 ## Symptom
 

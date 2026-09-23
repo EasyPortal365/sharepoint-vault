@@ -9,7 +9,7 @@ last-reviewed: 2026-07-29
 
 > **Bottom line.** A seeder that asks *"is this whole set already there?"* is idempotent only against its own re-run. The moment the set is created through another path, it inserts the entire block a second time — and a SharePoint list has no unique constraint to stop it.
 >
-> **Ve zkratce.** Seed, který se ptá „je celá sada už v listu?", je idempotentní jen vůči vlastnímu opakování. Jakmile sadu založí jiná cesta, nasype celý blok podruhé – a SharePoint list žádnou unikátnost nehlídá.
+> **Ve zkratce.** Seed, který se ptá „je celá sada už v listu?“, je idempotentní jen vůči vlastnímu opakování. Jakmile sadu založí jiná cesta, nasype celý blok podruhé – a SharePoint list žádnou unikátnost nehlídá.
 
 ## Symptom
 

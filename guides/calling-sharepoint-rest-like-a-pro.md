@@ -2,7 +2,7 @@
 title: Calling SharePoint REST like a pro
 tags: [rest-api, spfx, odata, guide]
 applies-to: SharePoint Online (most of it also SharePoint Server)
-last-reviewed: 2026-09-23
+last-reviewed: 2026-09-24
 ---
 
 # Calling SharePoint REST like a pro
@@ -23,7 +23,7 @@ SharePoint's REST API is powerful, well-documented in the happy path — and ful
 Two consequences people trip over:
 
 - `SPHttpClient` silently adds `OData-Version: 4.0`. Legacy endpoints that only speak OData 3 (search, `/Files/add`) fail until you override it — see the header table below.
-- Payload style must match the OData mode: modern calls use `'@odata.type': '#SP.List'`; the old `__metadata: { type: 'SP.List' }` belongs to `odata=verbose` **only** — [mixing them is a guaranteed 400](../gotchas/rest-api/metadata-body-requires-verbose.md).
+- Payload style must match the OData mode: modern calls use `'@odata.type': '#SP.List'`; the old `__metadata: { type: 'SP.List' }` exists only in `odata=verbose` — and under `SPHttpClient` even a fully verbose request with it 400s, because of the added `OData-Version: 4.0`. [Drop `__metadata`](../gotchas/rest-api/metadata-body-requires-verbose.md); for ordinary writes the type comes from the URL, and where the verbose form is really needed, an empty `odata-version` header puts `SPHttpClient` into OData v3 mode.
 
 Getting a request digest outside SPFx:
 
@@ -45,7 +45,7 @@ Hard-won pairings — when a call fails with 400/406/500 and you don't know why,
 | `POST …/lists`, `…/items`, `…/fields` | `Accept: application/json` (plain!) | `odata=nometadata` on these POSTs → **406**, and the item may be created anyway — you get an error *and* a side effect |
 | Anything `/_api/search/*` | `odata-version: 3.0` + `Accept: application/json;odata=nometadata` | [500 UnknownError, search only](../gotchas/rest-api/search-api-needs-odata-version-3.md) |
 | `POST …/Files/add(…)` | `Accept: application/json;odata=verbose` + `OData-Version: 3.0` | [406 "ACCEPT header missing or invalid"](../gotchas/rest-api/file-upload-406-needs-verbose.md) |
-| Body contains `__metadata` | `Accept` **and** `Content-Type` `application/json;odata=verbose` | [400 "property '__metadata' does not exist"](../gotchas/rest-api/metadata-body-requires-verbose.md) |
+| Body contains `__metadata` | Drop it and send plain JSON — verbose headers work only without OData v4: a bare `fetch`, or `SPHttpClient` with `odata-version: ''` | [400 "property '__metadata' does not exist" / "JSON Light … not supported"](../gotchas/rest-api/metadata-body-requires-verbose.md) |
 
 ## 3. Writing data
 
@@ -110,7 +110,7 @@ Provisioning-style calls have their own micro-rules:
 
 1. **Read the response body.** Not just the status. The body names the field, the type, the missing header.
 2. **406?** Wrong `Accept` for that endpoint family — see the table in §2.
-3. **400 on a write?** A/B-test it: same call as a harmless no-op (a MERGE with one known-good field) in plain mode vs verbose mode. One minute, and you know whether it's the wire format or your payload.
+3. **400 on a write?** A/B-test it: same call as a harmless no-op (a MERGE with one known-good field) in plain mode vs verbose mode — with the `OData-Version` header your real client sends, or a bare `fetch` lets the verbose arm pass and tells you the opposite of what your app will see. One minute, and you know whether it's the wire format or your payload.
 4. **500 only on search?** It's the [`odata-version` header](../gotchas/rest-api/search-api-needs-odata-version-3.md). It's always the header.
 5. **Works for you, empty for users?** Same query returning rows to one account and zero (HTTP 200!) to another is usually item-level security (`ReadSecurity`) or permissions — check *which account* you're testing with before blaming cache.
 6. **Don't trust adjacent evidence.** "The admin portal shows the data" or "it works in the browser address bar" does not prove *your* call path — different client, different headers, different auth. Reproduce with the failing client before concluding anything.

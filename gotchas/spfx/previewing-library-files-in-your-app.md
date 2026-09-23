@@ -9,7 +9,7 @@ last-reviewed: 2026-09-21
 
 > **Bottom line.** There is no single way to show a library file inside your app. PDFs embed straight from their URL, Office files need the WOPI frame keyed by **UniqueId**, and HTML cannot be embedded by URL at all — SharePoint serves it as an attachment, so the iframe stays blank with a clean console.
 >
-> **Ve zkratce.** Neexistuje jeden způsob, jak zobrazit soubor z knihovny uvnitř appky. PDF se vloží přímo z URL, Office potřebuje WOPI frame klíčovaný přes **UniqueId** a HTML přes URL vložit nejde vůbec — SharePoint ho posílá jako attachment, takže iframe zůstane prázdný a konzole čistá.
+> **Ve zkratce.** Neexistuje jeden způsob, jak zobrazit soubor z knihovny uvnitř appky. PDF se vloží přímo z URL, Office potřebuje WOPI frame klíčovaný přes **UniqueId** a HTML přes URL vložit nejde vůbec – SharePoint ho posílá jako attachment, takže iframe zůstane prázdný a konzole čistá.
 >
 > **And two that bite later.** **SVG is not an image for this purpose** — it renders from a plain URL *and* can carry script, so framing it from your own tenant origin runs an uploader-controlled script in the viewer's session. **Files in OneDrive (`<tenant>-my.sharepoint.com`) refuse framing altogether** and leave a blank panel with nothing to catch.
 >

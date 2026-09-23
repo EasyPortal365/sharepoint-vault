@@ -9,7 +9,7 @@ last-reviewed: 2026-09-04
 
 > **Bottom line.** SharePoint happily accepts an Entra ID group as a member of a site group, and everything looks right in the UI. But nothing SharePoint tells you about membership expands it: `currentuser/groups` reports only direct membership, and `sitegroups/{id}/users` returns *the group*, not the people in it. Code that gates on membership therefore denies access to exactly the people the admin just granted it to — silently, with a "you don't have permission" message. Resolve nested membership through Graph `POST /me/checkMemberGroups`, and make "couldn't check" a distinct outcome from "not a member".
 >
-> **Ve zkratce.** SharePoint přijme skupinu Entra ID jako člena skupiny webu a v UI vypadá všechno správně. Jenže žádná informace o členství, kterou SharePoint dává, ji nerozbalí: `currentuser/groups` hlásí jen přímé členství a `sitegroups/{id}/users` vrátí *tu skupinu*, ne lidi v ní. Kód, který podle členství rozhoduje o přístupu, tak odmítne přesně ty lidi, kterým ho správce právě dal – tiše a s hláškou „nemáte oprávnění". Vnořené členství vyhodnoťte přes Graph `POST /me/checkMemberGroups` a „nepodařilo se zjistit" držte odděleně od „není členem".
+> **Ve zkratce.** SharePoint přijme skupinu Entra ID jako člena skupiny webu a v UI vypadá všechno správně. Jenže žádná informace o členství, kterou SharePoint dává, ji nerozbalí: `currentuser/groups` hlásí jen přímé členství a `sitegroups/{id}/users` vrátí *tu skupinu*, ne lidi v ní. Kód, který podle členství rozhoduje o přístupu, tak odmítne přesně ty lidi, kterým ho správce právě dal – tiše a s hláškou „nemáte oprávnění“. Vnořené členství vyhodnoťte přes Graph `POST /me/checkMemberGroups` a „nepodařilo se zjistit“ držte odděleně od „není členem“.
 
 ## Symptom
 

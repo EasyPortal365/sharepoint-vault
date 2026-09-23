@@ -9,7 +9,7 @@ last-reviewed: 2026-09-06
 
 > **Bottom line.** Once a function enforces its origin allowlist on the server, every caller needs the `Origin` header — including your deployment script's own smoke test and the verification command in the customer runbook. A runbook that says "this test bypasses CORS, that only affects browsers" is wrong the moment the check moves server-side, and it hands the customer a red error on a perfectly healthy deployment.
 >
-> **Ve zkratce.** Jakmile funkce vynucuje seznam povolených originů na serveru, potřebuje hlavičku `Origin` každý volající – včetně smoke testu vlastního nasazovacího skriptu a ověřovacího příkazu v zákaznickém návodu. Věta „tenhle test obchází CORS, ten se týká jen prohlížeče" přestane platit v okamžiku, kdy se kontrola přesune na server, a zákazník dostane po zcela zdravém nasazení červenou chybu.
+> **Ve zkratce.** Jakmile funkce vynucuje seznam povolených originů na serveru, potřebuje hlavičku `Origin` každý volající – včetně smoke testu vlastního nasazovacího skriptu a ověřovacího příkazu v zákaznickém návodu. Věta „tenhle test obchází CORS, ten se týká jen prohlížeče“ přestane platit v okamžiku, kdy se kontrola přesune na server, a zákazník dostane po zcela zdravém nasazení červenou chybu.
 
 ## Symptom
 

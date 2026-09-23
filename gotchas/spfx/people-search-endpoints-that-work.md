@@ -108,6 +108,6 @@ POST {web}/_api/web/sitegroups/getbyname('App Users')/users
 
 Two things to keep in mind, both verified on a live tenant:
 
-- **`removebyid` (and other action endpoints) return an empty body.** `response.json()` throws `Unexpected end of JSON input` although the member *was* removed — decide by the status code and only parse a body you actually read.
+- **`removebyid` (and other action endpoints) return an empty body.** `response.json()` throws `Unexpected end of JSON input` although the member *was* removed — decide by the status code and only parse a body you actually read ([more](../rest-api/action-endpoints-return-an-empty-body.md)).
 - **Do not gate your app on `web/currentuser/groups` alone.** If your app decides "is this user allowed?" from the SharePoint group, resolve membership *through* the nested Entra ID group as well: take the object IDs from the member claims and call Graph `POST /me/checkMemberGroups` (delegated `GroupMember.Read.All`). A member of a nested group reached the gated app only through that check in our test; and because the Graph call is fail-safe (an outage looks like "not a member"), never cache an empty answer.
 - Offer only Entra ID groups, not SharePoint groups: SharePoint cannot nest its own groups and Graph cannot verify membership in them.

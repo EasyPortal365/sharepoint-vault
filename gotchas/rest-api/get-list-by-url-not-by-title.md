@@ -76,3 +76,5 @@ Two practical consequences:
 - Don't diagnose "GetList must 404 on folder paths" from reading code or docs — this behaviour difference is exactly the kind of thing to **verify with a live A/B request** before calling it a bug.
 
 Caveat: when you probe *permissions* for a target folder, prefer the folder's own item (`getfolderbyserverrelativeurl('<path>')/ListItemAllFields/EffectiveBasePermissions`) over the list-level answer — a folder with unique permissions would otherwise get the library's verdict, not its own.
+
+The same leniency means a list-level probe also passes on a path that is *not* a sensible target at all — a view page such as `…/Forms/AllItems.aspx` resolves to its library. Check the shape of a path separately: [`ParentLink` from Search points at a library view](../search/parentlink-points-at-a-view-not-the-library.md).

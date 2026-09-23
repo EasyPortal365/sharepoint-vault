@@ -9,7 +9,7 @@ last-reviewed: 2026-08-28
 
 > **Bottom line.** When `react-hooks/rules-of-hooks` says a hook is "called conditionally" but that hook plainly isn't, stop looking at the hook. A long `&&` chain with truthiness-narrowing in your JSX return (e.g. `{a && b && x && x.length === 0 && (<…/>)}`) can break the plugin's control-flow analysis and make it blame an *earlier*, unrelated hook. Extract the condition into a named `const` and the error moves.
 >
-> **Ve zkratce.** Když `react-hooks/rules-of-hooks` hlásí „hook je volán podmíněně", ale ten hook zjevně podmíněný není, přestaň se dívat na hook. Dlouhý `&&` řetěz s truthy-narrowingem v JSX (`{a && b && x && x.length === 0 && (<…/>)}`) rozbije analýzu control-flow pluginu a označí *dřívější*, nesouvisející hook. Vytáhni podmínku do pojmenované `const` a chyba zmizí.
+> **Ve zkratce.** Když `react-hooks/rules-of-hooks` hlásí „hook je volán podmíněně“, ale ten hook zjevně podmíněný není, přestaň se dívat na hook. Dlouhý `&&` řetěz s truthy-narrowingem v JSX (`{a && b && x && x.length === 0 && (<…/>)}`) rozbije analýzu control-flow pluginu a označí *dřívější*, nesouvisející hook. Vytáhni podmínku do pojmenované `const` a chyba zmizí.
 
 ## Symptom
 

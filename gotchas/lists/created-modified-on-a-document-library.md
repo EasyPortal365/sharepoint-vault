@@ -9,7 +9,7 @@ last-reviewed: 2026-08-13
 
 > **Bottom line.** A plain `MERGE` on the list item accepts `Created`/`Modified` and returns `204`, then SharePoint overwrites both with "now". The only path that sticks is `ValidateUpdateListItem` with `bNewDocumentUpdate: true` — and it wants a **locale-formatted** date (`8/6/2026 9:00 AM`), not ISO. Feed it ISO and you get **HTTP 200 with a per-field `HasException`**, so a status-code check reports success.
 >
-> **Ve zkratce.** Obyčejný `MERGE` položky `Created`/`Modified` přijme, vrátí `204` a SharePoint je pak stejně přepíše na „teď". Jediná cesta, která drží, je `ValidateUpdateListItem` s `bNewDocumentUpdate: true` – a chce datum v **lokálním formátu** (`8/6/2026 9:00 AM`), ne ISO. Na ISO odpoví **HTTP 200 a `HasException` u pole**, takže kontrola stavového kódu hlásí úspěch.
+> **Ve zkratce.** Obyčejný `MERGE` položky `Created`/`Modified` přijme, vrátí `204` a SharePoint je pak stejně přepíše na „teď“. Jediná cesta, která drží, je `ValidateUpdateListItem` s `bNewDocumentUpdate: true` – a chce datum v **lokálním formátu** (`8/6/2026 9:00 AM`), ne ISO. Na ISO odpoví **HTTP 200 a `HasException` u pole**, takže kontrola stavového kódu hlásí úspěch.
 
 ## Symptom
 

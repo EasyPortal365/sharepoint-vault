@@ -9,7 +9,7 @@ last-reviewed: 2026-07-29
 
 > **Bottom line.** Building a full file URL from a server-relative path invites `$host = ([uri]$web.Url).Host`, and PowerShell answers "Cannot overwrite variable Host because it is read-only or constant" — an error about your *variable name*, phrased as if something were wrong with the value.
 >
-> **Ve zkratce.** Skládání plné URL ze server-relativní cesty svádí napsat `$host = ([uri]$web.Url).Host` a PowerShell odpoví „Cannot overwrite variable Host because it is read-only or constant" – chyba o **názvu proměnné**, formulovaná, jako by byl problém v hodnotě.
+> **Ve zkratce.** Skládání plné URL ze server-relativní cesty svádí napsat `$host = ([uri]$web.Url).Host` a PowerShell odpoví „Cannot overwrite variable Host because it is read-only or constant“ – chyba o **názvu proměnné**, formulovaná, jako by byl problém v hodnotě.
 
 ## Symptom
 

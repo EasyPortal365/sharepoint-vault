@@ -9,7 +9,7 @@ last-reviewed: 2026-08-28
 
 > **Bottom line.** Before you conclude that an account "lost access", ask **who is asking**: `GET /_api/web/currentuser` → `LoginName`. A tenant-wide script run from a second browser window can silently execute as a different signed-in account, and its 403s and shrunken Search results look exactly like a permissions incident.
 >
-> **Ve zkratce.** Než usoudíš, že účet „ztratil přístup", zjisti, **kdo se ptá**: `GET /_api/web/currentuser` → `LoginName`. Skript nad celým tenantem spuštěný z jiného okna prohlížeče může běžet pod jiným přihlášeným účtem a jeho 403 i zmenšený výsledek Search vypadají přesně jako incident s oprávněními.
+> **Ve zkratce.** Než usoudíš, že účet „ztratil přístup“, zjisti, **kdo se ptá**: `GET /_api/web/currentuser` → `LoginName`. Skript nad celým tenantem spuštěný z jiného okna prohlížeče může běžet pod jiným přihlášeným účtem a jeho 403 i zmenšený výsledek Search vypadají přesně jako incident s oprávněními.
 
 ## What it looks like
 

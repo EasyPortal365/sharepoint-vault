@@ -9,7 +9,7 @@ last-reviewed: 2026-08-31
 
 > **Bottom line.** Provisioning helpers set item-level permissions on **lists**; document **libraries** usually get none, so they inherit the web. Any member with Contribute can upload straight over REST. When that library is what an AI assistant reads as "company knowledge", uploading a file is the same as editing the answers.
 >
-> **Ve zkratce.** Knihovny z provisioningu obvykle nedostanou žádná oprávnění a dědí je z webu — člen s Přispívat tam nahraje cokoli. Když z knihovny čte AI, je to cesta, jak jí podstrčit „firemní pravdu".
+> **Ve zkratce.** Knihovny z provisioningu obvykle nedostanou žádná oprávnění a dědí je z webu – člen s Přispívat tam nahraje cokoli. Když z knihovny čte AI, je to cesta, jak jí podstrčit „firemní pravdu“.
 
 ## Symptom
 

@@ -9,7 +9,7 @@ last-reviewed: 2026-08-26
 
 > **Bottom line.** `serverRequestPath` is the path of the last **server request**, not the address of the page. On a modern list view it can be `/_vti_bin/client.svc/web/GetListUsingPath(DecodedUrl=@a1)/RenderListDataAsStream`. Store that as "the page where my app lives" and every link you build from it lands on an XML error. Validate before writing, validate again before rendering, and treat an already-stored bad value as something to repair rather than preserve.
 >
-> **Ve zkratce.** `serverRequestPath` je cesta posledního **serverového požadavku**, ne adresa stránky. V moderním zobrazení seznamu to může být `/_vti_bin/client.svc/web/GetListUsingPath(DecodedUrl=@a1)/RenderListDataAsStream`. Když si to uložíte jako „stránku, kde appka žije", každý odkaz z toho složený skončí na chybovém XML. Ověřujte před zápisem, ověřujte znovu před vykreslením, a už uloženou nesmyslnou hodnotu berte jako něco k opravě, ne k zachování.
+> **Ve zkratce.** `serverRequestPath` je cesta posledního **serverového požadavku**, ne adresa stránky. V moderním zobrazení seznamu to může být `/_vti_bin/client.svc/web/GetListUsingPath(DecodedUrl=@a1)/RenderListDataAsStream`. Když si to uložíte jako „stránku, kde appka žije“, každý odkaz z toho složený skončí na chybovém XML. Ověřujte před zápisem, ověřujte znovu před vykreslením, a už uloženou nesmyslnou hodnotu berte jako něco k opravě, ne k zachování.
 
 ## Symptom
 

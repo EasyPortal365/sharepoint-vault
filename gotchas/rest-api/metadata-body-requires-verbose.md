@@ -1,63 +1,68 @@
 ---
-title: A request body with __metadata must be sent as odata=verbose
+title: Drop __metadata from write bodies — odata=verbose needs OData v3, and SPHttpClient sends v4
 tags: [rest-api, odata, spfx]
 applies-to: SharePoint Online, SharePoint Server
-last-reviewed: 2026-07-23
+last-reviewed: 2026-09-24
 ---
 
-# A request body with `__metadata` must be sent as `odata=verbose`
+# Drop `__metadata` from write bodies — `odata=verbose` needs OData v3, and `SPHttpClient` sends v4
 
-> **Bottom line.** `__metadata` only exists in the OData verbose format — either drop it and stay in the modern `nometadata` default, or set both `Accept` and `Content-Type` to `odata=verbose`.
+> **Bottom line.** A body carrying `__metadata` fails as plain JSON (HTTP 400, "the property '__metadata' does not exist"), and the classic fix — switch `Accept` and `Content-Type` to `odata=verbose` — works only when the request does not declare OData v4. `SPHttpClient` sends `odata-version: 4.0` by default, so the verbose body 400s again. For ordinary item and list writes, drop the hint and send plain JSON; SharePoint takes the type from the URL you write to. If an endpoint really needs the verbose form, blank the header (`'odata-version': ''`) to put `SPHttpClient` into OData v3 mode.
 >
-> **Ve zkratce.** `__metadata` existuje jen ve formátu OData verbose – buď ho vynech a zůstaň v moderním defaultu `nometadata`, nebo nastav `Accept` i `Content-Type` na `odata=verbose`.
+> **Ve zkratce.** Tělo s `__metadata` jako prostý JSON selže (HTTP 400, „the property '__metadata' does not exist“) a klasická oprava – přepnout `Accept` i `Content-Type` na `odata=verbose` – funguje jen u požadavku, který nehlásí OData v4. `SPHttpClient` ve výchozím stavu posílá `odata-version: 4.0`, takže verbose tělo skončí na 400 znovu. U běžných zápisů položek a seznamů typovou nápovědu vynech a pošli prostý JSON; typ si SharePoint vezme z adresy, na kterou zapisuješ. Když endpoint verbose tvar opravdu potřebuje, hlavičku vyprázdni (`'odata-version': ''`) – tím `SPHttpClient` přejde do režimu OData v3.
 
 ## Symptom
 
-A POST or MERGE copied from an older tutorial — the kind that includes a type hint:
+A POST or MERGE copied from an older tutorial carries a type hint:
 
 ```json
 { "__metadata": { "type": "SP.Data.TasksListItem" }, "Title": "Hello" }
 ```
 
-fails with **HTTP 400**:
+Sent as plain JSON, it fails with **HTTP 400**:
 
 ```
 InvalidClientQueryException: The property '__metadata' does not exist on type 'SP.Data.TasksListItem'.
 ```
 
+The usual fix — make both headers `odata=verbose` — then fails again inside SPFx, with a different message:
+
+```
+HTTP 400: Parsing JSON Light feeds or entries in requests without entity set is not supported.
+```
+
 ## Cause
 
-`__metadata` only exists in the **OData verbose** wire format. Modern clients (SPFx `SPHttpClient`, plain `fetch` with `Content-Type: application/json`) talk `nometadata`/`minimalmetadata` by default — and in those modes SharePoint treats `__metadata` as an unknown *field* of your list item, hence the 400.
+`__metadata` exists only in the OData **verbose** wire format. In a plain-JSON request SharePoint reads it as an unknown property of your item — the first 400.
 
-The trap is common because half the SharePoint REST examples on the internet date from the verbose era and carry `__metadata` in every body.
+`SPHttpClient.configurations.v1` adds the request header `odata-version: 4.0`. A verbose body under that header is parsed as OData v4 JSON Light and rejected — the second 400. It does not depend on the list, its age or the entity type name. Verified live, twice, with an A/B on an item POST and on a list MERGE: the identical verbose body returns **201/204** through a bare `fetch` and **400** as soon as `odata-version: 4.0` is present; the same write without `__metadata` returns **201/204** either way.
 
 ## Fix
 
-Pick one side and be consistent:
-
-**A. Drop `__metadata`** and stay in the modern default — for ordinary field updates the type hint isn't needed:
+Drop `__metadata`. For ordinary item and list writes the hint is not needed — SharePoint infers the type from the URL:
 
 ```ts
-headers: { 'Accept': 'application/json;odata=nometadata', 'Content-Type': 'application/json' },
+headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
 body: JSON.stringify({ Title: 'Hello' })
 ```
 
-**B. Keep `__metadata`** (some legacy endpoints and payload shapes want it) — then *both* headers must say verbose:
+When an endpoint does need the verbose form, switch the client to OData v3 for that call — Microsoft documents that an empty `odata-version` header does exactly that:
 
 ```ts
 headers: {
   'Accept': 'application/json;odata=verbose',
-  'Content-Type': 'application/json;odata=verbose'
+  'Content-Type': 'application/json;odata=verbose',
+  'odata-version': ''                      // SPHttpClient now speaks OData v3
 },
 body: JSON.stringify({ __metadata: { type: 'SP.Data.TasksListItem' }, Title: 'Hello' })
 ```
 
-> ⚠️ **SPFx caveat — under `SPHttpClient`, option B still 400s.** `SPHttpClient.configurations.v1` injects an `odata-version: 4.0` request header you cannot easily strip. Paired with a verbose (`__metadata`) body, SharePoint reads it as OData v4 JSON Light and rejects it — **HTTP 400: *"Parsing JSON Light feeds or entries in requests without entity set is not supported"*** — regardless of the list's age. So inside SPFx, **always take option A** (`nometadata`, no `__metadata`). Verified live A/B twice: on an **item POST** (2026-07-22) and on a **list MERGE** via `getbytitle()` (2026-07-23) — identical result both times: an identical verbose body returns **201/204** via plain `fetch` but **400** the moment `odata-version: 4.0` is present; `nometadata` without `__metadata` returns **201/204** either way. Note the two different 400 messages — the `InvalidClientQueryException` above (mode mismatch, no version header) vs. this JSON-Light parse error (verbose body + v4 header) — both point to the same fix.
-
-If your codebase mixes both styles, the robust move is a tiny helper that inspects the body and sets the headers accordingly — then nobody has to remember.
+- If a codebase mixes both styles, search the write paths for `__metadata` and `odata=verbose`: every hit that does not also blank `odata-version` is a latent 400 under `SPHttpClient`.
+- Some writes carry a type in the OData v4 form instead — a MERGE that changes a field's `Choices` sends `'@odata.type': '#SP.FieldChoice'` in a plain JSON body ([Provisioning skips schema changes to existing fields](provisioning-skips-schema-changes-to-existing-fields.md)). From a bare `fetch`, which speaks OData v3, the same body needs `__metadata` instead ([example](../search/nocrawl-on-a-library-silently-blinds-your-rag.md)), and `POST /views` with an `odata=nometadata` body rejects `@odata.type` altogether ([`POST /views` takes an `SP.View` body](creating-a-view-posts-sp-view-not-viewcreationinformation.md)).
 
 ## Notes
 
-- Mixed symptoms of the same class: verbose *response* shapes are nested under `d` (`data.d.results` vs `data.value`) — check which mode you're in before parsing.
-- When debugging any SharePoint REST 400, A/B-test plain vs verbose with a harmless payload (a no-op MERGE) before touching your real code — it isolates the wire-format factor in one minute.
-- ⚠️ **Include the `odata-version: 4.0` header in the verbose A/B test.** A bare `fetch` *without* it lets the verbose + `__metadata` body through (201/204) and gives a false "it works" — because that header is exactly what `SPHttpClient` adds and what triggers the 400. If your test passes but the app still 400s, you tested raw `fetch`, not the client your code actually uses. Test the header, not just the body format.
+- **Include `odata-version: 4.0` when you A/B-test a write.** A bare `fetch` without it lets the verbose body through (201/204) and gives a false "it works"; if your test passes while the app still 400s, you tested `fetch`, not the client your code uses.
+- The same v4 default explains a neighbouring error: in OData v4 mode the `Accept` directive is `odata.metadata=…`, and Microsoft notes that the old `odata=…` form can fail with *"The HTTP header ACCEPT is missing or its value is invalid"*.
+- Mixed symptoms of the same class: verbose *response* shapes are nested under `d` (`data.d.results` vs `data.value`) — check which mode you are in before parsing.
+- [Connect to SharePoint APIs — OData v4.0](https://learn.microsoft.com/en-us/sharepoint/dev/spfx/connect-to-sharepoint#odata-v40) (Microsoft)

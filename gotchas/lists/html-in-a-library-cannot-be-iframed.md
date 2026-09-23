@@ -9,7 +9,7 @@ last-reviewed: 2026-09-10
 
 > **Bottom line.** SharePoint Online sends `.html` from a document library with `Content-Disposition: attachment`, so an `<iframe>` pointed at it fires `onload` with an empty document instead of rendering your page — and there is no per-site "browser file handling" switch to change that. To put a self-contained HTML page inside a modern page you must host it on some other HTTPS origin **and** add that host to the site's HTML Field Security list, which the Embed web part enforces.
 >
-> **Ve zkratce.** SharePoint Online posílá `.html` z knihovny s hlavičkou `Content-Disposition: attachment`, takže `<iframe>` mířící na soubor vyvolá `onload` s prázdným dokumentem místo vaší stránky – a přepínač „browser file handling" v SharePointu Online neexistuje. Pokud chcete samostatnou HTML stránku uvnitř moderní stránky, musíte ji hostovat na jiném HTTPS původu **a** ten původ doplnit do seznamu HTML Field Security, který web part Vložit vynucuje.
+> **Ve zkratce.** SharePoint Online posílá `.html` z knihovny s hlavičkou `Content-Disposition: attachment`, takže `<iframe>` mířící na soubor vyvolá `onload` s prázdným dokumentem místo vaší stránky – a přepínač „browser file handling“ v SharePointu Online neexistuje. Pokud chcete samostatnou HTML stránku uvnitř moderní stránky, musíte ji hostovat na jiném HTTPS původu **a** ten původ doplnit do seznamu HTML Field Security, který web part Vložit vynucuje.
 
 ## Symptom
 

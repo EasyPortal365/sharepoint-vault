@@ -9,7 +9,7 @@ last-reviewed: 2026-08-28
 
 > **Bottom line.** Any inventory that points at *other* sites — a site map, a link directory, a library catalogue — eventually holds rows whose target is gone. If you read `<site>/_api/web` as `if (!r.ok) return unknown`, a dead row looks exactly like a site you merely lack permission on. Those two need opposite handling: one is a defect in **your list** that somebody must fix, the other is a fact about **someone else's site** that you should not comment on. `_api/web` on a site collection that does not exist answers **404**; keep `r.status` and you can tell them apart.
 >
-> **Ve zkratce.** Každý registr cizích webů (mapa webů, rozcestník, katalog knihoven) dřív nebo později obsahuje řádek, jehož cíl už neexistuje. Když čteš `<web>/_api/web` jako `if (!r.ok) return unknown`, vypadá mrtvý řádek stejně jako web, na který jen nemáš práva — a přitom si žádají opačné zacházení: první je vada TVOJÍ evidence, druhé je fakt o cizím webu, ke kterému se nemáš co vyjadřovat. Neexistující site collection vrací na `_api/web` **404**; nech si `r.status` a rozlišíš je.
+> **Ve zkratce.** Každý registr cizích webů (mapa webů, rozcestník, katalog knihoven) dřív nebo později obsahuje řádek, jehož cíl už neexistuje. Když čteš `<web>/_api/web` jako `if (!r.ok) return unknown`, vypadá mrtvý řádek stejně jako web, na který jen nemáš práva – a přitom si žádají opačné zacházení: první je vada TVOJÍ evidence, druhé je fakt o cizím webu, ke kterému se nemáš co vyjadřovat. Neexistující site collection vrací na `_api/web` **404**; nech si `r.status` a rozlišíš je.
 
 ## Symptom
 

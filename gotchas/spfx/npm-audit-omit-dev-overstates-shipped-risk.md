@@ -9,7 +9,7 @@ last-reviewed: 2026-07-29
 
 > **Bottom line.** SPFx puts its build toolchain in `dependencies`, not `devDependencies`, so `--omit=dev` counts Node-only build packages as "production" — the only reliable test of what reaches a browser is grepping the published bundle.
 >
-> **Ve zkratce.** SPFx má svůj build toolchain v `dependencies`, ne v `devDependencies`, takže `--omit=dev` počítá Node-only build balíčky jako „produkční" – jediný spolehlivý test toho, co se dostane do prohlížeče, je grep do publikovaného bundlu.
+> **Ve zkratce.** SPFx má svůj build toolchain v `dependencies`, ne v `devDependencies`, takže `--omit=dev` počítá Node-only build balíčky jako „produkční“ – jediný spolehlivý test toho, co se dostane do prohlížeče, je grep do publikovaného bundlu.
 
 ## Symptom
 

@@ -9,7 +9,7 @@ last-reviewed: 2026-08-21
 
 > **Bottom line.** `getUserEffectivePermissions` answers with `{ "Low": "138612833", "High": "176" }` — two decimal strings holding one 64-bit mask. `ViewListItems` is **bit 0**, not bit 1. Shift the whole mask by one and a perfectly normal *Read* grant reads back as "this user cannot even open the list", which looks exactly like a broken permission fix.
 >
-> **Ve zkratce.** Maska je 64bitová ve dvou dekadických řetězcích a `ViewListItems` je **bit 0**. Posun o jeden bit udělá z běžného *Čtení* falešný nález „uživatel nemá ani čtení".
+> **Ve zkratce.** Maska je 64bitová ve dvou dekadických řetězcích a `ViewListItems` je **bit 0**. Posun o jeden bit udělá z běžného *Čtení* falešný nález „uživatel nemá ani čtení“.
 
 ## Symptom
 

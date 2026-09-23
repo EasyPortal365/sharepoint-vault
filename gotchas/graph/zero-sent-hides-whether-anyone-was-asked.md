@@ -9,7 +9,7 @@ last-reviewed: 2026-09-01
 
 > **Bottom line.** A notification helper that returns `boolean` (or a bare count) collapses two different worlds into one number: *nobody needed the message* and *the message could not be sent*. The SharePoint side does the same — `sitegroups/…/users` returns an empty array both for an empty group and for a read your account is not allowed to perform. Put the two together and a request waiting for approval silently notifies **nobody**, while the UI reports success. Make the return type carry the failure: `sent | nobody | failed`, and never let a read error become an empty recipient list.
 >
-> **Ve zkratce.** Notifikační pomocník vracející `boolean` (nebo jen počet) slévá dva různé světy do jednoho čísla: *nebylo komu psát* a *zprávu se nepodařilo odeslat*. SharePoint dělá totéž — `sitegroups/…/users` vrátí prázdné pole jak u prázdné skupiny, tak u čtení, na které účet nemá právo. Dohromady to znamená, že žádost čekající na schválení neupozorní **nikoho**, a UI hlásí úspěch. Chybu musí nést typ návratu: `sent | nobody | failed` – a chyba čtení se nikdy nesmí stát prázdným seznamem příjemců.
+> **Ve zkratce.** Notifikační pomocník vracející `boolean` (nebo jen počet) slévá dva různé světy do jednoho čísla: *nebylo komu psát* a *zprávu se nepodařilo odeslat*. SharePoint dělá totéž – `sitegroups/…/users` vrátí prázdné pole jak u prázdné skupiny, tak u čtení, na které účet nemá právo. Dohromady to znamená, že žádost čekající na schválení neupozorní **nikoho**, a UI hlásí úspěch. Chybu musí nést typ návratu: `sent | nobody | failed` – a chyba čtení se nikdy nesmí stát prázdným seznamem příjemců.
 
 ## Symptom
 

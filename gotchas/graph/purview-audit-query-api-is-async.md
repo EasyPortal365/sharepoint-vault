@@ -33,3 +33,4 @@ Design the UI around the asynchrony instead of fighting it:
 - Diagnostic discipline that saved us here: a nonsense `$orderby` returning **400** proves the route and auth are fine (a dead route would 404) — one throwaway request separates "API broken" from "my request broken".
 - "It works in the Purview portal" verifies nothing about the Graph route — the portal talks to a different backend.
 - Permissions: the audit query endpoints require the dedicated `AuditLogsQuery.Read.All` scope (admin consent), not the general audit-log read scopes from older APIs.
+- Narrowing a query to one object with `objectIdFilters` can return zero records without an error — filter by object locally instead: [Purview audit `objectIdFilters` can return nothing — silently](purview-objectidfilters-returns-nothing-silently.md).

@@ -9,7 +9,7 @@ last-reviewed: 2026-09-04
 
 > **Bottom line.** In a Heft-based SPFx project, `npm run build` and the command you actually ship with are usually not the same script — and unit tests run under only one of them. A check that lives in `heft test` never executes during `heft build`, so on the path your `.sppkg` really travels, it guards nothing.
 >
-> **Ve zkratce.** V SPFx projektu na Heftu se vydává jiným příkazem, než kterým se testuje. Kontrola pověšená na `heft test` se při `heft build` nespustí — na cestě, po které balíček odchází k zákazníkovi, tedy nehlídá nic.
+> **Ve zkratce.** V SPFx projektu na Heftu se vydává jiným příkazem, než kterým se testuje. Kontrola pověšená na `heft test` se při `heft build` nespustí – na cestě, po které balíček odchází k zákazníkovi, tedy nehlídá nic.
 
 ## Symptom
 

@@ -9,7 +9,7 @@ last-reviewed: 2026-09-04
 
 > **Bottom line.** `webApiPermissionRequests` in `package-solution.json` is a **request**, not a grant. What an administrator approves lands on one tenant-wide service principal — *SharePoint Online Client Extensibility Web Application Principal* — so every SPFx component in that tenant inherits it. A scope another solution had approved works in yours before you deploy anything; a scope only *your* dev tenant has will be missing at the customer.
 >
-> **Ve zkratce.** `webApiPermissionRequests` je jen žádost. Schválené oprávnění dostane jeden tenant-wide servisní principál, takže ho zdědí všechny SPFx komponenty v tenantu — i ta, která o něj nikdy nepožádala. U zákazníka naopak může chybět.
+> **Ve zkratce.** `webApiPermissionRequests` je jen žádost. Schválené oprávnění dostane jeden tenant-wide servisní principál, takže ho zdědí všechny SPFx komponenty v tenantu – i ta, která o něj nikdy nepožádala. U zákazníka naopak může chybět.
 
 ## Symptom
 

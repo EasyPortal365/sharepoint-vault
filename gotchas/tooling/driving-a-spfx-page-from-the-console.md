@@ -9,7 +9,7 @@ last-reviewed: 2026-08-19
 
 > **Bottom line.** Setting `input.value` from the console does **not** update a React component's state, so the form saves nothing while looking like it worked. And a `window.confirm()` behind a destructive button **blocks the renderer**, so any CDP-based automation (Playwright, Puppeteer, an assistant's browser tooling) hangs on it. Both fail as *success*, which is what makes them expensive.
 >
-> **Ve zkratce.** Nastavení `input.value` z konzole **neaktualizuje** stav React komponenty – formulář „uloží" prázdno a tváří se, že je hotovo. A `window.confirm()` za destruktivním tlačítkem **zablokuje renderer**, takže se na něm každá CDP automatizace zasekne. Obojí selže jako úspěch, a to je na tom to drahé.
+> **Ve zkratce.** Nastavení `input.value` z konzole **neaktualizuje** stav React komponenty – formulář „uloží“ prázdno a tváří se, že je hotovo. A `window.confirm()` za destruktivním tlačítkem **zablokuje renderer**, takže se na něm každá CDP automatizace zasekne. Obojí selže jako úspěch, a to je na tom to drahé.
 
 ## Trap 1 — `input.value = x` leaves React state empty
 

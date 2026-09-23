@@ -9,7 +9,7 @@ last-reviewed: 2026-07-15
 
 > **Bottom line.** Delegated `/me/sendMail` always sends as the signed-in user — you can't override From, so route any "sender" setting to Reply-To and reach for app-only permissions plus a shared mailbox only if you genuinely need a service address.
 >
-> **Ve zkratce.** Delegované `/me/sendMail` odesílá vždy jménem přihlášeného uživatele – From nepřepíšeš, takže jakékoli nastavení „odesílatele" směřuj na Reply-To a po app-only oprávněních se sdílenou schránkou sáhni jen tehdy, když opravdu potřebuješ servisní adresu.
+> **Ve zkratce.** Delegované `/me/sendMail` odesílá vždy jménem přihlášeného uživatele – From nepřepíšeš, takže jakékoli nastavení „odesílatele“ směřuj na Reply-To a po app-only oprávněních se sdílenou schránkou sáhni jen tehdy, když opravdu potřebuješ servisní adresu.
 
 ## Symptom
 

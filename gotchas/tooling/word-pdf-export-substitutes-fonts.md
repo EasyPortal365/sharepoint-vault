@@ -9,7 +9,7 @@ last-reviewed: 2026-08-24
 
 > **Bottom line.** `Document.ExportAsFixedFormat` can drop every custom font from the PDF and lay the text out in Calibri/Times instead — while Word still lists the font, reports it on the range, and happily embeds it into `.docx`. Use `Document.PrintOut` to the "Microsoft Print to PDF" printer, install **static** font instances (not variable `*-VariableFont_wght.ttf`), and verify the result by reading the `name` table inside the embedded `FontFile2`.
 >
-> **Ve zkratce.** `Document.ExportAsFixedFormat` umí z PDF vyhodit všechna vlastní písma a vysázet text v Calibri/Times – přestože Word to písmo vypisuje, hlásí ho na rozsahu a bez potíží ho vloží do `.docx`. Použij `Document.PrintOut` na tiskárnu „Microsoft Print to PDF", nainstaluj **statické** řezy (ne variabilní `*-VariableFont_wght.ttf`) a výsledek ověř `name` tabulkou uvnitř vloženého `FontFile2`.
+> **Ve zkratce.** `Document.ExportAsFixedFormat` umí z PDF vyhodit všechna vlastní písma a vysázet text v Calibri/Times – přestože Word to písmo vypisuje, hlásí ho na rozsahu a bez potíží ho vloží do `.docx`. Použij `Document.PrintOut` na tiskárnu „Microsoft Print to PDF“, nainstaluj **statické** řezy (ne variabilní `*-VariableFont_wght.ttf`) a výsledek ověř `name` tabulkou uvnitř vloženého `FontFile2`.
 
 ## Symptom
 

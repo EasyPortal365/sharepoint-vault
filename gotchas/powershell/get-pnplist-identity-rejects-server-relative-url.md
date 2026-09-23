@@ -9,7 +9,7 @@ last-reviewed: 2026-07-26
 
 > **Bottom line.** `-Identity` resolves a list by title, GUID, or **web-relative** URL — a server-relative path like `/sites/team/shared` never matches and fails with "List does not exist" even though it plainly does; pass the GUID (stable across renames) or just `shared`.
 >
-> **Ve zkratce.** `-Identity` hledá seznam podle title, GUID nebo **web-relativní** URL – server-relativní cesta typu `/sites/team/shared` se nikdy netrefí a spadne na „List does not exist", i když seznam prokazatelně existuje; předej GUID (přežije přejmenování) nebo prostě `shared`.
+> **Ve zkratce.** `-Identity` hledá seznam podle title, GUID nebo **web-relativní** URL – server-relativní cesta typu `/sites/team/shared` se nikdy netrefí a spadne na „List does not exist“, i když seznam prokazatelně existuje; předej GUID (přežije přejmenování) nebo prostě `shared`.
 
 ## Symptom
 

@@ -9,7 +9,7 @@ last-reviewed: 2026-08-24
 
 > **Bottom line.** In `ListItemAllFields/FieldValuesAsText` responses, every underscore of the field's internal name comes back as `_x005f_` — `A_x0020_B` becomes `A_x005f_x0020_x005f_B`. Match keys by decoding `_x005f_` → `_`, or you will "lose" values for any column whose name contains a space or diacritic.
 >
-> **Ve zkratce.** V odpovědi `ListItemAllFields/FieldValuesAsText` se každé podtržítko interního názvu pole vrací jako `_x005f_` – z `A_x0020_B` je `A_x005f_x0020_x005f_B`. Klíče porovnávej po dekódování `_x005f_` → `_`, jinak „ztratíš" hodnoty všech sloupců, jejichž název vznikl z textu s mezerou nebo diakritikou.
+> **Ve zkratce.** V odpovědi `ListItemAllFields/FieldValuesAsText` se každé podtržítko interního názvu pole vrací jako `_x005f_` – z `A_x0020_B` je `A_x005f_x0020_x005f_B`. Klíče porovnávej po dekódování `_x005f_` → `_`, jinak „ztratíš“ hodnoty všech sloupců, jejichž název vznikl z textu s mezerou nebo diakritikou.
 
 ## Symptom
 

@@ -9,7 +9,7 @@ last-reviewed: 2026-09-04
 
 > **Bottom line.** If your host check is `url.match(/^https?:\/\//)` and you treat "no match" as *relative, therefore my own site*, then a protocol-relative address defeats it. The browser will happily complete `//evil.example/...` with the current page's scheme and send the request — with credentials — to a host you never allowed.
 >
-> **Ve zkratce.** Když se host vytahuje jen z `^https?://` a „nenašel jsem host" se čte jako „relativní, tedy vlastní web", protokolově relativní adresa kontrolu obejde. Prohlížeč si schéma doplní ze stránky a požadavek pošle na cizí server.
+> **Ve zkratce.** Když se host vytahuje jen z `^https?://` a „nenašel jsem host“ se čte jako „relativní, tedy vlastní web“, protokolově relativní adresa kontrolu obejde. Prohlížeč si schéma doplní ze stránky a požadavek pošle na cizí server.
 
 ## Symptom
 

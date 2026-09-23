@@ -9,7 +9,7 @@ last-reviewed: 2026-08-24
 
 > **Bottom line.** Fan-out is safe when the number of requests is decided by *your code* and dangerous when it is decided by *the customer's data*. One request per library, per vehicle, per registered app, per selected row — that count grows with the tenant, and at some size SharePoint answers 429 instead.
 >
-> **Ve zkratce.** Rozstřel dotazů je bezpečný, když počet určuje TVŮJ kód, a nebezpečný, když ho určují ZÁKAZNÍKOVA data. Jeden dotaz na knihovnu, na vozidlo, na vybraný řádek — takový počet roste s tenantem a od určité velikosti odpoví SharePoint 429 místo dat.
+> **Ve zkratce.** Rozstřel dotazů je bezpečný, když počet určuje TVŮJ kód, a nebezpečný, když ho určují ZÁKAZNÍKOVA data. Jeden dotaz na knihovnu, na vozidlo, na vybraný řádek – takový počet roste s tenantem a od určité velikosti odpoví SharePoint 429 místo dat.
 
 ## Symptom
 

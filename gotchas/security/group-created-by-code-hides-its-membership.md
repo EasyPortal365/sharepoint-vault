@@ -9,7 +9,7 @@ last-reviewed: 2026-08-17
 
 > **Bottom line.** `POST /_api/web/sitegroups` creates the group with `OnlyAllowMembersViewMembership: true` (groups created through the UI get `false`). From then on, only a **member of that group** or its **owner** — the account that ran your provisioning code — can read its membership. Every other administrator gets HTTP 403, and Full Control does not help.
 >
-> **Ve zkratce.** Skupina založená kódem má „členství vidí jen členové" zapnuté. Členy tak přečte jen člen skupiny nebo její vlastník (účet, který provisioning spustil) — druhý správce dostane 403, a Full Control ho neobejde.
+> **Ve zkratce.** Skupina založená kódem má „členství vidí jen členové“ zapnuté. Členy tak přečte jen člen skupiny nebo její vlastník (účet, který provisioning spustil) – druhý správce dostane 403, a Full Control ho neobejde.
 
 ## Symptom
 

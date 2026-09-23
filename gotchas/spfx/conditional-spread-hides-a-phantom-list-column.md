@@ -85,7 +85,7 @@ Both take minutes to write and belong in any broad audit of an SPFx app.
 
 - The same blind spot applies to `Object.assign(target, cond && {...})` and to any payload built
   by merging partials — prefer one explicit literal per write path.
-- Related: [`__metadata` body requires verbose](../rest-api/metadata-body-requires-verbose.md) —
+- Related: [Drop `__metadata` from write bodies](../rest-api/metadata-body-requires-verbose.md) —
   the other common source of "property does not exist" style 400s on writes.
 - When a bug report sounds like "but this must have worked", check `git log -S` on the offending
   line before hunting for a regression. A secondary path to a feature is more often born broken

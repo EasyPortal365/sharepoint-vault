@@ -9,7 +9,7 @@ last-reviewed: 2026-09-23
 
 > **Bottom line.** When you probe for a field with `.../fields/getbyinternalnameortitle('X')` and the field doesn't exist, SharePoint answers **HTTP 400** (`System.ArgumentException — Column 'X' does not exist`), not the 404 you'd expect from a "get by name" lookup. An existence-check that treats "not 200 and not 404" as a hard error will wrongly fail on the normal "field is missing → create it" path.
 >
-> **Ve zkratce.** Když ověřuješ existenci pole přes `.../fields/getbyinternalnameortitle('X')` a pole neexistuje, SharePoint vrátí **HTTP 400** (`System.ArgumentException — Sloupec 'X' neexistuje`), NE 404. Existence-check, který bere „ne 200 a ne 404" jako tvrdou chybu, pak spadne na úplně normální cestě „pole chybí → vytvoř ho".
+> **Ve zkratce.** Když ověřuješ existenci pole přes `.../fields/getbyinternalnameortitle('X')` a pole neexistuje, SharePoint vrátí **HTTP 400** (`System.ArgumentException – Sloupec 'X' neexistuje`), NE 404. Existence-check, který bere „ne 200 a ne 404“ jako tvrdou chybu, pak spadne na úplně normální cestě „pole chybí → vytvoř ho“.
 
 ## Symptom
 

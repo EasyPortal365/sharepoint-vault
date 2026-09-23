@@ -9,7 +9,7 @@ last-reviewed: 2026-08-24
 
 > **Bottom line.** When a report says "100 commits", "500 external users" or "5,000 items", check the API's page size before you believe it — a single unpaged request returns exactly the cap, and code that sums what it received presents the limit of the tool as a measurement of the world.
 >
-> **Ve zkratce.** Když report tvrdí „100 commitů", „500 externích uživatelů" nebo „5 000 položek", ověř si velikost stránky API dřív, než tomu uvěříš – jeden nestránkovaný požadavek vrátí přesně strop a kód, který sečte, co dostal, vydá mez nástroje za změřenou skutečnost.
+> **Ve zkratce.** Když report tvrdí „100 commitů“, „500 externích uživatelů“ nebo „5 000 položek“, ověř si velikost stránky API dřív, než tomu uvěříš – jeden nestránkovaný požadavek vrátí přesně strop a kód, který sečte, co dostal, vydá mez nástroje za změřenou skutečnost.
 
 ## Symptom
 

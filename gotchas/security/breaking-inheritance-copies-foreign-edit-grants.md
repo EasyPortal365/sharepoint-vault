@@ -9,7 +9,7 @@ last-reviewed: 2026-09-01
 
 > **Bottom line.** `breakroleinheritance(copyRoleAssignments=true)` copies **every** web-level role assignment onto the list, including groups that some other application granted `Edit`. `Edit` carries `ManageLists`, which bypasses item-level security (`ReadSecurity = 2`) — so those users read everybody's "private" items. Break with `copyRoleAssignments=false` and grant the roles yourself, then remove anything that isn't on your allow-list.
 >
-> **Ve zkratce.** `breakroleinheritance(copyRoleAssignments=true)` zkopíruje na seznam **všechna** oprávnění z webu – včetně skupin, kterým dala `Edit` jiná aplikace. `Edit` nese `ManageLists`, což obchází item-level zabezpečení (`ReadSecurity = 2`), takže si tito lidé přečtou cizí „soukromé" položky. Lámej dědičnost bez kopírování a role si přiřaď sám; pak odeber vše, co není na bílé listině.
+> **Ve zkratce.** `breakroleinheritance(copyRoleAssignments=true)` zkopíruje na seznam **všechna** oprávnění z webu – včetně skupin, kterým dala `Edit` jiná aplikace. `Edit` nese `ManageLists`, což obchází item-level zabezpečení (`ReadSecurity = 2`), takže si tito lidé přečtou cizí „soukromé“ položky. Lámej dědičnost bez kopírování a role si přiřaď sám; pak odeber vše, co není na bílé listině.
 
 ## Symptom
 

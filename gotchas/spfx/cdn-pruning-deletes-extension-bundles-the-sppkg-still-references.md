@@ -9,7 +9,7 @@ last-reviewed: 2026-09-03
 
 > **Bottom line.** With `includeClientSideAssets: false` the package in the App Catalog pins a *content-hashed* file name for every component. A web part can be routed through a stable loader file, but application customizers and command sets usually are not — so a retention rule such as "keep the 10 newest releases" eventually evicts exactly the hash the catalog still asks for, and the extension silently 404s on every page. Treat extension bundles as a permanent contract: never prune them by age, or give them stable names.
 >
-> **Ve zkratce.** Při `includeClientSideAssets: false` ukazuje balíček v App Catalogu na *hashované* jméno každé komponenty. Webpart jde obejít stabilním loaderem, application customizer a command set obvykle ne – retence „drž 10 nejnovějších releasů" proto jednou vyhodí přesně ten hash, který katalog pořád žádá, a rozšíření tiše vrací 404 na každé stránce. Bundly rozšíření ber jako trvalý kontrakt: nikdy je nemaž podle stáří, nebo jim dej stabilní jména.
+> **Ve zkratce.** Při `includeClientSideAssets: false` ukazuje balíček v App Catalogu na *hashované* jméno každé komponenty. Webpart jde obejít stabilním loaderem, application customizer a command set obvykle ne – retence „drž 10 nejnovějších releasů“ proto jednou vyhodí přesně ten hash, který katalog pořád žádá, a rozšíření tiše vrací 404 na každé stránce. Bundly rozšíření ber jako trvalý kontrakt: nikdy je nemaž podle stáří, nebo jim dej stabilní jména.
 
 ## Symptom
 
@@ -61,4 +61,5 @@ No new `.sppkg` is needed: the catalog is right, the CDN was wrong.
 ## Related
 
 - [CDN-hosted bundle still needs a new `.sppkg`](cdn-hosted-bundle-still-needs-new-sppkg.md) — the other half of the same contract: the manifest pins a hashed file name, so a new bundle needs a new package unless a stable loader sits in between.
-- [Ship SPFx updates without re-uploading `.sppkg`](../../guides/runtime-app-versions-without-sppkg-reuploads.md) — the stable-loader pattern this gotcha assumes for the web part.
+- [A retention window computed from git history deletes the file you overwrite in place](../tooling/retention-by-git-history-deletes-files-overwritten-in-place.md) — why the stable loader needed its own rule in the first place.
+- [A library component loaded from your own manifest fetches its lazy chunks from that manifest's folder](library-component-lazy-chunks-load-from-the-manifest-folder.md) — the other "fails only on first use" trap on the same CDN.

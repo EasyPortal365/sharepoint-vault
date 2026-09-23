@@ -12,7 +12,7 @@ last-reviewed: 2026-07-31
 
 > **Bottom line.** Per-user MFA (`perUserMfaState`) is the *legacy* enforcement switch. When a tenant enforces MFA through Conditional Access or security defaults — which is the norm — every user stays `disabled` while being fully protected. Reading that field and rendering "no MFA" is a false statement, not a rounding error. To report on MFA, use `/reports/authenticationMethods/userRegistrationDetails` (registration is a fact regardless of enforcement method); use `perUserMfaState` only alongside the tenant's actual enforcement context.
 >
-> **Ve zkratce.** Per-user MFA (`perUserMfaState`) je *legacy* přepínač vynucení. Když tenant vynucuje MFA přes Conditional Access nebo výchozí nastavení zabezpečení – tedy běžný stav – zůstávají všichni uživatelé `disabled`, přestože chránění jsou. Vzít tohle pole a napsat „uživatel nemá MFA" není nepřesnost, ale nepravda. Pro reporting používej `/reports/authenticationMethods/userRegistrationDetails` (registrace platí bez ohledu na způsob vynucení); `perUserMfaState` ukazuj jen spolu s kontextem, čím tenant MFA reálně vynucuje.
+> **Ve zkratce.** Per-user MFA (`perUserMfaState`) je *legacy* přepínač vynucení. Když tenant vynucuje MFA přes Conditional Access nebo výchozí nastavení zabezpečení – tedy běžný stav – zůstávají všichni uživatelé `disabled`, přestože chránění jsou. Vzít tohle pole a napsat „uživatel nemá MFA“ není nepřesnost, ale nepravda. Pro reporting používej `/reports/authenticationMethods/userRegistrationDetails` (registrace platí bez ohledu na způsob vynucení); `perUserMfaState` ukazuj jen spolu s kontextem, čím tenant MFA reálně vynucuje.
 
 ## Symptom
 

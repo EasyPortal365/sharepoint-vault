@@ -9,7 +9,7 @@ last-reviewed: 2026-07-31
 
 > **Bottom line.** The control-character strip that protects you from `java<TAB>script:` covers `U+0000`–`U+0020`, and that range includes the plain space. Strip it from the value you *return* and `/Shared Documents/Report Q3.docx` silently becomes `/SharedDocuments/ReportQ3.docx` — a URL that does not exist. Strip aggressively to *decide*; return a value where the space survives as `%20`.
 >
-> **Ve zkratce.** Ořez řídicích znaků, který tě chrání před `java<TAB>script:`, pokrývá rozsah `U+0000`–`U+0020`, a v něm je i obyčejná mezera. Když ji odstraníš z VRACENÉ hodnoty, z `/Shared Documents/Report Q3.docx` se tiše stane `/SharedDocuments/ReportQ3.docx` — adresa, která neexistuje. Agresivně ořezávej jen pro ROZHODNUTÍ; vracej podobu, kde mezera přežije jako `%20`.
+> **Ve zkratce.** Ořez řídicích znaků, který tě chrání před `java<TAB>script:`, pokrývá rozsah `U+0000`–`U+0020`, a v něm je i obyčejná mezera. Když ji odstraníš z VRACENÉ hodnoty, z `/Shared Documents/Report Q3.docx` se tiše stane `/SharedDocuments/ReportQ3.docx` – adresa, která neexistuje. Agresivně ořezávej jen pro ROZHODNUTÍ; vracej podobu, kde mezera přežije jako `%20`.
 
 ## Symptom
 

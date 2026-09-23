@@ -9,7 +9,7 @@ last-reviewed: 2026-08-19
 
 > **Bottom line.** Code that applies JSON formatting usually looks for `AllItems.aspx` and falls back to "whatever view is default". The Site Pages library has no `AllItems.aspx` (its all-items view is `AllPages.aspx`), and a site's default view may well be a grouped one like `ByAuthor.aspx` — so the card formatter gets written onto a view built for something else. Then, because a column that is **absent from the view** evaluates to `undefined` rather than `''`, the usual `=if([$Field] == '', 'none', …)` guard does not hide anything and the cards render blank.
 >
-> **Ve zkratce.** Kód, který aplikuje JSON formátování, obvykle hledá `AllItems.aspx` a jinak vezme „výchozí pohled". Knihovna Site Pages žádný `AllItems.aspx` nemá (jmenuje se `AllPages.aspx`) a výchozí pohled webu bývá i seskupený `ByAuthor.aspx` – formatter tak přistane na pohledu, pro který nebyl psaný. A protože sloupec **chybějící v pohledu** není prázdný řetězec, ale `undefined`, pojistka `=if([$Pole] == '', 'none', …)` nic neskryje a karty vyjdou prázdné.
+> **Ve zkratce.** Kód, který aplikuje JSON formátování, obvykle hledá `AllItems.aspx` a jinak vezme „výchozí pohled“. Knihovna Site Pages žádný `AllItems.aspx` nemá (jmenuje se `AllPages.aspx`) a výchozí pohled webu bývá i seskupený `ByAuthor.aspx` – formatter tak přistane na pohledu, pro který nebyl psaný. A protože sloupec **chybějící v pohledu** není prázdný řetězec, ale `undefined`, pojistka `=if([$Pole] == '', 'none', …)` nic neskryje a karty vyjdou prázdné.
 
 ## Symptom
 

@@ -9,7 +9,7 @@ last-reviewed: 2026-09-23
 
 > **Bottom line.** A misspelled or non-existent managed property does not raise an error: `selectproperties` hands it back as a cell with `ValueType: Null`, and in `querytext` it matches nothing and returns `TotalRows: 0`. HTTP 200 proves nothing, and neither does the cell being present. The one probe that does tell the truth is **`sortlist`**, which is resolved against the schema and answers differently for "no such property" than for "exists but not sortable".
 >
-> **Ve zkratce.** Překlep nebo neexistující managed property nevyvolá chybu: `selectproperties` ji vrátí jako buňku s `ValueType: Null` a v `querytext` nic nenajde a vrátí `TotalRows: 0`. HTTP 200 nedokazuje nic – a přítomnost buňky taky ne. Jediná sonda, která říká pravdu, je **`sortlist`**: řeší se proti schématu a na „taková property neexistuje" odpovídá jinak než na „existuje, ale nejde podle ní řadit".
+> **Ve zkratce.** Překlep nebo neexistující managed property nevyvolá chybu: `selectproperties` ji vrátí jako buňku s `ValueType: Null` a v `querytext` nic nenajde a vrátí `TotalRows: 0`. HTTP 200 nedokazuje nic – a přítomnost buňky taky ne. Jediná sonda, která říká pravdu, je **`sortlist`**: řeší se proti schématu a na „taková property neexistuje“ odpovídá jinak než na „existuje, ale nejde podle ní řadit“.
 
 ## Symptom
 

@@ -9,7 +9,7 @@ last-reviewed: 2026-09-17
 
 > **Bottom line.** Asking for a folder that isn't there answers **HTTP 200** with `{"Exists": false}` — not 404. `ListItemAllFields` on that same path also answers **200**, with `{"odata.null": true}`. An existence check that measures `response.ok` concludes "the folder is there", skips creating it, and the next call fails deep inside — typically on `breakroleinheritance`, where a 404 reads like a permissions problem.
 >
-> **Ve zkratce.** Dotaz na neexistující složku vrací **HTTP 200** s `{"Exists": false}`, ne 404. `ListItemAllFields` na téže cestě taky vrací **200**, s `{"odata.null": true}`. Sonda, která měří `response.ok`, tedy usoudí „složka je", přeskočí založení a spadne až o krok dál — typicky na `breakroleinheritance`, kde 404 vypadá jako problém s oprávněními.
+> **Ve zkratce.** Dotaz na neexistující složku vrací **HTTP 200** s `{"Exists": false}`, ne 404. `ListItemAllFields` na téže cestě taky vrací **200**, s `{"odata.null": true}`. Sonda, která měří `response.ok`, tedy usoudí „složka je“, přeskočí založení a spadne až o krok dál – typicky na `breakroleinheritance`, kde 404 vypadá jako problém s oprávněními.
 
 ## Measured
 

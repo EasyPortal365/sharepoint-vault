@@ -9,7 +9,7 @@ last-reviewed: 2026-07-25
 
 > **Bottom line.** On a `SingleWebPartAppPage`, reading `CanvasContent1` (or `LayoutWebpartsContent`) over REST does **not** give you the web part's configured properties — both can be empty or stale. Don't conclude "the property is not set" from that; read the runtime value instead.
 >
-> **Ve zkratce.** U stránky typu `SingleWebPartAppPage` nedostaneš z `CanvasContent1` (ani z `LayoutWebpartsContent`) nastavené vlastnosti webové části – obojí může být prázdné nebo zastaralé. Nevyvozuj z toho, že „vlastnost není vyplněná".
+> **Ve zkratce.** U stránky typu `SingleWebPartAppPage` nedostaneš z `CanvasContent1` (ani z `LayoutWebpartsContent`) nastavené vlastnosti webové části – obojí může být prázdné nebo zastaralé. Nevyvozuj z toho, že „vlastnost není vyplněná“.
 
 ## Symptom
 

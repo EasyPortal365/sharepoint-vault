@@ -9,7 +9,7 @@ last-reviewed: 2026-07-29
 
 > **Bottom line.** Any sync that deletes "what is no longer in the source" will delete *everything* the moment the source read fails quietly — an empty array from a throttled request is indistinguishable from an empty source.
 >
-> **Ve zkratce.** Každá synchronizace, která maže „co už není ve zdroji", smaže **všechno** ve chvíli, kdy čtení zdroje tiše selže – prázdné pole z odmítnutého požadavku je k nerozeznání od prázdného zdroje.
+> **Ve zkratce.** Každá synchronizace, která maže „co už není ve zdroji“, smaže **všechno** ve chvíli, kdy čtení zdroje tiše selže – prázdné pole z odmítnutého požadavku je k nerozeznání od prázdného zdroje.
 
 ## Symptom
 

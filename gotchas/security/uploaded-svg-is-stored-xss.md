@@ -9,7 +9,7 @@ last-reviewed: 2026-08-10
 
 > **Bottom line.** `file.type.indexOf('image/') === 0` lets `image/svg+xml` through. An SVG can carry `<script>` and `on*` handlers. Rendered through `<img src>` in your app it is inert, so the feature tests clean — but anyone who opens the file's **direct URL** in the library gets it inline, scripts and all, on your tenant's own origin. Allow-list raster types instead.
 >
-> **Ve zkratce.** Prefix `image/` propustí SVG, což je dokument se skriptem. V `<img>` se nespustí, ale přímá URL souboru v knihovně ho servíruje inline — stored XSS na doméně tenanta. Používej allowlist rastrových formátů.
+> **Ve zkratce.** Prefix `image/` propustí SVG, což je dokument se skriptem. V `<img>` se nespustí, ale přímá URL souboru v knihovně ho servíruje inline – stored XSS na doméně tenanta. Používej allowlist rastrových formátů.
 
 ## Symptom
 

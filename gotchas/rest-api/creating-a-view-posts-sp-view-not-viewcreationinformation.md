@@ -9,7 +9,7 @@ last-reviewed: 2026-09-13
 
 > **Bottom line.** Creating a list view with `odata=nometadata` sends a body that SharePoint reads as **`SP.View`**, not `SP.ViewCreationInformation`. `ViewTypeKind` — the property the creation-information docs tell you to send — does not exist on `SP.View` and returns HTTP 400. Adding `@odata.type` to say otherwise fails too: nometadata rejects any type annotation inside the body, on create *and* on MERGE. Send a plain body with no annotation and no `ViewTypeKind`.
 >
-> **Ve zkratce.** Založení pohledu přes `odata=nometadata` posílá tělo, které SharePoint čte jako **`SP.View`**, ne jako `SP.ViewCreationInformation`. `ViewTypeKind` z dokumentace k creation-information na `SP.View` neexistuje a vrátí HTTP 400. Doplnit `@odata.type` nepomůže — nometadata anotaci typu v těle odmítne, a to jak při zakládání, tak při MERGE. Posílá se prosté tělo bez anotace a bez `ViewTypeKind`.
+> **Ve zkratce.** Založení pohledu přes `odata=nometadata` posílá tělo, které SharePoint čte jako **`SP.View`**, ne jako `SP.ViewCreationInformation`. `ViewTypeKind` z dokumentace k creation-information na `SP.View` neexistuje a vrátí HTTP 400. Doplnit `@odata.type` nepomůže – nometadata anotaci typu v těle odmítne, a to jak při zakládání, tak při MERGE. Posílá se prosté tělo bez anotace a bez `ViewTypeKind`.
 
 ## Symptom
 

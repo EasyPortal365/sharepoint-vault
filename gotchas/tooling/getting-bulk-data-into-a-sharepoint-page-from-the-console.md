@@ -9,7 +9,7 @@ last-reviewed: 2026-07-31
 
 > **Bottom line.** To drive a bulk REST import from a SharePoint page you need the data *inside* that page. Pasting 100+ kB into the console is slow and fragile, and uploading it to a public raw-file host leaks whatever the data contains. Serve it from `http://127.0.0.1` with `Access-Control-Allow-Origin: *` and `fetch` it from the page — localhost is a *potentially trustworthy origin*, so mixed-content blocking does not apply, and the data never leaves the machine.
 >
-> **Ve zkratce.** Hromadný REST import řízený ze stránky SharePointu potřebuje data uvnitř té stránky. Vkládat 100+ kB do konzole je pomalé a křehké, nahrát je na veřejný raw hosting znamená únik obsahu. Naservíruj je z `http://127.0.0.1` s `Access-Control-Allow-Origin: *` a načti `fetch`em — localhost je *potentially trustworthy origin*, takže se neuplatní blokace mixed content, a data nikdy neopustí stroj.
+> **Ve zkratce.** Hromadný REST import řízený ze stránky SharePointu potřebuje data uvnitř té stránky. Vkládat 100+ kB do konzole je pomalé a křehké, nahrát je na veřejný raw hosting znamená únik obsahu. Naservíruj je z `http://127.0.0.1` s `Access-Control-Allow-Origin: *` a načti `fetch`em – localhost je *potentially trustworthy origin*, takže se neuplatní blokace mixed content, a data nikdy neopustí stroj.
 
 ## Situation
 

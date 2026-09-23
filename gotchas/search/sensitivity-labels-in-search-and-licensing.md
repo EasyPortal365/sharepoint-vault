@@ -9,7 +9,7 @@ last-reviewed: 2026-07-24
 
 > **Bottom line.** `InformationProtectionLabelId` *is* a queryable/retrievable managed property, but it only returns a GUID after AIP integration is enabled **and** the file is actually labeled **and** re-crawled. And on tenants without an Information Protection licence you can't even *create* a label (`InvalidLicenseException`) — the "free" Purview trial requires buying E3 first. If you need "exclude this from AI/search" governance on a mixed-licence estate, don't build it on Purview.
 >
-> **Ve zkratce.** `InformationProtectionLabelId` je dotazovatelná/retrievable managed property, ale GUID vrací až po zapnutí AIP integrace, skutečném oštítkování souboru a reindexaci. A na tenantu bez Information Protection licence nevytvoříš ani štítek (`InvalidLicenseException`) – „bezplatný" Purview trial chce nejdřív koupit E3. Governance „nedávat do AI/hledání" na smíšených licencích proto nestav na Purview.
+> **Ve zkratce.** `InformationProtectionLabelId` je dotazovatelná/retrievable managed property, ale GUID vrací až po zapnutí AIP integrace, skutečném oštítkování souboru a reindexaci. A na tenantu bez Information Protection licence nevytvoříš ani štítek (`InvalidLicenseException`) – „bezplatný“ Purview trial chce nejdřív koupit E3. Governance „nedávat do AI/hledání“ na smíšených licencích proto nestav na Purview.
 
 ## Symptom
 

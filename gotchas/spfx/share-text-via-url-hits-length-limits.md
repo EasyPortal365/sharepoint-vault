@@ -9,7 +9,7 @@ last-reviewed: 2026-09-01
 
 > **Bottom line.** A "Send to Teams" (`teams.microsoft.com/share?msgText=…`) or "Share via e-mail" (`mailto:?body=…`) button that puts the whole content in the URL works for short text and fails for long: Teams redirects to sign-in and dies with `AADSTS90015: Requested query string is too long`, and `mailto` just never opens the mail client. Cap the URL payload hard, put the full text on the clipboard, and for mailto use `window.location.href`, not `window.open('_self')`.
 >
-> **Ve zkratce.** Tlačítko „Poslat do Teams" (`teams.microsoft.com/share?msgText=…`) nebo „Sdílet e-mailem" (`mailto:?body=…`), které cpe celý obsah do URL, funguje na krátkém textu a na dlouhém padá: Teams přesměruje na přihlášení a skončí `AADSTS90015: Requested query string is too long`, `mailto` mailového klienta prostě neotevře. Payload v URL tvrdě omez, plný text dej do schránky a pro mailto použij `window.location.href`, ne `window.open('_self')`.
+> **Ve zkratce.** Tlačítko „Poslat do Teams“ (`teams.microsoft.com/share?msgText=…`) nebo „Sdílet e-mailem“ (`mailto:?body=…`), které cpe celý obsah do URL, funguje na krátkém textu a na dlouhém padá: Teams přesměruje na přihlášení a skončí `AADSTS90015: Requested query string is too long`, `mailto` mailového klienta prostě neotevře. Payload v URL tvrdě omez, plný text dej do schránky a pro mailto použij `window.location.href`, ne `window.open('_self')`.
 
 ## Symptom
 

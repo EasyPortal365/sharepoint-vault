@@ -9,7 +9,7 @@ last-reviewed: 2026-07-18
 
 > **Bottom line.** A silent auto-save derived from async-loaded state must wait for an explicit "loaded" flag — a value-dedup ref stops save loops, not writes fired from still-empty inputs on mount.
 >
-> **Ve zkratce.** Tiché auto-uložení odvozené z asynchronně načtených dat musí počkat na explicitní příznak „načteno" – dedup ref proti hodnotě brání smyčkám, ne zápisu z prázdných vstupů hned po mountu.
+> **Ve zkratce.** Tiché auto-uložení odvozené z asynchronně načtených dat musí počkat na explicitní příznak „načteno“ – dedup ref proti hodnotě brání smyčkám, ne zápisu z prázdných vstupů hned po mountu.
 
 ## Symptom
 

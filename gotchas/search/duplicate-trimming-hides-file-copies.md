@@ -9,7 +9,7 @@ last-reviewed: 2026-08-18
 
 > **Bottom line.** SharePoint Search collapses results with identical content into a single representative by default (duplicate trimming). If your query's *purpose* is to find copies of a file — `FileName:"report.docx"` across the tenant — the perfect copies are precisely what gets trimmed away: you get one hit and `HTTP 200`, which reads as "no copies exist" when several do. Add `&trimduplicates=false` to any query whose point is finding duplicated content. Leave it on everywhere else, or template copies will flood normal results.
 >
-> **Ve zkratce.** SharePoint Search standardně slučuje výsledky s identickým obsahem do jednoho zástupce (duplicate trimming). Když je smyslem dotazu najít kopie souboru – `FileName:"report.docx"` napříč tenantem – ořezává přesně ty dokonalé kopie, které hledáte: vrátí jeden zásah a `HTTP 200`, což vypadá jako „žádné kopie nejsou", i když existují. Dotazy, jejichž smyslem je hledat duplicity, potřebují `&trimduplicates=false`. Všude jinde trimming nechte zapnutý, jinak výsledky zaplaví kopie šablon.
+> **Ve zkratce.** SharePoint Search standardně slučuje výsledky s identickým obsahem do jednoho zástupce (duplicate trimming). Když je smyslem dotazu najít kopie souboru – `FileName:"report.docx"` napříč tenantem – ořezává přesně ty dokonalé kopie, které hledáte: vrátí jeden zásah a `HTTP 200`, což vypadá jako „žádné kopie nejsou“, i když existují. Dotazy, jejichž smyslem je hledat duplicity, potřebují `&trimduplicates=false`. Všude jinde trimming nechte zapnutý, jinak výsledky zaplaví kopie šablon.
 
 ## Symptom
 
