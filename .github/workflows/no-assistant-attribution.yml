@@ -1,19 +1,24 @@
 # pr-description-hygiene-workflow — generated file, do not edit by hand.
 #
-# Pull request hygiene: rejects the generated trailers and footers matched by the patterns
-# below; HTML comments and fenced code blocks in the description are ignored. Local
-# commit-msg hooks cannot reach the PR body; it is written on GitHub.
+# Commit message and pull request hygiene: rejects the generated trailers and footers
+# matched by the patterns below. Pushes to main/master check the messages of the pushed
+# commits (the before..after range from the push event; a new branch checks only its head
+# commit). Pull requests check the description; HTML comments and fenced code blocks in it
+# are ignored. Local commit-msg hooks can be skipped and cannot reach the PR body.
 name: Bez atribuce asistenta
 
 on:
   pull_request:
     types: [opened, edited, reopened, synchronize]
+  push:
+    branches: [main, master]
 
 permissions:
   contents: read
 
 jobs:
   telo-pr:
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     steps:
       - name: Kontrola tela pull requestu
@@ -63,6 +68,89 @@ jobs:
           console.error("");
           console.error("  Pravidlo: PR bodies nikdy nekonci Co-Authored-By ani \"Generated with...\".");
           console.error("  Oprava: uprav popis pull requestu a kontrola se pusti znovu.");
+          console.error("");
+          process.exit(1);
+          EOF
+          node check.js
+
+  zpravy-commitu:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Kontrola zprav pushnutych commitu
+        env:
+          # The range is passed as environment variables, never interpolated into the shell;
+          # commit messages are read by the script from the push event payload.
+          BEFORE: ${{ github.event.before }}
+          AFTER: ${{ github.sha }}
+        run: |
+          cat > check.js <<'EOF'
+          // Generated file: edit the generator, not this copy.
+          const PRAVIDLA = [
+            { id: "co-authored-by", re: /^\s*co-?authored-by\s*:.*(claude|anthropic)/i, popis: "patickovy radek Co-authored-by s asistentem" },
+            { id: "anthropic-noreply", re: /noreply@anthropic\.com/i, popis: "adresa noreply@anthropic.com" },
+            { id: "generated-with", re: /^\s*\S{0,3}\s*generated with\s*\[?\s*claude/i, popis: "paticka „Generated with Claude…\"" }
+          ];
+
+          function ucinnyText(raw) {
+            const radky = String(raw).split(/\r?\n/);
+            const nuzky = radky.findIndex(l => /^#\s*-+\s*>8\s*-+/.test(l));
+            const bezOdstrizku = nuzky === -1 ? radky : radky.slice(0, nuzky);
+            return bezOdstrizku.filter(l => !/^\s*#/.test(l));
+          }
+
+          function zmer(radky) {
+            const nalezy = [];
+            radky.forEach(radek => {
+              PRAVIDLA.forEach(p => {
+                if (p.re.test(radek)) nalezy.push({ id: p.id, popis: p.popis, radek: radek.trim() });
+              });
+            });
+            return nalezy;
+          }
+
+          function najdi(raw) { return zmer(ucinnyText(raw)); }
+
+          function zpravyPushe(udalost, before) {
+            const u = udalost || {};
+            const pred = String(before || u.before || '');
+            if (!pred || /^0+$/.test(pred)) {
+              const hlava = u.head_commit;
+              return hlava && typeof hlava.message === 'string' ? [{ sha: String(hlava.id || ''), zprava: hlava.message }] : [];
+            }
+            return (Array.isArray(u.commits) ? u.commits : [])
+              .filter(c => c && typeof c.message === 'string')
+              .map(c => ({ sha: String(c.id || ''), zprava: c.message }));
+          }
+
+          function najdiVPushi(udalost, before) {
+            const out = [];
+            zpravyPushe(udalost, before).forEach(z => {
+              najdi(z.zprava).forEach(n => out.push({ sha: z.sha, id: n.id, popis: n.popis, radek: n.radek }));
+            });
+            return out;
+          }
+
+          const fs = require("fs");
+          const before = process.env.BEFORE || "";
+          const after = process.env.AFTER || "";
+          let udalost;
+          try { udalost = JSON.parse(fs.readFileSync(process.env.GITHUB_EVENT_PATH, "utf8")); }
+          catch (e) { console.error("Udalost pushe se nepodarilo precist: " + e.message); process.exit(2); }
+          const zpravy = zpravyPushe(udalost, before);
+          console.log("Rozsah " + (before.slice(0, 7) || "?") + ".." + (after.slice(0, 7) || "?") + ": " + zpravy.length + " commit(u)" +
+            (/^0+$/.test(before) ? " (nova vetev: jen posledni commit)" : "") + ".");
+          const nalezy = najdiVPushi(udalost, before);
+          if (!nalezy.length) {
+            console.log("OK — zpravy pushnutych commitu nenesou atribuci asistenta.");
+            process.exit(0);
+          }
+          console.error("");
+          console.error("  Zpravy pushnutych commitu nesou atribuci asistenta:");
+          nalezy.forEach(function (n) { console.error("    - " + n.sha.slice(0, 7) + "  " + n.popis + ":  " + n.radek); });
+          console.error("");
+          console.error("  Pravidlo: commit messages nikdy nekonci Co-Authored-By ani \"Generated with...\".");
+          console.error("  Commit uz je venku: prepis historie jen vedome; opakovani zastavi lokalni commit-msg hook.");
           console.error("");
           process.exit(1);
           EOF
