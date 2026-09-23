@@ -36,6 +36,8 @@ The expensive part is what can happen before anyone sees the 403: reading the ce
 
 From the same endpoint, `chatMessage` hits carry their link in `webUrl`, while `message` and `event` hits carry `webLink`. Read both (`resource.webLink || resource.webUrl`), or the result cards of one type silently lose their links. A unified endpoint does not mean a unified schema of the resources it returns.
 
+"Same endpoint" means separate requests, not one response. The overview's *Known limitations* table allows `chatMessage` only on its own, and the same for `message` and `event` — so one request per entity type is the safe shape. The [interleaving page](https://learn.microsoft.com/en-us/graph/search-concept-interleaving) disagrees for `message` + `chatMessage` (it allows the pair, and its example shows `webLink` on a `chatMessage` hit), which is one more reason to read both fields.
+
 ## References
 
 - [Use the Microsoft Search API to query data](https://learn.microsoft.com/en-us/graph/api/resources/search-api-overview) — the "Scope search based on entity types" table

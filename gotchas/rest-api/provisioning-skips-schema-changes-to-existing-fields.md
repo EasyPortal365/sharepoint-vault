@@ -16,7 +16,7 @@ last-reviewed: 2026-09-24
 You extend a Choice field's allowed values in your declarative provisioning — you add `Scheduled` to a `DocStatus` field — bump the schema version, and redeploy.
 
 - **Brand-new sites are fine:** the field is created from the manifest, `Scheduled` included.
-- **Sites that already had the field are broken:** the new value simply isn't there. Your app's forms and pickers don't offer it, dashboards can't group by it, and writing the new value fails with **HTTP 400** — the value isn't among the field's choices.
+- **Sites that already had the field are broken:** the new value simply isn't there. Your app's forms and pickers don't offer it and dashboards can't group by it. Writing the new value, on the other hand, still *succeeds* — REST does not validate Choice values ([measured](choice-fields-accept-any-value.md)) — so no error ever points you at the stale definition. (An earlier version of this article said the write fails with HTTP 400. A live test on 2026-09-24 showed 201.)
 
 The manifest clearly lists the value; the deployed field disagrees. It looks like a deployment or seeding bug, but the code and the manifest are both correct.
 
@@ -93,6 +93,7 @@ So: check `res.ok` (and the parsed shape) before computing the union, and treat 
 
 - The same pattern fixes any existing-field schema drift: a `Required` toggle, a new calculated formula, an added lookup — the create-if-missing step won't apply them, a post-hook MERGE will.
 - The `@odata.type` must match the field — `#SP.FieldChoice` for a Choice column, `#SP.FieldMultiChoice` for a multi-choice one. The wrong type 400s.
+- Keep the `Content-Type` plain `application/json`, as in the code above. On view writes, the same kind of annotation sent under `application/json;odata=nometadata` came back as *"'@odata.type' is an invalid instance annotation name"* ([`POST /views` takes an `SP.View` body](creating-a-view-posts-sp-view-not-viewcreationinformation.md)).
 - An earlier version of this article sent the MERGE as `odata=verbose` with `__metadata` and `Choices: { results: [...] }`. Through `SPHttpClient` that body fails with HTTP 400, and a fail-safe reconcile that only warns never succeeds even once — in our case it went unnoticed for about a year, until an unrelated audit found it.
-- Related trap, opposite direction: [Choice fields accept any value over REST](choice-fields-accept-any-value.md). The two compound — even where a raw write would otherwise slip an unknown value through, the field on already-deployed sites still lacks it in its *definition*, so forms won't offer it and group-bys ignore it. Keep the field definition and your app's vocabulary in lockstep.
+- Related trap, same root: [Choice fields accept any value over REST](choice-fields-accept-any-value.md). The two compound — a raw write slips the unknown value through, while the field on already-deployed sites still lacks it in its *definition*, so forms won't offer it and group-bys ignore it. Keep the field definition and your app's vocabulary in lockstep, and check it at build time: [A Choice value your field does not know is stored anyway](../lists/choice-value-missing-from-the-field-is-stored-anyway.md).
 - Don't "fix" it by deleting and recreating the field — that destroys every value already stored in the column. Reconcile in place.

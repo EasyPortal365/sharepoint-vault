@@ -42,7 +42,7 @@ Hard-won pairings — when a call fails with 400/406/500 and you don't know why,
 | Call | Headers that work | If you get it wrong |
 |---|---|---|
 | `GET …/items`, most reads | `Accept: application/json;odata=nometadata` | — (this one's forgiving) |
-| `POST …/lists`, `…/items`, `…/fields` | `Accept: application/json` (plain!) | `odata=nometadata` on these POSTs → **406**, and the item may be created anyway — you get an error *and* a side effect |
+| `POST …/items` | `Accept: application/json` — or `;odata=nometadata`, both return 201 | Nothing breaks, but the response shape moves: with `OData-Version: 4.0` (every `SPHttpClient` call) SharePoint ignores `odata=nometadata` and even `odata=verbose` in `Accept` and answers `odata.metadata=minimal` (no `d` wrapper, extra `@odata.*` keys); ask for `;odata.metadata=none` if you want none. An older version of this row claimed a 406 — a live test on 2026-09-24 did not reproduce it. `POST …/lists` and `…/fields` were not re-measured |
 | Anything `/_api/search/*` | `odata-version: 3.0` + `Accept: application/json;odata=nometadata` | [500 UnknownError, search only](../gotchas/rest-api/search-api-needs-odata-version-3.md) |
 | `POST …/Files/add(…)` | `Accept: application/json;odata=verbose` + `OData-Version: 3.0` | [406 "ACCEPT header missing or invalid"](../gotchas/rest-api/file-upload-406-needs-verbose.md) |
 | Body contains `__metadata` | Drop it and send plain JSON — verbose headers work only without OData v4: a bare `fetch`, or `SPHttpClient` with `odata-version: ''` | [400 "property '__metadata' does not exist" / "JSON Light … not supported"](../gotchas/rest-api/metadata-body-requires-verbose.md) |

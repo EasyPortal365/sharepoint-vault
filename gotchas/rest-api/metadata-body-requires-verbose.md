@@ -63,6 +63,6 @@ body: JSON.stringify({ __metadata: { type: 'SP.Data.TasksListItem' }, Title: 'He
 ## Notes
 
 - **Include `odata-version: 4.0` when you A/B-test a write.** A bare `fetch` without it lets the verbose body through (201/204) and gives a false "it works"; if your test passes while the app still 400s, you tested `fetch`, not the client your code uses.
-- The same v4 default explains a neighbouring error: in OData v4 mode the `Accept` directive is `odata.metadata=…`, and Microsoft notes that the old `odata=…` form can fail with *"The HTTP header ACCEPT is missing or its value is invalid"*.
+- The same v4 default explains a neighbouring error: in OData v4 mode the `Accept` directive is `odata.metadata=…`, and Microsoft notes that the old `odata=…` form can fail with *"The HTTP header ACCEPT is missing or its value is invalid"*. On `POST …/items` it did not fail in our test (2026-09-24): with `OData-Version: 4.0` SharePoint silently ignored `odata=nometadata` — and `odata=verbose` — in `Accept` and answered `odata.metadata=minimal`, so a parser waiting for `d` finds nothing there.
 - Mixed symptoms of the same class: verbose *response* shapes are nested under `d` (`data.d.results` vs `data.value`) — check which mode you are in before parsing.
 - [Connect to SharePoint APIs — OData v4.0](https://learn.microsoft.com/en-us/sharepoint/dev/spfx/connect-to-sharepoint#odata-v40) (Microsoft)

@@ -2,7 +2,7 @@
 title: Creating a modern page via REST is a three-step dance, not one POST
 tags: [rest-api, sitepages, pages, spfx]
 applies-to: SharePoint Online
-last-reviewed: 2026-07-15
+last-reviewed: 2026-09-24
 ---
 
 # Creating a modern page via REST is a three-step dance, not one POST
@@ -82,6 +82,22 @@ function buildCanvas(html: string): string {
   ]);
 }
 ```
+
+## Measured: plain JSON is enough, and `Description` is its own problem
+
+A live A/B test (2026-09-24, SharePoint Online, two pages run through the same sequence, every value read back from `_api/sitepages/pages(<id>)` and from the library item):
+
+| Step | Plain JSON (no `__metadata`, `OData-Version: 4.0`) | Verbose (`__metadata`, `'odata-version': ''`) |
+|---|---|---|
+| `POST …/pages` with `Title` | 201, `Title` saved | 201, `Title` saved |
+| `SavePageAsDraft` (`Title`, `Description`, canvas) | 200, `Title` and body saved | 200, `Title` and body saved |
+| `SavePage` after `checkoutpage` | 204, `Title` and body saved | 200, `Title` and body saved |
+| `Description` sent in the body | **not saved** — derived from the text | **not saved** — derived from the text |
+
+- **You don't need `odata=verbose` for these endpoints.** Both variants store the same things; the plain one also worked with `Content-Type: application/json;odata=nometadata`.
+- **`SavePageAsDraft` checks the page in.** A `SavePage` right after it fails with **409** *"We cannot save your changes because a site member has ended your editing session"* — call `POST …/pages(<id>)/checkoutpage` first.
+- **`Description` does not come from the save calls.** SharePoint derives it from the first text web part, even with `isDefaultDescription: false` in the settings slice, and every later `SavePage` derives it again. A list-item MERGE of `Description` returned **204 without storing it**. `ValidateUpdateListItem` with `bNewDocumentUpdate: false` does store it — but on a library with minor versions it lands in a **new minor version** (1.0 → 1.1, a draft), while the published version keeps the derived text. **Publish again after it** (1.1 → 2.0, verified), or readers who cannot see drafts never get your summary. `bNewDocumentUpdate: true` fails with **500** *"Additions to this Web site have been blocked."*
+- On a library with minor versions the same applies to any other column you set on the page item after `Publish` — a plain MERGE also moved the page from 2.0 to 2.1 — so whatever you write there lives in the draft until the next publish.
 
 ## Notes
 

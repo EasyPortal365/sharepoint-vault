@@ -2,7 +2,7 @@
 title: "`POST /views` takes an `SP.View` body — `ViewTypeKind` and `@odata.type` both fail"
 tags: [rest-api, lists, views, spfx, odata, nometadata]
 applies-to: SharePoint Online REST (`odata=nometadata`, tested from SPFx `SPHttpClient`)
-last-reviewed: 2026-09-13
+last-reviewed: 2026-09-24
 ---
 
 # `POST /views` takes an `SP.View` body — `ViewTypeKind` and `@odata.type` both fail
@@ -78,6 +78,8 @@ On a library with a folder tree this is the setting that decides what the view s
 The creation-information type is what the documentation describes, so the body gets written against it — and the endpoint quietly parses it as the entity type instead. The error text names `SP.View`, which reads like a typo rather than a signal that the whole payload shape was interpreted differently.
 
 The `@odata.type` half is worse, because it is the standard remedy for exactly this class of problem in `odata=verbose` and it is documented advice in several places. In `nometadata` it is not merely unnecessary — the parser refuses the request outright.
+
+**Which "nometadata" matters is the `Content-Type`.** Both failures above were measured with `Content-Type: application/json;odata=nometadata` (and `SPHttpClient`'s `OData-Version: 4.0`). Code that sends a plain `Content-Type: application/json` under the same client writes views *with* `'@odata.type': '#SP.View'` successfully — that is the verified recipe in [Gallery cards render from `tileProps`](../lists/gallery-cards-render-from-tileprops.md), and a field MERGE with `'#SP.FieldChoice'` works the same way. We have not yet A/B-tested the two content types against each other on one view, so treat the `Content-Type` as the likely switch rather than a proven one. For views the simplest way out is the recipe above: send no annotation at all — the URL already says it is a view.
 
 ## Rule
 
