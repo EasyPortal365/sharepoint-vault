@@ -18,7 +18,7 @@
     a live list and belongs in a change window, not in a report.
 
     Module note: uses PnP.PowerShell - the official SharePoint Online
-    Management Shell has no list- or field-level cmdlets.
+    Management Shell cannot enumerate lists or read their fields and indexes.
 
     Related gotcha in this repo:
     gotchas/lists/list-view-threshold-and-indexes.md

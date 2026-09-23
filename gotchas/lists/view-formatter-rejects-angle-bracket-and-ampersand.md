@@ -81,7 +81,7 @@ Catch it before the round-trip instead of decoding offsets afterwards:
 
 ```powershell
 if ($json -match '[<&]') {
-    throw "$file contains '<' or '&' — SharePoint will not store this view formatter."
+    throw "$file contains '<' or '&' - SharePoint will not store this view formatter."
 }
 ```
 

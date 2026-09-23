@@ -31,7 +31,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [Get-LongFileUrlReport.ps1](scripts/lists-and-libraries/Get-LongFileUrlReport.ps1) — the ~400-char path and 255-char name limits, plus the characters that break sync clients
   - **cleanup/**
     - [Get-FileVersionBloatReport.ps1](scripts/cleanup/Get-FileVersionBloatReport.ps1) — what version history really costs, per library and per file; unreadable history is skipped, not counted as zero
-    - [Remove-ExcessFileVersions.ps1](scripts/cleanup/Remove-ExcessFileVersions.ps1) — ⚠️ **writes**: trims to the newest N versions, `-WhatIf` supported; API-deleted versions never reach the recycle bin (measured; the UI path differs)
+    - [Remove-ExcessFileVersions.ps1](scripts/cleanup/Remove-ExcessFileVersions.ps1) — ⚠️ **writes**: trims to the newest N versions, `-WhatIf` supported; trimmed versions go to the site recycle bin by default (`RecycleByID`), `-Permanent` deletes them for good
     - [Get-RecycleBinReport.ps1](scripts/cleanup/Get-RecycleBinReport.ps1) — both stages, grouped by who deleted what, with the 93-day purge countdown
     - [Get-DeletedSitesReport.ps1](scripts/cleanup/Get-DeletedSitesReport.ps1) — deleted site collections still burning quota, and the restore-or-lose deadline
     - [Get-DuplicateFilesReport.ps1](scripts/cleanup/Get-DuplicateFilesReport.ps1) — duplicates by name + byte size through the index; `TrimDuplicates` off, and it aborts rather than call a `Size`-less result set clean
@@ -267,9 +267,9 @@ Every single thing in the vault, on one page. Section names link to folder READM
   - [Ship SPFx updates without re-uploading .sppkg](guides/runtime-app-versions-without-sppkg-reuploads.md) — permanent loader webpart + Library component from a versioned CDN folder via `SPComponentLoader.loadComponent`; admin-controlled activate/rollback, retention, and the pitfalls from the first live run
   - [Token cost of content formats (measured)](guides/token-cost-of-sharepoint-content-formats.md) — real tokens for the same article as `.md`/`.docx`/`.pdf`/a SharePoint page; extraction beats format, a CZ-vs-EN language tax, and a reproducible harness
   - [Reverse-engineering Plumsail Forms apps](guides/reverse-engineering-plumsail-forms-apps.md) — definitions live in `SitePages/PlumsailForms/` (layout + full JS + CSS); read-only extraction routine and client-side patterns to flag before migration
-  - [Provisioning folder trees at scale](guides/provisioning-folder-trees-at-scale.md) — measured cost of creating 86 folders with unique permissions (no throttling); the alias-parameter syntax, reading a tree in one query instead of ninety, and `copyRoleAssignments=false` silently dropping the owners group
+  - [Provisioning folder trees at scale](guides/provisioning-folder-trees-at-scale.md) — measured cost of creating 86 folders with unique permissions (no throttling); the alias-parameter syntax, reading a tree with one item query (two calls) instead of ninety, and `copyRoleAssignments=false` silently dropping the owners group
 - 🎓 **[course/](course/)** — *SharePoint Online – administrace od A do Z* (CZ course materials)
-  - [Course overview](course/README.md) — 9 chapters, what you'll learn, lecturer
+  - [Course overview](course/README.md) — 8 chapters (chapter 02 is covered inside 01), what you'll learn, lecturer
   - [01 · Představení SharePointu](course/01-predstaveni-sharepoint.md) — positioning, scenarios, editions, SP Online vs Server, governance, roadmap
   - [03 · Informační architektura](course/03-informacni-architektura.md) — terminology, sites vs subsites, hub sites, site types, templates
   - [04 · Správa podnikového obsahu](course/04-sprava-podnikoveho-obsahu.md) — lists & libraries, content types, Content Type Hub, managed metadata, retention

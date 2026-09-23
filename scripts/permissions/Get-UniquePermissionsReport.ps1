@@ -31,8 +31,8 @@
     filtered client-side.
 
     Module note: uses PnP.PowerShell for authentication and its REST helper;
-    the official SharePoint Online Management Shell has no list- or
-    item-level cmdlets.
+    the official SharePoint Online Management Shell cannot read list- or
+    item-level permissions.
 
 .PARAMETER SiteUrl
     One or more full site URLs to scan.

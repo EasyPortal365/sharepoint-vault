@@ -1,15 +1,21 @@
 <#
 .SYNOPSIS
-    *** THIS SCRIPT DELETES DATA *** Trims file version history in a library,
-    keeping the newest N versions of each file.
+    *** THIS SCRIPT REMOVES DATA *** Trims file version history in a library,
+    keeping the newest N versions of each file. Trimmed versions go to the
+    site recycle bin; -Permanent deletes them for good.
 
 .DESCRIPTION
-    Deleting a file version is PERMANENT. Trimmed versions do not go to the
-    recycle bin and cannot be restored. Run Get-FileVersionBloatReport.ps1
-    first, agree the policy with whoever owns the content, and start with
-    -WhatIf. The script supports -WhatIf and -Confirm and will not do
-    anything on a first run unless you pass -Confirm:$false or answer the
-    prompt.
+    By default every trimmed version is sent to the SITE RECYCLE BIN
+    (FileVersionCollection.RecycleByID). It can be restored from there until
+    the bin is emptied - and, for the same reason, the storage it uses is
+    released only then. With -Permanent the versions are deleted for good
+    (FileVersionCollection.DeleteByID): nothing reaches either recycle bin and
+    nothing can be restored.
+
+    Run Get-FileVersionBloatReport.ps1 first, agree the policy with whoever
+    owns the content, and start with -WhatIf. The script supports -WhatIf
+    and -Confirm and will not do anything on a first run unless you pass
+    -Confirm:$false or answer the prompt.
 
     Safety rules built in, in order:
 
@@ -21,6 +27,9 @@
       3. The current (published) version is never a candidate; only history.
       4. Oldest versions go first, and only the count above -KeepVersions.
       5. -MaxFilesToProcess caps a single run so a mistake stays small.
+      6. Recycle bin unless you ask otherwise: a wrong rule found after the
+         run is fixed by a restore. If this PnP.PowerShell build cannot
+         recycle a version, the script stops instead of quietly deleting.
 
 .PARAMETER SiteUrl
     Full URL of the site to work on.
@@ -42,20 +51,25 @@
 .PARAMETER MaxFilesToProcess
     Stop after this many files. Default 100.
 
-.EXAMPLE
-    .\Remove-ExcessFileVersions.ps1 -SiteUrl https://contoso.sharepoint.com/sites/media -ClientId 00000000-0000-0000-0000-000000000000 -Library Documents -WhatIf
+.PARAMETER Permanent
+    Delete trimmed versions for good instead of sending them to the site
+    recycle bin. Nothing can be restored afterwards; use it only when the
+    storage has to be released now and the policy has been agreed.
 
-    *** Version deletion is PERMANENT - trimmed versions do not go to the recycle bin. ***
+.EXAMPLE
+    .\Remove-ExcessFileVersions.ps1 -SiteUrl https://contoso.sharepoint.com/sites/media -ClientId 00000000-0000-0000-0000-000000000000 -Library Documents -MaxFilesToProcess 200 -WhatIf
+
+    Trimmed versions go to the site recycle bin (restorable until it is emptied). -Permanent deletes them for good.
     Site: https://contoso.sharepoint.com/sites/media | Library: Documents | Keeping newest 10 version(s) per file
 
     142 file(s) at or above 5 MB.
-      would trim Product launch.pptx (27 of 37 versions, 2274.10 MB)
-      would trim Price list.xlsx (140 of 150 versions, 854.00 MB)
+      would trim Product launch.pptx (27 of 37 versions, 2274.1 MB)
+      would trim Price list.xlsx (140 of 150 versions, 854 MB)
 
     Files examined : 142
     Files skipped  : 0 (unreadable version history)
-    Versions removed: 0
-    Storage freed  : 0 MB
+    Versions removed: 0 (to the site recycle bin)
+    Storage freed  : 0 MB (released only when the recycle bin is emptied)
 
     Without -WhatIf the same lines read "trimmed ...". The skip counter is
     printed even at zero: a file whose history could not be read is never
@@ -64,6 +78,12 @@
 .EXAMPLE
     .\Remove-ExcessFileVersions.ps1 -SiteUrl https://contoso.sharepoint.com/sites/media -ClientId 00000000-0000-0000-0000-000000000000 -Library Documents -KeepVersions 5
 
+.EXAMPLE
+    .\Remove-ExcessFileVersions.ps1 -SiteUrl https://contoso.sharepoint.com/sites/media -ClientId 00000000-0000-0000-0000-000000000000 -Library Documents -Permanent -WhatIf
+
+    Same run, but the versions would be deleted for good - the header says so
+    in red and the summary drops the recycle-bin notes.
+
 .NOTES
     Requires : PnP.PowerShell 2.x or newer (Install-Module PnP.PowerShell)
     Auth     : Interactive (browser) sign-in; you need Manage Lists / Full
@@ -71,7 +91,8 @@
     Warning  : Legal hold, retention labels and eDiscovery may block or be
                violated by version deletion. Check compliance policy before
                running this against real content.
-    Samples  : scripts/sample-outputs.md - what this prints, from a real run
+    Samples  : scripts/sample-outputs.md - what this prints (re-created from
+               the code when the recycle-bin default was introduced)
     Source   : https://github.com/EasyPortal365/sharepoint-vault
 #>
 #Requires -Modules PnP.PowerShell
@@ -94,7 +115,9 @@ param(
     [int]$MinFileSizeMB = 5,
 
     [ValidateRange(1, 100000)]
-    [int]$MaxFilesToProcess = 100
+    [int]$MaxFilesToProcess = 100,
+
+    [switch]$Permanent
 )
 
 $ErrorActionPreference = 'Stop'
@@ -115,7 +138,12 @@ $caml = @"
 </View>
 "@
 
-Write-Host '*** Version deletion is PERMANENT - trimmed versions do not go to the recycle bin. ***' -ForegroundColor Red
+if ($Permanent) {
+    Write-Host '*** -Permanent: trimmed versions are DELETED FOR GOOD - they do not go to the recycle bin. ***' -ForegroundColor Red
+}
+else {
+    Write-Host 'Trimmed versions go to the site recycle bin (restorable until it is emptied). -Permanent deletes them for good.' -ForegroundColor Yellow
+}
 Write-Host ("Site: {0} | Library: {1} | Keeping newest {2} version(s) per file" -f $SiteUrl, $Library, $KeepVersions) -ForegroundColor Cyan
 
 Connect-PnPOnline -Url $SiteUrl -Interactive -ClientId $ClientId
@@ -132,6 +160,7 @@ $processed    = 0
 $deleted      = 0
 $freedBytes   = [int64]0
 $skippedReads = 0
+$action       = if ($Permanent) { 'Permanently delete old file versions' } else { 'Send old file versions to the recycle bin' }
 
 foreach ($item in $items) {
     if ($processed -ge $MaxFilesToProcess) {
@@ -170,9 +199,19 @@ foreach ($item in $items) {
 
     $target = ("{0} ({1} of {2} versions, {3} MB)" -f $name, $toRemove.Count, $versions.Count, [math]::Round($bytes / 1MB, 2))
 
-    if ($PSCmdlet.ShouldProcess($target, 'Delete old file versions')) {
+    # Fail closed: if this CSOM build cannot recycle a version, stop - never fall
+    # back to a permanent delete the operator did not ask for. Checked before
+    # ShouldProcess so a -WhatIf run reveals it too.
+    if (-not $Permanent -and $null -eq $versions.PSObject.Methods['RecycleByID']) {
+        throw 'This PnP.PowerShell / CSOM build has no FileVersionCollection.RecycleByID, so versions cannot be sent to the recycle bin. Update PnP.PowerShell, or re-run with -Permanent if deleting for good is really intended.'
+    }
+
+    if ($PSCmdlet.ShouldProcess($target, $action)) {
+        # Both calls take the version ID and are the measured pair: RecycleByID lands in
+        # the site recycle bin, DeleteByID in neither bin.
         foreach ($v in $toRemove) {
-            $v.DeleteObject()
+            if ($Permanent) { $versions.DeleteByID($v.ID) }
+            else            { $versions.RecycleByID($v.ID) }
         }
         Invoke-PnPQuery
         $deleted    += $toRemove.Count
@@ -187,8 +226,15 @@ foreach ($item in $items) {
 Write-Host ''
 Write-Host ("Files examined : {0}" -f $processed) -ForegroundColor Cyan
 Write-Host ("Files skipped  : {0} (unreadable version history)" -f $skippedReads) -ForegroundColor Cyan
-Write-Host ("Versions removed: {0}" -f $deleted) -ForegroundColor Cyan
-Write-Host ("Storage freed  : {0} MB" -f [math]::Round($freedBytes / 1MB, 1)) -ForegroundColor Cyan
+if ($Permanent) {
+    Write-Host ("Versions removed: {0} (deleted for good)" -f $deleted) -ForegroundColor Cyan
+    Write-Host ("Storage freed  : {0} MB" -f [math]::Round($freedBytes / 1MB, 1)) -ForegroundColor Cyan
+}
+else {
+    # Recycled versions still count against the site quota until the bin empties.
+    Write-Host ("Versions removed: {0} (to the site recycle bin)" -f $deleted) -ForegroundColor Cyan
+    Write-Host ("Storage freed  : {0} MB (released only when the recycle bin is emptied)" -f [math]::Round($freedBytes / 1MB, 1)) -ForegroundColor Cyan
+}
 
 if ($skippedReads -gt 0) {
     Write-Warning 'Some files were skipped because their history could not be read. Re-run later; do not assume they were clean.'

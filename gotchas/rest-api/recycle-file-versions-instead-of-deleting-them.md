@@ -2,7 +2,7 @@
 title: RecycleByID sends a file version to the recycle bin — DeleteByID does not
 tags: [rest-api, files, versioning, recycle-bin, cleanup]
 applies-to: SharePoint Online
-last-reviewed: 2026-09-17
+last-reviewed: 2026-09-23
 ---
 
 # `RecycleByID` sends a file version to the recycle bin — `DeleteByID` does not
@@ -28,7 +28,7 @@ A test library with versioning on, a file with versions `1.0`–`6.0`:
 2. `/Versions` now starts at `2.0` — `1.0` is gone from the history.
 3. `/_api/site/RecycleBin?$orderby=DeletedDate desc&$top=1` → the file's `LeafName`, `ItemType: 2`, `ItemState: 1` (first-stage bin), `Size` of that one version.
 
-The same probe with `DeleteByID` leaves nothing in either recycle bin — which is why the trimming script in this repo warns that deletion is permanent.
+The same probe with `DeleteByID` leaves nothing in either recycle bin — which is why the trimming script in this repo recycles by default and deletes for good only when you pass `-Permanent`.
 
 ## Why it matters
 
@@ -42,4 +42,4 @@ Two things `RecycleByID` does **not** buy you:
 ## Related
 
 - [File versions come back oldest-first](file-versions-are-oldest-first.md) — read the whole history before deciding what to trim; a `$top` cuts the newest end.
-- [`Remove-ExcessFileVersions.ps1`](../../scripts/cleanup/Remove-ExcessFileVersions.ps1) — the PowerShell trimmer; add `-Recycle` to `Remove-PnPFileVersion` if you want the same behaviour there.
+- [`Remove-ExcessFileVersions.ps1`](../../scripts/cleanup/Remove-ExcessFileVersions.ps1) — the PowerShell trimmer; recycles by default (CSOM `RecycleByID`), `-Permanent` deletes for good. With plain PnP cmdlets the equivalent is `Remove-PnPFileVersion -Identity <version> -Recycle` (the `-All` switch cannot recycle).

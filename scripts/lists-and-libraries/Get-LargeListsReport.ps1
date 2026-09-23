@@ -11,7 +11,7 @@
     READ-ONLY: this script makes no changes.
 
     Module note: this script uses PnP.PowerShell because the official
-    SharePoint Online Management Shell has no list-level cmdlets — see
+    SharePoint Online Management Shell cannot enumerate lists or read their item counts - see
     the module policy in scripts/README.md.
 
     Related gotcha in this repo:

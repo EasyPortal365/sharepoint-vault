@@ -55,7 +55,7 @@ PowerShell scripts for SharePoint Online administration and diagnostics.
 | Script | Purpose |
 |---|---|
 | [Get-FileVersionBloatReport.ps1](cleanup/Get-FileVersionBloatReport.ps1) | How much storage version history really eats, per library and per file *(PnP)* |
-| [Remove-ExcessFileVersions.ps1](cleanup/Remove-ExcessFileVersions.ps1) | ⚠️ **Writes.** Trims version history to the newest N per file. `-WhatIf` supported *(PnP)* |
+| [Remove-ExcessFileVersions.ps1](cleanup/Remove-ExcessFileVersions.ps1) | ⚠️ **Writes.** Trims version history to the newest N per file — to the site recycle bin by default, `-Permanent` deletes for good. `-WhatIf` supported *(PnP)* |
 | [Get-RecycleBinReport.ps1](cleanup/Get-RecycleBinReport.ps1) | Both recycle bin stages: what's in them, who deleted it, days until purge *(PnP)* |
 | [Get-DeletedSitesReport.ps1](cleanup/Get-DeletedSitesReport.ps1) | Deleted site collections with the 93-day restore countdown |
 | [Get-DuplicateFilesReport.ps1](cleanup/Get-DuplicateFilesReport.ps1) | Duplicates by name + byte size via the search index, `TrimDuplicates` off *(PnP)* |

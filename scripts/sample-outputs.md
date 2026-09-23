@@ -2,14 +2,14 @@
 title: What the scripts actually print
 tags: [powershell, reporting]
 applies-to: SharePoint Online
-last-reviewed: 2026-07-29
+last-reviewed: 2026-09-23
 ---
 
 # What the scripts actually print
 
-> **Bottom line.** Every sample below is a real run against a live tenant with the names swapped for Contoso — including the failures, because knowing what a script looks like when it *cannot* read something is worth more than knowing what it looks like when everything works.
+> **Bottom line.** Every sample below is a real run against a live tenant with the names swapped for Contoso (the one reconstructed sample says so) — including the failures, because knowing what a script looks like when it *cannot* read something is worth more than knowing what it looks like when everything works.
 >
-> **Ve zkratce.** Každá ukázka níže je skutečný běh proti živému tenantu s přejmenováním na Contoso – včetně selhání, protože vědět, jak skript vypadá, když něco přečíst **ne**dokáže, je cennější než vědět, jak vypadá, když všechno klapne.
+> **Ve zkratce.** Každá ukázka níže je skutečný běh proti živému tenantu s přejmenováním na Contoso (jediná rekonstruovaná to o sobě říká) – včetně selhání, protože vědět, jak skript vypadá, když něco přečíst **ne**dokáže, je cennější než vědět, jak vypadá, když všechno klapne.
 
 Console output is trimmed; CSV samples show the header plus a row or two. Numbers are real in shape (110 sites, 26 guests, 236 tenant properties), only identities are replaced.
 
@@ -68,8 +68,8 @@ Ten longest dormant:
 
 Url                                                DaysInactive StorageUsedMB Owner
 ---                                                ------------ ------------- -----
-https://contoso.sharepoint.com/sites/DaikinQuote              72             1 megan@contoso.com
-https://contoso.sharepoint.com/sites/AllCompany.4718543       72             1 megan@contoso.com
+https://contoso.sharepoint.com/sites/quote-2026               72             1 megan@contoso.com
+https://contoso.sharepoint.com/sites/AllCompany.0000000       72             1 megan@contoso.com
 ```
 
 Note the unit. An earlier version printed `0 GB` here, because 24 MB rounds to zero — and "0 GB" reads as *there is nothing there*, which is a different claim from *there is very little there*.
@@ -101,7 +101,7 @@ LegacyAuthProtocolsEnabled          False                    True
 Reading tenant app catalog https://contoso.sharepoint.com/sites/appcatalog ...
   7 solution(s) in the catalog.
 Reading installed apps on https://contoso.sharepoint.com/sites/intranet ...
-  Contoso Workplace: installed 1.22.0.0, catalog 1.25.0.0
+  Contoso Intranet Web Parts: installed 1.4.0.0, catalog 1.6.0.0
 
 Done. 12 row(s) written to C:\reports\AppCatalogInventory.csv
 1 site installation(s) are behind the catalog version.
@@ -415,23 +415,25 @@ Any total below is a floor, not the answer.
 
 ### Remove-ExcessFileVersions.ps1 — ⚠️ writes
 
-Always start here, with `-WhatIf`:
+Always start here, with `-WhatIf` (here with `-MaxFilesToProcess 200`, so all 142 files are examined — the default stops at 100):
 
 ```text
-*** Version deletion is PERMANENT - trimmed versions do not go to the recycle bin. ***
+Trimmed versions go to the site recycle bin (restorable until it is emptied). -Permanent deletes them for good.
 Site: https://contoso.sharepoint.com/sites/media | Library: Documents | Keeping newest 10 version(s) per file
 
 142 file(s) at or above 5 MB.
-  would trim Product launch.pptx (27 of 37 versions, 2274,10 MB)
-  would trim Price list.xlsx (140 of 150 versions, 854,00 MB)
+  would trim Product launch.pptx (27 of 37 versions, 2274,1 MB)
+  would trim Price list.xlsx (140 of 150 versions, 854 MB)
 
 Files examined : 142
 Files skipped  : 0 (unreadable version history)
-Versions removed: 0
-Storage freed  : 0 MB
+Versions removed: 0 (to the site recycle bin)
+Storage freed  : 0 MB (released only when the recycle bin is emptied)
 ```
 
 Without `-WhatIf` the same lines read `trimmed …`. Note the skip counter — a file whose history could not be read is never trimmed, and the count is printed even when it is zero.
+
+Trimmed versions go to the **site recycle bin** by default (`RecycleByID`), so a wrong rule discovered after the run is undone by a restore — see [RecycleByID sends a file version to the recycle bin](../gotchas/rest-api/recycle-file-versions-instead-of-deleting-them.md). `-Permanent` deletes them for good and says so in red. This sample was re-created from the script's output format when the default changed from permanent deletion to the recycle bin — it is not a capture of a fresh run.
 
 ### Get-RecycleBinReport.ps1
 

@@ -17,7 +17,7 @@
     keeps no versions, when in fact it keeps all of them forever.
 
     Module note: uses PnP.PowerShell - the official SharePoint Online
-    Management Shell has no list-level cmdlets.
+    Management Shell cannot enumerate lists or read their settings.
 
 .PARAMETER SiteUrl
     One or more full site URLs to scan.
