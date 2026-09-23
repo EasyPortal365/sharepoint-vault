@@ -2,10 +2,14 @@
 title: "No such host" for <app>.azurewebsites.net — new function apps get a unique default hostname
 tags: [azure-functions, dns, deployment]
 applies-to: Azure Functions, Azure App Service (apps created ~mid-2024 and later)
-last-reviewed: 2026-08-07
+last-reviewed: 2026-09-23
 ---
 
 # "No such host" for `<app>.azurewebsites.net` — new function apps get a unique default hostname
+
+> **Bottom line.** Function apps created since roughly mid-2024 get a unique default hostname (`<app>-<hash>.<region>-01.azurewebsites.net`); the bare `<app>.azurewebsites.net` is never registered in DNS for them, so "No such host" is a naming problem, not an outage. Read the real hostname from the portal or the deploy log — never derive it from the app name.
+>
+> **Ve zkratce.** Function Apps založené zhruba od poloviny roku 2024 dostávají jedinečný výchozí hostname (`<app>-<hash>.<region>-01.azurewebsites.net`); holé `<app>.azurewebsites.net` pro ně v DNS vůbec neexistuje, takže „No such host“ je problém s názvem, ne výpadek. Skutečný hostname čtěte z portálu nebo z logu nasazení – nikdy ho neodvozujte z názvu aplikace.
 
 **Symptom:** your deploy pipeline reports success and the function app runs fine in the portal, but `https://<app-name>.azurewebsites.net` fails DNS resolution entirely (`No such host is known` / `ERR_NAME_NOT_RESOLVED`). Easy to misread as "the app does not exist" or "a transient DNS hiccup" — especially when *older* apps in the same subscription resolve just fine under their bare names.
 
@@ -15,7 +19,7 @@ last-reviewed: 2026-08-07
 https://<app-name>-<random-hash>.<region>-01.azurewebsites.net
 ```
 
-e.g. `myfunc-gwb7ezbzczaud5ba.westeurope-01.azurewebsites.net`. The bare `<app-name>.azurewebsites.net` is never registered in DNS for these apps. Apps created before the rollout keep their bare hostname — so one subscription routinely contains both kinds, which is exactly what makes the failure look random.
+e.g. `myfunc-c4hdbqf2gxe7a9mz.westeurope-01.azurewebsites.net`. The bare `<app-name>.azurewebsites.net` is never registered in DNS for these apps. Apps created before the rollout keep their bare hostname — so one subscription routinely contains both kinds, which is exactly what makes the failure look random.
 
 **Fix / rules:**
 

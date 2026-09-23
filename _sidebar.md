@@ -8,6 +8,8 @@
   - [Knowledge formats for RAG](/guides/choosing-a-knowledge-format-for-sharepoint-rag.md)
   - [Token cost of formats (measured)](/guides/token-cost-of-sharepoint-content-formats.md)
   - [Folder trees at scale (measured)](/guides/provisioning-folder-trees-at-scale.md)
+  - [SPFx updates without .sppkg re-uploads](/guides/runtime-app-versions-without-sppkg-reuploads.md)
+  - [Reverse-engineering Plumsail Forms](/guides/reverse-engineering-plumsail-forms-apps.md)
 
 - **🎓 Course (CZ)**
   - [SharePoint od A do Z](/course/README.md)
@@ -32,7 +34,7 @@
 - **✂️ Snippets**
   - [All snippets](/snippets/README.md)
 
-- **📦 Templates**
+- **📦 Templates (planned)**
   - [Overview](/templates/README.md)
 
 - **🔗 Resources**

@@ -2,12 +2,14 @@
 title: Wrapping MSGraphClientV3 to count calls fails silently — and your fail-safe catch hides it
 tags: [spfx, graph, telemetry, instrumentation, monkey-patching]
 applies-to: SharePoint Framework (SPFx), MSGraphClientV3
-last-reviewed: 2026-08-08
+last-reviewed: 2026-09-23
 ---
 
 # Wrapping MSGraphClientV3 to count calls fails silently — and your fail-safe catch hides it
 
 > **Bottom line.** The obvious way to instrument Graph calls — reassigning `client.api` on the instance returned by `msGraphClientFactory` — does not take effect. In strict mode (which every TS module is) the assignment throws, and because instrumentation is written to be fail-safe, the `catch` swallows it. Nothing breaks, nothing is measured, nothing is logged. Build the wrapper with `Object.create` instead, and assert that the assignment stuck.
+>
+> **Ve zkratce.** Nabízející se způsob, jak měřit volání Graphu – přepsat `client.api` na instanci, kterou vrátí `msGraphClientFactory` – se neuplatní. Ve strict módu (a v něm je každý TS modul) přiřazení vyhodí výjimku, a protože se instrumentace píše jako fail-safe, `catch` ji spolkne. Nic se nerozbije, nic se nezměří, nic se nezaloguje. Obal postavte přes `Object.create` a ověřte, že přiřazení opravdu platí.
 
 ## Symptom
 

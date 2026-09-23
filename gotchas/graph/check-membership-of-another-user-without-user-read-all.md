@@ -2,10 +2,14 @@
 title: Checking someone else's group membership — ask the group, not the user
 tags: [graph, groups, permissions, delegated]
 applies-to: Microsoft Graph (delegated)
-last-reviewed: 2026-07-29
+last-reviewed: 2026-09-23
 ---
 
 # "Is *that* person in this group?" without asking for a new permission
+
+> **Bottom line.** `/me/checkMemberGroups` answers only for the signed-in user, and the per-user variant (`/users/{id}/checkMemberGroups`) needs a directory-read permission your app may not have. Invert the question: read the members of the few groups your rules reference (`/groups/{id}/transitiveMembers/microsoft.graph.user`, covered by `GroupMember.Read.All`) and match the person — and treat a partial read as "unknown", never as "not a member".
+>
+> **Ve zkratce.** `/me/checkMemberGroups` odpovídá jen za přihlášeného uživatele a varianta pro jiného uživatele (`/users/{id}/checkMemberGroups`) potřebuje oprávnění ke čtení adresáře, které aplikace mít nemusí. Otočte otázku: přečtěte členy těch několika skupin, na které se odkazují vaše pravidla (`/groups/{id}/transitiveMembers/microsoft.graph.user`, stačí `GroupMember.Read.All`), a osobu v nich vyhledejte – a neúplné čtení berte jako „nevím“, nikdy jako „není členem“.
 
 > **Symptom.** You need the group membership of a **different** user (an admin tool: "show me what this colleague can see"). `POST /me/checkMemberGroups` only ever answers for the signed-in user, and the obvious replacement — `POST /users/{id}/checkMemberGroups` — needs a directory-read permission your app may not have.
 >

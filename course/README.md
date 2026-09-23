@@ -2,12 +2,12 @@
 title: "SharePoint Online – administrace od A do Z"
 course: MSHP-ONLINE
 lang: cs
-last-reviewed: 2026-07-18
+last-reviewed: 2026-09-23
 ---
 
 # SharePoint Online – administrace od A do Z
 
-> Kurzové materiály k praktickému školení pro IT Pro správce. Devět prakticky zaměřených kapitol popisujících klíčové informace o SharePoint Online z pohledu správce. Jediná sekce vaultu psaná **česky**.
+> Kurzové materiály k praktickému školení pro IT Pro správce. Osm prakticky zaměřených kapitol (kapitola 02 je součástí kapitoly 01) popisujících klíčové informace o SharePoint Online z pohledu správce. Jediná sekce vaultu psaná **česky**.
 
 Tohle jsou doprovodné materiály k živému kurzu, který vedu v OK System (3 dny, 8:30–16:00). Sdílím je otevřeně – ať už jste kurz absolvovali a chcete se k obsahu vracet, nebo jen hledáte souhrn k některému tématu.
 

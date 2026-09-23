@@ -1,9 +1,12 @@
-// Kontrola konzistence vaultu. Spousti se rucne pred commitem:
+// Kontrola konzistence vaultu. Spousti se pred commitem (u spravce repa ji
+// pousti lokalni pre-commit hook, ale jde spustit i rucne):
 //
 //   node tools/check-vault.mjs
 //
 // Hlida to, co se tise rozejde: obsah slozek proti tomu, co o nem tvrdi
-// indexy, a natvrdo napsane pocty, ktere nikdo neaktualizuje.
+// indexy (sekcni README, INDEX.md, postranni menu _sidebar.md), format clanku
+// (frontmatter + dvojjazycna bottom line) a natvrdo napsane pocty, ktere nikdo
+// neaktualizuje.
 // Exit 1 = nalezeno rozcházeni.
 import { readdirSync, readFileSync, existsSync, statSync } from 'node:fs';
 import { join, relative, dirname, resolve } from 'node:path';
@@ -26,7 +29,7 @@ function walk(dir, filter, out = []) {
   const abs = join(ROOT, dir);
   if (!existsSync(abs)) {
     // Tiche `[]` u chybejici slozky delalo z prejmenovane sekce „nic k hlaseni":
-    // pocty sedely, mrtve odkazy se nekontrolovaly a skript vypsal OK (#325).
+    // pocty sedely, mrtve odkazy se nekontrolovaly a skript vypsal OK.
     if (POVINNE_SEKCE.indexOf(dir.split('/')[0]) !== -1) chybejiciSekce.push(dir);
     return out;
   }
@@ -38,6 +41,25 @@ function walk(dir, filter, out = []) {
   return out;
 }
 
+/** Soubory (cesty), jejichz jmeno se v textu indexu nevyskytuje. */
+function chybiV(soubory, text) {
+  return soubory.filter((f) => !text.includes(f.split('/').pop()));
+}
+
+/**
+ * Format clanku (CONTRIBUTING): frontmatter + dvojjazycna bottom line hned pod H1.
+ * Vraci seznam chybejicich casti — prazdny = v poradku.
+ */
+function chybiVeFormatu(text) {
+  const out = [];
+  const t = text.replace(/^\uFEFF/, '');
+  if (!/^---\r?\n[\s\S]*?\r?\n---\r?\n/.test(t)) out.push('frontmatter');
+  else if (!/^last-reviewed:\s*\d{4}-\d{2}-\d{2}\s*$/m.test(t.split(/\r?\n---\r?\n/)[0])) out.push('last-reviewed');
+  if (!/^> \*\*Bottom line\.\*\*/m.test(t)) out.push('Bottom line');
+  if (!/^> \*\*Ve zkratce\.\*\*/m.test(t)) out.push('Ve zkratce');
+  return out;
+}
+
 /**
  * PROTIPŘÍKLAD (`--selftest`): chybějící sekce se MUSÍ ohlásit, existující ne.
  * Přesně tahle díra tu byla — `walk()` vracel tiché `[]` a přejmenovaná sekce se
@@ -45,6 +67,17 @@ function walk(dir, filter, out = []) {
  */
 if (process.argv.indexOf('--selftest') !== -1) {
   let chyb = 0;
+  // Indexy: chybejici polozka se ohlasi, uvedena ne.
+  const idx = chybiV(['guides/a.md', 'guides/b.md'], '| [A](a.md) |');
+  if (idx.length !== 1 || idx[0] !== 'guides/b.md') { console.error('  x  selftest: chybiV neoznacil chybejici guide'); chyb++; }
+  if (chybiV(['guides/a.md'], '[A](/guides/a.md)').length !== 0) { console.error('  x  selftest: chybiV hlasi uvedeny guide'); chyb++; }
+  // Format: clanek bez frontmatteru a BLUF se ohlasi, uplny ne.
+  const bez = chybiVeFormatu('# Title\n\n*Last reviewed: 2026-09-01*\n\n## Symptom\n');
+  if (bez.indexOf('frontmatter') === -1 || bez.indexOf('Bottom line') === -1) { console.error('  x  selftest: clanek bez frontmatteru/BLUF prosel'); chyb++; }
+  const plny = chybiVeFormatu('---\ntitle: x\nlast-reviewed: 2026-09-23\n---\n\n# X\n\n> **Bottom line.** a\n>\n> **Ve zkratce.** b\n');
+  if (plny.length !== 0) { console.error('  x  selftest: uplny clanek hlasen jako vadny: ' + plny.join(', ')); chyb++; }
+  const bezCs = chybiVeFormatu('---\nlast-reviewed: 2026-09-23\n---\n# X\n> **Bottom line.** a\n');
+  if (bezCs.indexOf('Ve zkratce') === -1) { console.error('  x  selftest: chybejici ceska bottom line prosla'); chyb++; }
   const pred = walk('rozhodne-neexistujici-sekce', () => true).length;
   if (pred !== 0) { console.error('  x  selftest: neexistujici slozka vratila polozky'); chyb++; }
   if (chybejiciSekce.indexOf('rozhodne-neexistujici-sekce') !== -1) {
@@ -55,7 +88,7 @@ if (process.argv.indexOf('--selftest') !== -1) {
   const stav = chybejiciSekce.length;
   walk('guides-podvrzeno-neexistuje', () => true);
   if (chybejiciSekce.length !== stav) { console.error('  x  selftest: cizi jmeno oznaceno za povinnou sekci'); chyb++; }
-  console.log(chyb ? 'check-vault --selftest: SELHAL' : 'check-vault --selftest: OK (4 tvrzeni vcetne obou polarit)');
+  console.log(chyb ? 'check-vault --selftest: SELHAL' : 'check-vault --selftest: OK (9 tvrzeni vcetne obou polarit)');
   process.exit(chyb ? 1 : 0);
 }
 
@@ -79,13 +112,38 @@ for (const g of gotchas) {
   if (!index.includes(name)) problems.push(`INDEX.md neuvadi ${name}`);
 }
 
+// ── 2b. Kazdy guide je v guides/README, v INDEX i v postrannim menu ──────
+// Guides jsou v _sidebar.md vypsane jednotlive (na rozdil od gotchas/scripts,
+// kde menu odkazuje jen na sekcni README) — chybejici radek = guide, ktery
+// ctenar webu nenajde.
+const guides = walk('guides', (n) => n.endsWith('.md') && n !== 'README.md');
+const guidesReadme = read('guides/README.md');
+const sidebar = has('_sidebar.md') ? read('_sidebar.md') : '';
+if (!sidebar) problems.push('_sidebar.md chybi — postranni menu webu nejde zkontrolovat');
+for (const g of chybiV(guides, guidesReadme)) problems.push(`guides/README.md neuvadi ${g.split('/').pop()}`);
+for (const g of chybiV(guides, index)) problems.push(`INDEX.md neuvadi ${g.split('/').pop()}`);
+if (sidebar) for (const g of chybiV(guides, sidebar)) problems.push(`_sidebar.md neuvadi ${g.split('/').pop()}`);
+
+// ── 2c. Kapitoly kurzu jsou v INDEX i v postrannim menu ──────────────────
+const kapitoly = walk('course', (n) => n.endsWith('.md') && n !== 'README.md');
+for (const c of chybiV(kapitoly, index)) problems.push(`INDEX.md neuvadi ${c.split('/').pop()}`);
+if (sidebar) for (const c of chybiV(kapitoly, sidebar)) problems.push(`_sidebar.md neuvadi ${c.split('/').pop()}`);
+
+// ── 2d. Format clanku: frontmatter + dvojjazycna bottom line ─────────────
+// Dva clanky bez frontmatteru prosly indexy i odkazy, protoze na format se
+// nic neptalo. Snippety maji vlastni format (dvouradkovy uvod), README jsou vyjimka.
+for (const f of [...gotchas, ...guides]) {
+  const chybi = chybiVeFormatu(read(f));
+  if (chybi.length) problems.push(`${f}: chybi ${chybi.join(', ')} (format viz CONTRIBUTING.md)`);
+}
+
 // ── 3. Natvrdo napsane pocty v textu ─────────────────────────────────────
 // Cislo v prose zastara ve chvili, kdy pribude soubor. Bud musi sedet,
 // nebo tam nema co delat.
 const counts = {
   scripts: scripts.length,
   gotchas: gotchas.length,
-  guides: walk('guides', (n) => n.endsWith('.md') && n !== 'README.md').length,
+  guides: guides.length,
   snippets: walk('snippets', (n) => n.endsWith('.md') && n !== 'README.md').length,
 };
 
@@ -94,7 +152,7 @@ const NUM = {
   nine: 9, ten: 10, eleven: 11, twelve: 12,
 };
 
-const mdFiles = ['README.md', 'INDEX.md', 'scripts/README.md', 'gotchas/README.md']
+const mdFiles = ['README.md', 'INDEX.md', 'scripts/README.md', 'gotchas/README.md', 'guides/README.md']
   .filter(has);
 
 for (const f of mdFiles) {
@@ -125,7 +183,7 @@ const allMd = [
   ...walk('guides', (n) => n.endsWith('.md')),
   ...walk('snippets', (n) => n.endsWith('.md')),
   ...walk('talks', (n) => n.endsWith('.md')),
-  'README.md', 'INDEX.md', 'CONTRIBUTING.md',
+  'README.md', 'INDEX.md', 'CONTRIBUTING.md', '_sidebar.md',
 ].filter(has);
 
 // Odkaz uvnitr kodu neni odkaz - je to ukazka. Musi ven, jinak detektor

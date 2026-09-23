@@ -2,12 +2,14 @@
 title: Creating a Teams channel returns 201 long before its SharePoint folder exists
 tags: [graph, microsoft-teams, sharepoint, provisioning, channels, async]
 applies-to: Microsoft Graph v1.0 (/teams/{id}/channels), SharePoint Online document libraries
-last-reviewed: 2026-09-13
+last-reviewed: 2026-09-23
 ---
 
 # A Teams channel exists immediately — its folder does not
 
 > **Bottom line.** `POST /teams/{team-id}/channels` returns **201** and the channel shows up in Teams and in `List channels` right away, but the matching folder in the team site's default document library is provisioned **asynchronously by Teams**. Measured on a live tenant: the folder did not exist **two minutes** after creation, nor after ten. Anything that writes into that folder straight after creating the channel — subfolders, files, permissions — fails on a missing parent. Do not "fix" this by creating the folder yourself: a hand-made folder of the same name has **no channel behind it**, looks identical, and nobody notices.
+>
+> **Ve zkratce.** `POST /teams/{team-id}/channels` vrátí **201** a kanál je v Teams i v `List channels` hned, ale odpovídající složku ve výchozí knihovně dokumentů týmového webu zakládá Teams **asynchronně**. Změřeno na živém tenantu: složka neexistovala **dvě minuty** po vytvoření kanálu, ani po deseti. Cokoli, co do ní hned po vytvoření kanálu zapisuje (podsložky, soubory, oprávnění), spadne na chybějícím rodiči. Neopravujte to tím, že složku založíte sami: ručně vytvořená složka stejného jména za sebou **nemá kanál**, vypadá stejně a nikdo si toho nevšimne.
 
 ## Symptom
 

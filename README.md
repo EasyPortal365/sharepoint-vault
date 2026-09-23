@@ -4,7 +4,7 @@
 
 *„Zápisky z bojového pole" — Notes from the battlefield.*
 
-**Field-tested scripts, hard-won lessons, and ready-to-use templates for SharePoint professionals.**
+**Field-tested scripts, hard-won lessons, and practical guides for SharePoint professionals.**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
@@ -25,7 +25,7 @@ It is **not** another copy of Microsoft's documentation. Everything in the vault
 - 💥 **Gotchas** — short *symptom → cause → fix* write-ups of the traps that cost us hours, so they cost you minutes
 - 🧭 **Guides** — end-to-end walkthroughs that connect the dots (REST, Microsoft Graph, SPFx, search)
 - ✂️ **Snippets** — copy-paste fragments: REST calls, CAML, list formatting JSON
-- 📦 **Templates** — reusable artifacts: site scripts, formatting templates, schema definitions
+- 📦 **Templates** *(planned)* — reusable artifacts: site scripts, formatting templates, schema definitions; the folder lists the categories we intend to fill
 - 🔗 **Resources** — a curated shortlist of the tools and sources we actually use
 
 ## Vault map
@@ -38,7 +38,7 @@ It is **not** another copy of Microsoft's documentation. Everything in the vault
 | [`course/`](course/) | *SharePoint Online – administrace od A do Z* — full CZ course materials (IT Pro admin) |
 | [`talks/`](talks/) | Slide decks from public talks and conferences (CZ) |
 | [`snippets/`](snippets/) | Small copy-paste fragments for daily work |
-| [`templates/`](templates/) | Reusable templates — site scripts, list formatting, schemas |
+| [`templates/`](templates/) | *Planned* — reusable templates (site scripts, list formatting, schemas); contributions welcome |
 | [`resources/`](resources/) | Curated links — tools, docs, community sources |
 
 Prefer everything on a single page? Browse the 🗂️ **[full vault index](INDEX.md)** — a tree of every item in the repo.

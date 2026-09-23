@@ -2,12 +2,14 @@
 title: GetObjectSharingInformation — GET always 405, CreatedBy always null, and other measured facts
 tags: [rest-api, sharing, permissions, performance]
 applies-to: SharePoint Online
-last-reviewed: 2026-08-08
+last-reviewed: 2026-09-23
 ---
 
 # GetObjectSharingInformation — GET always 405, CreatedBy always null, and other measured facts
 
 > **Bottom line.** This endpoint is the only practical way to enumerate sharing links per file from a browser, but three of its documented-looking behaviours do not hold. Measured on a live tenant with delegated (signed-in admin) access, 2026-08-08.
+>
+> **Ve zkratce.** Tenhle endpoint je jediná praktická cesta, jak z prohlížeče vypsat odkazy pro sdílení u jednotlivých souborů – jenže tři jeho chování, která vypadají jako zdokumentovaná, neplatí. Změřeno na živém tenantu s delegovaným přístupem (přihlášený správce), 2026-08-08.
 
 ## What it is
 
