@@ -2,7 +2,7 @@
 title: `fields/getbyinternalnameortitle` returns 400, not 404, for a missing field
 tags: [rest-api, fields, provisioning, existence-check]
 applies-to: SharePoint REST (/_api/web/lists(...)/fields/getbyinternalnameortitle), field provisioning
-last-reviewed: 2026-08-27
+last-reviewed: 2026-09-23
 ---
 
 # `fields/getbyinternalnameortitle` returns 400, not 404, for a missing field
@@ -58,7 +58,7 @@ Alternatively, use a **filter query that can't throw** for the probe: `.../field
 
 - The obvious mental model — "get by name → 404 if not found" — is wrong for this endpoint; it *throws*.
 - It only bites when the field is genuinely absent, i.e. the very first run on a fresh list — passes any test where the column already exists.
-- `@ep365/provisioning`'s `addField` happens to survive it because it only *warns* on non-404 and still proceeds to the POST; copy the "check, then hard-fail on non-404" shape into new code and it breaks.
+- A lenient provisioning helper survives it by accident when it only *warns* on a non-404 and still proceeds to the POST; copy the "check, then hard-fail on non-404" shape into new code and it breaks.
 
 ## See also
 

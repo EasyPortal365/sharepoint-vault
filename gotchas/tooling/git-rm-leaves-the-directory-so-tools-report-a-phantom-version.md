@@ -2,7 +2,7 @@
 title: `git rm -r` leaves the directory behind, so a tool reading the filesystem reports a version nobody serves
 tags: [tooling, git, github-pages, cdn, release]
 applies-to: any git-backed static host (GitHub Pages) with per-version folders
-last-reviewed: 2026-09-06
+last-reviewed: 2026-09-23
 ---
 
 # `git rm -r` leaves the directory behind, so a tool reading the filesystem reports a version nobody serves
@@ -16,20 +16,20 @@ last-reviewed: 2026-09-06
 You remove a version folder from the repo that backs the static host:
 
 ```bash
-git rm -r cdn/app/1.52.0.1
-git commit -m "remove superseded silent build" && git push
+git rm -r cdn/app/2.4.0.1
+git commit -m "remove superseded build" && git push
 ```
 
 The site returns 404 for it, as intended. But your own tooling keeps naming it:
 
 ```text
-"app":"1.52.0.1"        # generator picking the newest version folder
+"app":"2.4.0.1"        # generator picking the newest version folder
 ```
 
 `ls` explains it:
 
 ```bash
-$ ls cdn/app/1.52.0.1
+$ ls cdn/app/2.4.0.1
 chunk.165_....js.LICENSE.txt
 chunk.8731_....js.LICENSE.txt
 ...

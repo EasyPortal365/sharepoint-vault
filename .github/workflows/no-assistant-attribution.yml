@@ -1,7 +1,8 @@
-# ep365-attribution-workflow — generovano install-pr-attribution-workflow.js, needituj rucne.
+# pr-description-hygiene-workflow — generated file, do not edit by hand.
 #
-# Hlida, ze telo pull requestu nenese atribuci asistenta (pokyn Kamiho, CLAUDE.md).
-# Lokalni commit-msg hook na telo PR nedosahne: pise se az na GitHubu.
+# Pull request hygiene: rejects the generated trailers and footers matched by the patterns
+# below; HTML comments and fenced code blocks in the description are ignored. Local
+# commit-msg hooks cannot reach the PR body; it is written on GitHub.
 name: Bez atribuce asistenta
 
 on:
@@ -17,12 +18,12 @@ jobs:
     steps:
       - name: Kontrola tela pull requestu
         env:
-          # 🔒 Telo jde ENV promennou, NIKDY interpolaci do shellu (jinak je cizi
-          #    text v PR spustitelny kod v nasem CI).
+          # The body is passed as an environment variable, never interpolated into the
+          # shell: text anyone can write into a PR must not become code run in CI.
           PR_BODY: ${{ github.event.pull_request.body }}
         run: |
           cat > check.js <<'EOF'
-          // Generovano z ep365-docs/scripts/check-commit-attribution.js — needituj tady.
+          // Generated file: edit the generator, not this copy.
           const PRAVIDLA = [
             { id: "co-authored-by", re: /^\s*co-?authored-by\s*:.*(claude|anthropic)/i, popis: "patickovy radek Co-authored-by s asistentem" },
             { id: "anthropic-noreply", re: /noreply@anthropic\.com/i, popis: "adresa noreply@anthropic.com" },

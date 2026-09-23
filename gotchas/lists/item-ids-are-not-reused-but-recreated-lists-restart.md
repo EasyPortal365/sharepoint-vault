@@ -2,7 +2,7 @@
 title: List item IDs are never reused after a purge — but a recreated list starts at 1 again
 tags: [lists, rest-api, data-modelling, provisioning]
 applies-to: SharePoint Online, SharePoint Server
-last-reviewed: 2026-08-10
+last-reviewed: 2026-09-23
 ---
 
 # List item IDs are never reused after a purge — but a recreated list starts at 1 again
@@ -45,7 +45,7 @@ The counter lives on the list and only ever moves forward. Deleting items — ev
 const web = _spPageContextInfo.webAbsoluteUrl, rel = _spPageContextInfo.webServerRelativeUrl;
 const h = { headers: { Accept: 'application/json;odata=nometadata' }, credentials: 'include' };
 const ids = (await (await fetch(`${web}/_api/web/GetList('${rel}/Lists/Articles')/items?$select=Id&$top=5000`, h)).json()).value.map(x => x.Id);
-const stats = (await (await fetch(`${web}/_api/web/GetList('${rel}/Lists/ArticleStats')/items?$select=Id,ArticleId&$top=5000`, h)).json()).value;
+const stats = (await (await fetch(`${web}/_api/web/GetList('${rel}/Lists/ReadCounts')/items?$select=Id,ArticleId&$top=5000`, h)).json()).value;
 console.table(stats.filter(s => ids.indexOf(s.ArticleId) === -1));
 ```
 

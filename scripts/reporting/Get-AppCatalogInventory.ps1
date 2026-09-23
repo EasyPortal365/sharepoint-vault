@@ -39,7 +39,7 @@
     Reading tenant app catalog https://contoso.sharepoint.com/sites/appcatalog ...
       7 solution(s) in the catalog.
     Reading installed apps on https://contoso.sharepoint.com/sites/intranet ...
-      Contoso Workplace: installed 1.22.0.0, catalog 1.25.0.0
+      Contoso Intranet Web Parts: installed 1.4.0.0, catalog 1.6.0.0
 
     Done. 12 row(s) written to .\AppCatalogInventory_20260729-143912.csv
     1 site installation(s) are behind the catalog version.

@@ -46,8 +46,8 @@
 
     Url                                                DaysInactive StorageUsedMB Owner
     ---                                                ------------ ------------- -----
-    https://contoso.sharepoint.com/sites/DaikinQuote              72             1 megan@contoso.com
-    https://contoso.sharepoint.com/sites/AllCompany.47            72             1 megan@contoso.com
+    https://contoso.sharepoint.com/sites/quote-2026               72             1 megan@contoso.com
+    https://contoso.sharepoint.com/sites/AllCompany.0000000       72             1 megan@contoso.com
 
 .EXAMPLE
     .\Get-InactiveSitesReport.ps1 -TenantAdminUrl https://contoso-admin.sharepoint.com -InactiveDays 730 -MinStorageMB 1024

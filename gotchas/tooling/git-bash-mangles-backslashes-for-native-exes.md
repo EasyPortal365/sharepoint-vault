@@ -2,7 +2,7 @@
 title: Git Bash on Windows mangles backslashes passed to native tools — regexes silently stop matching
 tags: [tooling, windows, git-bash, ripgrep]
 applies-to: Git Bash / MSYS2 on Windows
-last-reviewed: 2026-08-24
+last-reviewed: 2026-09-23
 ---
 
 # Git Bash on Windows mangles backslashes passed to native tools — regexes silently stop matching
@@ -16,7 +16,7 @@ last-reviewed: 2026-08-24
 From Git Bash you run a native Windows tool (ripgrep, findstr, anything not MSYS-built) with a regex that handles both path separators:
 
 ```bash
-rg 'kamil\.jurik[\\/]Documents' --files-with-matches
+rg 'megan[\\/]Documents' --files-with-matches
 ```
 
 It returns a handful of hits — all of them forward-slash occurrences. The backslash-path occurrences (the majority on Windows) are **silently missing**, and the incomplete result looks perfectly plausible.
@@ -34,10 +34,10 @@ Pick any of the three, in order of preference:
 1. **Don't write `\\` at all** — match the separator with a class that survives the trip: `.{1,4}` or `.` (covers `\`, `\\` *and* `/`):
 
    ```bash
-   rg 'kamil\.jurik.{1,4}Documents' --files-with-matches
+   rg 'megan.{1,4}Documents' --files-with-matches
    ```
 
-2. **Verify with a counter-example** — whenever a search over Windows paths returns suspiciously few results, re-run a shorter pattern against one file where the match *provably* exists (`rg -c 'jurik' that-file`). One command distinguishes "no matches" from "mangled pattern".
+2. **Verify with a counter-example** — whenever a search over Windows paths returns suspiciously few results, re-run a shorter pattern against one file where the match *provably* exists (`rg -c 'megan' that-file`). One command distinguishes "no matches" from "mangled pattern".
 3. **Run the native tool from PowerShell instead** — no MSYS layer, `[\\/]` works as written.
 
 ## Notes

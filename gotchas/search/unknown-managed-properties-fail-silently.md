@@ -2,7 +2,7 @@
 title: Search ignores unknown managed properties — silently
 tags: [search, kql, managed-properties, rest-api, diagnostics]
 applies-to: SharePoint Online (Search REST /_api/search/query, KQL)
-last-reviewed: 2026-07-25
+last-reviewed: 2026-09-23
 ---
 
 # Search ignores unknown managed properties — silently
@@ -13,27 +13,27 @@ last-reviewed: 2026-07-25
 
 ## Symptom
 
-You add a site/list column (say `EP365Classification`, a Choice field), wait for the crawl, and check whether Search can see it:
+You add a site/list column (say `ContosoClassification`, a Choice field), wait for the crawl, and check whether Search can see it:
 
 ```
-/_api/search/query?querytext='IsDocument:1'&selectproperties='EP365ClassificationOWSCHCS'&rowlimit=1
+/_api/search/query?querytext='IsDocument:1'&selectproperties='ContosoClassificationOWSCHCS'&rowlimit=1
 → HTTP 200, TotalRows: 93        ✅ "great, the property exists"
 ```
 
 It doesn't. The exact same query with a name you invented on the spot returns the same thing:
 
 ```
-/_api/search/query?querytext='IsDocument:1'&selectproperties='EP365NeexistujeXyz123'&rowlimit=1
+/_api/search/query?querytext='IsDocument:1'&selectproperties='ContosoDoesNotExistXyz123'&rowlimit=1
 → HTTP 200, TotalRows: 93        ❌ the fake property is just as "successful"
 ```
 
 And filtering behaves the same way — no error, just nothing:
 
 ```
-querytext='EP365ClassificationOWSCHCS:Internal'  → TotalRows: 0
-querytext='EP365NeexistujeXyz123:whatever'       → TotalRows: 0
-querytext='ContentTypeOWSCHCS:Document'          → TotalRows: 0   ← real data, still nothing
-querytext='ContentType:Document'                 → TotalRows: 147 ← built-in property works
+querytext='ContosoClassificationOWSCHCS:Internal'  → TotalRows: 0
+querytext='ContosoDoesNotExistXyz123:whatever'     → TotalRows: 0
+querytext='ContentTypeOWSCHCS:Document'            → TotalRows: 0   ← real data, still nothing
+querytext='ContentType:Document'                   → TotalRows: 147 ← built-in property works
 ```
 
 The last two lines are the giveaway: an **auto-generated** managed property (`…OWSCHCS`, `ows_*`) is not usable in KQL even when the underlying data definitely exists.
@@ -98,8 +98,8 @@ const probe = async (prop: string): Promise<number> => {
   return d.PrimaryQueryResult?.RelevantResults?.TotalRows ?? -1;
 };
 
-const mine = await probe('EP365ClassificationOWSCHCS');
-const fake = await probe('EP365DefinitelyNotAProperty123');
+const mine = await probe('ContosoClassificationOWSCHCS');
+const fake = await probe('ContosoDefinitelyNotAProperty123');
 // mine === fake  →  your property is NOT queryable (regardless of HTTP status)
 ```
 
