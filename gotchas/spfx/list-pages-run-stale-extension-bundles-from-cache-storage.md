@@ -19,13 +19,13 @@ You publish a new version of the bundle behind a stable URL (for example `my-ext
 - the next normal refresh shows the old one again,
 - the script loads in a few milliseconds, as if from a local cache, so it looks like a caching glitch that should have expired long ago.
 
-In our case the copy was **nine days old**, stored with `max-age=600`.
+In our case the cached copy was the file as published **nine days earlier** (its `Last-Modified`), stored with `max-age=600`.
 
 ## Cause
 
 The modern Lists experience keeps its own cache of scripts in the browser's Cache Storage API, one cache per Lists build (`Lists-odsp-web-prod_2026-09-04.002`, `Lists-odsp-web-prod_2026-09-11.002`, …). Your extension bundle ends up in it and is executed from it. There is no service worker involved (`navigator.serviceWorker.controller` is `null`) – the page code reads the cache itself, so HTTP caching rules don't apply. An entry in an older build's cache keeps winning even when a newer build's cache exists.
 
-Modern site pages have similar caches (`SPClient-<id>`), but there a new file showed up immediately.
+Modern site pages have similar caches (`SPClient-<id>`), but there the new file showed up within minutes.
 
 ## How to confirm
 
