@@ -2,7 +2,7 @@
 title: Get lists by URL, not by title
 tags: [rest-api, lists, csom, spfx]
 applies-to: SharePoint Online, SharePoint Server
-last-reviewed: 2026-08-24
+last-reviewed: 2026-09-24
 ---
 
 # Get lists by URL, not by title
@@ -75,6 +75,6 @@ Two practical consequences:
 - Resolving "which library does this folder path belong to?" is a **single request**: `GetList('<any path>')?$select=RootFolder/ServerRelativeUrl&$expand=RootFolder`. No segment-walking needed (keep the walk only as a fallback).
 - Don't diagnose "GetList must 404 on folder paths" from reading code or docs — this behaviour difference is exactly the kind of thing to **verify with a live A/B request** before calling it a bug.
 
-Caveat: when you probe *permissions* for a target folder, prefer the folder's own item (`getfolderbyserverrelativeurl('<path>')/ListItemAllFields/EffectiveBasePermissions`) over the list-level answer — a folder with unique permissions would otherwise get the library's verdict, not its own.
+Caveat: when you probe *permissions* for a target folder, prefer the folder's own item (`GetFolderByServerRelativePath(decodedurl='<encoded path>')/ListItemAllFields/EffectiveBasePermissions` — the path-based form, because the classic `getfolderbyserverrelativeurl('…')` cannot find a folder with `#` or `%` in its name, see [A `#` or `%` in a file or folder name](hash-and-percent-in-file-names-need-the-resourcepath-api.md)) over the list-level answer — a folder with unique permissions would otherwise get the library's verdict, not its own.
 
 The same leniency means a list-level probe also passes on a path that is *not* a sensible target at all — a view page such as `…/Forms/AllItems.aspx` resolves to its library. Check the shape of a path separately: [`ParentLink` from Search points at a library view](../search/parentlink-points-at-a-view-not-the-library.md).

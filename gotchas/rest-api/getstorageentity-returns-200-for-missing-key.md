@@ -2,7 +2,7 @@
 title: GetStorageEntity returns 200 for a missing key, not 404
 tags: [rest-api, tenant-properties, spfx, configuration]
 applies-to: SharePoint Online
-last-reviewed: 2026-08-22
+last-reviewed: 2026-09-24
 ---
 
 # `GetStorageEntity` returns 200 for a missing key, not 404
@@ -93,7 +93,7 @@ const r = await fetch(`${web}/_api/web/GetFolderByServerRelativeUrl('${path}')?$
 const exists = r.ok && (await r.json()).Exists === true;
 ```
 
-Get it wrong and the failure surfaces one call later, as a `404` from `Files/add` or `ListItemAllFields` — pointing at the upload, not at the check that lied. The same applies to `GetFileByServerRelativeUrl(…)?$select=Exists`.
+Get it wrong and the failure surfaces one call later, as a `404` from `Files/add` or `ListItemAllFields` — pointing at the upload, not at the check that lied. The same applies to `GetFileByServerRelativeUrl(…)?$select=Exists`. (For paths that users name, ask the path-based `GetFolderByServerRelativePath(decodedurl=…)` instead: the classic lookup answers `Exists: false` even for an existing folder whose name contains `#` or `%` — [A `#` or `%` in a file or folder name](hash-and-percent-in-file-names-need-the-resourcepath-api.md). The body-not-status rule is the same on both.)
 
 ## Design consequence
 

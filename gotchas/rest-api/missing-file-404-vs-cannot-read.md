@@ -2,7 +2,7 @@
 title: "\"File is missing\" and \"I cannot read the file\" collapse into the same null — and the empty state then lies"
 tags: [rest-api, files, error-handling, permissions, diagnostics]
 applies-to: SharePoint Online
-last-reviewed: 2026-08-26
+last-reviewed: 2026-09-24
 ---
 
 # "File is missing" and "I cannot read the file" collapse into the same null
@@ -65,7 +65,7 @@ let doc: IUserDoc | undefined;
 let lastStatus = 0;
 for (let i = 0; i < urls.length && !doc; i++) {
   const r = await this.read<IUserDoc>(
-    base + "/_api/web/getfilebyserverrelativeurl('" + odataString(urls[i]) + "')/$value",
+    base + "/_api/web/GetFileByServerRelativePath(decodedurl='" + encodeURIComponent(odataString(urls[i])) + "')/$value",
     'text/plain'
   );
   if (r.ok) { doc = r.data || {}; break; }
@@ -83,5 +83,6 @@ The UI rule that follows from this: **an error message and an empty state must b
 ## Notes
 
 - `odataString()` (escape `'` → `''`) is not optional here: a UPN like `o'brien@contoso.com` ends the OData string literal early and the request comes back as 400, which under a `T | null` helper looks exactly like "no data". Users with an apostrophe in their name would silently never see their items.
+- …and it is not enough on its own. A guest's UPN contains `#EXT#`, and the classic `getfilebyserverrelativeurl('…')` cannot reach a path with `#` or `%` in it even when the path is encoded — it answers **404**, which this code would read as "no data" for every guest. That is why the snippet uses `GetFileByServerRelativePath(decodedurl=…)` with the path doubled *and* URL-encoded: [A `#` or `%` in a file or folder name](hash-and-percent-in-file-names-need-the-resourcepath-api.md).
 - Reading the raw file body needs `Accept: text/plain` on `/$value`, not the JSON accept header you use for list items.
 - The same reasoning applies to any *supplementary* read: if read A only enriches the result of read B (names, labels, icons), its failure must degrade the display, not cancel the result — and the UI should admit the gap rather than silently dropping rows.

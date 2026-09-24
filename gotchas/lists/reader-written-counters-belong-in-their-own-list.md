@@ -2,7 +2,7 @@
 title: View counts and ratings written by readers cannot live in a list only editors may write
 tags: [lists, permissions, rest-api, provisioning, ux]
 applies-to: SharePoint Online, SharePoint Server
-last-reviewed: 2026-08-10
+last-reviewed: 2026-09-24
 ---
 
 # View counts and ratings written by readers cannot live in a list only editors may write
@@ -58,7 +58,7 @@ async increment(itemId: number, field: 'views' | 'likes'): Promise<boolean> { �
 
 If it fails, roll the optimistic `+1` back and re-enable the buttons. Thanking a user for a vote that was never stored is worse than admitting it did not go through.
 
-**4. Read defensively.** A shared counter with `writeSecurity: 1` is writable by anyone who can use REST, so clamp on read (`< 0 → 0`, ignore non-numeric) and treat the number as a popularity signal, never as an input to anything that matters. If two readers vote at the same time the client-side read-modify-write is last-write-wins — acceptable for popularity, not for anything auditable.
+**4. Read defensively.** A shared counter with `writeSecurity: 1` is writable by anyone who can use REST, so clamp on read (`< 0 → 0`, ignore non-numeric) and treat the number as a popularity signal, never as an input to anything that matters. If two readers vote at the same time the client-side read-modify-write is last-write-wins — acceptable for popularity, not for anything auditable. "At the same time" is wider than it sounds: compute the new value from the count your page loaded and send it with `IF-MATCH: *`, and every vote cast since that page load is overwritten. Read fresh right before the write and send the item's ETag, or derive the count from per-user rows instead — [SharePoint REST has no increment](../rest-api/a-counter-written-from-a-stale-read-loses-votes.md).
 
 ## Side effect worth having
 

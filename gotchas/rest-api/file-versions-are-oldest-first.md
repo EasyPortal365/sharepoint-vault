@@ -2,7 +2,7 @@
 title: File versions come back oldest-first, so $top truncates the newest ones
 tags: [rest-api, files, versioning, paging, diagnostics]
 applies-to: SharePoint Online
-last-reviewed: 2026-08-16
+last-reviewed: 2026-09-24
 ---
 
 # File versions come back oldest-first, so `$top` truncates the newest ones
@@ -48,7 +48,8 @@ Two things that do hold:
 ```js
 const VERSION_TOP = 500;   // above SharePoint's default 500-version limit
 
-const url = `${webUrl}/_api/web/GetFileByServerRelativeUrl('${escaped}')/Versions`
+// escaped = encodeURIComponent(fileUrl.split("'").join("''")) — the path-based call also reaches names with # or %
+const url = `${webUrl}/_api/web/GetFileByServerRelativePath(decodedurl='${escaped}')/Versions`
   + `?$select=VersionLabel,Created,Url,IsCurrentVersion&$top=${VERSION_TOP}`;
 
 const data = await get(url);

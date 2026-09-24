@@ -2,7 +2,7 @@
 title: A batch file move must be grouped by file, not by the record that points at it
 tags: [rest-api, files, idempotence, data-integrity, spfx]
 applies-to: SharePoint Online
-last-reviewed: 2026-09-18
+last-reviewed: 2026-09-24
 ---
 
 # A batch file move must be grouped by file, not by the record that points at it
@@ -55,7 +55,9 @@ for (const it of items) {
 for (const url of order) {
   const ids = byFile[url];
   const target = `${folderUrl}/${leaf(url)}`;
-  const r = await post(`.../getfilebyserverrelativeurl('${url}')/moveto(newurl='${target}',flags=1)`);
+  // pathLiteral(p) = "'" + encodeURIComponent(p.split("'").join("''")) + "'"
+  const r = await post(`.../GetFileByServerRelativePath(decodedurl=${pathLiteral(url)})` +
+    `/MoveToUsingPath(DecodedUrl=${pathLiteral(target)},moveOperations=1)`);
   let moved = r.ok;
   ...
   for (const id of ids) await writeBackUrl(id, target);   // every record, not just one
@@ -79,7 +81,7 @@ This is what turns a broken half-run into something the user can repair by press
 ```ts
 async function fileExists(url: string): Promise<boolean | undefined> {
   const r = await getJson<{ Exists?: boolean }>(
-    `.../getfilebyserverrelativeurl('${esc(url)}')?$select=Exists`);
+    `.../GetFileByServerRelativePath(decodedurl=${pathLiteral(url)})?$select=Exists`);
   if (r.status === 404) return false;
   if (!r.ok) return undefined;                       // do not guess
   return typeof r.data?.Exists === 'boolean' ? r.data.Exists : undefined;
@@ -93,3 +95,4 @@ async function fileExists(url: string): Promise<boolean | undefined> {
 * [Get lists by URL, not by title](get-list-by-url-not-by-title.md) — the same instinct applied to lists: address the thing, not a label that can change.
 * [A silently-failed read turns reconciliation into delete-everything](silent-read-failure-drives-delete-all.md) — the other half of the rule: never let "I could not read it" become "there is nothing there".
 * [`moveto` succeeds and your code reports a failure](action-endpoints-return-an-empty-body.md) — `moveto` answers with an empty body, so a helper that always calls `response.json()` turns every successful move into an error.
+* [A `#` or `%` in a file or folder name](hash-and-percent-in-file-names-need-the-resourcepath-api.md) — why the snippets above use `GetFileByServerRelativePath` and `MoveToUsingPath`: the classic `getfilebyserverrelativeurl('…')/moveto(newurl=…)` cannot find a file with `#` or `%` in its path, and with an encoded `%` in the target it answers 200 and names the moved file with a literal `%25`. `MoveToUsingPath` answers `{"odata.null": true}` — nothing to parse either.

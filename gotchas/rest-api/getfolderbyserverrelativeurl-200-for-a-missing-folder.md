@@ -2,7 +2,7 @@
 title: `getfolderbyserverrelativeurl` returns 200 for a folder that does not exist
 tags: [rest-api, folders, existence-check, permissions, provisioning]
 applies-to: SharePoint REST (/_api/web/getfolderbyserverrelativeurl), folder provisioning and per-folder permissions
-last-reviewed: 2026-09-17
+last-reviewed: 2026-09-24
 ---
 
 # `getfolderbyserverrelativeurl` returns 200 for a folder that does not exist
@@ -42,8 +42,11 @@ Note that the folder's list item is addressable immediately after creation — t
 Measure the **value**, not the status code. Keep three states, because "I could not tell" is not "no":
 
 ```ts
+/** OData string literal for a URL: double apostrophes, then encode (quotes included). */
+const pathLiteral = (p: string) => "'" + encodeURIComponent(p.split("'").join("''")) + "'";
+
 async function folderExists(sp, webUrl, url): Promise<boolean | undefined> {
-  const r = await sp.get(`${webUrl}/_api/web/getfolderbyserverrelativeurl('${esc(url)}')?$select=Exists`);
+  const r = await sp.get(`${webUrl}/_api/web/GetFolderByServerRelativePath(decodedurl=${pathLiteral(url)})?$select=Exists`);
   if (r.status === 404) return false;      // some paths do 404 — still "no"
   if (!r.ok) return undefined;             // 403, throttling, outage — do NOT guess
   const d = await r.json();
@@ -52,6 +55,8 @@ async function folderExists(sp, webUrl, url): Promise<boolean | undefined> {
 ```
 
 The same shape applies to `ListItemAllFields`: a 200 carrying `{"odata.null": true}` means *there is no item*, so anything you derive from it (`Id`, `HasUniqueRoleAssignments`) is absent rather than false.
+
+**Use the path-based lookup, not `getfolderbyserverrelativeurl('…')`.** For a folder whose name (or any parent's name) contains `#` or `%`, the classic call answers **200 `{"Exists": false}` for a folder that exists** — measured with the path encoded, and the `Name` it echoes back even carries a literal `%25`. The existence check then sends the code off to create a second folder. `GetFolderByServerRelativePath(decodedurl=…)` with an encoded path finds it, and it keeps the same semantics for a folder that really is missing (200 with `Exists: false`), so the value check above stays as it is. Details: [A `#` or `%` in a file or folder name](hash-and-percent-in-file-names-need-the-resourcepath-api.md).
 
 ## Why it bites hardest around permissions
 

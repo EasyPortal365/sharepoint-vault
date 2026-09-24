@@ -60,6 +60,20 @@ If the value is a date-only string to begin with (`'2026-06-21'`), use it as-is 
 
 The rule that covers both cases: **read the day in the time zone it was written in.** Before you replace a `substring(0, 10)` with a local-day helper, find the write. One app had both conventions side by side — a licence date written from local time (read locally) and a collection date written as UTC midnight (read from the UTC part) — and only a comment kept the second one from being "corrected".
 
+## Noon UTC — the popular compromise, and its edge at UTC+12
+
+Storing a date-only value as **12:00 UTC** (`${day}T12:00:00Z`) is a common fix for the midnight problem: read as a local day it gives the same date everywhere from UTC−12 to UTC+11. Two edges remain, and both showed up when the same code was tested in three time zones:
+
+- **UTC+12 to +14** (New Zealand, Fiji, Tonga, Kiribati): noon UTC is already the next day there. Reading your own noon value as a *local* day shows the day after — pinned by a test that ran in `Pacific/Kiritimati` (UTC+14). Read your own noon writes as the **UTC** date instead, and everything else (dates typed into SharePoint's own forms) as the local day.
+- **The price of that rule:** a date entered in SharePoint's form on a site in *exactly* UTC+12 is stored as local midnight = 12:00 UTC of the previous day, looks exactly like your own noon write, and is read one day early. Accept it knowingly, or store the convention explicitly (a separate column, or a time other than noon).
+
+Two more things the three-zone test surfaced:
+
+- **Old values keep their old convention.** After switching from UTC midnight to noon, legacy UTC-midnight values still read correctly in Europe and in Kiribati, and one day early in New York.
+- **"Today" in a server-side filter is an instant, not a day.** A token that expands to `datetime'<now>'` compares a noon-stored expiry against the current moment, so the item flips to "expired" at 12:00 UTC while your app — comparing days — still says "valid until the end of today". Whoever compares against the stored day from outside (a filter, a flow, a search query) must use the same convention.
+
+Test day logic in more than one zone, and prove the zone is real: run the calculation in a child process started with `TZ` set and assert the offset first — setting `TZ` inside Jest does nothing ([Setting `process.env.TZ` inside Jest does not change the time zone](../tooling/jest-process-env-tz-does-not-change-the-time-zone.md)).
+
 ## Notes
 
 - Rule of thumb: **write `toISOString()`, read via local getters.**

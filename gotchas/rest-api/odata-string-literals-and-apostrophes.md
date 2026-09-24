@@ -37,14 +37,17 @@ Escape the OData layer first, then URL-encode:
 ```ts
 const odataString = (s: string): string => s.replace(/'/g, "''");
 
+const folderUrl = '/sites/projects/Shared Documents';
 const name = "Q1'26 report.xlsx";
-const url = `${webUrl}/_api/web/GetFolderByServerRelativeUrl('Documents')` +
-  `/Files/add(url='${encodeURIComponent(odataString(name))}',overwrite=true)`;
+const url = `${webUrl}/_api/web/GetFolderByServerRelativePath(decodedurl='${encodeURIComponent(odataString(folderUrl))}')` +
+  `/Files/AddUsingPath(DecodedUrl='${encodeURIComponent(odataString(name))}',Overwrite=true)`;
 
 const filter = `$filter=Title eq '${encodeURIComponent(odataString(userInput))}'`;
 ```
 
-Run `odataString()` on **every** dynamic value that lands between OData quotes: `getbytitle(…)`, `GetList(@u)` parameter aliases, `$filter`, `Files/add(url=…)`, `GetFileByServerRelativeUrl(…)`, `GetFolderByServerRelativeUrl(…)`, `sitegroups/getbyname(…)`, and `AttachmentFiles/getByFileName(…)`. A convenient wrapper that does both layers at once: `const spLit = (p) => encodeURIComponent(p.replace(/'/g, "''"));`.
+Run `odataString()` on **every** dynamic value that lands between OData quotes: `getbytitle(…)`, `GetList(@u)` parameter aliases, `$filter`, `GetFileByServerRelativePath(decodedurl=…)`, `GetFolderByServerRelativePath(decodedurl=…)`, `…UsingPath(DecodedUrl=…)`, `sitegroups/getbyname(…)`, and `AttachmentFiles/getByFileName(…)`. A convenient wrapper that does both layers at once: `const spLit = (p) => encodeURIComponent(p.replace(/'/g, "''"));`.
+
+For file and folder paths, use the ResourcePath calls shown above rather than `Files/add(url=…)`, `GetFileByServerRelativeUrl(…)` or `GetFolderByServerRelativeUrl(…)`: with a `#` or `%` in the name the classic calls cannot find the item even when the path is encoded, and `Files/add` with an encoded `%` saves the file under a name containing a literal `%25` — [A `#` or `%` in a file or folder name](hash-and-percent-in-file-names-need-the-resourcepath-api.md).
 
 ## Notes
 

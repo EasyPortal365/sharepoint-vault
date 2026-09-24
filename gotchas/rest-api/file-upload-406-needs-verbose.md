@@ -44,8 +44,12 @@ So an empty `OData-Version` is legitimate only when you set both `Accept` and (f
 ## Fix
 
 ```ts
+/** OData string literal for a URL, quotes included: double apostrophes, then encode. */
+const pathLiteral = (p: string) => "'" + encodeURIComponent(p.split("'").join("''")) + "'";
+
 const res = await spHttpClient.post(
-  `${webUrl}/_api/web/GetFolderByServerRelativeUrl('${folder.replace(/'/g, "''")}')/Files/add(url='${safeName.replace(/'/g, "''")}',overwrite=true)?$expand=ListItemAllFields`,
+  `${webUrl}/_api/web/GetFolderByServerRelativePath(decodedurl=${pathLiteral(folder)})` +
+    `/Files/AddUsingPath(DecodedUrl=${pathLiteral(safeName)},Overwrite=true)?$expand=ListItemAllFields`,
   SPHttpClient.configurations.v1,
   {
     headers: {
@@ -63,11 +67,12 @@ const itemId = created.ListItemAllFields && created.ListItemAllFields.Id;   // n
 - Under OData v4 SharePoint ignores the `odata=nometadata` directive in `Accept` and answers with *minimal* metadata; the properties you need are at the top level. In verbose mode the same id is at `data.d.ListItemAllFields.Id`.
 - If you do need verbose for an upload, it works too — `Accept: …;odata=verbose` with `OData-Version: 3.0` — but then read the verbose shape.
 - Without an explicit `Content-Type`, SPFx labels your binary body as JSON (see the table). Shipped upload paths rely on that default, but say what you send.
+- The path-based `AddUsingPath` rather than `Files/add(url=…)`: with a `#` or `%` in the file or folder name the classic call fails, or — with an encoded `%` — answers 200 and saves the file under a name containing a literal `%25`. The header behaviour above is decided by SPFx before the request leaves, so it is the same for both calls; `$expand=ListItemAllFields` works on the `AddUsingPath` response. Details: [A `#` or `%` in a file or folder name](hash-and-percent-in-file-names-need-the-resourcepath-api.md).
 
 ## Notes
 
 - **Where did the 406 come from?** Not re-measured. Across one code base, shipped upload paths send `nometadata` or plain `application/json` under OData v4 (document libraries and list attachments alike), others send verbose with `OData-Version: 3.0` — so the 406 does not follow from `nometadata` alone. If you get *"The HTTP header ACCEPT is missing or its value is invalid"*, log the full request headers — including `OData-Version` — before blaming `nometadata`.
-- **Mobile cameras can hand you `File.name === ''`** (or a name without an extension) — the upload then fails on the empty `url=''`. Build a fallback name from the MIME type and add a collision-proof prefix:
+- **Mobile cameras can hand you `File.name === ''`** (or a name without an extension) — the upload then fails on the empty file name. Build a fallback name from the MIME type and add a collision-proof prefix:
 
   ```ts
   const fallback = file.type.indexOf('image/') === 0

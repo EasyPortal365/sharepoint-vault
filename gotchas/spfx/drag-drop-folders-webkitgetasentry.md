@@ -2,7 +2,7 @@
 title: "Dropping a folder onto your upload zone does nothing (dataTransfer.files never sees it)"
 tags: [spfx, drag-and-drop, upload, dataTransfer, file-system-access, browser-api]
 applies-to: SharePoint Online (SPFx web parts and extensions, any browser-based upload UI)
-last-reviewed: 2026-08-25
+last-reviewed: 2026-09-24
 ---
 
 # Dropping a folder onto your upload zone does nothing
@@ -89,17 +89,18 @@ Two design points that keep the rest of the code simple:
 - **Carry `relPath` on every file**, not as a separate tree. The upload queue then only has to create the missing folder before each file — no traversal logic downstream.
 - **Cap the count and the depth, and tell the user when you truncated.** Symlink loops exist, and 10 000 files in a single drop will not finish. Silently taking the first N reads to the user as "everything uploaded".
 
-On the SharePoint side, create the folders one level at a time (`/_api/web/folders/addUsingPath(DecodedUrl='…')` does **not** create intermediate folders) and treat "already exists" as success — that keeps the operation idempotent when two files share a folder:
+On the SharePoint side, create the folders one level at a time (`/_api/web/folders/AddUsingPath(DecodedUrl='…')` does **not** create intermediate folders) and keep it idempotent, because two files often share a folder. With `Overwrite=true` an existing folder answers 200 and keeps its content; without it the call answers **400** "A file or folder with the name … already exists" (measured). Double the apostrophes **and** URL-encode the path — with the apostrophes doubled but the path not encoded, a folder name containing `#` and `%` came back 404 (measured), because the URL is cut at the `#`:
 
 ```ts
+const pathLiteral = (p: string) => "'" + encodeURIComponent(p.split("'").join("''")) + "'";
+
 for (const seg of relPath.split('/')) {
   cur = cur + '/' + cleanFolderName(seg);
-  try { await post(`${web}/_api/web/folders/addUsingPath(DecodedUrl='${cur.replace(/'/g, "''")}')`); }
-  catch (e) { if (!/already exists|HTTP 400/i.test(String(e))) throw e; }
+  await post(`${web}/_api/web/folders/AddUsingPath(DecodedUrl=${pathLiteral(cur)},Overwrite=true)`);
 }
 ```
 
-Sanitize the folder name with **one shared helper** used both when creating the folder and when asking "does a file of this name already exist there" (`getfilebyserverrelativeurl('…')/Exists`). If the two paths are cleaned differently, the conflict check silently queries a different folder than the one you upload into — a folder name containing `#` or `%` is enough to trigger it.
+Sanitize the folder name with **one shared helper** used both when creating the folder and when asking "does a file of this name already exist there" (`GetFileByServerRelativePath(decodedurl=…)?$select=Exists`). If the two paths are cleaned differently, the conflict check silently queries a different folder than the one you upload into — a folder name containing `#` or `%` is enough to trigger it. Keep the check on the path-based API too: the classic `getfilebyserverrelativeurl('…')` cannot see any file below a folder whose name has `#` or `%`, encoded or not — [A `#` or `%` in a file or folder name](../rest-api/hash-and-percent-in-file-names-need-the-resourcepath-api.md).
 
 ## Checklist
 

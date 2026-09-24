@@ -2,7 +2,7 @@
 title: Reading the modern list selection from the DOM — names only, and the count lies
 tags: [spfx, modern-list, dom, application-customizer, list-view-command-set]
 applies-to: SharePoint Online (modern list/library view, 2026)
-last-reviewed: 2026-08-13
+last-reviewed: 2026-09-24
 ---
 
 # Reading which rows the user selected, from an extension that isn't a command set
@@ -50,9 +50,11 @@ Resolve names against the folder the user is actually in:
 
 ```js
 const lit = encodeURIComponent(folderServerRelativeUrl.split("'").join("''"));
-const url = `${webUrl}/_api/web/GetFolderByServerRelativeUrl('${lit}')/Files`
+const url = `${webUrl}/_api/web/GetFolderByServerRelativePath(decodedurl='${lit}')/Files`
   + `?$select=Name,ServerRelativeUrl,Length&$top=500`;
 ```
+
+(The path-based lookup, because users name folders: the classic `GetFolderByServerRelativeUrl('…')` cannot find a folder with `#` or `%` in its name even with the path encoded — [A `#` or `%` in a file or folder name](../rest-api/hash-and-percent-in-file-names-need-the-resourcepath-api.md).)
 
 Two bonuses: `Files` returns only that folder's direct children, so the query never touches
 the whole library and cannot hit the 5000-item view threshold; and selected **folders** drop
