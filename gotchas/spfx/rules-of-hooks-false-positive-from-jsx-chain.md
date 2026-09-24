@@ -2,7 +2,7 @@
 title: rules-of-hooks false-positive — a complex JSX `&&` chain flags the wrong hook
 tags: [spfx, react, eslint, debugging]
 applies-to: SharePoint Online (SPFx, React 17, eslint-plugin-react-hooks)
-last-reviewed: 2026-08-28
+last-reviewed: 2026-09-24
 ---
 
 # rules-of-hooks false-positive — a complex JSX `&&` chain flags the *wrong* hook
@@ -98,5 +98,28 @@ that converges quickly:
 
 Guessing "what might be upsetting it" reliably burns dozens of rounds. Splitting the component is still
 worth doing (better design, smaller file) — just don't expect it to clear the error.
+
+## Fourth trigger: ternaries in the *initial values* of hooks
+
+*Added 2026-09-24.* A ~560-line wizard gained a "resume" mode, which meant five initial values like
+`useState(resume ? resume.campaign.Title : '')`. The plugin then flagged **26 hooks that come after them**
+as "called conditionally". Every ternary or `&&` in the component body before a hook is one more branch
+in the control-flow graph — even inside a hook's argument.
+
+What cleared it on the first try: compute the defaults in a **pure function outside the component** and
+keep the component body free of conditionals before the hooks.
+
+```tsx
+// outside the component
+function initialContent(resume?: IResume | null) {
+  const c = resume ? resume.campaign : null;
+  return c ? { name: c.Title, subject: c.Subject || '' } : { name: '', subject: '' };
+}
+
+// inside
+const init = useMemo(() => initialContent(resume), [resume]);
+const [name, setName] = useState(init.name);
+const [subject, setSubject] = useState(init.subject);
+```
 
 Note this is a *lint* failure only — the code runs correctly either way. But `build --production` runs lint as an error, so it blocks the release.
