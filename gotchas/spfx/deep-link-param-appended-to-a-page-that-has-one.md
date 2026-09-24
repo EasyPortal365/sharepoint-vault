@@ -1,5 +1,7 @@
 ---
 title: Deep-link parameter appended to a SharePoint page URL that already has one
+short-title: Deep-link param appended to a page URL that already has one
+summary: The address an admin pastes already carries your routing param, so appending makes it appear twice and `URLSearchParams.get` reads the OLD value; replace the key, never append
 tags: [spfx, routing, deep-link, url]
 applies-to: SharePoint Online (SPFx web parts on Site Pages)
 last-reviewed: 2026-08-28

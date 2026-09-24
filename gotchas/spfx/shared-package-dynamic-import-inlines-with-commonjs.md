@@ -1,5 +1,7 @@
 ---
 title: A shared package's dynamic import() ships inlined (not lazy-chunked) under module:commonjs
+short-title: Shared package's dynamic import ships inlined
+summary: A linked TS package built with module:commonjs turns import() into require(), so webpack can't lazy-chunk the lib into a separate file; set the package's module:esnext
 tags: [spfx, webpack, typescript, bundle-size, code-splitting, monorepo, file:link]
 applies-to: SPFx app consuming a linked / monorepo TS package that uses dynamic import()
 last-reviewed: 2026-07-20

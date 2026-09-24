@@ -1,5 +1,7 @@
 ---
 title: Provisioning folder trees at scale in SharePoint Online
+short-title: Provisioning folder trees at scale (measured)
+summary: What creating 86 folders and breaking inheritance really costs (no throttling), the alias-parameter syntax, reading a whole tree with one item query (two calls) instead of ninety, and `copyRoleAssignments=false` silently dropping the owners group
 tags: [rest-api, permissions, provisioning, guide]
 applies-to: SharePoint Online
 last-reviewed: 2026-09-24

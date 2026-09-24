@@ -1,5 +1,7 @@
 ---
 title: Enumerate every site from the browser console (no admin API, no tooling)
+short-title: Enumerate every site from the browser console
+summary: "`contentclass:STS_Site OR STS_Web` over Search REST lists every web the account can read, no admin role or tooling; plus the traps of a cross-site F12 sweep (Hidden filter, case-sensitive GetList, 400 vs 404, per-web digest)"
 tags: [search, rest-api, javascript, tenant]
 applies-to: SharePoint Online
 last-reviewed: 2026-08-27

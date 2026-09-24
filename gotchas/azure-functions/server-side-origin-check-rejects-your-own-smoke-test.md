@@ -1,5 +1,7 @@
 ---
 title: A server-side origin check rejects your own smoke test — and the runbook that says "this bypasses CORS"
+short-title: A server-side origin check rejects your own smoke test
+summary: Once the allowlist is enforced in the handler it applies to every caller, so the deploy script's own verification and the runbook command both need the `Origin` header; "this test bypasses CORS" stops being true and hands the customer a red error on a healthy deployment
 tags: [azure-functions, cors, spfx, deployment, runbooks, smoke-test]
 applies-to: Azure Functions behind an SPFx client (any server-side origin allowlist)
 last-reviewed: 2026-09-06

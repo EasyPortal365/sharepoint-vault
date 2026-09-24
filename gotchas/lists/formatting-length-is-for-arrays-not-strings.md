@@ -1,5 +1,7 @@
 ---
 title: Formatting `length()` is for arrays — on a string it wrecks the expression
+short-title: "`length()` is for arrays, not strings"
+summary: String length via `indexOf(str + '^', '^')`, or the expression collapses to empty
 tags: [lists, column-formatting, view-formatting]
 applies-to: SharePoint Online
 last-reviewed: 2026-07-26

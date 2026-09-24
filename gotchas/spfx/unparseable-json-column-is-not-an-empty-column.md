@@ -1,5 +1,7 @@
 ---
 title: An unparseable JSON column is not an empty column — read-merge-write wipes the record
+short-title: An unparseable JSON column is not an empty column
+summary: "`catch → {}` turns \"could not read\" into \"is empty\" and the next save writes the emptiness back over the record; keep three states, refuse the write before the first PATCH, lock the form visibly, and make recovery an explicit action"
 tags: [spfx, lists, rest-api, json, data-loss, fail-closed]
 applies-to: SharePoint Online (any app that stores JSON in a list column)
 last-reviewed: 2026-09-06

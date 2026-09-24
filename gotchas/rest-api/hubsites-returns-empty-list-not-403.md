@@ -1,5 +1,7 @@
 ---
 title: /_api/HubSites returns an empty list (HTTP 200) when the caller cannot see the hub sites
+short-title: "`/_api/HubSites` returns an empty list, not 403"
+summary: "The hub list is security-trimmed, so an account that cannot read the hub sites gets `value: []` with HTTP 200; \"this site has no hub\" and \"no inherited owner\" must never be derived from it — read `IsHubSite`/`HubSiteId` from `_api/site` and treat \"belongs to a hub that is not in the list\" as unknown"
 tags: [rest-api, hub-sites, permissions, governance, diagnostics]
 applies-to: SharePoint Online
 last-reviewed: 2026-08-29

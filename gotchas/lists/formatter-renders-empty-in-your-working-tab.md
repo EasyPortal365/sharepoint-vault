@@ -1,5 +1,7 @@
 ---
 title: A formatter renders empty in the tab you are iterating in — verify in a fresh tab
+short-title: A formatter renders empty in the tab you are iterating in
+summary: After many REST writes the working tab shows even valid formatters blank while a fresh tab renders them; one tab per version, a scratch view, and simple formatters on fragile lists
 tags: [lists, view-formatting, caching, rest-api]
 applies-to: SharePoint Online (view and column formatting applied over REST)
 last-reviewed: 2026-09-24

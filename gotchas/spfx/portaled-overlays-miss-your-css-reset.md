@@ -1,5 +1,7 @@
 ---
 title: "Portaled overlays sit outside your CSS reset — hello, phantom scrollbar"
+short-title: Portaled overlays miss your CSS reset
+summary: Portal to `body` escapes the scoped reset; `content-box` fields overflow and grow a scrollbar
 tags: [spfx, react, css, ux]
 applies-to: SharePoint Online (SPFx web parts)
 last-reviewed: 2026-07-28

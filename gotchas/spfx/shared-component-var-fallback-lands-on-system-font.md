@@ -1,5 +1,6 @@
 ---
 title: "A shared component's var() fallback chain is only as good as its last link"
+summary: Shared UI package falls through to `sans-serif` in apps that never publish CSS custom properties; runtime-only, no build catches it
 tags: [spfx, react, css, design-system]
 applies-to: SharePoint Online (SPFx web parts sharing a component library)
 last-reviewed: 2026-07-28

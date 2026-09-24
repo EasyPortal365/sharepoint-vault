@@ -1,5 +1,7 @@
 ---
 title: "Opening a pre-filled e-mail — with an attachment — in the user's desktop Outlook"
+short-title: Opening a pre-filled e-mail in the desktop client
+summary: "No API tells you which mail client is default; `mailto:` reaches it but carries no attachment, and a `.eml` needs `X-Unsent: 1` or it opens read-only"
 tags: [spfx, outlook, mailto, eml, mime, graph, email]
 applies-to: SharePoint Online (SPFx web parts and extensions; any browser app that hands work off to a mail client)
 last-reviewed: 2026-08-25

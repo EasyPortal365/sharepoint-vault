@@ -1,5 +1,7 @@
 ---
 title: "An element selector outranks your button class — and only a themed tenant sees it"
+short-title: An element selector outranks your button class
+summary: "`.app-root a { color: inherit }` beats `.btn--accent`, so link-styled buttons get an unreadable label — but only on a tenant whose accent needs white text"
 tags: [spfx, css, theming, accessibility]
 applies-to: SharePoint Online (SPFx web parts, any scoped-root stylesheet)
 last-reviewed: 2026-08-13

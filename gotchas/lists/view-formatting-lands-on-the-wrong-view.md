@@ -1,5 +1,7 @@
 ---
 title: View formatting lands on the wrong view — and a missing column is not an empty string
+short-title: View formatting lands on the wrong view
+summary: Site Pages has no `AllItems.aspx` and the default view may be grouped; a column missing from the view is `undefined`, so the empty-check guard never hides it
 tags: [lists, formatting, rest-api]
 applies-to: SharePoint Online
 last-reviewed: 2026-08-19

@@ -1,5 +1,6 @@
 ---
 title: A list's ETag tracks its schema, so `ItemCount` comes back stale via 304
+summary: Adding items never moves the list entity's ETag, so revalidation answers 304 and the browser serves the body from when the list was empty; affects entity reads (`GetList`, `lists(guid)`), not collections or `/items`
 tags: [rest-api, caching, spfx, lists]
 applies-to: SharePoint Online (SPFx / any browser-side REST client)
 last-reviewed: 2026-09-07

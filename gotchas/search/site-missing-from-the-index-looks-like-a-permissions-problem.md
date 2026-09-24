@@ -1,5 +1,7 @@
 ---
 title: "\"Search finds nothing here\" is usually a site missing from the index — not a permissions problem"
+short-title: Site missing from the index looks like a permissions problem
+summary: Three queries tell you whether the site is in the index at all, before you debug a query that was never wrong
 tags: [search, kql, index, crawl, rag, copilot, troubleshooting]
 applies-to: SharePoint Online (Search REST / KQL, and anything built on it — RAG, custom search, AI assistants)
 last-reviewed: 2026-08-27

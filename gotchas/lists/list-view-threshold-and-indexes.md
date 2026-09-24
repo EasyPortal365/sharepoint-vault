@@ -1,5 +1,7 @@
 ---
 title: The 5,000-item list view threshold — and why indexes must come early
+short-title: The 5,000-item view threshold
+summary: It's scanned rows, not returned rows; index early, page always
 tags: [lists, performance, rest-api]
 applies-to: SharePoint Online, SharePoint Server
 last-reviewed: 2026-07-16

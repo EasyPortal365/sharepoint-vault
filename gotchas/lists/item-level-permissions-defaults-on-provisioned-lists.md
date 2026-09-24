@@ -1,5 +1,7 @@
 ---
 title: A provisioned list with ReadSecurity=2 looks perfect to an admin and empty to everyone else
+short-title: Item-level permission defaults on provisioned lists
+summary: ReadSecurity=2 looks perfect to an admin and empty to everyone else; WriteSecurity=2 breaks collaborative edits only
 tags: [lists, provisioning, permissions, rest-api, security]
 applies-to: SharePoint Online, SharePoint Server
 last-reviewed: 2026-08-22

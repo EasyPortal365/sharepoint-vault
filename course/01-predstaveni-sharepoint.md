@@ -1,5 +1,7 @@
 ---
 title: "Kapitola 01 – Představení Microsoft SharePoint"
+short-title: "01 · Představení SharePointu"
+summary: Positioning, scenarios, editions, SP Online vs Server, governance, roadmap
 chapter: 1
 course: MSHP-ONLINE
 lang: cs

@@ -1,5 +1,7 @@
 ---
 title: "`$host` is a constant — and `[uri].Host` is exactly what you want to store in it"
+short-title: "`$host` is a constant you cannot assign"
+summary: The obvious name for `[uri].Host` is reserved and the error blames the value; `$input`/`$args` accept the assignment silently and break later
 tags: [powershell, scripting]
 applies-to: Windows PowerShell 5.1, PowerShell 7.x
 last-reviewed: 2026-07-29

@@ -1,5 +1,7 @@
 ---
 title: SharePoint REST vs Microsoft Graph — which API for which job
+short-title: SharePoint REST vs Microsoft Graph
+summary: A decision table by capability, the SPFx auth difference, common wrong picks, and throttling budgets
 tags: [rest-api, graph, architecture, guide]
 applies-to: SharePoint Online, Microsoft Graph
 last-reviewed: 2026-07-16

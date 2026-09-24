@@ -1,5 +1,7 @@
 ---
 title: A Choice value your field does not know is stored anyway — so a drifted vocabulary never announces itself
+short-title: A Choice value the field does not know is stored anyway
+summary: "No 400, no error to swallow: a drifted vocabulary never shows at runtime; machine-check the type-to-schema contract"
 tags: [lists, choice, provisioning, auditing, data-quality]
 applies-to: SharePoint Online, SharePoint Server
 last-reviewed: 2026-09-24

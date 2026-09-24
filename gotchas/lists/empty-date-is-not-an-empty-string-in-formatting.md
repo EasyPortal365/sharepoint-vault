@@ -1,5 +1,7 @@
 ---
 title: An empty Date field is not `''` — blank dates render as overdue
+short-title: An empty Date field is not `''`
+summary: Blank dates fall through to "overdue" and turn rows red; test `.displayValue`
 tags: [lists, column-formatting, view-formatting]
 applies-to: SharePoint Online
 last-reviewed: 2026-07-25

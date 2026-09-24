@@ -1,5 +1,7 @@
 ---
 title: Checking someone else's group membership — ask the group, not the user
+short-title: Someone else's group membership without `User.Read.All`
+summary: "`/me/checkMemberGroups` only answers for you; ask the GROUP for its transitive members instead, and never turn \"could not determine\" into \"not a member\""
 tags: [graph, groups, permissions, delegated]
 applies-to: Microsoft Graph (delegated)
 last-reviewed: 2026-09-23

@@ -1,5 +1,6 @@
 ---
 title: A retention window computed from git history deletes the file you overwrite in place
+summary: A stable loader keeps its add date and drifts out of "the last N releases"; protect by shape (no content hash), and remember the hard 1 GB Pages limit counts the published tree
 tags: [tooling, git, cdn, github-pages, retention, deployment]
 applies-to: Static hosts published from a git repository (GitHub Pages and similar)
 last-reviewed: 2026-09-24

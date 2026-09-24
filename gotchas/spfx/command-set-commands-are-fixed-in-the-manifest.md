@@ -1,5 +1,6 @@
 ---
 title: A command set's commands are fixed in its manifest
+summary: "`title`, `iconImageUrl`, `visible` and `disabled` change at runtime, new commands need a new `.sppkg`; ship one entry that opens your own menu, or reserve hidden slots (and keep their titles honest)"
 tags: [spfx, command-set, extensions, deployment, app-catalog]
 applies-to: SharePoint Online (SPFx ListView Command Set)
 last-reviewed: 2026-09-24

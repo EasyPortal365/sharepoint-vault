@@ -1,5 +1,7 @@
 ---
 title: A library your app provisions inherits the web's write permissions — and that is how an AI grounding source gets poisoned
+short-title: App-provisioned libraries inherit the web's write permissions
+summary: "Any member can upload over REST and poison an AI grounded on that library; `WriteSecurity: 4` does not fix it (Edit includes Manage Lists and bypasses item-level settings) — only unique permissions on the library do"
 tags: [security, provisioning, libraries, search, rag, permissions]
 applies-to: SharePoint Online
 last-reviewed: 2026-08-31

@@ -1,5 +1,7 @@
 ---
 title: A status code measures where the request stopped first, not what the user may do
+short-title: A status code measures the order of checks, not permissions
+summary: "A probe that writes with a deliberately stale `IF-MATCH` and reads permissions off 403 vs 412 measures which gate the request hit first: SharePoint evaluates the etag BEFORE authorisation, so 412 comes back even where the account has no `EditListItems`. Ask `EffectiveBasePermissions`, run under an ordinary account, and print the inputs beside the verdict"
 tags: [permissions, rest-api, testing, security]
 applies-to: SharePoint Online
 last-reviewed: 2026-09-06

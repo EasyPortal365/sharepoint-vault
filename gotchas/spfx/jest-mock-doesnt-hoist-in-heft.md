@@ -1,5 +1,7 @@
 ---
 title: In a Heft/SPFx project jest.mock() doesn't hoist — and sp-http drags in a missing MS-internal module
+short-title: "`jest.mock()` doesn't hoist under Heft"
+summary: Tests run over pre-compiled `lib-commonjs` without Babel, so a mock written below the imports lands after `require`; write it above the imports or use `moduleNameMapper` (and why only *some* sp-http suites die on `@msinternal/ecs-flight`)
 tags: [spfx, jest, testing, heft, sp-http, mocking]
 applies-to: SPFx projects built with Heft (@rushstack/heft-jest-plugin), SharePoint Framework 1.1x+
 last-reviewed: 2026-09-24

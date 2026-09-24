@@ -1,5 +1,7 @@
 ---
 title: An image upload that accepts image/* accepts SVG — and SVG is a script
+short-title: An `image/*` upload accepts SVG
+summary: "SVG is a script: inert inside `<img>`, executed when the file's own URL is opened; allow-list raster MIME types"
 tags: [security, spfx, rest-api, libraries]
 applies-to: SharePoint Online, SharePoint Server
 last-reviewed: 2026-08-10

@@ -1,5 +1,7 @@
 ---
 title: "pageContext.site.serverRequestPath is not the page URL — it can hand you a REST endpoint"
+short-title: serverRequestPath is not the page URL
+summary: It is the last SERVER REQUEST path, so a modern list view can hand you `…/RenderListDataAsStream`; validate the shape before storing it as your app page
 tags: [spfx, page-context, url, configuration, spa]
 applies-to: SharePoint Online (SPFx web parts and extensions that store "where the app lives")
 last-reviewed: 2026-08-26

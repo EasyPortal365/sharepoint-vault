@@ -1,5 +1,7 @@
 ---
 title: pdf-parse and pdfjs-dist cannot share a Node process — "bad XRef entry" on classic PDFs
+short-title: pdf-parse and pdfjs-dist cannot share a process
+summary: "Loading pdfjs-dist breaks pdf-parse's bundled pdf.js 1.10 (\"bad XRef entry\"), but only for classic xref-table PDFs and from the second request on — one PDF library per process; plus: load code under test with the loader production uses (createRequire, not `await import`)"
 tags: [azure-functions, nodejs, pdf, testing]
 applies-to: Node.js services and Azure Functions extracting PDF text (pdf-parse 1.x with its bundled pdf.js 1.10, pdfjs-dist 3.x)
 last-reviewed: 2026-09-23

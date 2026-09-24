@@ -1,5 +1,7 @@
 ---
 title: $ErrorActionPreference = 'Stop' turns a native command's stderr warning into a terminating error
+short-title: "`'Stop'` + a native stderr warning = terminating error"
+summary: "`$ErrorActionPreference='Stop'` escalates a benign stderr warning (exit 0) to a script-killer; wrap in `'Continue'`, judge by `$LASTEXITCODE`"
 tags: [powershell, azure-cli, error-handling]
 applies-to: PowerShell 7 (and Windows PowerShell 5.1)
 last-reviewed: 2026-07-19

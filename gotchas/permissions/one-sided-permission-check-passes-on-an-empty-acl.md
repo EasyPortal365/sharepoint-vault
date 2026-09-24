@@ -1,5 +1,7 @@
 ---
 title: A permission check that only asks "who has too much?" passes on an empty ACL
+short-title: A one-sided permission check passes on an empty ACL
+summary: "\"no principal outside the allow-list can write\" is also satisfied when nobody can write at all; assert the opposite direction with a non-zero writer count, and read the principals strictly so a transient 429 cannot silently drop a group out of the policy"
 tags: [permissions, security, rest-api, verification]
 applies-to: SharePoint Online, SharePoint Server
 last-reviewed: 2026-09-01

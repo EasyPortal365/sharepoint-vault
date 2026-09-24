@@ -1,5 +1,7 @@
 ---
 title: Search ignores unknown managed properties — silently
+short-title: Search ignores unknown managed properties
+summary: A made-up property name returns HTTP 200 with full results; auto-created Choice properties are not queryable; probe with a fake name, map to RefinableString
 tags: [search, kql, managed-properties, rest-api, diagnostics]
 applies-to: SharePoint Online (Search REST /_api/search/query, KQL)
 last-reviewed: 2026-09-23

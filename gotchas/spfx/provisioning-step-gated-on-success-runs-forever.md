@@ -1,5 +1,7 @@
 ---
 title: A provisioning step gated on success runs forever for every non-admin
+short-title: Provisioning step gated on success runs forever
+summary: A startup step needing ManageLists writes no marker for ordinary members, so the whole batch replays on every page load; the marker needs two states
 tags: [spfx, provisioning, permissions, localstorage, performance]
 applies-to: SharePoint Online (SPFx client-side provisioning)
 last-reviewed: 2026-08-24

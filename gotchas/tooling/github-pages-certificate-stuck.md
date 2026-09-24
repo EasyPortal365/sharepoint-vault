@@ -1,5 +1,7 @@
 ---
 title: GitHub Pages HTTPS certificate never arrives when the domain was added before DNS existed
+short-title: GitHub Pages certificate stuck
+summary: Domain added before DNS existed; remove & re-add restarts provisioning
 tags: [tooling, github-pages, dns, https]
 applies-to: GitHub Pages (custom domains)
 last-reviewed: 2026-07-16

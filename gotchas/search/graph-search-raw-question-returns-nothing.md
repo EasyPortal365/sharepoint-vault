@@ -1,5 +1,7 @@
 ---
 title: Graph Search returns 0 hits — you passed the user's question as the queryString
+short-title: Graph Search returns 0 hits — you passed the question as the `queryString`
+summary: Translate question→keywords; "what's new" is a listing (`*` + default date sort, custom sort = 400); per-entity KQL only as documented
 tags: [search, graph, kql, ai, rag]
 applies-to: Microsoft Graph Search API (v1.0), Exchange Online, Teams
 last-reviewed: 2026-09-24

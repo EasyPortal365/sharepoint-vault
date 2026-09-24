@@ -1,5 +1,7 @@
 ---
 title: Setting process.env.TZ inside Jest does not change the time zone
+short-title: Setting `process.env.TZ` inside Jest does not change the time zone
+summary: A test, `setupFiles` and `setupFilesAfterEnv` write into the sandbox's copy of `process.env`, so day-boundary tests pass only on machines already in the right zone; pin it in `globalSetup`, assert the offset, and run once under a foreign `TZ` (not from Git Bash on Windows)
 tags: [tooling, jest, testing, dates, time-zone]
 applies-to: Jest (verified on Jest 29.5 with jest-environment-node, Node.js 24); any project with date or day-boundary tests
 last-reviewed: 2026-09-24

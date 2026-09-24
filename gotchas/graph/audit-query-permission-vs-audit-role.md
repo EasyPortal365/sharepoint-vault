@@ -1,5 +1,7 @@
 ---
 title: "\"User:… dont have any permissions\" from the audit query API rejects the USER, not the app"
+short-title: "`dont have any permissions` rejects the user, not the app"
+summary: Consent vs. Exchange audit role; Global Admin usually inherits it, so compare accounts
 tags: [graph, purview, audit-log, permissions, exchange-online, rbac, spfx]
 applies-to: Microsoft Graph (security/auditLog/queries, v1.0 + beta), Microsoft Purview Audit, Exchange Online RBAC
 last-reviewed: 2026-08-21

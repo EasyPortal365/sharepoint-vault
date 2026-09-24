@@ -1,5 +1,7 @@
 ---
 title: Purview audit objectIdFilters can return nothing — silently
+short-title: Purview audit `objectIdFilters` can return nothing — silently
+summary: "Narrowed to one library: 0 records, no error; without the filter 1,000 records, 38 of them for that library — ask for a window, filter by object locally, A/B every server-side filter"
 tags: [graph, purview, audit, security]
 applies-to: Microsoft Graph Audit Log Query API (security/auditLog/queries)
 last-reviewed: 2026-09-24

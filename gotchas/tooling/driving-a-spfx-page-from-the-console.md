@@ -1,5 +1,7 @@
 ---
 title: Driving an SPFx page from the console — two traps that fake success
+short-title: Driving an SPFx page from the console
+summary: "`input.value` from the console leaves React state empty (use the native setter + input event) and `window.confirm` freezes CDP automation; both fail silently as success"
 tags: [tooling, spfx, automation]
 applies-to: SharePoint Online
 last-reviewed: 2026-08-19

@@ -1,5 +1,7 @@
 ---
 title: directoryObject collections reject `$select` of user fields — and `$top` is a separate, per-endpoint trap
+short-title: directoryObject collections reject `$select` — and `$top` separately
+summary: User fields on `/members`/`/transitiveMembers` = 400; OData cast cures `$select` everywhere, `$top` stays per-endpoint (probe both)
 tags: [graph, odata, directory, paging, troubleshooting]
 applies-to: Microsoft Graph (v1.0 and beta)
 last-reviewed: 2026-07-25

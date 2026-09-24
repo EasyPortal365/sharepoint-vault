@@ -1,5 +1,7 @@
 ---
 title: SharePoint's built-in PDF conversion endpoint works only with a plain fetch — auth headers break the redirect
+short-title: "PDF conversion endpoint: plain fetch only"
+summary: "`_api/v2.0/drives/…/content?format=pdf` converts Office files server-side with no Graph consent, but auth-decorating clients break its 302 to `*.svc.ms`; resolve the drive explicitly and guard on Content-Type"
 tags: [rest-api, files, pdf, spfx, diagnostics]
 applies-to: SharePoint Online
 last-reviewed: 2026-08-17

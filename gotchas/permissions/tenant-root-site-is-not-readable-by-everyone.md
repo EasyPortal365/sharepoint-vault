@@ -1,5 +1,6 @@
 ---
 title: The tenant root site is not necessarily readable by everyone
+summary: "Measured: unique permissions, no *Everyone except external users*, an ordinary employee's mask `High=0, Low=0`; don't anchor a must-work-for-everyone mechanism there, measure with `getusereffectivepermissions`"
 tags: [permissions, security, rest-api, root-site]
 applies-to: SharePoint Online
 last-reviewed: 2026-09-24

@@ -1,5 +1,7 @@
 ---
 title: "A parser branch whose entry condition accepts more than its collector loop consumes will freeze the tab"
+short-title: Parser entry and collector must share one shape
+summary: A branch that accepts `1)` but collects only `1.` spins forever on one line until out-of-memory; one shared regex, a no-progress contract and an outer backstop, each sufficient alone
 tags: [spfx, react, markdown, parser, infinite-loop, out-of-memory, freeze, debugging]
 applies-to: Any hand-rolled parser with per-branch collector loops (markdown renderers, tokenizers, log parsers)
 last-reviewed: 2026-08-26

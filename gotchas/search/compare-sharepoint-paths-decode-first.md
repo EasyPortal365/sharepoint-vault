@@ -1,5 +1,7 @@
 ---
 title: Comparing SharePoint URLs — decode both sides first, then prefix-match on boundaries
+short-title: Compare SharePoint paths decode-first
+summary: Normalize encoding + boundary-aware prefix, or matches never fire
 tags: [search, urls, encoding]
 applies-to: SharePoint Online, SharePoint Server
 last-reviewed: 2026-07-16

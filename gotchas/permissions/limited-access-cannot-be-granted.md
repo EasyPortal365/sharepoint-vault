@@ -1,5 +1,7 @@
 ---
 title: Limited Access cannot be granted — the API returns 200 and does nothing
+short-title: Limited Access cannot be granted
+summary: "`RoleTypeKind: 1` is derived, not assignable: SharePoint maintains it so people can traverse to a child with unique permissions, and an explicit `addroleassignment` returns 200 while doing nothing. Strip it from EVERY assignment when replicating a permission shape (not only where it stands alone), detect it by number rather than its localised name, and guard the write side too — a verification pass that keeps reporting non-problems teaches the reader to skim past the real one"
 tags: [permissions, rest-api, provisioning, csom]
 applies-to: SharePoint Online, SharePoint Server
 last-reviewed: 2026-09-12

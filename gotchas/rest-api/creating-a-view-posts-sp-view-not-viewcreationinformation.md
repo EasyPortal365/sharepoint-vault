@@ -1,5 +1,7 @@
 ---
 title: "`POST /views` takes an `SP.View` body — `ViewTypeKind` fails, and `@odata.type` passes only under OData v4"
+short-title: "`POST /views` takes an `SP.View` body"
+summary: "`ViewTypeKind` from the creation-information docs 400s, and an `@odata.type` annotation passes only with `OData-Version: 4.0`; measured recipe for view + scope + column order"
 tags: [rest-api, lists, views, spfx, odata, nometadata]
 applies-to: SharePoint Online REST (`odata=nometadata`, tested from SPFx `SPHttpClient` and from a bare `fetch`)
 last-reviewed: 2026-09-24

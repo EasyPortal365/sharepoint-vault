@@ -1,5 +1,7 @@
 ---
 title: CSV export of list data hands Excel a formula, not text
+short-title: CSV export executes formulas
+summary: A member-written cell starting `= + - @` (or TAB/CR) runs in Excel on the reader's machine; quoting doesn't disarm it, an apostrophe prefix does
 tags: [security, spfx, export, csv, stored-injection]
 applies-to: SharePoint Online (any client exporting list/library data to CSV)
 last-reviewed: 2026-07-25

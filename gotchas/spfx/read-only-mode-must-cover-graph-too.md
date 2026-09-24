@@ -1,5 +1,7 @@
 ---
 title: A read-only mode that wraps SPHttpClient still sends e-mail — Graph is a second channel
+short-title: Read-only mode must cover Graph too
+summary: An SPFx app writes through two clients; wrapping `SPHttpClient` leaves mail, calendar and Planner wide open
 tags: [spfx, graph, permissions, patterns]
 applies-to: SPFx web parts (SPHttpClient + MSGraphClientFactory)
 last-reviewed: 2026-08-31

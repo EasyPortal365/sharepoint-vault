@@ -1,5 +1,7 @@
 ---
 title: Silent catch-to-empty fallbacks + destructive writes = data loss
+short-title: Silent fallbacks poison destructive writes
+summary: "`catch → []` + delete-then-insert = data loss; strict and safe reads (+ a settings read that hides its failure lets a full-object save overwrite the config with defaults)"
 tags: [rest-api, architecture, data-safety]
 applies-to: Any app with a defensive data layer (SharePoint or otherwise)
 last-reviewed: 2026-07-28

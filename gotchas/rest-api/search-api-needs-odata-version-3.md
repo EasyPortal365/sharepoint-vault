@@ -1,5 +1,7 @@
 ---
 title: Search REST API needs odata-version 3.0
+short-title: "Search REST needs `odata-version: 3.0`"
+summary: The header behind mysterious search 500s
 tags: [rest-api, search, spfx]
 applies-to: SharePoint Online
 last-reviewed: 2026-07-15

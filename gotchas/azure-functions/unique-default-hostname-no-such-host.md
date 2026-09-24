@@ -1,5 +1,7 @@
 ---
-title: "No such host" for <app>.azurewebsites.net — new function apps get a unique default hostname
+title: "\"No such host\" for <app>.azurewebsites.net — new function apps get a unique default hostname"
+short-title: "\"No such host\" for `<app>.azurewebsites.net`"
+summary: New apps get a unique default hostname (`<app>-<hash>.<region>-01`); the bare name never resolves, and the deploy log's `.scm.` URL reveals the real host even when the app name is a masked secret
 tags: [azure-functions, dns, deployment]
 applies-to: Azure Functions, Azure App Service (apps created ~mid-2024 and later)
 last-reviewed: 2026-09-23

@@ -1,5 +1,7 @@
 ---
-title: `fields/getbyinternalnameortitle` returns 400, not 404, for a missing field
+title: "`fields/getbyinternalnameortitle` returns 400, not 404, for a missing field"
+short-title: "`fields/getbyinternalnameortitle` 400s for a missing field"
+summary: It throws `ArgumentException` (HTTP 400), not 404; an existence-check that hard-fails on non-404 breaks the "field missing → create" path, and one that creates on any non-200 duplicates the column when throttled
 tags: [rest-api, fields, provisioning, existence-check]
 applies-to: SharePoint REST (/_api/web/lists(...)/fields/getbyinternalnameortitle), field provisioning
 last-reviewed: 2026-09-24

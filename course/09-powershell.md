@@ -1,5 +1,7 @@
 ---
 title: "Kapitola 09 – SharePoint Online a PowerShell"
+short-title: "09 · PowerShell"
+summary: SPO Management Shell + PnP PowerShell, admin/reporting scripts (storage, guests, duplicates, long URLs, provisioning)
 chapter: 9
 course: MSHP-ONLINE
 lang: cs

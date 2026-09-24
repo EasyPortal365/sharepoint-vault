@@ -1,5 +1,7 @@
 ---
 title: A GitHub Pages CDN without .nojekyll freezes on its last good build
+short-title: A GitHub Pages CDN without `.nojekyll` freezes on its last good build
+summary: Branch builds run Jekyll unless `.nojekyll` exists; a growing bundle host ended in a bare "Page build failed." while the site kept serving the old build — read `/pages/builds` before pushing again
 tags: [tooling, github-pages, cdn, jekyll, deployment]
 applies-to: GitHub Pages sites published from a branch (static bundle hosts)
 last-reviewed: 2026-09-24

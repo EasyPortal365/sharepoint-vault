@@ -1,5 +1,7 @@
 ---
 title: az CLI can't grant Sites.Selected — the scope is blocked by AADSTS65002
+short-title: az CLI can't grant Sites.Selected
+summary: "`sites/{id}/permissions` needs `Sites.FullControl.All`; the CLI client can't request it (`AADSTS65002`), use the Graph PowerShell SDK"
 tags: [graph, permissions, sites, azure-cli, powershell]
 applies-to: Microsoft Graph, Azure CLI, Microsoft Graph PowerShell SDK
 last-reviewed: 2026-07-19

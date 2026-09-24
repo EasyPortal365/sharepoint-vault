@@ -1,5 +1,7 @@
 ---
 title: "`AddValidateUpdateItemUsingPath` answers 200 when it creates nothing — while a write to a missing column is a loud 400"
+short-title: "`AddValidateUpdateItemUsingPath` answers 200 when it creates nothing"
+summary: Field errors sit inside a 200 and no item is created; a write to a missing column is a 400 on every path, never a silent drop
 tags: [rest-api, lists, validation, error-handling, provisioning]
 applies-to: SharePoint Online REST
 last-reviewed: 2026-09-24

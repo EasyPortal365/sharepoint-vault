@@ -1,5 +1,7 @@
 ---
 title: Duplicate trimming hides exactly the file copies you are searching for
+short-title: Duplicate trimming hides the file copies you search for
+summary: Search collapses identical content by default, so a copy-finder returns "no copies" exactly when perfect copies exist; `trimduplicates=false` on duplicate-hunting queries only
 tags: [search, kql, rest-api, duplicates, trimduplicates]
 applies-to: SharePoint Online (Search REST /_api/search/query, KQL)
 last-reviewed: 2026-08-18

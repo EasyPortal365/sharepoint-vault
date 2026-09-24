@@ -1,5 +1,7 @@
 ---
 title: Word's PDF export silently substitutes your fonts — print to PDF instead
+short-title: Word’s PDF export silently substitutes your fonts
+summary: "`ExportAsFixedFormat` lays the text out in Calibri while Word still lists and embeds the font; print to PDF instead, install static (not variable) instances, and verify via the `name` table inside the embedded `FontFile2`"
 tags: [tooling, word, office-automation, pdf, fonts, com, windows]
 applies-to: Microsoft Word (COM automation or manual export) on Windows, any non-system font
 last-reviewed: 2026-08-24

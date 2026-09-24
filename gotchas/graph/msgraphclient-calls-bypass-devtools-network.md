@@ -1,5 +1,7 @@
 ---
 title: SPFx MSGraphClient calls don't show in DevTools Network — and how to diagnose them anyway
+short-title: "`MSGraphClient` calls bypass DevTools Network"
+summary: SPFx Graph traffic invisible in Network; diagnose via `performance` entries, `currentuser`, DOM, user's response
 tags: [graph, spfx, debugging, tooling]
 applies-to: SharePoint Framework (SPFx), Microsoft Graph, Chrome DevTools
 last-reviewed: 2026-07-17

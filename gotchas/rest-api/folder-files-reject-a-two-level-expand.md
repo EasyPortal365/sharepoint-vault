@@ -1,5 +1,7 @@
 ---
 title: A folder's Files collection rejects a two-level $expand
+short-title: A folder's `Files` collection rejects a two-level `$expand`
+summary: "`ListItemAllFields/Editor` 400s there; take `ModifiedBy`/`Author` from the file, and list one level through the folder API rather than a `FileDirRef` filter"
 tags: [rest-api, files, folders, expand]
 applies-to: SharePoint Online
 last-reviewed: 2026-09-24

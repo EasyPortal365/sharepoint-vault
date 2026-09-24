@@ -1,5 +1,7 @@
 ---
 title: "`stopPropagation` in `onClick` does not stop the keyboard — a clickable row swallows Enter and Space of the buttons inside it"
+short-title: "`stopPropagation` in `onClick` does not stop the keyboard"
+summary: A clickable row with `onKeyDown` also receives the Enter/Space of its inner buttons and checkboxes, so their action is cancelled (or runs twice) and the detail opens; react only when `e.target === e.currentTarget`
 tags: [spfx, react, accessibility, keyboard, lists, ux]
 applies-to: React UIs (SPFx web parts included) with a clickable row, card or tile that handles Enter/Space and contains its own buttons or checkboxes
 last-reviewed: 2026-09-24

@@ -1,5 +1,7 @@
 ---
 title: A module-level cached dynamic import() caches the rejection too
+short-title: A cached dynamic `import()` caches the rejection too
+summary: One chunk-load blip poisons the module-level promise for the whole session; reset it to null in `.catch` so the next call retries
 tags: [spfx, webpack, lazy-loading, dynamic-import, error-handling]
 applies-to: any webpack/TypeScript app using dynamic import() for lazy chunks (SPFx, React, etc.)
 last-reviewed: 2026-07-24

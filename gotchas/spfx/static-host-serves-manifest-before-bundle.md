@@ -1,5 +1,7 @@
 ---
 title: Polling the manifest proves nothing — a static host serves the small file first
+short-title: Polling the manifest proves nothing
+summary: A static host publishes the small manifest before the large entry bundle, so the component loads nothing and logs nothing; and an A/B against the previously deployed version compares deploy age, not code (+ a 503 on one file next to a 200 on its neighbour is the same deploy window)
 tags: [spfx, cdn, deployment, github-pages, library-component]
 applies-to: SharePoint Framework library components hosted on a static CDN (GitHub Pages, any object store fronted by a CDN)
 last-reviewed: 2026-09-24

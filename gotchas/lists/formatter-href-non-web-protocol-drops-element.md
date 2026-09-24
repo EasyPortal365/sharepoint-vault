@@ -1,5 +1,7 @@
 ---
 title: A non-web protocol in a formatter `href` silently drops the whole element
+short-title: Non-web protocol in `href` drops the whole element
+summary: "`ms-word:` in a formatter link removes the element with all children, per item, no error; open-in-app = `openContextMenu`"
 tags: [lists, column-formatting, view-formatting, security]
 applies-to: SharePoint Online
 last-reviewed: 2026-07-26

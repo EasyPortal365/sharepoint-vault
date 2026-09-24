@@ -1,5 +1,7 @@
 ---
 title: GetStorageEntity returns 200 for a missing key, not 404
+short-title: "`GetStorageEntity` returns 200 for a missing key"
+summary: Unset tenant property answers `200 {"odata.null":true}`; "unset" and "failed" are indistinguishable by status code, and writing needs Tenant Admin — same trap in `…?$select=Exists`, which returns `200 {"Exists":false}`
 tags: [rest-api, tenant-properties, spfx, configuration]
 applies-to: SharePoint Online
 last-reviewed: 2026-09-24

@@ -1,5 +1,7 @@
 ---
 title: Created/Modified on a document library won't stick — and the API says 200 while ignoring you
+short-title: Created/Modified on a document library
+summary: A plain MERGE reports 204 and SharePoint overwrites both with "now"; `ValidateUpdateListItem` + `bNewDocumentUpdate` is the only path that holds, and ISO dates fail with HTTP 200 plus a per-field `HasException`
 tags: [lists, document-library, rest-api, metadata, dates]
 applies-to: SharePoint Online
 last-reviewed: 2026-08-13

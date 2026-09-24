@@ -1,5 +1,6 @@
 ---
 title: A brand-new Azure subscription blocks your first Function App deployment
+summary: New subscriptions start with `Y1` quota 0 and unregistered resource providers; the quota is per subscription **and per region**, so try a neighbouring region first — `az appservice list-locations --sku Y1` lists regions you cannot deploy into, but `az deployment group validate` with a swapped `location` measures it for real — register providers up front, and turn the ARM error into a diagnosis (self-service quota requests can be auto-rejected, so don't promise minutes)
 tags: [azure-functions, deployment, quota, arm, bicep, powershell]
 applies-to: First deployment of a Function App (ARM/Bicep or CLI) into a newly created Azure subscription
 last-reviewed: 2026-09-13

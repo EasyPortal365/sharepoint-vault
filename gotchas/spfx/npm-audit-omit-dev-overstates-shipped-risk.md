@@ -1,5 +1,7 @@
 ---
 title: npm audit --omit=dev overstates what SPFx actually ships
+short-title: "`npm audit --omit=dev` overstates shipped risk"
+summary: SPFx keeps its Node build toolchain in `dependencies`, so 229 „production“ findings can hide a single real one; grep the published bundle and always include a control sample
 tags: [spfx, security, dependencies, build]
 applies-to: SharePoint Framework
 last-reviewed: 2026-07-29

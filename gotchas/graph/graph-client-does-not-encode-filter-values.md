@@ -1,5 +1,7 @@
 ---
 title: The Microsoft Graph JS client sends `$filter` values unencoded — `&` splits the query, `#` cuts it off
+short-title: The Graph JS client sends `$filter` values unencoded
+summary: "`.filter()`, `.query()` and `.api('…?…')` pass the value into the URL as-is (SDK 3.0.2, also under SPFx `MSGraphClientV3`): `#` cuts the query, `&` splits it and `.api()` even moves `$top` into the filter; double apostrophes, then `encodeURIComponent`"
 tags: [graph, spfx, msgraphclient, odata, filter, url-encoding, guests]
 applies-to: "@microsoft/microsoft-graph-client 3.x (verified on 3.0.2) and SPFx MSGraphClientV3, which is built on it"
 last-reviewed: 2026-09-24

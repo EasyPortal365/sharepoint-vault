@@ -1,5 +1,6 @@
 ---
 title: A Hyperlink column takes an object, not a string
+summary: "It reads back as `{ Description, Url }` (`[object Object]`, React #31) and a plain string fails the whole save with 400; one helper each way, 255-character address limit, scheme allowlist"
 tags: [rest-api, lists, fields, hyperlink]
 applies-to: SharePoint Online, SharePoint Server
 last-reviewed: 2026-09-24

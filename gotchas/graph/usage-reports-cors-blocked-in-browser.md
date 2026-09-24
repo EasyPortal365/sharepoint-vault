@@ -1,5 +1,7 @@
 ---
 title: Graph usage reports can't be called from the browser — CORS blocks the download redirect
+short-title: Usage reports are CORS-blocked in the browser
+summary: Fetch server-side; browser inventory = SP Search + `/_api/site/usage`
 tags: [graph, reports, cors, spfx, admin]
 applies-to: Microsoft Graph (SharePoint Online context)
 last-reviewed: 2026-07-16

@@ -1,5 +1,7 @@
 ---
 title: ViewsX managed properties — sortable only by ViewsLifeTime
+short-title: ViewsX properties sort only by `ViewsLifeTime`
+summary: Windowed counts select but don't sort; re-rank client-side
 tags: [search, analytics, managed-properties]
 applies-to: SharePoint Online
 last-reviewed: 2026-07-16

@@ -1,5 +1,6 @@
 ---
 title: E-mail HTML built like a web page falls apart in Outlook
+summary: "Classic Outlook renders with Word: no flexbox, rounded corners or gradients, so white text on a gradient vanishes; tables, solid colours, literal values, a full document, and under ~102 KB for Gmail"
 tags: [graph, email, sendmail, html, outlook]
 applies-to: HTML e-mail sent from your app (Microsoft Graph sendMail or any other channel); classic Outlook for Windows, Gmail
 last-reviewed: 2026-09-24

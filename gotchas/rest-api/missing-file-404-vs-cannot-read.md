@@ -1,5 +1,7 @@
 ---
 title: "\"File is missing\" and \"I cannot read the file\" collapse into the same null — and the empty state then lies"
+short-title: "\"File is missing\" vs. \"I cannot read it\""
+summary: A `T | null` helper folds 404, 403, 500 and network failure into one null, and the friendly empty state then lies to the one user who has overdue work; return `{ok, status, data}` and let only 404 (on every candidate path) mean empty
 tags: [rest-api, files, error-handling, permissions, diagnostics]
 applies-to: SharePoint Online
 last-reviewed: 2026-09-24

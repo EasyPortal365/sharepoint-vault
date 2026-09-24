@@ -1,5 +1,7 @@
 ---
 title: "Retry only fast failures — a gateway error after 230 seconds is a timeout, not a hiccup"
+short-title: Retry only fast failures — a gateway error after 230 s is a timeout
+summary: The 502/503/504 a client rightly retries for transient failures also comes back when a request ran out of time (Azure Load Balancer returns 502 after 230 s), and retrying that multiplies the wait (3 × ~230 s) and the bill (Azure OpenAI charges for processing even when the request ends in an error) — decide by how long the failed attempt took, and give the server its own deadline below the platform limit with a status clients do not retry
 tags: [azure-functions, azure-openai, retries, timeouts, cost, spfx]
 applies-to: Any browser client (SPFx web part, extension) calling a Function App that in turn calls Azure OpenAI or another slow upstream
 last-reviewed: 2026-09-24

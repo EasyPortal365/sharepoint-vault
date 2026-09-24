@@ -1,5 +1,7 @@
 ---
 title: Git Bash on Windows mangles backslashes passed to native tools — regexes silently stop matching
+short-title: Git Bash mangles backslashes for native exes
+summary: "`[\\\\/]` arrives as `[/]`; Windows-path regexes silently under-match"
 tags: [tooling, windows, git-bash, ripgrep]
 applies-to: Git Bash / MSYS2 on Windows
 last-reviewed: 2026-09-23

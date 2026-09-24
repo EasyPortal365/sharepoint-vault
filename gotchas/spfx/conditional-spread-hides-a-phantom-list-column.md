@@ -1,5 +1,7 @@
 ---
 title: A conditional spread hides a phantom column until SharePoint returns 400
+short-title: A conditional spread hides a phantom list column
+summary: "`...(cond ? {…} : {})` bypasses the excess-property check, so a field the list doesn't have reaches the POST and 400s; two scripted sweeps find the rest"
 tags: [spfx, typescript, react, rest-api, lists]
 applies-to: SharePoint Online, SPFx, any TypeScript client writing list items
 last-reviewed: 2026-08-12

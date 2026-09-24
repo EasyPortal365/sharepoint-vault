@@ -1,5 +1,7 @@
 ---
 title: A syntax check under PowerShell 7 proves nothing about 5.1
+short-title: A syntax check under PS 7 proves nothing about 5.1
+summary: The parser belongs to the engine hosting it; ternary/`??`/`&&` pass in 7 and are parse errors in 5.1, and `#Requires` never warns you at authoring time
 tags: [powershell, tooling, ci]
 applies-to: Windows PowerShell 5.1 vs PowerShell 7.x
 last-reviewed: 2026-07-29

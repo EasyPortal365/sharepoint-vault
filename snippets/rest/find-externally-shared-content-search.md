@@ -1,5 +1,6 @@
 ---
 title: Find externally / anonymously shared content via Search
+summary: "Oversharing / Copilot-readiness audit: `ViewableByExternalUsers:1` surfaces files shared out, security-trimmed, one query"
 tags: [rest-api, search, security, oversharing, kql]
 applies-to: SharePoint Online
 last-reviewed: 2026-07-23

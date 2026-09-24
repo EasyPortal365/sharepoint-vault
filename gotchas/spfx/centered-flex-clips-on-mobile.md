@@ -1,5 +1,7 @@
 ---
 title: justify-content:center inside overflow:hidden clips content you can never scroll to
+short-title: Centered flex clips on mobile
+summary: Centering + overflow cuts content above the scroll; flex "springs"
 tags: [spfx, css, mobile, layout]
 applies-to: Any web UI (bites hardest in mobile webviews)
 last-reviewed: 2026-07-16

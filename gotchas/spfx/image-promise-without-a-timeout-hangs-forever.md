@@ -1,5 +1,7 @@
 ---
 title: A Promise wrapped around img.onload can hang forever — try/catch won't save you
+short-title: A Promise over img.onload can hang forever
+summary: onload/onerror are not guaranteed to fire; try/catch guards rejection, not a Promise that never settles
 tags: [spfx, browser, canvas, svg, promise, testing]
 applies-to: Any browser code that wraps an image, canvas or postMessage callback in a Promise
 last-reviewed: 2026-08-18

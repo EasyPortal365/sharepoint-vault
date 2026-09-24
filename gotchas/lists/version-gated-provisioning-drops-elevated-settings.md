@@ -1,5 +1,7 @@
 ---
 title: Version-gated provisioning silently drops the settings only an admin could write
+short-title: Version-gated provisioning drops elevated settings
+summary: A settings PATCH needs Manage Lists; the first member to open the app after an upgrade burns the one attempt and the version is stored anyway
 tags: [lists, provisioning, permissions, spfx]
 applies-to: SharePoint Online (client-side provisioning that runs on page load)
 last-reviewed: 2026-07-29

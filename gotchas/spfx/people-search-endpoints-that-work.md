@@ -1,5 +1,7 @@
 ---
 title: Building a people picker in SPFx — the endpoints that actually work
+short-title: People search endpoints that work
+summary: SP Search People source + `ensureuser`; why the obvious endpoints fail
 tags: [spfx, rest-api, search, people-picker]
 applies-to: SharePoint Online (SPFx)
 last-reviewed: 2026-09-03

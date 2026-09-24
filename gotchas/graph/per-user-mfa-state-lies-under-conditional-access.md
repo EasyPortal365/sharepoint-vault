@@ -1,5 +1,7 @@
 ---
 title: "perUserMfaState says \"disabled\" even when MFA is enforced — don't report it as \"user has no MFA\""
+short-title: "`perUserMfaState` says \"disabled\" under Conditional Access"
+summary: The legacy per-user switch stays off while MFA is fully enforced; report on `userRegistrationDetails` instead — which omits blocked accounts and needs an undocumented Entra ID P1/P2 tenant
 tags: [graph, mfa, entra-id, conditional-access, security, reporting]
 applies-to: Microsoft Graph (beta) /users/{id}/authentication/requirements, Microsoft Graph v1.0 /reports/authenticationMethods/userRegistrationDetails
 last-reviewed: 2026-07-31

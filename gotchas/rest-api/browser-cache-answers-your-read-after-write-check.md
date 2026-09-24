@@ -1,5 +1,6 @@
 ---
 title: The browser cache answers your read-after-write check — with a 200
+summary: The same URL read on both sides of a write is served from the browser cache, so `res.ok` guards pass on stale state; a cached existence check makes `POST /fields` create a duplicate column and report success; bust only reads on the write path
 tags: [rest-api, spfx, caching, idempotency, provisioning]
 applies-to: SharePoint Online (SPFx / any browser-side REST client)
 last-reviewed: 2026-08-31

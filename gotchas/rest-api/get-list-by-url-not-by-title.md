@@ -1,5 +1,6 @@
 ---
 title: Get lists by URL, not by title
+summary: "`getbytitle()` breaks the moment someone renames a list; resolve by URL (bonus: `GetList` normalises folder paths to their list)"
 tags: [rest-api, lists, csom, spfx]
 applies-to: SharePoint Online, SharePoint Server
 last-reviewed: 2026-09-24

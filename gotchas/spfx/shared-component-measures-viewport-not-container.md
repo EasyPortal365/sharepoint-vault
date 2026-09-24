@@ -1,5 +1,7 @@
 ---
 title: A shared component that avoided positioning assumptions still carried a width assumption
+short-title: Shared component measures the viewport, not its container
+summary: "`@media` never sees the narrow panel you were reused in; measure the element with `ResizeObserver` and switch every child together"
 tags: [spfx, react, layout, css, responsive]
 applies-to: SPFx web parts and extensions (React), any component reused across hosts
 last-reviewed: 2026-08-29

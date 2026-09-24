@@ -1,5 +1,7 @@
 ---
 title: File size in a document library — File_x0020_Size 400s; use $expand=File
+short-title: File size needs `$expand=File`
+summary: "`File_x0020_Size` 400s in `$select`; use `File/Length`"
 tags: [rest-api, files, libraries]
 applies-to: SharePoint Online
 last-reviewed: 2026-07-15

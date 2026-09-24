@@ -1,5 +1,7 @@
 ---
 title: PowerShell 7 treats typographic quotes as string delimiters
+short-title: Smart quotes are string delimiters
+summary: "`„`/`\"` parse like `\"`; localized text in single-quoted here-strings"
 tags: [powershell, encoding, localization]
 applies-to: PowerShell 7 (and Windows PowerShell 5.1)
 last-reviewed: 2026-09-24

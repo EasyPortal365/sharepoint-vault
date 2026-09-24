@@ -1,5 +1,7 @@
 ---
 title: Telling a list's own columns from inherited ones — `Hidden` is not enough
+short-title: Telling a list's own columns from inherited ones
+summary: "`Hidden` is not enough; `FromBaseType` + `CanBeDeleted` are what separate the list's own columns"
 tags: [rest-api, lists, fields, provisioning]
 applies-to: SharePoint Online (REST `/fields`)
 last-reviewed: 2026-07-28

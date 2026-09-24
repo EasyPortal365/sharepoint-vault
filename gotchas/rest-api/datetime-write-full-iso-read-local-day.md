@@ -1,5 +1,7 @@
 ---
 title: DateTime fields — write full ISO with a time zone, derive the day locally
+short-title: "DateTime: write full ISO, derive days locally"
+summary: No-timezone writes 400; UTC reads shift the day; read a day in the zone it was written in — including noon-UTC dates, which read locally show the next day at UTC+12 to +14
 tags: [rest-api, datetime, timezone]
 applies-to: SharePoint Online, SharePoint Server
 last-reviewed: 2026-09-24

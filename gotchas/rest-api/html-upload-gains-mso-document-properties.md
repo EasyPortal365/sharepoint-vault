@@ -1,5 +1,7 @@
 ---
 title: Uploaded .html grows after you set column values — SharePoint injects mso document properties (and rewrites Office files on upload)
+short-title: Uploaded `.html` gains mso document properties; Office files are rewritten on upload
+summary: Setting column values rewrites the file; hash read-back fails for markup, holds for PDF; Office packages change on upload itself…
 tags: [libraries, rest-api, upload, verification, ooxml, docx, property-promotion]
 applies-to: SharePoint Online
 last-reviewed: 2026-09-03

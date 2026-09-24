@@ -1,5 +1,7 @@
 ---
 title: "PS 5.1: @(pipeline ConvertFrom-Json) keeps the array wrapped — and ConvertTo-Json emits {value:[…],Count:n} garbage"
+short-title: "PS 5.1: `@(ConvertFrom-Json)` keeps the array wrapped"
+summary: "`@()` around the pipeline doesn't enumerate; later `+` nests the array and `ConvertTo-Json` writes `{value:[…],Count:n}` garbage into your JSON file"
 tags: [powershell, ps51, convertfrom-json, convertto-json, arrays, json]
 applies-to: Windows PowerShell 5.1 (PowerShell 7 behaves sanely)
 last-reviewed: 2026-08-01

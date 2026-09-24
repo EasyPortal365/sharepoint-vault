@@ -1,5 +1,7 @@
 ---
 title: $filter on a multi-value person field can return 400 — filter those client-side
+short-title: "`$filter` on multi-value person fields 400s"
+summary: Fall back to client filtering, but only on HTTP 400
 tags: [rest-api, fields, people]
 applies-to: SharePoint Online
 last-reviewed: 2026-07-16

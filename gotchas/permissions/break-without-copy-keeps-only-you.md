@@ -1,5 +1,7 @@
 ---
 title: Breaking inheritance without copying keeps only YOU — and the re-grant forgets custom groups
+short-title: Breaking inheritance without copying keeps only you
+summary: "`copyRoleAssignments=false` leaves exactly one role assignment (the caller), so re-granting Owners/Members/Visitors drops every direct grant and custom group; and an account that loses a *configuration* read can end up with that feature's limits switched off, so the hardening pass lowers security for the very account it locked out"
 tags: [permissions, security, rest-api, provisioning]
 applies-to: SharePoint Online, SharePoint Server
 last-reviewed: 2026-09-01

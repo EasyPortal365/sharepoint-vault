@@ -1,5 +1,7 @@
 ---
 title: SPFx in Teams — a personal app needs global deployment, not a root-site install
+short-title: Teams personal app needs global deploy
+summary: "`skipFeatureDeployment: true` + \"all sites\"; the `teams/` icon-folder convention"
 tags: [spfx, teams, deployment, app-catalog]
 applies-to: SharePoint Online (SPFx 1.18+, Teams)
 last-reviewed: 2026-07-16

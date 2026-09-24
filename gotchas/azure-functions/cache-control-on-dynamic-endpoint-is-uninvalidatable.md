@@ -1,5 +1,7 @@
 ---
 title: Cache-Control on a dynamic endpoint is an edge layer you can't invalidate
+short-title: Cache-Control on a dynamic endpoint is uninvalidatable
+summary: "`max-age` on a live aggregate lets a shared cache hold the response keyed by URL; neither an app restart nor deleting the underlying data clears it, only expiry — serve dynamic data `no-store`, cache server-side, and have the consumer call with `?_=Date.now()`"
 tags: [azure-functions, caching, cache-control, api-design, cdn]
 applies-to: Any HTTP endpoint returning live/aggregated data behind a shared cache or CDN
 last-reviewed: 2026-08-08

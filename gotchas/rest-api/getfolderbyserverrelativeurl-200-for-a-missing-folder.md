@@ -1,5 +1,7 @@
 ---
-title: `getfolderbyserverrelativeurl` returns 200 for a folder that does not exist
+title: "`getfolderbyserverrelativeurl` returns 200 for a folder that does not exist"
+short-title: "`getfolderbyserverrelativeurl` 200s for a missing folder"
+summary: "It answers HTTP 200 with `{\"Exists\": false}` (and `ListItemAllFields` 200 with `{\"odata.null\": true}`), so a check on `response.ok` skips creating the folder and the next call 404s inside `breakroleinheritance`; measure the value, keep three states, and use the path-based lookup — the classic one says `Exists: false` even for an existing folder with `#` or `%` in its name"
 tags: [rest-api, folders, existence-check, permissions, provisioning]
 applies-to: SharePoint REST (/_api/web/getfolderbyserverrelativeurl), folder provisioning and per-folder permissions
 last-reviewed: 2026-09-24

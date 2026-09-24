@@ -1,5 +1,7 @@
 ---
 title: Hiding a field in an SPFx web part is not a permission
+short-title: Field hiding is not a permission
+summary: "Role-based UI field hiding is cosmetic; Read on the list = REST/Export/other web parts see it; confidentiality needs a separate list, item perms, or a server tier — plus the two traps the separate list creates: a sibling column that still holds the number, and \"not allowed to read\" arriving as a legitimate 0 in every aggregate and downloaded file"
 tags: [security, spfx, permissions, rest-api]
 applies-to: SharePoint Online (SPFx / any client rendering list data)
 last-reviewed: 2026-09-24

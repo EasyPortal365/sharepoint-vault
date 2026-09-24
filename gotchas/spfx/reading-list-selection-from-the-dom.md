@@ -1,5 +1,7 @@
 ---
 title: Reading the modern list selection from the DOM — names only, and the count lies
+short-title: Reading the modern list selection from the DOM
+summary: Only a `ListViewCommandSet` gets `selectedRows`; from the DOM take names only (the name is a button, not a link), resolve paths with one folder-scoped call, and take the real count from `clearSelectionCommand` because the view is virtualized
 tags: [spfx, modern-list, dom, application-customizer, list-view-command-set]
 applies-to: SharePoint Online (modern list/library view, 2026)
 last-reviewed: 2026-09-24

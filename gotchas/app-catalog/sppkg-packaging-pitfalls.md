@@ -1,5 +1,7 @@
 ---
 title: Three .sppkg packaging pitfalls — diacritics, icon size, the Publisher column
+short-title: Three `.sppkg` packaging pitfalls
+summary: ASCII-only solution name, icon exactly 96×96, Publisher column is AppSource-only
 tags: [app-catalog, packaging, spfx, deployment]
 applies-to: SharePoint Online
 last-reviewed: 2026-07-15

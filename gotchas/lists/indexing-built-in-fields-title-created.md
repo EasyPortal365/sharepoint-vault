@@ -1,5 +1,7 @@
 ---
 title: Title and Created are the fields you filter on — and the ones your provisioning code never indexes
+short-title: Indexing built-in fields (Title, Created)
+summary: Provisioning indexes only the columns it creates, so the most-filtered fields stay unindexed; past 5,000 items the read throttles and a swallowed error in a write path stops all writes silently
 tags: [lists, columns, provisioning, throttling, list-view-threshold, rest-api]
 applies-to: SharePoint Online
 last-reviewed: 2026-08-15

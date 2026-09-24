@@ -1,5 +1,6 @@
 ---
 title: Read all items from a large list — paging done right
+summary: "Any list past a few thousand items: `$top` caps at 5,000, `$skip` is ignored — follow `odata.nextLink`. Plus the error branch: `break` returns a partial list that looks complete"
 tags: [rest-api, lists, paging, error-handling]
 applies-to: SharePoint Online, SharePoint Server
 last-reviewed: 2026-08-31

@@ -1,5 +1,7 @@
 ---
 title: Sensitivity labels in SharePoint Search — the managed property works, but licensing gates it
+short-title: Sensitivity labels in Search — property works, licensing gates it
+summary: "`InformationProtectionLabelId` returns a GUID only after AIP-enable + label + crawl; unlicensed tenants can't even create a label (`InvalidLicenseException`)"
 tags: [search, kql, purview, sensitivity-labels, licensing, governance]
 applies-to: SharePoint Search REST (/_api/search/query), Microsoft Purview Information Protection, KQL
 last-reviewed: 2026-07-24
@@ -47,7 +49,7 @@ Two independent gates:
 
   ```powershell
   Set-SPOTenant -EnableAIPIntegration $true          # SPO Management Shell (Global admin)
-  Get-Label | Format-Table Name, Guid, ContentType   # Security & Compliance PowerShell — the GUIDs
+  Get-Label | Format-Table Name, Guid, ContentType   # Security & Compliance PowerShell - the GUIDs
   ```
 
   Then in KQL (needs `odata-version: 3.0`, see the sibling gotcha):

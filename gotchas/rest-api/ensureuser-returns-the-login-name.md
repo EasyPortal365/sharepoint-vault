@@ -1,5 +1,7 @@
 ---
 title: "`ensureuser` returns the login name — stop looking it up by Email"
+short-title: "`ensureuser` returns the login name"
+summary: The response already carries `LoginName`; a follow-up `siteusers` filter on `Email` misses accounts whose UPN differs
 tags: [rest-api, security, spfx]
 applies-to: SharePoint Online, SharePoint Server
 last-reviewed: 2026-09-24

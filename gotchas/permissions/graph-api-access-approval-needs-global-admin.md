@@ -1,5 +1,7 @@
 ---
 title: "Approving Microsoft Graph permissions for SPFx needs a Global Administrator — Application Administrator is not enough"
+short-title: Approving Graph permissions for SPFx needs a Global Administrator
+summary: API access requests for Microsoft Graph need Global Administrator (Application Administrator only covers third-party APIs), and admin consent for Graph *application* permissions such as `Sites.Selected` is explicitly excluded from Application/Cloud Application Administrator; put the role, with the citation, into the customer's preflight
 tags: [permissions, spfx, graph, entra, roles, api-access, admin-consent]
 applies-to: SharePoint Online, Microsoft Entra ID
 last-reviewed: 2026-09-03

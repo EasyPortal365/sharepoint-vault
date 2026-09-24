@@ -1,5 +1,7 @@
 ---
 title: A throttled permission probe must not downgrade — and cache — the role
+short-title: Don't cache a throttled permission probe
+summary: A 429/403 on `currentuser/groups` resolves to the lowest role; cache it and the user is stuck read-only for the TTL; only persist a confirmed (200) result
 tags: [rest-api, spfx, permissions, throttling]
 applies-to: SharePoint Online (client-side role resolution)
 last-reviewed: 2026-07-23

@@ -1,5 +1,7 @@
 ---
 title: "The Contributors panel keeps a co-author you removed from history"
+short-title: Contributors panel keeps a co-author you removed
+summary: Panel and API answer different questions (co-authors vs authors), so verify at the source; know the documented ~24 h window before you start waiting
 tags: [tooling, git, github]
 applies-to: GitHub (repository Contributors panel)
 last-reviewed: 2026-08-07

@@ -1,5 +1,7 @@
 ---
 title: "Dropping a folder onto your upload zone does nothing (dataTransfer.files never sees it)"
+short-title: Dropping a folder does nothing
+summary: "`dataTransfer.files` cannot see a folder, `items` is neutered after the first `await`, and `readEntries()` returns the contents in batches of 100"
 tags: [spfx, drag-and-drop, upload, dataTransfer, file-system-access, browser-api]
 applies-to: SharePoint Online (SPFx web parts and extensions, any browser-based upload UI)
 last-reviewed: 2026-09-24

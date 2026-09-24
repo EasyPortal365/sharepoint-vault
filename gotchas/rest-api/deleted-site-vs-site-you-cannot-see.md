@@ -1,5 +1,7 @@
 ---
 title: "A deleted site and a site you cannot see are two different answers — read the status, not `ok`"
+short-title: A deleted site vs. a site you cannot see
+summary: "`_api/web` on a non-existent site collection answers 404 (measured, no redirect), so `if (!r.ok) return unknown` makes a dead row in your own site inventory look like a site you merely lack permission on; keep `r.status`, treat 404 as a defect in YOUR list (with a fix), and stay silent about everything else"
 tags: [rest-api, cross-site, error-handling, permissions, governance, diagnostics]
 applies-to: SharePoint Online
 last-reviewed: 2026-08-28

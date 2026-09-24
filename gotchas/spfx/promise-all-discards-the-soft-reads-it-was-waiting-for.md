@@ -1,5 +1,7 @@
 ---
 title: "`Promise.all` discards the soft reads it was waiting for — one failing main read leaves every picker loading forever"
+short-title: "`Promise.all` discards the soft reads it was waiting for"
+summary: A failing main read rejects the batch and the soft reads' results and failure flags never reach the pickers; settle each read on its own
 tags: [spfx, react, rest-api, loading-states, error-handling]
 applies-to: SPFx web parts and extensions (any React UI that loads several lists at once)
 last-reviewed: 2026-09-24

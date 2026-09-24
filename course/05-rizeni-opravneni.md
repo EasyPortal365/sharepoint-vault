@@ -1,5 +1,7 @@
 ---
 title: "Kapitola 05 – Řízení a správa oprávnění"
+short-title: "05 · Řízení oprávnění"
+summary: Object model, security scopes, SP vs Entra groups, Everyone claims, Check Permissions, external sharing
 chapter: 5
 course: MSHP-ONLINE
 lang: cs

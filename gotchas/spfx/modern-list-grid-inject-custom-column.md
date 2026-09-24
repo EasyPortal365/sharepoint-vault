@@ -1,5 +1,7 @@
 ---
 title: Injecting your own column into the modern list grid — rows are display:contents, cells carry explicit grid placement
+short-title: Injecting your own column into the modern list grid
+summary: "An appended cell lands in the wrong row and shifts the table; rows are `display: contents`, so the cells are the grid items and every one carries explicit `grid-column`/`grid-row`"
 tags: [spfx, modern-list, dom, css-grid, overlay]
 applies-to: SharePoint Online (modern list/library view, 2026)
 last-reviewed: 2026-08-22

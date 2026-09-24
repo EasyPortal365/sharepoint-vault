@@ -1,5 +1,7 @@
 ---
 title: Your zip-bomb guard reads a private JSZip field — and fails open on the next upgrade
+short-title: A zip-bomb guard on a private JSZip field fails open
+summary: "`entry._data.uncompressedSize` is an implementation detail, and `undefined → allow` turns the next library upgrade into a silent loss of protection; read the declared sizes from the ZIP central directory instead"
 tags: [spfx, client-side, security, office-files]
 applies-to: SharePoint Online (SPFx, any browser client)
 last-reviewed: 2026-09-19

@@ -1,5 +1,7 @@
 ---
 title: A library with NoCrawl returns nothing from Search — and silently blinds anything built on Search
+short-title: "`NoCrawl` on a library silently blinds your RAG"
+summary: Excluded containers return 0 with HTTP 200 and no log, so Search-backed AI never sees them; provisioning that excludes *data* lists must not inherit that onto *content* libraries; reindex can't be forced over REST (`SP.PropertyValues` won't MERGE); indexing is not a permission change — Search trims per user; and `Hidden` is a separate axis from `NoCrawl`, so hiding a library does not take it out of the index (measured before/after)
 tags: [search, crawl, indexing, rag, ai, provisioning, governance, hidden]
 applies-to: SharePoint Online
 last-reviewed: 2026-09-17

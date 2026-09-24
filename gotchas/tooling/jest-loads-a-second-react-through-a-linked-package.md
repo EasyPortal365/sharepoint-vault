@@ -1,5 +1,7 @@
 ---
 title: A component from a linked package throws "Invalid hook call" in Jest — the test loaded a second copy of React
+short-title: A component from a linked package throws "Invalid hook call" in Jest
+summary: Jest resolves a `file:`/junction package by its real path, so the package's `require('react')` finds a second copy; map `react` and `react-dom` to the app's copy (the SPFx build is unaffected — React is a platform component)
 tags: [tooling, jest, testing, react, spfx, monorepo, npm-link]
 applies-to: Jest (verified with SPFx 1.22 / Heft, React 17) when a component package is installed as a `file:` dependency, symlink or Windows junction that has its own node_modules
 last-reviewed: 2026-09-24

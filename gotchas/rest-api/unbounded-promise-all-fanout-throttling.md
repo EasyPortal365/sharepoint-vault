@@ -1,5 +1,7 @@
 ---
 title: Unbounded Promise.all fan-out over a customer-sized collection invites HTTP 429
+short-title: Unbounded `Promise.all` fan-out invites 429
+summary: Fan-out is safe when YOUR code decides the count, dangerous when the customer's data does; bounded batch and worker-pool patterns
 tags: [rest-api, throttling, performance, spfx]
 applies-to: SharePoint Online (REST from client-side code)
 last-reviewed: 2026-08-24

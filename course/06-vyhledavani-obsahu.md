@@ -1,5 +1,7 @@
 ---
 title: "Kapitola 06 – Vyhledávání obsahu"
+short-title: "06 · Vyhledávání obsahu"
+summary: Indexing/crawl, KQL query syntax table, Modern Search, disabling indexing
 chapter: 6
 course: MSHP-ONLINE
 lang: cs

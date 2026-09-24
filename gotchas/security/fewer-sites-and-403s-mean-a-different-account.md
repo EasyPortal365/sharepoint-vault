@@ -1,5 +1,7 @@
 ---
 title: Fewer sites and sudden 403s usually mean a different account, not a tenant outage
+short-title: Fewer sites and sudden 403s mean a different account
+summary: A tenant-wide snippet run from a second browser window executes as whoever is signed in there; print `currentuser` and the visible-site count before you blame the tenant
 tags: [security, permissions, search, troubleshooting, browser]
 applies-to: SharePoint Online (browser-driven admin scripts and console snippets)
 last-reviewed: 2026-08-28

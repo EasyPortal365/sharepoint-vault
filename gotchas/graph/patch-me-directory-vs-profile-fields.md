@@ -1,5 +1,7 @@
 ---
 title: PATCH /me — directory and profile fields cannot share one request
+short-title: "`PATCH /me`: directory vs profile fields"
+summary: Mixed field groups fail whole; two PATCHes, profile best-effort
 tags: [graph, profiles, permissions]
 applies-to: Microsoft Graph (Entra ID / Microsoft 365)
 last-reviewed: 2026-07-16

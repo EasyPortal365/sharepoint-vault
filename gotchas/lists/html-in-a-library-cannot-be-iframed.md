@@ -1,5 +1,7 @@
 ---
 title: "An `.html` file in a document library cannot be iframed — SharePoint serves it as a download"
+short-title: "`.html` in a library cannot be iframed"
+summary: SharePoint serves library HTML as an attachment, so the iframe loads empty; host it elsewhere and allow that host in HTML Field Security
 tags: [lists, libraries, modern-pages, embed, iframe, content-disposition, hosting]
 applies-to: SharePoint Online (all site templates); modern pages and the Embed web part
 last-reviewed: 2026-09-10

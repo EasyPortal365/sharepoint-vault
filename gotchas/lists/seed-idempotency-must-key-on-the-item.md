@@ -1,5 +1,7 @@
 ---
 title: Seed idempotency must key on the item, not the collection
+short-title: Seed idempotency must key on the item
+summary: A per-SET presence check re-inserts the whole block; lists have no unique constraint
 tags: [lists, provisioning, seeding, data-quality]
 applies-to: SharePoint Online, SharePoint Server
 last-reviewed: 2026-07-29

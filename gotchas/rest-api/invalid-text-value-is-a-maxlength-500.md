@@ -1,5 +1,7 @@
 ---
 title: "\"Invalid text value\" (HTTP 500) means a Text column hit its 255-character limit"
+short-title: “Invalid text value” is a MaxLength 500
+summary: Generic 500 naming no field; a `Text` column capped at 255
 tags: [rest-api, lists, fields, diagnostics]
 applies-to: SharePoint Online
 last-reviewed: 2026-08-09

@@ -1,5 +1,7 @@
 ---
 title: Typographic quotes in JSX attributes break the parser (TS1003)
+short-title: JSX attributes and smart quotes
+summary: Typographic quotes in attributes = TS1003; wrap as `{'…'}`
 tags: [spfx, typescript, react, localization]
 applies-to: Any TypeScript/JSX codebase with localized strings
 last-reviewed: 2026-07-16

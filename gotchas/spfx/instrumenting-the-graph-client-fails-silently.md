@@ -1,5 +1,7 @@
 ---
 title: Wrapping MSGraphClientV3 to count calls fails silently — and your fail-safe catch hides it
+short-title: Instrumenting the Graph client fails silently
+summary: Reassigning `client.api` throws and your fail-safe catch hides it; use `Object.create` and assert it attached
 tags: [spfx, graph, telemetry, instrumentation, monkey-patching]
 applies-to: SharePoint Framework (SPFx), MSGraphClientV3
 last-reviewed: 2026-09-23

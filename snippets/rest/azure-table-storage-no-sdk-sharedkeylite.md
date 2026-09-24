@@ -1,5 +1,7 @@
 ---
 title: Write to Azure Table Storage from a Node Azure Function — no SDK, SharedKeyLite
+short-title: Write to Azure Table Storage without the SDK (SharedKeyLite)
+summary: Telemetry/counters from an Azure Function without `@azure/data-tables` bloat — Table-flavored SharedKeyLite signing, first-`=` connection-string parsing, 409 = fine
 tags: [azure-functions, table-storage, rest-api, telemetry]
 applies-to: Azure Functions (Node 18+), Azure Table Storage
 last-reviewed: 2026-08-06

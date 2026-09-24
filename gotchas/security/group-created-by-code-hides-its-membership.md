@@ -1,5 +1,7 @@
 ---
 title: A SharePoint group created by code hides its own membership — and Full Control does not get you in
+short-title: A group created by code hides its own membership
+summary: "`sitegroups` POST defaults to `OnlyAllowMembersViewMembership: true`, so only a member or the account that ran provisioning can read the members; Full Control does not help and identical permission masks prove it"
 tags: [security, permissions, groups, provisioning, rest-api]
 applies-to: SharePoint Online
 last-reviewed: 2026-08-17

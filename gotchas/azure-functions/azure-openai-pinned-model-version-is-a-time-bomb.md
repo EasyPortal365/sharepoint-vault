@@ -1,5 +1,7 @@
 ---
 title: Azure OpenAI — a pinned model+version in your deploy script is a time bomb
+short-title: A pinned Azure OpenAI model+version is a time bomb
+summary: "\"Deprecating\" blocks NEW deployments well before retirement; resolve the newest GA version at deploy time, and match the deployment name to the model family"
 tags: [azure-functions, azure-openai, deployment, powershell]
 applies-to: Azure OpenAI model deployments via `az cognitiveservices` (any IaC/CLI script)
 last-reviewed: 2026-07-18

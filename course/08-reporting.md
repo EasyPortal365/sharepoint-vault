@@ -1,5 +1,7 @@
 ---
 title: "Kapitola 08 – SharePoint reporting"
+short-title: "08 · SharePoint reporting"
+summary: Admin Center reports, usage, Microsoft Purview auditing, alert policies
 chapter: 8
 course: MSHP-ONLINE
 lang: cs

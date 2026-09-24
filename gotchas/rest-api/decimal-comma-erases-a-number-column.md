@@ -1,5 +1,7 @@
 ---
 title: A decimal comma erases a Number column — `Number('7,25')` is NaN, JSON sends `null`, SharePoint answers 204
+short-title: A decimal comma erases a Number column
+summary: "`Number('7,25')` is NaN, `JSON.stringify` sends `null`, SharePoint answers 204 and empties the column (measured: 7.25 → null on edit); parse text input comma-aware and reject NaN"
 tags: [rest-api, number-field, forms, localization, json, silent-data-loss]
 applies-to: SharePoint Online (REST writes from any client that builds the body with JSON.stringify, SPFx included)
 last-reviewed: 2026-09-24

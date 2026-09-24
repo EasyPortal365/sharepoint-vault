@@ -1,5 +1,7 @@
 ---
 title: "Markdown vs DOCX vs site pages: choosing a knowledge format for RAG on SharePoint"
+short-title: Choosing a knowledge format for RAG
+summary: Markdown vs DOCX vs site pages vs list items — extraction quality, token economics, and the author-here-publish-Markdown pattern
 tags: [search, rag, files, markdown, architecture]
 applies-to: SharePoint Online
 last-reviewed: 2026-09-24

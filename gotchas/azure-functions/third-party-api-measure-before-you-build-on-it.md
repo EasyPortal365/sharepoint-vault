@@ -1,5 +1,7 @@
 ---
 title: The best-known public API may be the worst one — measure before you build on it
+short-title: Measure a third-party API before you build on it
+summary: The best-known free API returned 404/502/timeout on 7 of 8 live calls while the test suite stayed green; probe latency and status on real data, then cache successes (never failures) and honour `Retry-After` — a Function App's single outbound IP shares one quota
 tags: [azure-functions, third-party-api, rate-limiting, caching, reliability]
 applies-to: Any server-side code calling a free public API on a user-facing path
 last-reviewed: 2026-08-08

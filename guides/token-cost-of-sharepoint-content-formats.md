@@ -1,5 +1,7 @@
 ---
 title: "What each format costs the model: tokens for the same content as .md, .docx, .pdf and a SharePoint page"
+short-title: Token cost of content formats (measured)
+summary: "Real numbers: the same article as `.md`/`.docx`/`.pdf`/a SharePoint page — why extraction, not format, drives the token bill; plus a CZ-vs-EN language tax and a reproducible harness"
 tags: [rag, tokens, files, markdown, pdf, docx, search, architecture]
 applies-to: SharePoint Online
 last-reviewed: 2026-07-19

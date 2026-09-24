@@ -1,5 +1,7 @@
 ---
 title: Compiled files sitting next to sources fake your build verification
+short-title: Compiled files next to sources fake your build check
+summary: Stale `.js`/`.d.ts` in `src/` greps like live code while `main` points at `lib/`; ask `require.resolve`, date-check with `git log`, and keep the ignore rule narrow enough to spare hand-written `.d.ts`
 tags: [tooling, typescript, npm, monorepo, build, verification]
 applies-to: Any TypeScript/JavaScript package (SPFx shared packages, npm workspaces)
 last-reviewed: 2026-08-12

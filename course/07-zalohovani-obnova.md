@@ -1,9 +1,11 @@
 ---
 title: "Kapitola 07 – Zálohování a obnova dat"
+short-title: "07 · Zálohování a obnova"
+summary: Versioning and what it costs in storage, recycle bins (93 days), Microsoft 365 Backup, third-party tools
 chapter: 7
 course: MSHP-ONLINE
 lang: cs
-last-reviewed: 2026-07-18
+last-reviewed: 2026-09-02
 ---
 
 # Kapitola 07 – Zálohování a obnova dat

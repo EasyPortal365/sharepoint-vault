@@ -1,5 +1,7 @@
 ---
 title: Windows PowerShell 5.1 Get-Content/Set-Content mangles UTF-8 — á becomes Ã¡
+short-title: PS 5.1 `Get-Content` mangles UTF-8
+summary: ANSI default double-encodes diacritics; non-ASCII in the *pattern* makes `-replace` match nothing and exit 1. Use `System.IO.File` + BOM-less `UTF8Encoding`, check `git status` after a failed run
 tags: [powershell, encoding, tooling]
 applies-to: Windows PowerShell 5.1 (PowerShell 7 behaves)
 last-reviewed: 2026-07-29

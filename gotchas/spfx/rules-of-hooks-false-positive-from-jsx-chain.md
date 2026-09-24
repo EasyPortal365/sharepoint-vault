@@ -1,5 +1,7 @@
 ---
 title: rules-of-hooks false-positive — a complex JSX `&&` chain flags the wrong hook
+short-title: rules-of-hooks false-positive from a JSX `&&` chain
+summary: "A complex conditional in your render blames the *wrong* hook; extract it to a `const`. Second trigger: sheer component *size* — there extracting conditions doesn't help, splitting the component does. Third trigger: the recommended `const` extraction ITSELF — only block-by-block bisection from a clean HEAD finds the guilty line"
 tags: [spfx, react, eslint, debugging]
 applies-to: SharePoint Online (SPFx, React 17, eslint-plugin-react-hooks)
 last-reviewed: 2026-09-24

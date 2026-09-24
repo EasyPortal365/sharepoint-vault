@@ -1,5 +1,7 @@
 ---
 title: Getting bulk data into a SharePoint page from the console — a localhost server beats pasting, and beats uploading it somewhere
+short-title: Getting bulk data into a SharePoint page from the console
+summary: Serve the payload from `127.0.0.1` with CORS instead of pasting it or uploading it; loopback is a trustworthy origin so HTTPS pages may fetch it
 tags: [tooling, browser-console, sharepoint-online, cors, mixed-content, data-migration]
 applies-to: SharePoint Online, any browser DevTools / automation console
 last-reviewed: 2026-07-31

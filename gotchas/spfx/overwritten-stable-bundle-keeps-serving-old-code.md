@@ -1,5 +1,6 @@
 ---
 title: An overwritten script with a stable name keeps serving the old code
+summary: "`max-age=600` on GitHub Pages, a memory cache shared by same-site tabs and SharePoint's service worker; keep stable files thin, test with `cache: 'reload'` and every tab closed, and don't read `transferSize` of a cross-origin script"
 tags: [spfx, cdn, caching, github-pages, service-worker, deployment]
 applies-to: SPFx components (or any page) loading a script from a static host under a fixed, unhashed name
 last-reviewed: 2026-09-24

@@ -1,5 +1,7 @@
 ---
 title: A silently-failed read turns reconciliation into delete-everything
+short-title: Silent read failure drives delete-all
+summary: A quiet `if (!ok) break` turns "sync what changed" into "delete everything"; fail-safe for a view means show what you can, for a delete it means do nothing
 tags: [rest-api, data-loss, error-handling, spfx]
 applies-to: SharePoint Online
 last-reviewed: 2026-07-29

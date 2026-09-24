@@ -1,5 +1,7 @@
 ---
 title: "SharePoint Online – administrace od A do Z"
+short-title: Course overview
+summary: "8 chapters (chapter 02 is covered inside 01), what you'll learn, lecturer"
 course: MSHP-ONLINE
 lang: cs
 last-reviewed: 2026-09-23

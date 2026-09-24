@@ -1,5 +1,7 @@
 ---
 title: Web part properties are missing from CanvasContent1 on single-part app pages
+short-title: App page properties are not in CanvasContent1
+summary: Single-part app pages store web part config elsewhere; do not diagnose "not set" from page fields
 tags: [rest-api, spfx, site-pages, diagnostics]
 applies-to: SharePoint Online
 last-reviewed: 2026-07-25

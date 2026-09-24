@@ -1,5 +1,7 @@
 ---
 title: List and library pages run a stale extension bundle from Cache Storage for days
+short-title: List pages run a stale extension bundle from Cache Storage
+summary: Stable (unhashed) bundle URL = list and library pages can run a days-old copy from the Lists app's own Cache Storage (`Lists-odsp-web-prod_*`), whatever `Cache-Control` says; keep the stable file a tiny loader and load real code from a versioned URL
 tags: [spfx, extensions, application-customizer, command-set, cdn, caching]
 applies-to: SharePoint Online (modern list and library pages)
 last-reviewed: 2026-09-24

@@ -1,5 +1,7 @@
 ---
 title: A setup marker that measures only part of the step freezes a half-provisioned site forever
+short-title: Setup marker written although a write failed
+summary: The success flag measured the id lookups, not the `addroleassignment` POST, so a 403 froze a site with groups that carry no permission level at all
 tags: [spfx, provisioning, permissions, localstorage, rest-api, verification]
 applies-to: SharePoint Online (SPFx client-side provisioning)
 last-reviewed: 2026-09-19

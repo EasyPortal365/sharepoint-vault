@@ -1,5 +1,7 @@
 ---
 title: ApplicationAccessPolicy won't scope to a shared mailbox — use a mail-enabled security group
+short-title: ApplicationAccessPolicy rejects a shared mailbox
+summary: "\"not a security principal\"; scope app-only `Mail.Send` to a mail-enabled security group"
 tags: [graph, exchange-online, mail-send, permissions, powershell, shared-mailbox]
 applies-to: Exchange Online, Microsoft Graph (application permissions), ExchangeOnlineManagement PowerShell
 last-reviewed: 2026-08-07

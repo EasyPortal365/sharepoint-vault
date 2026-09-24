@@ -1,5 +1,7 @@
 ---
 title: pageContext.cultureInfo returns the web language sometimes and the user language other times
+short-title: cultureInfo returns the web or the user language
+summary: The same page loads English once and Czech the next time; cache the resolved language per web instead
 tags: [spfx, i18n, localization, pagecontext]
 applies-to: SPFx web parts and extensions (SPFx 1.x), any tenant where the site language differs from the user's M365 language
 last-reviewed: 2026-09-17

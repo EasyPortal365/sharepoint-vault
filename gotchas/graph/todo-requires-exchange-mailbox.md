@@ -1,5 +1,7 @@
 ---
 title: Microsoft To-Do (/me/todo) needs an Exchange mailbox — admin accounts 404
+short-title: "`/me/todo` needs an Exchange mailbox"
+summary: "404 \"Item not found\" on admin/cloud-only accounts is not a 403; Planner works without a mailbox"
 tags: [graph, tasks, todo, planner, mailbox]
 applies-to: Microsoft Graph (Microsoft 365)
 last-reviewed: 2026-07-24

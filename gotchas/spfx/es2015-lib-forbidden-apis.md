@@ -1,5 +1,7 @@
 ---
 title: SPFx build fails on padStart, includes, Object.values — the ES2015 lib trap
+short-title: The ES2015 `lib` trap
+summary: TS2550 on `padStart` & friends, and the safe equivalents
 tags: [spfx, typescript, build]
 applies-to: SharePoint Online (SPFx)
 last-reviewed: 2026-07-15

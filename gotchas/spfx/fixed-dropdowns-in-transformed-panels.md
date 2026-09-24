@@ -1,5 +1,7 @@
 ---
 title: position:fixed dropdowns go off-screen inside animated panels — the CSS transform trap
+short-title: Fixed dropdowns in transformed panels
+summary: The CSS transform containing-block trap; portal to `document.body`
 tags: [spfx, css, react, ux]
 applies-to: Any web UI (bites hard in SPFx overlays)
 last-reviewed: 2026-07-15

@@ -1,5 +1,7 @@
 ---
 title: SP.WebProxy is add-in-only — from SPFx it 403s with "without an app context"
+short-title: "`SP.WebProxy` is add-in-only"
+summary: No SharePoint-native CORS proxy for SPFx; the 403 hides inside an HTTP 200
 tags: [spfx, rest-api, cors, webproxy]
 applies-to: SharePoint Online
 last-reviewed: 2026-07-16

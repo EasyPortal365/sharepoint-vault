@@ -1,5 +1,7 @@
 ---
 title: The Purview Audit Query API is asynchronous — think in hours, not seconds
+short-title: Purview Audit Query API is async
+summary: Hour-long queries; attach to the last succeeded, create in background
 tags: [graph, audit, purview, compliance]
 applies-to: Microsoft Graph (Microsoft 365)
 last-reviewed: 2026-07-15

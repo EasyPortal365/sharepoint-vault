@@ -1,5 +1,7 @@
 ---
 title: Teams mobile webview renders your tab at ~980px — and you can't reproduce it in a browser
+short-title: Teams mobile webview renders desktop width
+summary: ~980px layout; fix the viewport meta in Teams first
 tags: [spfx, teams, mobile, viewport]
 applies-to: SharePoint Online (SPFx in Teams mobile)
 last-reviewed: 2026-07-16

@@ -1,5 +1,6 @@
 ---
 title: "Retrying a throttled call is safe for GET only"
+summary: "429 means \"not now\", not \"nothing happened\"; no idempotency key exists, so a retried write duplicates the row (+ `RateLimit-*` headers are not guaranteed for delegated calls)"
 tags: [rest-api, throttling, reliability, spfx]
 applies-to: SharePoint Online
 last-reviewed: 2026-08-05

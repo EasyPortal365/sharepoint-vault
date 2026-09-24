@@ -1,5 +1,7 @@
 ---
 title: Office files change their content hash when you PATCH metadata — property demotion
+short-title: "Office files: property demotion changes the hash"
+summary: Metadata PATCH rewrites docx bytes; key change detection on `lastModifiedBy`
 tags: [graph, files, sharepoint-online, automation]
 applies-to: SharePoint Online (Microsoft Graph / REST)
 last-reviewed: 2026-07-16

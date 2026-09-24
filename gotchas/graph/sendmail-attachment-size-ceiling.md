@@ -1,5 +1,7 @@
 ---
 title: A screenshot pasted into a support form is too big for /me/sendMail — shrink it client-side
+short-title: A pasted screenshot is too big for `/me/sendMail`
+summary: Inline base64 attachments share a ~4 MB request budget; shrink bitmaps in a canvas, cap the total, and remember `mailto:` fallbacks carry no attachments at all
 tags: [graph, mail, sendmail, attachments, spfx, clipboard]
 applies-to: Microsoft Graph (/me/sendMail, delegated Mail.Send), SPFx / browser clients
 last-reviewed: 2026-08-29

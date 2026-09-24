@@ -1,5 +1,7 @@
 ---
 title: X-RequestDigest expires ~30 min after page load — but adding it by hand in SPFx makes things worse
+short-title: "`X-RequestDigest` expires mid-session"
+summary: Writes 403 "security validation is invalid" on a long-open page; raw `fetch` needs a fresh digest from `/_api/contextinfo`, but in SPFx a hand-set header switches `SPHttpClient`'s own digest and 403-recovery OFF
 tags: [rest-api, spfx, writes]
 applies-to: SharePoint Online (REST writes from a long-lived page; cross-site-collection writes)
 last-reviewed: 2026-09-04

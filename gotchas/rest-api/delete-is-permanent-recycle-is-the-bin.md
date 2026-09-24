@@ -1,5 +1,7 @@
 ---
 title: REST DELETE on a list item is permanent — recycle() is the bin
+short-title: REST `DELETE` on an item is permanent
+summary: The usual delete call skips BOTH recycle bins; `/items(id)/recycle()` is what a “restorable for 93 days” promise needs
 tags: [rest-api, lists, data-loss, retention]
 applies-to: SharePoint Online
 last-reviewed: 2026-09-19

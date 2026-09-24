@@ -1,5 +1,7 @@
 ---
 title: Drop __metadata from write bodies — odata=verbose needs OData v3, and SPHttpClient sends v4
+short-title: Drop `__metadata` from write bodies
+summary: "Old-tutorial payloads 400 as plain JSON, and switching to `odata=verbose` 400s again under `SPHttpClient`, which sends `odata-version: 4.0`; write plain JSON without the type hint, or blank `odata-version` where the verbose form is really needed"
 tags: [rest-api, odata, spfx]
 applies-to: SharePoint Online, SharePoint Server
 last-reviewed: 2026-09-24

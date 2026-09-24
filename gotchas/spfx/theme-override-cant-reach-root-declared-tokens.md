@@ -1,5 +1,7 @@
 ---
 title: "A theme override on your app root can't reach tokens declared on :root"
+short-title: A theme override on your app root can't reach tokens declared on `:root`
+summary: The accent inherits, everything derived from it doesn't; substitution happens where the token is declared, portals miss the override entirely, and a colour written as a literal hex is unreachable either way
 tags: [spfx, css, theming, react]
 applies-to: SharePoint Online (SPFx web parts)
 last-reviewed: 2026-08-13

@@ -1,5 +1,7 @@
 ---
 title: "\"0 sent\" hides whether anyone was even asked — boolean mail wrappers conflate refusal with an empty audience"
+short-title: "\"0 sent\" hides whether anyone was asked"
+summary: "The recipient side of the same trap: a denied group read becomes an empty audience, an empty audience becomes a benign `false`, and an approval queue notifies nobody"
 tags: [graph, mail-send, sharepoint, groups, permissions, error-handling, notifications]
 applies-to: Microsoft Graph (/me/sendMail, /users/{id}/sendMail), SharePoint REST (sitegroups/.../users), any notification path
 last-reviewed: 2026-09-01

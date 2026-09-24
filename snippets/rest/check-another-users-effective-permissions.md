@@ -1,5 +1,7 @@
 ---
 title: Check another user's effective permissions (without their password)
+short-title: Check another user's effective permissions
+summary: Verify what a normal user can actually reach — from your own session, no test account; mind `Open` = `Low` bit 16
 tags: [rest-api, security, permissions, auditing]
 applies-to: SharePoint Online
 last-reviewed: 2026-07-29

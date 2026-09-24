@@ -1,5 +1,7 @@
 ---
 title: moveto succeeds and your code reports a failure — action endpoints return an empty body
+short-title: "`moveto` succeeds and your code reports a failure"
+summary: Action endpoints (`moveto`, `removebyid`) return an empty body, so `response.json()` throws after the operation happened and invites a retry; decide by status, parse only what you read
 tags: [rest-api, files, groups, error-handling]
 applies-to: SharePoint Online
 last-reviewed: 2026-09-24

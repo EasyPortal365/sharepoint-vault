@@ -1,5 +1,7 @@
 ---
 title: "Your Application Customizer runs again inside SharePoint dialog iframes"
+short-title: Application Customizer runs again in dialog iframes
+summary: A floating button rendered twice, the copy pinned to the dialog's corner; refuse nested browsing contexts before anything else (+ un-render path and why a body MutationObserver needs a definitive „no“)
 tags: [spfx, application-customizer, extensions, dialogs, iframe, ui, mutationobserver]
 applies-to: SharePoint Online (SPFx Application Customizer / any extension rendering floating UI)
 last-reviewed: 2026-07-28

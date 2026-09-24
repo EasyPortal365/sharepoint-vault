@@ -1,5 +1,7 @@
 ---
 title: A field you write is never read back — $select is an allowlist and a ?? fallback hides the gap
+short-title: Field written but missing from `$select`
+summary: "`$select` is an allowlist; a `snapshot ?? live` fallback silently erases the feature the snapshot exists for"
 tags: [rest-api, odata, diagnostics, data-integrity]
 applies-to: SharePoint Online (any OData $select consumer)
 last-reviewed: 2026-08-12

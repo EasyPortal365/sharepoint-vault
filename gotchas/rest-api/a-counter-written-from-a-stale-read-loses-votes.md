@@ -1,5 +1,7 @@
 ---
 title: SharePoint REST has no increment — a "+1" computed from the count you read at page load loses every vote cast in between
+short-title: SharePoint REST has no increment
+summary: "A MERGE writes a value, so `count + 1` from what the page loaded, sent with `IF-MATCH: *`, overwrites every vote cast since that page load; count distinct `AuthorId`s of per-user rows, or read fresh and write with the item's ETag"
 tags: [rest-api, lists, concurrency, etag, counters, votes]
 applies-to: SharePoint Online and Server REST (any client that keeps a counter column up to date with MERGE)
 last-reviewed: 2026-09-24

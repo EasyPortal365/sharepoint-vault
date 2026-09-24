@@ -1,5 +1,7 @@
 ---
 title: "Your Application Customizer's floating UI disappears when navigating the site"
+short-title: Application Customizer's floating UI disappears on SPA navigation
+summary: The button vanishes as you click around the site; `visibilitychange` never fires on in-page nav, so re-render on `navigatedEvent` (+ a `MutationObserver` backstop that stops re-reading configuration after a definitive 404/403 and never reacts to its own writes)
 tags: [spfx, application-customizer, extensions, spa, navigation, ui]
 applies-to: SharePoint Online (SPFx Application Customizer / any extension rendering persistent floating UI)
 last-reviewed: 2026-09-24

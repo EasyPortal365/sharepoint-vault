@@ -1,5 +1,7 @@
 ---
 title: RecycleByID sends a file version to the recycle bin — DeleteByID does not
+short-title: "`RecycleByID` sends a file version to the recycle bin — `DeleteByID` does not"
+summary: "The two removal methods on `/Versions` differ: permanent vs. site recycle bin (`ItemType 2`, restorable); measured, with `vid = major*512 + minor`"
 tags: [rest-api, files, versioning, recycle-bin, cleanup]
 applies-to: SharePoint Online
 last-reviewed: 2026-09-23

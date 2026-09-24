@@ -1,5 +1,7 @@
 ---
 title: "A literal NUL byte makes ripgrep treat a source file as binary — a silent blind spot for every grep-based sweep"
+short-title: NUL byte makes grep treat a file as binary
+summary: One raw U+0000 and every grep-based sweep silently skips the file; write the escape, detect with `file`
 tags: [tooling, grep, ripgrep, audits]
 applies-to: any codebase (found in an SPFx project)
 last-reviewed: 2026-07-18

@@ -1,5 +1,7 @@
 ---
 title: PermissionKind is 1-based — decoding BasePermissions with `1 << kind` invents a security finding
+short-title: PermissionKind is 1-based
+summary: "The flag for kind *k* is `1 << (k - 1)`, so `1 << k` invents a security finding: Contribute appears to hold `ManageLists` (it holds `ViewFormPages`). Calibrate any decoder against a known level first, and note the tell — a decode that yields a role SharePoint does not have"
 tags: [permissions, rest-api, security, csom]
 applies-to: SharePoint Online
 last-reviewed: 2026-09-04

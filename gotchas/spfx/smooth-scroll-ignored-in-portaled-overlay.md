@@ -1,5 +1,6 @@
 ---
 title: "`behavior: 'smooth'` is silently ignored inside a portaled overlay"
+summary: Jump-to-section does nothing in a modal/reader; drop the flag and set `scrollTop` directly
 tags: [spfx, react, dom, scrolling, overlay]
 applies-to: SharePoint Online (SPFx, React 17), Chromium-based browsers
 last-reviewed: 2026-07-25

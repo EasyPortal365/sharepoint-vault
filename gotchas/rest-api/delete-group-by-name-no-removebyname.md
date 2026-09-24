@@ -1,5 +1,7 @@
 ---
 title: There is no sitegroups/removebyname — delete a group by Id
+short-title: There is no `sitegroups/removebyname`
+summary: "`GroupCollection` has `GetByName` but only `RemoveById`; resolve the Id first, then delete; verify with `getbyname` → 404"
 tags: [rest-api, groups, permissions, spfx]
 applies-to: SharePoint Online, SharePoint Server
 last-reviewed: 2026-07-24

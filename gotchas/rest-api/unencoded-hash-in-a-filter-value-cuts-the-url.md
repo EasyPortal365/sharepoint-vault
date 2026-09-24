@@ -1,5 +1,7 @@
 ---
 title: An unencoded `#` in a `$filter` value cuts the URL — SharePoint gets half a query and answers 400
+short-title: An unencoded `#` in a `$filter` value cuts the URL
+summary: The browser drops everything after `#` as a fragment, SharePoint gets an unterminated literal and answers 400; guest UPNs (`#EXT#`) always hit it; `&` cuts the expression and a raw `+` arrives as a space, so a valid literal silently matches nothing (measured) — `encodeURIComponent(odataString(x))`
 tags: [rest-api, odata, filter, url-encoding, guests]
 applies-to: SharePoint Online, SharePoint Server (any REST URL built by string concatenation, SPFx included)
 last-reviewed: 2026-09-24

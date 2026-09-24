@@ -1,5 +1,7 @@
 ---
 title: "Verifying CORS by header presence passes every origin — compare the value to the Origin you sent"
+short-title: Verifying CORS by header presence passes every origin
+summary: The header comes back for every origin (servers answer with a fallback, not an omission), so presence proves nothing; compare it to the `Origin` you sent, keep at least one case that expects *allowed*, and point the probe at a nonexistent route to prove it can fail
 tags: [azure-functions, cors, verification, security, testing]
 applies-to: Azure Functions (any language), any API that returns a fallback Access-Control-Allow-Origin
 last-reviewed: 2026-09-02

@@ -1,5 +1,6 @@
 ---
 title: "A page-size cap reported as a finding"
+summary: A round number (100 / 500 / 999 / 5000) is the tell; the limit of the request presented as a measurement of the tenant, then cached
 tags: [rest-api, graph, reporting, paging, powershell]
 applies-to: SharePoint Online, Microsoft Graph, any paged REST API
 last-reviewed: 2026-08-24

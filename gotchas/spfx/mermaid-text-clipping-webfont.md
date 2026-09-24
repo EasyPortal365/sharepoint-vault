@@ -1,5 +1,7 @@
 ---
 title: Mermaid clips node text when you set a web font (measure-before-load)
+short-title: Mermaid clips node text with a web font
+summary: Measure-before-load (FOUT) sizes boxes for the fallback font; use a system font stack
 tags: [spfx, mermaid, fonts, rendering]
 applies-to: SharePoint Online (SPFx, React 17); any web app rendering Mermaid client-side
 last-reviewed: 2026-07-19

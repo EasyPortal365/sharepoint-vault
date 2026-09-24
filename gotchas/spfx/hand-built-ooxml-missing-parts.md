@@ -1,5 +1,7 @@
 ---
 title: "Hand-built .docx / .pptx: the parts Office demands even though they do nothing"
+short-title: "Hand-built .docx / .pptx: the parts Office demands"
+summary: Header images are referenced from the header's own rels, Content_Types must know the image extension, namespaces are per part, and a .pptx without theme + master + layout is invalid; split parts from zipping so a strict XML parser can check them in tests
 tags: [spfx, ooxml, docx, pptx, export, jszip, testing]
 applies-to: SPFx / any browser JavaScript
 last-reviewed: 2026-08-28

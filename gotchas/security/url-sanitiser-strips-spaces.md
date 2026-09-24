@@ -1,5 +1,7 @@
 ---
 title: Your URL sanitiser strips spaces — and every SharePoint file link 404s
+short-title: URL sanitiser strips spaces
+summary: The C0 strip that blocks `java<TAB>script:` also eats the plain space, so every link to `/Shared Documents/…` 404s; strip to decide, return with `%20`
 tags: [security, xss, urls, sharepoint-online, spfx]
 applies-to: SharePoint Online (any client-side code that sanitises link URLs)
 last-reviewed: 2026-07-31

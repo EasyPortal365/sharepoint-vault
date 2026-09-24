@@ -1,5 +1,7 @@
 ---
 title: The crawl log DOES exist in SharePoint Online — it just isn't where you look for it
+short-title: The crawl log DOES exist in SharePoint Online
+summary: Reachable only through CSOM DocumentCrawlLog via /_vti_bin/client.svc/ProcessQuery, gated by a separate Crawl Log Permissions grant that no admin role implies; returns ~52 columns incl. per-pass crawl timestamps, errors, NoIndex and delete state
 tags: [search, crawl-log, csom, permissions, diagnostics]
 applies-to: SharePoint Online
 last-reviewed: 2026-08-07

@@ -1,5 +1,7 @@
 ---
 title: "HasUniqueRoleAssignments proves the break, not the hardening — and a half-done break is worse than inheritance"
+short-title: "`HasUniqueRoleAssignments` proves the break, not the hardening"
+summary: The flag is `true` after the break alone, so verifying on it reports "hardened" over a list whose trim never ran; with the safe `copy=true` form that state is worse than inheritance. Read `roleassignments` and measure `BasePermissions` bits — role names are localised and `RoleTypeKind` misses a customer's own level
 tags: [permissions, security, rest-api, provisioning, verification]
 applies-to: SharePoint Online, SharePoint Server (list/library/item scope)
 last-reviewed: 2026-09-03

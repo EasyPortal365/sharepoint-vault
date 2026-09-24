@@ -1,5 +1,6 @@
 ---
 title: Search queries that actually work
+summary: The one mandatory header, practical KQL, managed properties (`RefinableString*`), paging/sorting, and the freshness/trimming traps
 tags: [search, kql, rest-api, guide]
 applies-to: SharePoint Online
 last-reviewed: 2026-07-16

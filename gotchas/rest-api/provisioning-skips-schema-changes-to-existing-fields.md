@@ -1,5 +1,7 @@
 ---
 title: A new Choice value in your provisioning code never reaches already-deployed sites
+short-title: Provisioning skips schema changes to existing fields
+summary: Create-if-missing never updates an existing field; a new Choice value in the manifest no-ops on deployed sites; reconcile with a post-hook `SP.FieldChoice` MERGE (plain JSON with `@odata.type` under `SPHttpClient`) that only ever widens the set — `Choices` is replace, so a failed read of the current values turns the union into the manifest and deletes the rest, while items keep the values the definition no longer knows
 tags: [rest-api, fields, provisioning]
 applies-to: SharePoint Online, SharePoint Server
 last-reviewed: 2026-09-24

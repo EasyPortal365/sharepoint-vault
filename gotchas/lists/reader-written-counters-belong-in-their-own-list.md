@@ -1,5 +1,7 @@
 ---
 title: View counts and ratings written by readers cannot live in a list only editors may write
+short-title: Reader-written counters belong in their own list
+summary: "Views and ratings are written by the reader, so on a `WriteSecurity: 4` content list every click is a swallowed 403 while the UI says thanks"
 tags: [lists, permissions, rest-api, provisioning, ux]
 applies-to: SharePoint Online, SharePoint Server
 last-reviewed: 2026-09-24

@@ -1,5 +1,7 @@
 ---
 title: Gallery cards render from `tileProps`, not from `formatter`
+short-title: Gallery cards render from `tileProps`
+summary: The documented top-level `formatter` is ignored; the card lives in a nested, undocumented `tileProps.formatter`. Layout and card must go in two separate writes (PnP or REST/SPFx)
 tags: [lists, document-library, view-formatting, gallery, pnp-powershell, rest-api, spfx]
 applies-to: SharePoint Online (PnP PowerShell and plain REST / SPFx)
 last-reviewed: 2026-09-24

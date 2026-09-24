@@ -1,5 +1,7 @@
 ---
 title: An allowlist sanitizer that keeps the text of disallowed tags dumps CSS and JavaScript source into your content
+short-title: Sanitizer keeps script and style TEXT
+summary: "An allowlist needs two sets: tags to keep, and tags to drop WITH their subtree; otherwise a pasted web page dumps its stylesheet into the article as visible text"
 tags: [security, sanitization, xss, spfx, rich-text]
 applies-to: SPFx web parts, any DOMParser-based HTML allowlist
 last-reviewed: 2026-08-29

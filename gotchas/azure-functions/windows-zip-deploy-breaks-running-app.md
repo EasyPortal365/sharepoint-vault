@@ -1,5 +1,7 @@
 ---
 title: Windows Functions — zip deploy onto a running app corrupts it (whole app 503)
+short-title: Windows zip deploy breaks the running app
+summary: Live `wwwroot` file locks → whole app 503; re-run the deploy, prevent with `WEBSITE_RUN_FROM_PACKAGE=1`
 tags: [azure-functions, deployment, github-actions, spfx-backend]
 applies-to: Azure Functions (Windows plans; Node.js worker)
 last-reviewed: 2026-07-16

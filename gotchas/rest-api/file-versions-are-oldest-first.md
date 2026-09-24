@@ -1,5 +1,7 @@
 ---
 title: File versions come back oldest-first, so $top truncates the newest ones
+short-title: File versions come back oldest-first
+summary: "`/Versions` is ascending, so `$top` drops the NEWEST ones; sorting the result descending afterwards hides it; do not assume `$orderby` is honoured"
 tags: [rest-api, files, versioning, paging, diagnostics]
 applies-to: SharePoint Online
 last-reviewed: 2026-09-24

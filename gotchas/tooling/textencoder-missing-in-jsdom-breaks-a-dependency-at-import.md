@@ -1,5 +1,7 @@
 ---
 title: "`TextEncoder is not defined` before your first test runs — a dependency needs it at import time and jsdom does not have it"
+short-title: "`TextEncoder is not defined` before your first test runs"
+summary: jsdom has no Encoding API and a dependency that builds `new TextEncoder()` at module level dies on import, before `beforeAll`; import a polyfill module first or use `setupFiles`, and make the dependency lazy
 tags: [tooling, jest, jsdom, testing, spfx, polyfill]
 applies-to: Jest with the jsdom test environment (seen in SPFx 1.22 / Heft projects) when any imported module calls `new TextEncoder()` at module level
 last-reviewed: 2026-09-24

@@ -1,5 +1,7 @@
 ---
 title: "`speechSynthesis.cancel()` does not stop chunked reading — it queues the next chunk"
+short-title: "`speechSynthesis.cancel()` doesn't stop chunked reading"
+summary: The utterance chain re-queues itself from onend; epoch counter bumped BEFORE cancel(), and no onEnd from a superseded chain
 tags: [spfx, web-speech-api, browser, react, accessibility]
 applies-to: Chromium-based browsers (SharePoint Online / SPFx and any web app)
 last-reviewed: 2026-07-27

@@ -1,5 +1,7 @@
 ---
 title: Reverse-engineering Plumsail Forms apps for migration or audit
+short-title: Reverse-engineering Plumsail Forms apps
+summary: Where the JSON definitions, custom JS, and hosting web parts live; a read-only extraction routine and the client-side patterns (dummy-item pages, UI-only security, race conditions) to flag before a migration
 tags: [plumsail, forms, migration, spfx, rest-api]
 applies-to: SharePoint Online
 last-reviewed: 2026-08-01

@@ -1,5 +1,7 @@
 ---
 title: "\"The requested permission isn't valid\" in API access — the API registration doesn't exist yet"
+short-title: Custom API permission request is "not valid"
+summary: API access resolves `resource` to a service principal, so the app registration must exist before the `.sppkg` is uploaded
 tags: [spfx, permissions, entra-id, app-registration, api-access, aadhttpclient]
 applies-to: SharePoint Framework 1.x, SharePoint admin center, Microsoft Entra ID
 last-reviewed: 2026-09-03

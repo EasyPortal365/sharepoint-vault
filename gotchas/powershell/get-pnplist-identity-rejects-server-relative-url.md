@@ -1,5 +1,6 @@
 ---
 title: "`Get-PnPList -Identity` rejects server-relative URLs"
+summary: Title/GUID/web-relative only; `/sites/team/shared` fails as "List does not exist"
 tags: [powershell, pnp-powershell, lists]
 applies-to: PnP.PowerShell 2.x/3.x
 last-reviewed: 2026-07-26

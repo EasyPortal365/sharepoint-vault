@@ -1,5 +1,7 @@
 ---
 title: A batch file move must be grouped by file, not by the record that points at it
+short-title: "Batch file move: group by file, not by record"
+summary: When records share a file URL, iterating records moves it once and 404s on the rest; group by file, write the new URL to every record, and adopt a file already at the target on a rerun
 tags: [rest-api, files, idempotence, data-integrity, spfx]
 applies-to: SharePoint Online
 last-reviewed: 2026-09-24

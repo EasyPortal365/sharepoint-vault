@@ -1,5 +1,7 @@
 ---
 title: getUserEffectivePermissions returns a 64-bit mask — decode it wrong by one bit and every user looks locked out
+short-title: Effective permissions come as a bitmask
+summary: "`ViewListItems` is bit 0, `Low`/`High` are decimal strings; decode off by one and every ordinary member looks locked out. Sanity-check the decoder against a site admin AND a known Read user"
 tags: [permissions, rest-api, diagnostics, base-permissions]
 applies-to: SharePoint Online, SharePoint 2016+
 last-reviewed: 2026-08-21

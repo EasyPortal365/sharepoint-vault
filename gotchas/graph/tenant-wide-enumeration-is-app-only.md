@@ -1,5 +1,7 @@
 ---
 title: Tenant-wide enumeration in Graph is app-only — check Delegated vs Application before you build
+short-title: Tenant-wide enumeration is app-only
+summary: "`getAllSites` rejects delegated tokens; check the Permissions table first"
 tags: [graph, permissions, sites, architecture]
 applies-to: Microsoft Graph
 last-reviewed: 2026-07-16

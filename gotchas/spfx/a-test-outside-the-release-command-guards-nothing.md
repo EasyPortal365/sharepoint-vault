@@ -1,5 +1,7 @@
 ---
 title: A test that runs under a different command than your release guards nothing
+short-title: A test outside the release command guards nothing
+summary: "`heft build` runs no Jest and the two prebuild scripts drift, so a rule can look covered while never executing on the release path"
 tags: [spfx, heft, build, testing]
 applies-to: SharePoint Framework (Heft)
 last-reviewed: 2026-09-04

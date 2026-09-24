@@ -1,5 +1,7 @@
 ---
 title: A file-size limit doesn't stop a zip bomb — Office extraction needs a decompressed cap
+short-title: Office file extraction needs a decompressed-size cap
+summary: An upload-size limit only bounds the compressed archive; a crafted `!ref` still OOMs the tab
 tags: [spfx, files, security, xlsx, docx, pptx, dos]
 applies-to: SPFx / browser-side Office extraction (SheetJS, JSZip, mammoth)
 last-reviewed: 2026-07-27

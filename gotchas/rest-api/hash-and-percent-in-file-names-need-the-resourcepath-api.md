@@ -1,5 +1,7 @@
 ---
 title: A `#` or `%` in a file or folder name — the classic `…Url` APIs cannot reach it, and the old writes quietly save `%25`
+short-title: A `#` or `%` in a file or folder name
+summary: "The classic `…ServerRelativeUrl` lookups, `Files/add(url=)`, `folders/add`, `moveto` and `copyto` cannot reach it even encoded: 404/400, `Exists: false` for a folder that exists, and writes that answer 200 but save a literal `%25`; ResourcePath API with the path doubled and URL-encoded, plus its different answers on an existing target (measured)"
 tags: [rest-api, files, folders, url-encoding, resourcepath, silent-data-loss]
 applies-to: SharePoint Online REST (any client that builds `/_api/web/…` URLs by hand, SPFx included)
 last-reviewed: 2026-09-24

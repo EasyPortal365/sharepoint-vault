@@ -1,5 +1,6 @@
 ---
 title: "`MajorVersionLimit: 0` means unlimited, not none"
+summary: One integer covering "no limit", "keep n" and "versioning is off"; the library your report calls tidiest is the one eating the quota
 tags: [lists, libraries, versioning, storage, governance]
 applies-to: SharePoint Online
 last-reviewed: 2026-09-23

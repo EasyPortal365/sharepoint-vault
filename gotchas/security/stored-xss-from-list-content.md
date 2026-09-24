@@ -1,5 +1,7 @@
 ---
 title: Stored XSS via SharePoint list content — React won't save you
+short-title: Stored XSS via list content
+summary: React doesn't block `javascript:` hrefs; allowlist `safeHref` with C0-strip at every sink
 tags: [security, spfx, react, xss]
 applies-to: SharePoint Online (any client rendering list data)
 last-reviewed: 2026-07-31

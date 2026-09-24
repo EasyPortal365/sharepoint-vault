@@ -1,5 +1,7 @@
 ---
 title: "Per-user data vanishes for admin accounts: pageContext.user.email is empty and `eq ''` matches nothing"
+short-title: Per-user data vanishes for admin accounts
+summary: Mailbox-less accounts get an empty `pageContext.user.email`; rows save under an empty key, SharePoint stores empty text as NULL, and `$filter=Field eq ''` never matches it again
 tags: [spfx, page-context, identity, rest-api, odata, filter, admin-accounts, lists]
 applies-to: SharePoint Online (SPFx web parts and extensions storing per-user rows in a list)
 last-reviewed: 2026-08-28

@@ -1,5 +1,7 @@
 ---
 title: webUrl + a server-relative URL doubles the site path
+short-title: "`webUrl + serverRelativeUrl` doubles the site path"
+summary: Survives for months as a display value or grouping key and breaks the first time it becomes a filter; build object URLs from the origin in one helper
 tags: [rest-api, urls, spfx, data-quality]
 applies-to: SharePoint Online, SharePoint Server
 last-reviewed: 2026-09-24

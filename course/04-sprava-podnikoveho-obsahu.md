@@ -1,5 +1,7 @@
 ---
 title: "Kapitola 04 – Správa podnikového obsahu"
+short-title: "04 · Správa podnikového obsahu"
+summary: Lists & libraries, content types, Content Type Hub, managed metadata, retention
 chapter: 4
 course: MSHP-ONLINE
 lang: cs

@@ -1,5 +1,7 @@
 ---
 title: encodeURIComponent won't save you from apostrophes in OData literals
+short-title: Apostrophes in OData literals
+summary: "`encodeURIComponent` leaves `'` alone; double it"
 tags: [rest-api, odata, files]
 applies-to: SharePoint Online, SharePoint Server
 last-reviewed: 2026-09-24

@@ -1,5 +1,7 @@
 ---
 title: Importing third-party CSS with url(images/...) breaks the SPFx build
+short-title: Third-party CSS breaks webpack
+summary: "`url(images/...)` without `./` kills the build; inject a `<link>` instead"
 tags: [spfx, webpack, css, leaflet]
 applies-to: SharePoint Online (SPFx)
 last-reviewed: 2026-07-15

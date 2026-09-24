@@ -1,5 +1,7 @@
 ---
 title: Choice fields accept any value over REST — validation is a form-only illusion
+short-title: Choice fields accept any value
+summary: REST skips choice validation entirely; enforce vocabulary yourself
 tags: [rest-api, fields, data-quality]
 applies-to: SharePoint Online, SharePoint Server
 last-reviewed: 2026-09-24

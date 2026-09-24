@@ -1,5 +1,7 @@
 ---
 title: An Entra group inside a SharePoint group is invisible to every membership check SharePoint offers
+short-title: An Entra group inside a SharePoint group is invisible to membership checks
+summary: "SharePoint accepts an Entra group as a member of a site group, then never expands it: `currentuser/groups` is direct-only and `sitegroups/{id}/users` returns the group, not its people — resolve with Graph `checkMemberGroups` and keep \"couldn't check\" apart from \"not a member\""
 tags: [security, permissions, groups, entra, graph, rest-api]
 applies-to: SharePoint Online (site groups containing Entra ID groups; app code that gates on membership)
 last-reviewed: 2026-09-04

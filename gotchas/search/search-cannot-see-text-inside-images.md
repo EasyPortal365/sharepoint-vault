@@ -1,5 +1,7 @@
 ---
 title: SharePoint Search cannot see text inside images — and what that does to RAG
+short-title: Search cannot see text inside images — and what that does to RAG
+summary: "The crawler indexes the text layer only, so a value that exists only in an embedded flyer or a scan can never be found by keyword: a search-then-read pipeline is in a closed loop, the LLM re-ranker drops such documents (it scores text-layer snippets), and the only real fix is transcribing images into a crawled column"
 tags: [search, rag, images, ocr, ai]
 applies-to: SharePoint Online Search (crawler, /_api/search/query) and RAG pipelines grounded on it
 last-reviewed: 2026-09-23

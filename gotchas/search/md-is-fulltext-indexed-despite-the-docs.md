@@ -1,5 +1,7 @@
 ---
 title: "Don't trust the parsed-file-types table: SPO does full-text index .md"
+short-title: "Don't trust the parsed-file-types table: SPO does index `.md`"
+summary: The official table omits Markdown, yet live SPO full-text indexes it; probe before architecting
 tags: [search, files, markdown, documentation]
 applies-to: SharePoint Online
 last-reviewed: 2026-07-16

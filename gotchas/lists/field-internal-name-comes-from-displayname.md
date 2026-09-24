@@ -1,5 +1,7 @@
 ---
 title: createfieldasxml ignores Name/StaticName — the internal name is derived from DisplayName
+short-title: Column internal name comes from DisplayName
+summary: "`createfieldasxml` ignores `Name`/`StaticName` when adding to a list; a localized label is escaped into the internal name permanently, so create with ASCII and rename the Title"
 tags: [lists, columns, rest-api, provisioning, formatting]
 applies-to: SharePoint Online
 last-reviewed: 2026-08-13

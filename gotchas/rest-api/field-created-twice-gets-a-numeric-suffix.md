@@ -1,5 +1,7 @@
 ---
 title: A column called MyField0 appears — a throttled existence check or two web parts provisioning at once
+short-title: A column called `MyField0` appears
+summary: "`POST /fields` with a taken name succeeds with a numeric suffix; 429 read as \"missing\", a cached check or two concurrent web parts each make a twin — three-state check, single run per site, name check after the create"
 tags: [rest-api, fields, provisioning, throttling, concurrency]
 applies-to: SharePoint Online (REST `POST /fields`, any client-side provisioning code, SPFx included)
 last-reviewed: 2026-09-24

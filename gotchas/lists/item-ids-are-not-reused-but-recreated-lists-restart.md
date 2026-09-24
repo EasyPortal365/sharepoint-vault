@@ -1,5 +1,7 @@
 ---
 title: List item IDs are never reused after a purge — but a recreated list starts at 1 again
+short-title: Item IDs are never reused — unless the list is recreated
+summary: Purging a list does not rewind its counter, so orphaned rows in a derived list are dead weight; a recreated list restarts at 1 and turns them into wrong-item attributions
 tags: [lists, rest-api, data-modelling, provisioning]
 applies-to: SharePoint Online, SharePoint Server
 last-reviewed: 2026-09-23

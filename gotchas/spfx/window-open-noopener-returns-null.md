@@ -1,5 +1,7 @@
 ---
 title: window.open with noopener returns null even when the tab opened — so your fallback runs every time
+short-title: "`window.open(…, 'noopener')` returns `null` even when the tab opened"
+summary: "Code that reads `null` as \"blocked\" runs its fallback every time: the e-mail opens twice (Outlook on the web and `mailto:`), the print window stays empty; open without the feature and set `w.opener = null`"
 tags: [spfx, browser, window-open, popups, email, print]
 applies-to: Any browser code, SPFx web parts and extensions included (Outlook on the web links, print windows, "open in new tab")
 last-reviewed: 2026-09-24

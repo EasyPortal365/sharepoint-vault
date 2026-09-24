@@ -1,5 +1,7 @@
 ---
 title: Search ParentLink points at a library view, not at the library
+short-title: "`ParentLink` from Search points at a library view"
+summary: Often `…/Forms/AllItems.aspx`, so used as a path it empties a `Path:` filter and can send a save into `Forms` while a `GetList` probe still passes; normalize on read and on write
 tags: [search, rest-api, urls, libraries]
 applies-to: SharePoint Online (Search REST results)
 last-reviewed: 2026-09-24

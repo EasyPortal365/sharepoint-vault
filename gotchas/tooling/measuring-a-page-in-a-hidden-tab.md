@@ -1,5 +1,7 @@
 ---
 title: "Performance measurements taken in a hidden browser tab are worthless — and they look like a freeze"
+short-title: Measuring a page in a hidden tab
+summary: Hidden tabs never fire `requestAnimationFrame` and clamp `setTimeout` to ~1/s, so the run times out and looks like the very freeze you were chasing (and the code under test never ran either); CSS transitions never advance either, so `getBoundingClientRect()` keeps returning the previous position
 tags: [tooling, debugging, performance, devtools, requestanimationframe, timers, automation]
 applies-to: Any browser automation or console-driven measurement (Chrome/Edge; SPFx pages included)
 last-reviewed: 2026-09-10

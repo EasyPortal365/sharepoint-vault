@@ -1,5 +1,7 @@
 ---
 title: Lookup and person fields — read with $expand, write with <Name>Id
+short-title: Lookup fields need `$expand`
+summary: Read via `$expand` + projections, write via `<Name>Id`; ~12-lookup query limit
 tags: [rest-api, fields, lookup]
 applies-to: SharePoint Online, SharePoint Server
 last-reviewed: 2026-07-15

@@ -1,5 +1,7 @@
 ---
 title: "Kapitola 03 – SharePoint Online a informační architektura"
+short-title: "03 · Informační architektura"
+summary: Terminology, sites vs subsites, hub sites, site types, templates
 chapter: 3
 course: MSHP-ONLINE
 lang: cs

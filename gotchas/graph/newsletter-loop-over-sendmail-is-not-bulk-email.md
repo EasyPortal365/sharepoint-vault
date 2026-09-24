@@ -1,5 +1,7 @@
 ---
 title: A newsletter looped over /me/sendMail is not bulk e-mail — and ACS Email is no longer the way out
+short-title: A newsletter looped over `/me/sendMail` is not bulk e-mail
+summary: Per-mailbox and tenant limits, bulk mail through Microsoft 365 "isn't a supported use", JSON `sendMail` can't set `List-Unsubscribe`, ACS Email retires 2028; keep Graph for personal batches, send newsletters through an ESP via a server-side connector
 tags: [graph, mail, sendmail, exchange-online, bulk-email, deliverability, spfx]
 applies-to: Microsoft Graph (/me/sendMail, delegated Mail.Send), Exchange Online, SPFx / browser clients
 last-reviewed: 2026-09-24

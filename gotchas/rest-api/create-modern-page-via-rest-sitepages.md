@@ -1,5 +1,7 @@
 ---
 title: Creating a modern page via REST is a three-step dance, not one POST
+short-title: Create a modern page via REST (3-step)
+summary: "`CanvasContent1` won't stick on create; create → SavePageAsDraft → Publish, canvas is JSON; plain JSON is enough, `Description` needs its own write and a re-publish"
 tags: [rest-api, sitepages, pages, spfx]
 applies-to: SharePoint Online
 last-reviewed: 2026-09-24

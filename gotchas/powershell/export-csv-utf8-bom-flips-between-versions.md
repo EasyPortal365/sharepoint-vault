@@ -1,5 +1,6 @@
 ---
 title: "`Export-Csv -Encoding UTF8` flips the BOM between 5.1 and 7"
+summary: Same parameter, different bytes; Excel reads encoding from the BOM, so the report is readable on one machine and mojibake on the next
 tags: [powershell, reporting, encoding]
 applies-to: Windows PowerShell 5.1 vs PowerShell 7.x
 last-reviewed: 2026-07-29

@@ -1,5 +1,7 @@
 ---
 title: A count over a ReadSecurity 2 list is only the reader's share — and the bit that says "sees everything" is Manage Lists alone
+short-title: A count over a ReadSecurity 2 list is only the reader's share
+summary: Item-level read security filters rows silently, so a client-side count or ranking is the reader's own rows; show it only with `ReadSecurity = 1` or Manage Lists in the reader's mask, and don't also demand Override List Behaviors — the Edit role (`0x3C431AEF`) lacks it
 tags: [permissions, lists, item-level-security, effective-permissions, aggregates]
 applies-to: SharePoint Online and Server — any client-side count, sum or ranking computed from a list with item-level read security
 last-reviewed: 2026-09-24

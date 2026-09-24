@@ -1,5 +1,7 @@
 ---
 title: A protocol-relative URL walks straight through your host allowlist
+short-title: Protocol-relative URL defeats a host allowlist
+summary: A host check built on `^https?://` reads `//evil.example/…` as relative and lets it through; the browser then supplies the scheme and the request leaves for a foreign origin
 tags: [spfx, security, rest-api, validation]
 applies-to: SharePoint Online
 last-reviewed: 2026-09-04

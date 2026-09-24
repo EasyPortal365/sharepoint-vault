@@ -1,5 +1,6 @@
 ---
 title: FieldValuesAsText re-encodes underscores in JSON keys
+summary: "`A_x0020_B` comes back as `A_x005f_x0020_x005f_B`; decode `_x005f_` before matching"
 tags: [rest-api, lists, fields, spfx]
 applies-to: SharePoint Online
 last-reviewed: 2026-08-24

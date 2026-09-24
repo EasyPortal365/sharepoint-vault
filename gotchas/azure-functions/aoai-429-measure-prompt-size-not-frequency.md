@@ -1,5 +1,7 @@
 ---
 title: "Azure OpenAI 429 on a single request is a TPM ceiling, not a busy service — measure size, not frequency"
+short-title: "Azure OpenAI 429: measure prompt size, not frequency"
+summary: One request whose prompt exceeds the deployment's TPM allowance can never fit the window, so retrying is futile — a sub-second rejection means "over the ceiling", not "busy"; separate the two with a small/large request pair, and remember that TPM costs nothing on pay-per-token SKUs, so an undersized default breaks traffic without saving a cent
 tags: [azure-functions, azure-openai, quota, rate-limiting, diagnostics, rag]
 applies-to: Any app calling Azure OpenAI chat completions through a Function App (RAG, document Q&A)
 last-reviewed: 2026-09-18

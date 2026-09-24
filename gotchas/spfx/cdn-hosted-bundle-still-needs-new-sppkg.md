@@ -1,5 +1,7 @@
 ---
 title: A CDN-hosted SPFx bundle still needs a new .sppkg
+short-title: CDN-hosted bundle still needs a new `.sppkg`
+summary: "`includeClientSideAssets: false` moves assets, not versioning; the manifest pins a content-hashed filename, so old packages never request the new bundle"
 tags: [spfx, app-catalog, deployment, cdn]
 applies-to: SharePoint Online
 last-reviewed: 2026-07-28

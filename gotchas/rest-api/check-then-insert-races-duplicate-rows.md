@@ -1,5 +1,7 @@
 ---
 title: Check-then-insert races produce duplicate rows — and "keep the lowest Id" dedup deletes the wrong one
+short-title: Check-then-insert races produce duplicate rows
+summary: No unique constraint + eventual consistency = double insert; dedup on read by version, never delete "lowest Id"
 tags: [rest-api, concurrency, idempotency, registry]
 applies-to: SharePoint Online, SharePoint Server
 last-reviewed: 2026-07-19

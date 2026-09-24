@@ -1,5 +1,7 @@
 ---
 title: Actions must go before the alias query string, not after the URL
+short-title: Actions go before the alias query string
+summary: Appending `/breakroleinheritance(...)` to a `GetList(@u)?@u=...` URL buries the action inside the parameter — splice it in before the `?`
 tags: [rest-api, lists, permissions, spfx]
 applies-to: SharePoint Online, SharePoint Server
 last-reviewed: 2026-08-30

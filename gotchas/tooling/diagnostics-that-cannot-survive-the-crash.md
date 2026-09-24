@@ -1,5 +1,7 @@
 ---
 title: "Diagnostics that cannot survive the crash they are diagnosing"
+short-title: Diagnostics that cannot survive the crash
+summary: Frozen threads stop repainting, `sessionStorage` dies with the tab and the next healthy run overwrites the crash report; persist synchronously and never gate recovery on a flag
 tags: [tooling, debugging, telemetry, localstorage, sessionstorage, crash, spfx, browser]
 applies-to: Any in-page diagnostic used to investigate a freeze, hang, or out-of-memory crash
 last-reviewed: 2026-08-26

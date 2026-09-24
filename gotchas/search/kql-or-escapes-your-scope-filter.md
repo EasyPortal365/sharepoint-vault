@@ -1,5 +1,7 @@
 ---
 title: An unparenthesized OR in your KQL query silently escapes the scope filter
+short-title: An unparenthesized `OR` silently escapes your scope filter
+summary: KQL AND binds tighter than OR; wrapping the query in parens is necessary but NOT sufficient (text can break out of them), and an empty custom path list must not fall back to the whole tenant
 tags: [search, kql, rag, security, scope]
 applies-to: SharePoint Search REST (/_api/search/query), Query API, KQL
 last-reviewed: 2026-08-18

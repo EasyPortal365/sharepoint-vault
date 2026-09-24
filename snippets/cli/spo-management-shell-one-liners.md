@@ -1,5 +1,7 @@
 ---
 title: SPO Management Shell one-liners every admin ends up needing
+short-title: SPO Management Shell one-liners
+summary: Quick admin answers — storage top 20, external sharing, deleted sites, lock state — no script file needed
 tags: [powershell, spo-management-shell, admin]
 applies-to: SharePoint Online
 last-reviewed: 2026-07-15

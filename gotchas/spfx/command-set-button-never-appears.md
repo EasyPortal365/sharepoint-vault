@@ -1,5 +1,7 @@
 ---
 title: ListViewCommandSet button never appears — raiseOnChange() does not re-run onListViewUpdated
+short-title: Command set button never appears
+summary: "Two independent causes: uploading a new .sppkg never registers the extension on a site, and `raiseOnChange()` re-reads `command.visible` without re-running `onListViewUpdated`"
 tags: [spfx, extensions, list-view-command-set, app-catalog]
 applies-to: SharePoint Online (SPFx 1.x extensions)
 last-reviewed: 2026-08-11

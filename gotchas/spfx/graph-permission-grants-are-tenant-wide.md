@@ -1,5 +1,7 @@
 ---
 title: A Graph scope your SPFx solution never asked for may already work — grants are tenant-wide
+short-title: Graph grants are tenant-wide
+summary: "`webApiPermissionRequests` is a request, not a grant; an approval lands on one tenant-wide principal, so a scope another solution had approved already works in yours (and may be missing at the customer)"
 tags: [spfx, graph, permissions, deployment]
 applies-to: SharePoint Online
 last-reviewed: 2026-09-04

@@ -1,5 +1,7 @@
 ---
 title: Breaking inheritance copies foreign Edit grants — and Edit defeats item-level security
+short-title: Breaking inheritance copies foreign Edit grants
+summary: Another app's groups arrive with `Edit`, which carries ManageLists and bypasses item-level security; break without copying and prune the ACL — but only on a genuinely polluted scope, because `copyRoleAssignments=false` keeps only the caller
 tags: [security, permissions, lists, rest-api]
 applies-to: SharePoint Online
 last-reviewed: 2026-09-01

@@ -1,5 +1,7 @@
 ---
 title: Re-read fresh right before you bulk-remove group members
+short-title: Re-read fresh before bulk-removing members
+summary: The roster you showed is a preview; strict fresh re-read before a `removeMember` loop, read-error aborts, vanished member = idempotent skip
 tags: [graph, groups, data-safety]
 applies-to: Microsoft Graph (delegated), SPFx
 last-reviewed: 2026-07-24

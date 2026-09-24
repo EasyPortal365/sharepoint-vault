@@ -1,5 +1,7 @@
 ---
 title: "An auto-save effect computed from async-loaded inputs writes garbage on mount — gate it on a loaded flag"
+short-title: Auto-save must wait for async inputs
+summary: Computed-from-async auto-save fires on mount with empty inputs and persists garbage; gate on a loaded flag
 tags: [spfx, react, hooks, data-integrity]
 applies-to: React 17+ (SPFx web parts, but general React)
 last-reviewed: 2026-07-18

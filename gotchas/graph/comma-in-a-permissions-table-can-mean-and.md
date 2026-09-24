@@ -1,5 +1,7 @@
 ---
 title: A comma in a Graph permissions table can mean AND — searching Teams messages needs two scopes
+short-title: A comma in a Graph permissions table can mean AND
+summary: Searching `chatMessage` needs `Chat.Read` **and** `ChannelMessage.Read.All`; the 403 spells it out, the table does not (+ `webUrl` vs `webLink` from the same endpoint)
 tags: [graph, permissions, search, teams]
 applies-to: Microsoft Graph Search API (v1.0), Teams messages
 last-reviewed: 2026-09-24

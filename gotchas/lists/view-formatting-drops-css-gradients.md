@@ -1,5 +1,7 @@
 ---
 title: View formatting drops CSS gradients — use a solid background-color
+short-title: View formatting drops CSS gradients
+summary: "`background` is not on the style allowlist and a gradient in `background-image` did not survive either; a white initial on a gradient avatar turns invisible, so use a solid `background-color`"
 tags: [lists, view-formatting, column-formatting, css]
 applies-to: SharePoint Online (column and view formatting)
 last-reviewed: 2026-09-24

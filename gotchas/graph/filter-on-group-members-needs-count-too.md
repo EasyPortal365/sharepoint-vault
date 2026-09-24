@@ -1,5 +1,7 @@
 ---
 title: "$filter on /groups/{id}/members needs $count=true, not just ConsistencyLevel"
+short-title: "`$filter` on group members needs `$count=true` too"
+summary: The header is only half the recipe; a permanently failing call hid behind a best-effort catch as a "temporary outage"
 tags: [graph-api, groups, odata]
 applies-to: Microsoft Graph v1.0 (delegated and app-only)
 last-reviewed: 2026-07-28

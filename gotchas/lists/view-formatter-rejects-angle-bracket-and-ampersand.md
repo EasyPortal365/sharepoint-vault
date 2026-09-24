@@ -1,5 +1,7 @@
 ---
 title: View formatting JSON can't contain `<` or `&` — XmlException on save
+short-title: View formatting JSON can't contain `<` or `&`
+summary: It's stored inside the view's schema XML; reverse the comparison and nest `if()`
 tags: [lists, column-formatting, view-formatting, pnp-powershell, csom, rest-api]
 applies-to: SharePoint Online
 last-reviewed: 2026-07-25

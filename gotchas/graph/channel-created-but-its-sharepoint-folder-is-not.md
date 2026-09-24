@@ -1,5 +1,7 @@
 ---
 title: Creating a Teams channel returns 201 long before its SharePoint folder exists
+short-title: A Teams channel exists immediately — its folder does not
+summary: "`POST /channels` returns 201 while SharePoint provisions the folder minutes later; never hand-make the folder, report the pending state and let an idempotent rerun finish it"
 tags: [graph, microsoft-teams, sharepoint, provisioning, channels, async]
 applies-to: Microsoft Graph v1.0 (/teams/{id}/channels), SharePoint Online document libraries
 last-reviewed: 2026-09-23

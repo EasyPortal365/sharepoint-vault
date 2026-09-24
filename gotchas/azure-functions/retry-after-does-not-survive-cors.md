@@ -1,5 +1,7 @@
 ---
 title: "`Retry-After` does not survive CORS — a header you send and the client reads can still arrive as null"
+short-title: "`Retry-After` does not survive CORS"
+summary: A cross-origin response exposes only the headers named in `Access-Control-Expose-Headers` plus a short safelist, so an API that sends `Retry-After` and a client that reads it still meet at `null` — both ends look right and a grep finds nothing; verify from the browser (never `curl`) and guard the list with a test over the build, proven by sabotage
 tags: [azure-functions, cors, rate-limiting, spfx, browser, headers]
 applies-to: Any browser client reading a response header from a cross-origin API (Azure Functions, any stack)
 last-reviewed: 2026-09-18

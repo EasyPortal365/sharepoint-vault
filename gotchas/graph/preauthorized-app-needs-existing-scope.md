@@ -1,5 +1,7 @@
 ---
 title: preAuthorizedApplications can't reference a scope created in the same PATCH
+short-title: preAuthorizedApplications needs an existing scope
+summary: Graph checks `delegatedPermissionIds` against stored scopes; scope and its pre-authorization need two separate `PATCH` calls
 tags: [graph, entra-id, app-registration, api, scripting]
 applies-to: Microsoft Graph v1.0 (/applications), Azure CLI, Microsoft Graph PowerShell SDK
 last-reviewed: 2026-09-03

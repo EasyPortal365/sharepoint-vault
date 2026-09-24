@@ -1,5 +1,7 @@
 ---
 title: "Sharing text through a URL (Teams /share, mailto) breaks at length limits"
+short-title: Sharing text via URL hits length limits
+summary: "\"Send to Teams\" (`/share?msgText`) dies with `AADSTS90015` on long answers and `mailto` silently won't open; cap the URL payload and put the full text on the clipboard"
 tags: [spfx, teams, deeplink, mailto, sharing, aad, ui]
 applies-to: SharePoint Online / SPFx / any web app with "share to Teams" or "share via e-mail" buttons
 last-reviewed: 2026-09-01

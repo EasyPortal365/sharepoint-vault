@@ -1,5 +1,7 @@
 ---
 title: "File upload via /Files/add: nometadata works under OData v4 — an empty OData-Version breaks SPFx when you leave out Content-Type"
+short-title: "File upload via `/Files/add`: nometadata works, an empty `OData-Version` breaks SPFx"
+summary: "`nometadata` + octet-stream under the default OData v4; an empty `OData-Version` without `Content-Type` throws inside `SPHttpClient`; plus the empty-filename mobile camera trap"
 tags: [rest-api, files, upload, spfx, odata, mobile]
 applies-to: SharePoint Online, SPFx SPHttpClient (checked against @microsoft/sp-http-base 1.22.2)
 last-reviewed: 2026-09-24

@@ -1,5 +1,7 @@
 ---
 title: A version is a full copy, not a delta — and a metadata-only edit costs one
+short-title: A version is a full copy, not a delta
+summary: The quota counts every version at full file size and a metadata-only edit costs one; measured on a live tenant, three column edits took a 1 MiB file to 4 MB
 tags: [versioning, storage, quota, lists, libraries, governance, rest-api]
 applies-to: SharePoint Online
 last-reviewed: 2026-09-02

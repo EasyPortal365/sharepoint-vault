@@ -1,5 +1,7 @@
 ---
 title: CDN pruning deleted the extension bundle the deployed .sppkg still referenced
+short-title: CDN pruning deleted the extension bundle the .sppkg still referenced
+summary: "With `includeClientSideAssets: false` the catalog pins hashed names for customizers and command sets too; a \"keep N newest\" prune evicts the referenced hash and the extension 404s for days — protect extension bundles by name pattern or give them stable names"
 tags: [spfx, cdn, app-catalog, application-customizer, command-set, deployment, retention]
 applies-to: SharePoint Online, SPFx with includeClientSideAssets:false
 last-reviewed: 2026-09-03

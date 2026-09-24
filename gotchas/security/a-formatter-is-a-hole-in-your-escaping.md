@@ -1,5 +1,7 @@
 ---
 title: A formatter that returns its raw input is a hole in your escaping
+short-title: A formatter that returns raw input is a hole in your escaping
+summary: The unhappy branch returns the value verbatim; `about:blank` inherits your origin
 tags: [security, xss, html, escaping, reporting]
 applies-to: SharePoint Online, SharePoint Server, SPFx, any HTML generator
 last-reviewed: 2026-09-18

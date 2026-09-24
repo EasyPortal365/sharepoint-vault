@@ -1,5 +1,7 @@
 ---
 title: "A global kill-switch must not block the operation that fixes it"
+short-title: A global kill-switch must not block its own fix
+summary: The lock defends itself against being lifted; infrastructure operations (version pin, re-check, config, diagnostics) belong outside it
 tags: [spfx, architecture, licensing, operations]
 applies-to: SharePoint Framework (any SPFx app with a global lock)
 last-reviewed: 2026-08-05

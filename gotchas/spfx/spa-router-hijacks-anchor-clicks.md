@@ -1,5 +1,7 @@
 ---
 title: SharePoint's SPA router hijacks anchor clicks — onClick never fires
+short-title: SPA router hijacks anchor clicks
+summary: "`<a href>` navigates before React `onClick` runs; use buttons for in-app actions"
 tags: [spfx, react, modern-pages, ux]
 applies-to: SharePoint Online (modern pages)
 last-reviewed: 2026-07-16

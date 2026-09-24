@@ -1,5 +1,7 @@
 ---
-title: Minified React error #310 (and friends) — the SPFx debugging cheatsheet
+title: "Minified React error #310 (and friends) — the SPFx debugging cheatsheet"
+short-title: Minified React errors cheatsheet
+summary: "#310/#300/#321/#31/#185 decoded for SPFx debugging"
 tags: [spfx, react, debugging]
 applies-to: SharePoint Online (SPFx, React 17)
 last-reviewed: 2026-07-15

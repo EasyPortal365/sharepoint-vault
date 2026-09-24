@@ -1,5 +1,7 @@
 ---
 title: GetObjectSharingInformation — GET always 405, CreatedBy always null, and other measured facts
+short-title: "`GetObjectSharingInformation` traps"
+summary: "GET is 405 every time (stop retrying it: 2.7× slower), `CreatedBy` is always null, `$expand` is dead weight"
 tags: [rest-api, sharing, permissions, performance]
 applies-to: SharePoint Online
 last-reviewed: 2026-09-23

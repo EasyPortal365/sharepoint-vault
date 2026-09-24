@@ -1,5 +1,7 @@
 ---
 title: Graph /me/sendMail — From is always the signed-in user
+short-title: "`/me/sendMail`: From is always the signed-in user"
+summary: Delegated `Mail.Send` can't impersonate; configure Reply-To instead
 tags: [graph, email, permissions]
 applies-to: Microsoft Graph (Microsoft 365)
 last-reviewed: 2026-07-15

@@ -1,5 +1,7 @@
 ---
 title: "A list with WriteSecurity 4 ignores Contribute — only ManageLists gets through"
+short-title: WriteSecurity 4 ignores Contribute
+summary: Only ManageLists (Design/Edit/Full Control) overrides the item-level write block, so "break inheritance + give the group Contribute" grants nothing; resolve the role by RoleTypeKind, not by its localised name
 tags: [permissions, lists, rest-api, roles, governance]
 applies-to: SharePoint Online
 last-reviewed: 2026-08-28

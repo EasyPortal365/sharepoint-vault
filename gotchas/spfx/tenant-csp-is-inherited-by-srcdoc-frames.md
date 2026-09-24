@@ -1,5 +1,7 @@
 ---
 title: The tenant's CSP is inherited by `srcdoc` frames — inline scripts in embedded HTML never run
+short-title: The tenant's CSP is inherited by `srcdoc` frames
+summary: Modern pages send `script-src` without `'unsafe-inline'`, and a document you build yourself (`srcdoc`, `blob:`, `data:`) inherits it, so every inline script in the embedded HTML is dropped; an external file from an allow-listed source (including `'self'`) still runs
 tags: [spfx, csp, iframe, security, embedding]
 applies-to: SharePoint Online modern pages (SPFx web parts that embed HTML they fetched themselves)
 last-reviewed: 2026-09-08

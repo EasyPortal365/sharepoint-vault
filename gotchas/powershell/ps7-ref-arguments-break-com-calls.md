@@ -1,5 +1,7 @@
 ---
 title: "PowerShell 7 `[ref]` arguments break Office COM calls"
+short-title: PS7 `[ref]` arguments break Office COM calls
+summary: "`SaveAs2([ref]$x)` dies on \"psobject to Object\"; pass values directly"
 tags: [powershell, com, office-automation]
 applies-to: PowerShell 7.x on Windows (Word/Excel/PowerPoint COM)
 last-reviewed: 2026-07-26

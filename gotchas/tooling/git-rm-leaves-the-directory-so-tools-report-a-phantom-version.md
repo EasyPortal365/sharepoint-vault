@@ -1,5 +1,7 @@
 ---
-title: `git rm -r` leaves the directory behind, so a tool reading the filesystem reports a version nobody serves
+title: "`git rm -r` leaves the directory behind, so a tool reading the filesystem reports a version nobody serves"
+short-title: "`git rm -r` leaves the directory, so tools report a phantom version"
+summary: Untracked build leftovers keep a removed version folder alive on disk, so anything listing versions with `readdirSync` offers a build the site no longer serves; read published content from `git ls-tree` and fail closed when git cannot be read
 tags: [tooling, git, github-pages, cdn, release]
 applies-to: any git-backed static host (GitHub Pages) with per-version folders
 last-reviewed: 2026-09-23

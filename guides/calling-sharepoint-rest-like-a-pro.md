@@ -1,5 +1,6 @@
 ---
 title: Calling SharePoint REST like a pro
+summary: The client landscape, headers that matter, safe writes, reading well, field/list creation quirks, and a ten-minute diagnosis routine
 tags: [rest-api, spfx, odata, guide]
 applies-to: SharePoint Online (most of it also SharePoint Server)
 last-reviewed: 2026-09-24

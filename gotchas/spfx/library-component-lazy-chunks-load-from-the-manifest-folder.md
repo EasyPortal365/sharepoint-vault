@@ -1,5 +1,6 @@
 ---
 title: A library component loaded from your own manifest fetches its lazy chunks from that manifest's folder
+summary: "`SPComponentLoader.loadComponent` + a relocated manifest: without the `chunk.*` files next to the bundle every `import()` 404s on first use, which an open-the-app smoke test never exercises"
 tags: [spfx, library-component, cdn, webpack, spcomponentloader, deployment]
 applies-to: SharePoint Online, SPFx library components loaded with SPComponentLoader.loadComponent (verified on SPFx 1.22.2)
 last-reviewed: 2026-09-24

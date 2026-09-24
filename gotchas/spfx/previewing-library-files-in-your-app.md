@@ -1,5 +1,7 @@
 ---
 title: "Previewing library files in your own app: every format behaves differently"
+short-title: Previewing library files in your own app
+summary: PDF embeds directly, Office needs WOPI by `{UniqueId}`, HTML is served as an attachment and never renders from `src`; SVG and HTML must never be framed from your own origin (uploader script runs in the viewer session) and OneDrive refuses framing with no way to detect it
 tags: [spfx, sharepoint, files, preview, iframe, xss, svg]
 applies-to: SharePoint Online (SPFx web parts, document libraries)
 last-reviewed: 2026-09-21

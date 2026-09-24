@@ -1,5 +1,7 @@
 ---
 title: An SPFx chunk's file name is not its content — realContentHash is off
+short-title: An SPFx chunk's file name is not its content
+summary: "SPFx builds with `realContentHash: false`, so a byte-identical chunk can get a new name (measured) and nothing rules out the reverse; deduplicate by bytes or git blob and never overwrite a published file"
 tags: [spfx, webpack, cdn, caching, deployment, git]
 applies-to: SPFx production builds (verified on SPFx 1.22.2, @microsoft/spfx-heft-plugins); anyone sharing or deduplicating bundles across versions
 last-reviewed: 2026-09-24

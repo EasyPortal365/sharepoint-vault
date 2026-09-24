@@ -1,5 +1,7 @@
 ---
 title: Per-IP rate limit counts the capability probe — corporate NAT kills the feature silently
+short-title: Rate limit counts the capability probe
+summary: Corporate NAT makes per-IP per-company; metered probes silently hide the feature
 tags: [azure-functions, rate-limiting, api-design, spfx-backend]
 applies-to: Azure Functions (any anonymous HTTP endpoint behind a shared client IP)
 last-reviewed: 2026-07-16

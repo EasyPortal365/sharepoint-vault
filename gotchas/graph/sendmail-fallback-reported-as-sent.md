@@ -1,5 +1,7 @@
 ---
-title: A mailto: fallback that reuses the success state tells the user their message was sent when it wasn't
+title: "A mailto: fallback that reuses the success state tells the user their message was sent when it wasn't"
+short-title: A `mailto:` fallback reported as sent
+summary: "`sendMail` fails on accounts without a mailbox and the fallback only hands a draft to a mail client; model sent / handed off / failed, never a boolean"
 tags: [graph, mail, spfx, error-handling, ux]
 applies-to: Microsoft Graph (/me/sendMail, delegated), SPFx web parts
 last-reviewed: 2026-08-29
