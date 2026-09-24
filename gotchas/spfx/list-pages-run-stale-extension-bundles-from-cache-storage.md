@@ -17,7 +17,7 @@ You publish a new version of the bundle behind a stable URL (for example `my-ext
 
 - a hard refresh (`Ctrl+Shift+R`) shows the new version,
 - the next normal refresh shows the old one again,
-- the network panel shows the script as served locally, so it looks like a caching glitch that should have expired long ago.
+- the script loads in a few milliseconds, as if from a local cache, so it looks like a caching glitch that should have expired long ago.
 
 In our case the copy was **nine days old**, stored with `max-age=600`.
 
