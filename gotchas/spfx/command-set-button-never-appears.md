@@ -1,17 +1,17 @@
 ---
 title: ListViewCommandSet button never appears — raiseOnChange() does not re-run onListViewUpdated
 short-title: Command set button never appears
-summary: "Two independent causes: uploading a new .sppkg never registers the extension on a site, and `raiseOnChange()` re-reads `command.visible` without re-running `onListViewUpdated`"
+summary: "Two independent causes: uploading a new .sppkg registers the extension on no site by itself (register it at runtime, or deploy it tenant-wide with the all-sites tick), and `raiseOnChange()` re-reads `command.visible` without re-running `onListViewUpdated`"
 tags: [spfx, extensions, list-view-command-set, app-catalog]
 applies-to: SharePoint Online (SPFx 1.x extensions)
-last-reviewed: 2026-08-11
+last-reviewed: 2026-09-24
 ---
 
 # Your command set button never appears — two independent reasons
 
-> **Bottom line.** A `ListViewCommandSet` button that stays invisible is usually one of two things: the extension was never *registered* on the site (uploading a new `.sppkg` to the app catalog does not register anything — only installing or updating the app on that site does), or your visibility logic lives solely inside `onListViewUpdated` and depends on async config — `raiseOnChange()` re-reads `command.visible`, it does **not** call your callback again.
+> **Bottom line.** A `ListViewCommandSet` button that stays invisible is usually one of two things: the extension was never *registered* on the site (uploading a new `.sppkg` to the app catalog does not register anything — only installing or updating the app on that site does, or deploying the package tenant-wide), or your visibility logic lives solely inside `onListViewUpdated` and depends on async config — `raiseOnChange()` re-reads `command.visible`, it does **not** call your callback again.
 >
-> **Ve zkratce.** Neviditelné tlačítko `ListViewCommandSet` má obvykle jednu ze dvou příčin: rozšíření není na webu vůbec *zaregistrované* (nahrání nového `.sppkg` do katalogu aplikací nic nezaregistruje – propíše se to až instalací nebo aktualizací aplikace na tom webu), nebo se viditelnost počítá jen v `onListViewUpdated` a závisí na asynchronní konfiguraci – `raiseOnChange()` jen znovu PŘEČTE `command.visible`, tvůj callback nezavolá.
+> **Ve zkratce.** Neviditelné tlačítko `ListViewCommandSet` má obvykle jednu ze dvou příčin: rozšíření není na webu vůbec *zaregistrované* (nahrání nového `.sppkg` do katalogu aplikací nic nezaregistruje – propíše se to až instalací nebo aktualizací aplikace na tom webu, nebo nasazením balíčku pro celý tenant), nebo se viditelnost počítá jen v `onListViewUpdated` a závisí na asynchronní konfiguraci – `raiseOnChange()` jen znovu PŘEČTE `command.visible`, tvůj callback nezavolá.
 
 ## Symptom
 
@@ -60,6 +60,36 @@ Notes that cost real debugging time:
 - Creating custom actions needs `ManageWeb`. A regular user gets 403 — log it and move on; the first admin who opens the app creates it for everyone.
 - Do **not** ship the package registration *and* the runtime one. You end up with two registrations of the same component and two identical buttons.
 
+## Fix 1, tenant-wide — `ClientSideInstance.xml`
+
+Runtime registration runs only on sites where the app is opened. To put the command set on every site of the tenant, including the ones your app never visits, deploy it as a tenant-wide extension: `skipFeatureDeployment: true`, a `ClientSideInstance.xml` listed in the feature's `elementManifests`, and *Make this solution available to all sites in the organization* ticked when the package is deployed. SharePoint then writes a row into the *Tenant Wide Extensions* list of the app catalog, and that row loads the extension everywhere. Without the tick no row is written, and a solution that relies on the row alone shows its button on no site at all — nothing warns you, so look at that list before you debug the code:
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<Elements xmlns="http://schemas.microsoft.com/sharepoint/">
+  <ClientSideComponentInstance
+      Title="Contoso Tools - libraries"
+      Location="ClientSideExtension.ListViewCommandSet"
+      ListTemplateId="101"
+      ComponentId="00000000-0000-0000-0000-000000000000"
+      Properties="">
+  </ClientSideComponentInstance>
+  <ClientSideComponentInstance
+      Title="Contoso Tools - lists"
+      Location="ClientSideExtension.ListViewCommandSet"
+      ListTemplateId="100"
+      ComponentId="00000000-0000-0000-0000-000000000000"
+      Properties="">
+  </ClientSideComponentInstance>
+</Elements>
+```
+
+- `Location` without a suffix puts the command in both the context menu and the command bar; `.CommandBar` or `.ContextMenu` limits it to one of them.
+- One instance per list template: `101` for document libraries, `100` for generic lists.
+- `Properties` must be present, even empty.
+- Keep the runtime registration for tenants whose admin does not tick the box: a site-level registration works with `skipFeatureDeployment: true` too (measured on a site with the app installed: the command appeared and its bundle loaded — in the overflow, see the last note). Skip it where the package is deployed tenant-wide, or the site gets the extension twice — `GET /_api/web/tenantappcatalog/AvailableApps/GetById('<product id>')` answers `SkipDeploymentFeature: true` for a tenant-wide deployment. A failed read means "unknown", not "no".
+- Writing to the *Tenant Wide Extensions* list needs rights on the app catalog; an account that can read the catalog may still get 403 there. A site-level registration needs only `ManageWeb` on that site.
+
 ## Cause 2 — `raiseOnChange()` does not re-run `onListViewUpdated`
 
 The natural place to compute visibility is `onListViewUpdated`, because that is where the selection arrives. But visibility usually also depends on configuration you load asynchronously in `onInit`. When that config lands *after* the user made their selection, you call `raiseOnChange()` and nothing happens: the framework re-reads `command.visible`, it does not invoke your callback again. The button stays hidden until the user changes the selection — which, in a "tick a file, click the button" flow, they never do.
@@ -97,3 +127,4 @@ private _applyVisibility(): void {
 - The extension shell lives in the `.sppkg`, so every change to it costs a full build → upload → update round trip at every customer. Keep the shell as dumb as you can (read input, read config, open your UI) and put everything else behind a CDN-hosted bundle you can iterate on freely.
 - If your publish script has an allow-list of bundles it copies, add the new extension bundle to it **before** shipping the package. Otherwise the manifest inside the `.sppkg` points at a file that 404s on the CDN.
 - The commands themselves are fixed in the manifest: you can retitle, hide or disable an existing one at runtime, never add one — see [A command set's commands are fixed in its manifest](command-set-commands-are-fixed-in-the-manifest.md).
+- Before you debug either cause, open the command bar's **…** overflow. On a full bar SharePoint moves commands there, so a button missing from the first row may be registered and working; a log line from your extension in the console tells you for sure.

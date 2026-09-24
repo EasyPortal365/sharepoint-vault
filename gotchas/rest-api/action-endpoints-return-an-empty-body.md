@@ -58,4 +58,5 @@ async function postJson<T>(url: string, body?: unknown): Promise<T> {
 ## Notes
 
 - **A failure after the operation is worse than a failure before it.** It invites a retry of something that already happened. For every write, ask what the user sees when only the parsing of the response fails.
+- Use the status-only helper for every action you call for its effect rather than its data — `copyto`, `checkin`, `addroleassignment`, `removeroleassignment` and `breakroleinheritance` included — and parse a body only where you read something from it. Not every action is empty: `recycle()` on a list item returns the GUID of the new recycle-bin item ([REST `DELETE` on an item is permanent](delete-is-permanent-recycle-is-the-bin.md)).
 - The retry is not harmless either: the source is gone, so a second `moveto` answers 404 and reads like a real error. [Batch file move: group by file, not by record](batch-file-move-group-by-file-not-record.md) shows how a rerun can adopt a file that is already at the destination.

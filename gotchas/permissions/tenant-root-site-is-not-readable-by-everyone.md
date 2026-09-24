@@ -37,6 +37,7 @@ The last call is the one that decides. The claim can also sit inside an ordinary
 
 - **Don't put a must-work-for-everyone mechanism on the root site.** Read what you need from the site the user is on, or from a location whose permissions you set and verify yourself.
 - **Measure, don't assume.** `getusereffectivepermissions` resolves the mask for any user from your own admin session — see [Check another user's effective permissions](../../snippets/rest/check-another-users-effective-permissions.md). `High = 0, Low = 0` is an unambiguous "no".
+- **Don't paper over it with a fallback to something anyone can read.** If a protection falls back to a publicly readable value whenever the protected read fails, it protects nothing — whoever wants past it simply takes the fallback path.
 
 ## Notes
 

@@ -24,9 +24,9 @@ The HTML was a web page: a `<div>` root, layout through `<div>`s and CSS, a grad
 
 1. **Tables, not `<div>`s.** `<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="640">`, nested tables for columns, `align` and `valign` as attributes.
 2. **Never let contrast depend on a gradient.** Give a coloured band a solid `background-color`; a gradient may at most decorate on top of it.
-3. **Send a complete document:** `<!DOCTYPE html><html><head><meta charset="utf-8">…</head><body>…</body></html>`.
-4. **Literal values, inline.** No CSS custom properties — classic Outlook for Windows does not support them, and Gmail supports `var()` but not the declarations — and web-safe font stacks rather than your brand's web fonts.
-5. **Keep it small.** Gmail clips messages larger than about 102 KB of HTML behind a "View entire message" link. Cap the items per section and link to the rest: our digest went from 171 kB to 12 kB.
+3. **Send a complete document:** `<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="color-scheme" content="light only">…</head><body>…</body></html>`. Without it the client picks its own defaults, and in dark mode it may repaint your colours.
+4. **Literal values, inline.** No CSS custom properties — classic Outlook for Windows does not support them, and Gmail supports `var()` but not the declarations — and web-safe font stacks such as `Segoe UI, Arial, sans-serif` or `Georgia, serif` rather than your brand's web fonts.
+5. **Keep it small.** Gmail clips messages larger than about 102 KB of HTML behind a "View entire message" link, and long HTML raises spam-filter scores. Cap the items per section and link to the rest: our digest went from 171 kB to 12 kB.
 
 ## Notes
 

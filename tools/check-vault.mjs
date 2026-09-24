@@ -68,8 +68,9 @@ function chybiVeFormatu(text) {
 /**
  * PowerShell 5.1 cte .ps1 bez BOM jako ANSI: z pomlcky „—" (bajty E2 80 94) je „â€”" a jeho
  * posledni bajt (0x94 = pravá uvozovka) PowerShell bere jako konec retezce - skript spadne
- * uz na parseru. Ukazky PowerShellu v clancich se kopiruji do .ps1, proto v nich typograficke
- * pomlcky ani uvozovky nemaji co delat. Vraci cisla radku.
+ * uz na parseru. Typograficke uvozovky jsou pro PowerShell oddelovace retezcu i bez teto
+ * oklice (gotcha smart-quotes-are-string-delimiters). Ukazky PowerShellu v clancich se
+ * kopiruji do .ps1, proto v nich nemaji co delat ani jedny. Vraci cisla radku.
  */
 const TYPO_ZNAKY = [0x2013, 0x2014, 0x2018, 0x2019, 0x201c, 0x201d, 0x201e, 0x201f].map((k) => String.fromCharCode(k)).join('');
 const TYPO = new RegExp(`[${TYPO_ZNAKY}]`);
@@ -334,6 +335,9 @@ const allMd = [
   ...walk('guides', (n) => n.endsWith('.md')),
   ...walk('snippets', (n) => n.endsWith('.md')),
   ...walk('talks', (n) => n.endsWith('.md')),
+  ...walk('course', (n) => n.endsWith('.md')),
+  ...walk('templates', (n) => n.endsWith('.md')),
+  ...walk('resources', (n) => n.endsWith('.md')),
   'README.md', 'INDEX.md', 'CONTRIBUTING.md', '_sidebar.md',
 ].filter(has);
 

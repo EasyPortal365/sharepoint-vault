@@ -86,9 +86,23 @@ export function holyTextOk(s) {
     !/:(\s|$)/.test(s) && !/\s#/.test(s) && !RIDICI.test(s);
 }
 
+// Holy text, ktery YAML precte jako jiny typ: logickou hodnotu, null, cislo (i sestkovou
+// soustavu YAML 1.1 jako 1:30), datum. U textovych klicu (title, short-title, summary) by se
+// na GitHubu zobrazilo neco jineho, nez autor napsal - proto se hlasi.
+const JINY_TYP = [
+  /^(?:true|false|yes|no|on|off|y|n|null|~)$/i,
+  /^[-+]?(?:\d[\d_]*(?:\.\d*)?|\.\d+)(?:[eE][-+]?\d+)?$/,
+  /^0x[0-9a-fA-F_]+$|^0b[01_]+$/,
+  /^[-+]?\d[\d_]*(?::[0-5]?\d)+(?:\.\d*)?$/,
+  /^\d{4}-\d{1,2}-\d{1,2}(?:[Tt ].*)?$/,
+  /^[-+]?\.(?:inf|Inf|INF)$|^\.(?:nan|NaN|NAN)$/,
+];
+export const jinyTyp = (s) => JINY_TYP.some((re) => re.test(s));
+const TEXTOVE_KLICE = ['title', 'short-title', 'summary'];
+
 /** Text -> hodnota do frontmatteru: holy, kdyz ho YAML precte beze zmeny, jinak JSON retezec. */
 export function yamlText(s) {
-  if (holyTextOk(s) && !/^(?:true|false|yes|no|on|off|y|n|null|~)$/i.test(s) && !/^[-+.]?\d/.test(s)) return s;
+  if (holyTextOk(s) && !jinyTyp(s)) return s;
   return JSON.stringify(s).replace(K_ESCAPOVANI, (c) => zn(92) + 'u' + c.charCodeAt(0).toString(16).padStart(4, '0')); // zn(92) = zpetne lomitko
 }
 
@@ -133,7 +147,9 @@ export function frontmatter(text) {
     if (klic in data) chyby.push(`frontmatter: klic ${klic} je tam dvakrat`);
     const h = hodnota(raw);
     if (h.chyba) chyby.push(`frontmatter ${klic}: ${h.chyba}`);
-    else data[klic] = h.value;
+    else if (TEXTOVE_KLICE.includes(klic) && !/^["'[]/.test(raw) && jinyTyp(raw)) {
+      chyby.push(`frontmatter ${klic}: YAML by hodnotu precetl jako cislo, datum nebo logickou hodnotu - obal ji do "..."`);
+    } else data[klic] = h.value;
   });
   return { data, chyby };
 }
@@ -332,6 +348,9 @@ function selftest() {
   ok(jsonT.chyby.length === 0 && jsonT.data.title === 'A "quoted" `x`: y' && jsonT.data.summary === "it's fine" &&
     jsonT.data.tags.join('|') === 'a|b-c', 'platny frontmatter (JSON retezec, apostrofy, seznam) neprosel');
   ok(frontmatter('# bez frontmatteru\n').data === null, 'chybejici frontmatter se neohlasil');
+  ok(frontmatter('---\nshort-title: 2026\nsummary: yes\n---\n').chyby.length === 2, 'textovy klic, ktery YAML precte jako cislo nebo logickou hodnotu, prosel');
+  ok(frontmatter('---\nshort-title: "2026"\nsummary: 8 chapters, one lecturer\nchapter: 7\nlast-reviewed: 2026-09-24\n---\n').chyby.length === 0,
+    'cislo v uvozovkach, text zacinajici cislici nebo netextovy klic (chapter, last-reviewed) se hlasi jako chyba');
   for (const s of ['`code` first', 'a: b', 'x #y', 'plain text — ok', "it's", '"q" start', '- dash', '1:30', 'true', ' lead', `a${String.fromCodePoint(0x2028)}b`]) {
     const zpet = hodnota(yamlText(s));
     ok(!zpet.chyba && zpet.value === s, `yamlText neprezije cestu tam a zpet: ${JSON.stringify(s)}`);

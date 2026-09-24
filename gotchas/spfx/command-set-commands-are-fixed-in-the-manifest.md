@@ -36,7 +36,7 @@ The SPFx reference for the `Command` class says so directly: commands "are initi
 
 Choose the shape before the first release:
 
-- **One entry, your own menu.** A single command that opens a popover your code renders. Every future action is then data, not manifest.
+- **One entry, your own menu.** A single command that opens a popover your code renders. Every future action is then data, not manifest — and your own menu can have submenus and group labels, which a command set cannot add to the SharePoint command bar or context menu.
 - **Reserved slots.** Declare a few extra commands (`SLOT_A`, `SLOT_B`), keep them hidden (`visible = false`) until runtime configuration switches them on, and let the configuration supply their title and icon. Mind what Microsoft says about `title`: it is meant for minor changes such as "Submit these 3 items", because administrators are expected to understand what an extension does by reading its manifest. A slot stretches that intent — the manifest can only say that the slot exists, not what it will do — so give it an honest, generic title and tell admins that its actions come from configuration.
 
 ## Notes
