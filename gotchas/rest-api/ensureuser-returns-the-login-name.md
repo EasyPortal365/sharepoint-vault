@@ -2,7 +2,7 @@
 title: "`ensureuser` returns the login name — stop looking it up by Email"
 tags: [rest-api, security, spfx]
 applies-to: SharePoint Online, SharePoint Server
-last-reviewed: 2026-08-19
+last-reviewed: 2026-09-24
 ---
 
 # `ensureuser` returns the login name — stop looking it up by Email
@@ -51,7 +51,7 @@ return d?.value?.[0]?.LoginName ?? '';
 
 Notes:
 
-- Send `Accept: application/json` (plain). `odata=nometadata` returns 406 on some of these endpoints; with the plain header `LoginName` is still a top-level property.
+- Send `Accept: application/json` (plain); `LoginName` is a top-level property with it. An older note here said `odata=nometadata` returns 406 on some of these endpoints — not re-measured for `ensureuser`, and on `POST …/items`, `/lists` and `/fields` a live A/B test (2026-09-24) found no 406 with `nometadata` at all.
 - `ensureuser` **adds** the user to the site's user information list if they are not there yet. That is usually what you want before a group add — but it is a write, so it needs a form digest and it is not something to call from a read-only path.
 - Double apostrophes before URL-encoding if you keep the fallback filter.
 
