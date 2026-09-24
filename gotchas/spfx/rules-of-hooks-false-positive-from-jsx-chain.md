@@ -103,11 +103,14 @@ worth doing (better design, smaller file) — just don't expect it to clear the 
 
 *Added 2026-09-24.* A ~640-line wizard gained a "resume" mode, which meant five initial values like
 `useState(resume ? resume.campaign.Title : '')`. The plugin then flagged **26 hooks that come after them**
-as "called conditionally". Every ternary or `&&` in the component body before a hook is one more branch
-in the control-flow graph — even inside a hook's argument.
+as "called conditionally". In ESLint's code-path analysis every ternary and every `&&`, `||` or `??` in the
+component body is a fork — even inside a hook's argument, since only a nested function gets its own code
+path ([code-path analyzer](https://github.com/eslint/eslint/blob/main/lib/linter/code-path-analysis/code-path-analyzer.js)).
+The rule reasons about paths through the whole component, so forks placed after the hooks matter too — the
+first trigger above is JSX in the return.
 
-What cleared it on the first try: compute the defaults in a **pure function outside the component** and
-keep the component body free of conditionals before the hooks.
+What cleared it on the first try: compute the defaults in a **pure function outside the component**, so the
+forks leave the component's own code path.
 
 ```tsx
 // outside the component
