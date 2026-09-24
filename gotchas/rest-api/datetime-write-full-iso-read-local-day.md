@@ -2,7 +2,7 @@
 title: DateTime fields — write full ISO with a time zone, derive the day locally
 tags: [rest-api, datetime, timezone]
 applies-to: SharePoint Online, SharePoint Server
-last-reviewed: 2026-07-15
+last-reviewed: 2026-09-24
 ---
 
 # DateTime fields: write full ISO with a time zone, derive the day locally
@@ -54,7 +54,13 @@ const dayKey = `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())
 
 If the value is a date-only string to begin with (`'2026-06-21'`), use it as-is — wrapping it in `new Date()` can shift it too, since date-only strings are parsed as UTC midnight.
 
+## The exception: a day you stored as UTC midnight
+
+"Derive the day locally" is right for values that came from **local** time — `toISOString()` of a local midnight or of a moment. Some code stores a plain calendar day as UTC midnight instead (`${day}T00:00:00Z`). For those values the day **is** the UTC part of the string, and `value.substring(0, 10)` is correct. "Fixing" it to local getters shifts the day back by one for every user west of Greenwich, where UTC midnight is still the previous evening.
+
+The rule that covers both cases: **read the day in the time zone it was written in.** Before you replace a `substring(0, 10)` with a local-day helper, find the write. One app had both conventions side by side — a licence date written from local time (read locally) and a collection date written as UTC midnight (read from the UTC part) — and only a comment kept the second one from being "corrected".
+
 ## Notes
 
 - Rule of thumb: **write `toISOString()`, read via local getters.**
-- Watch every `slice(0, 10)` / `substring(0, 10)` on datetime strings in code review — each one is a suspect.
+- Watch every `slice(0, 10)` / `substring(0, 10)` on datetime strings in code review — each one is a suspect, unless the write stored the day as UTC midnight (see above).

@@ -2,14 +2,14 @@
 title: In a Heft/SPFx project jest.mock() doesn't hoist — and sp-http drags in a missing MS-internal module
 tags: [spfx, jest, testing, heft, sp-http, mocking]
 applies-to: SPFx projects built with Heft (@rushstack/heft-jest-plugin), SharePoint Framework 1.1x+
-last-reviewed: 2026-07-25
+last-reviewed: 2026-09-24
 ---
 
 # In a Heft/SPFx project `jest.mock()` doesn't hoist — and `sp-http` drags in a missing MS-internal module
 
-> **Bottom line.** A test suite for a service that touches `SPHttpClient` dies with `Cannot find module '@msinternal/ecs-flight'` before the first test runs — and adding `jest.mock('@microsoft/sp-http', …)` doesn't fix it, because Heft runs Jest over pre-compiled `lib-commonjs` **without Babel**, so `jest.mock()` never hoists above `require()`. Use `moduleNameMapper` in the project's `config/jest.config.json` instead.
+> **Bottom line.** A test suite for a service that touches `SPHttpClient` dies with `Cannot find module '@msinternal/ecs-flight'` before the first test runs. Adding `jest.mock('@microsoft/sp-http', …)` below the imports — where Babel would normally lift it from — doesn't fix it: Heft runs Jest over pre-compiled `lib-commonjs` **without Babel**, so nothing hoists the call above `require()`. Either write `jest.mock()` physically above the imports (TypeScript keeps statement order), or map the module with `moduleNameMapper` in the project's `config/jest.config.json`.
 >
-> **Ve zkratce.** Testovací sada služby, která sahá na `SPHttpClient`, spadne na `Cannot find module '@msinternal/ecs-flight'` ještě před prvním testem – a `jest.mock('@microsoft/sp-http', …)` to NEspraví, protože Heft pouští Jest nad předkompilovaným `lib-commonjs` **bez Babelu**, takže se `jest.mock()` nikdy nehoistne nad `require()`. Použij `moduleNameMapper` v projektovém `config/jest.config.json`.
+> **Ve zkratce.** Testovací sada služby, která sahá na `SPHttpClient`, spadne na `Cannot find module '@msinternal/ecs-flight'` ještě před prvním testem. `jest.mock('@microsoft/sp-http', …)` POD importy – odkud ho jinde vytáhne Babel – to NEspraví: Heft pouští Jest nad předkompilovaným `lib-commonjs` **bez Babelu**, takže volání nad `require()` nikdo nevytáhne. Buď `jest.mock()` napiš fyzicky NAD importy (TypeScript pořadí příkazů zachová), nebo modul namapuj přes `moduleNameMapper` v projektovém `config/jest.config.json`.
 
 ## Symptom
 
@@ -25,7 +25,7 @@ One suite fails to run at all, while the others in the same folder pass:
     lib-commonjs/…/MyService.test.js
 ```
 
-The test doesn't make any HTTP calls — it only exercises a pure exported function from the same module. The obvious fix (`jest.mock('@microsoft/sp-http', () => ({ SPHttpClient: { configurations: { v1: {} } } }))` at the top of the test) changes nothing.
+The test doesn't make any HTTP calls — it only exercises a pure exported function from the same module. The obvious fix (`jest.mock('@microsoft/sp-http', () => ({ SPHttpClient: { configurations: { v1: {} } } }))` added right after the imports, where it usually lives) changes nothing.
 
 ## Cause
 
@@ -44,7 +44,7 @@ A module that only uses `sp-http` for **types** (`MSGraphClientFactory`, `SPHttp
 grep -c 'require("@microsoft/sp-http")' lib-commonjs/path/to/MyService.js   # 0 = fine, 1+ = needs a stub
 ```
 
-**2. No Babel means no hoisting.** `jest.mock()` only works "before the imports" because **babel-plugin-jest-hoist** rewrites the file to lift the call above the `require`s. The Heft rig deliberately avoids Babel — it runs Jest over already-compiled JS and skips transforming it:
+**2. No Babel means no hoisting.** A `jest.mock()` written below the imports normally still runs first, because **babel-plugin-jest-hoist** rewrites the file to lift the call above the `require`s. The Heft rig deliberately avoids Babel — it runs Jest over already-compiled JS and skips transforming it:
 
 ```jsonc
 "roots": ["<rootDir>/lib-commonjs"],
@@ -62,7 +62,20 @@ jest.mock('@microsoft/sp-http', …);          // ← too late, never reached
 
 ## Fix
 
-Map the module before anything can `require` it, via `moduleNameMapper` in the **project's** `config/jest.config.json` (Heft's Jest plugin looks for exactly that path; `extends` keeps the rig's settings):
+### For one test file: put `jest.mock()` above the imports
+
+TypeScript does not reorder statements, so a call you write above the imports stays above the `require`s in `lib-commonjs`:
+
+```ts
+jest.mock('@microsoft/sp-http', () => ({ SPHttpClient: { configurations: { v1: {} } } }));   // first
+import { buildQuery } from './MyService';   // compiled to require("./MyService") below the mock
+```
+
+The mock has to precede **every** import that loads the module transitively, including the import of the module under test. Check the compiled file: in `lib-commonjs/…/MyService.test.js`, `jest.mock(` must come before the first `require(`. (Measured with TypeScript 5.8, and in a real SPFx suite whose compiled test keeps `jest.mock` on the line above the first `require`.)
+
+### For the whole suite: `moduleNameMapper`
+
+This does not depend on anyone remembering the order. Map the module before anything can `require` it, via `moduleNameMapper` in the **project's** `config/jest.config.json` (Heft's Jest plugin looks for exactly that path; `extends` keeps the rig's settings):
 
 ```jsonc
 {
@@ -97,7 +110,7 @@ If a test ever needs to assert on HTTP behaviour, inject a `jest.fn()` double th
 
 - The error names a package you've never heard of and points at `node_modules`, so it reads like a broken install — `npm ci` doesn't help.
 - Sibling suites importing the *same* `@microsoft/sp-http` pass, because theirs are type-only imports that vanish at compile time.
-- `jest.mock()` is the reflex answer and works in most React/Node projects; the Heft "no Babel" choice silently removes the hoisting it depends on.
+- `jest.mock()` is the reflex answer and works in most React/Node projects; the Heft "no Babel" choice silently removes the hoisting it depends on. It still works when you place it above the imports yourself — which is why "jest.mock doesn't work under Heft" is too strong a conclusion.
 
 ## See also
 

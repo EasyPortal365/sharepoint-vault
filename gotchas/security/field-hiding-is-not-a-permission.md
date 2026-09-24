@@ -2,7 +2,7 @@
 title: Hiding a field in an SPFx web part is not a permission
 tags: [security, spfx, permissions, rest-api]
 applies-to: SharePoint Online (SPFx / any client rendering list data)
-last-reviewed: 2026-09-20
+last-reviewed: 2026-09-24
 ---
 
 # Hiding a field in an SPFx web part is not a permission
@@ -105,3 +105,4 @@ Rules that follow:
 - Treat adding field hiding as a data-exit audit: enumerate every path the value can leave by — drawer, list, kanban, export, document generation, search, and REST used by other parts — and gate them all, or you've moved the leak, not closed it.
 - The **separate-list** approach doubles as your audit boundary: because the field physically isn't in the main list, "did we accidentally expose it?" becomes a permissions question you can actually answer.
 - This is the field-level cousin of the item-level rule: SharePoint security is per-item at best, so design the *storage* around who may read, not the *rendering*.
+- **Generated documents are part of the storage.** A quote generated from the hidden fields carries the same prices, and it lands in a library. A document library has no item-level read setting, and its files inherit the library's permissions, so whatever the library allows applies to every file in it. Choose the library's policy by the most sensitive file it will ever hold. In one CRM that meant a library readable only by administrators and the finance role, instead of one everyone could read and members could write. Then check it with an account that lacks the role: its effective-permission mask on the library came back `Low = 0`, so that user cannot even see the library.

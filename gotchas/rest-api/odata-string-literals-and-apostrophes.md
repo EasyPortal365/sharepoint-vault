@@ -2,7 +2,7 @@
 title: encodeURIComponent won't save you from apostrophes in OData literals
 tags: [rest-api, odata, files]
 applies-to: SharePoint Online, SharePoint Server
-last-reviewed: 2026-07-24
+last-reviewed: 2026-09-24
 ---
 
 # `encodeURIComponent` won't save you from apostrophes in OData literals
@@ -50,3 +50,4 @@ Run `odataString()` on **every** dynamic value that lands between OData quotes: 
 
 - This is the classic "works until a customer named O'Brien shows up" bug — test data rarely contains apostrophes; real names, file names and quarter labels do.
 - The doubling rule applies to the OData literal only. Don't double apostrophes in JSON request *bodies* — those are plain JSON strings.
+- The opposite mistake — doubling the apostrophes but skipping `encodeURIComponent` — breaks on `#`, which starts the URL fragment and cuts the query off. Guest UPNs (`#EXT#`) always contain one: [An unencoded `#` in a `$filter` value cuts the URL](unencoded-hash-in-a-filter-value-cuts-the-url.md).
