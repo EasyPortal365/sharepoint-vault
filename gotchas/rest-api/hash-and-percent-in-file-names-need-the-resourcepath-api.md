@@ -4,7 +4,7 @@ short-title: A `#` or `%` in a file or folder name
 summary: "The classic `…ServerRelativeUrl` lookups, `Files/add(url=)`, `folders/add`, `moveto` and `copyto` cannot reach it even encoded: 404/400, `Exists: false` for a folder that exists, and writes that answer 200 but save a literal `%25`; ResourcePath API with the path doubled and URL-encoded, plus its different answers on an existing target (measured)"
 tags: [rest-api, files, folders, url-encoding, resourcepath, silent-data-loss]
 applies-to: SharePoint Online REST (any client that builds `/_api/web/…` URLs by hand, SPFx included)
-last-reviewed: 2026-09-24
+last-reviewed: 2026-09-25
 ---
 
 # A `#` or `%` in a file or folder name — the classic `…Url` APIs cannot reach it, and the old writes quietly save `%25`
@@ -20,6 +20,7 @@ People name files and folders, and `#` and `%` are ordinary characters for them:
 - A file that is plainly in the library "does not exist": **404** for the one with `#`, **400** (or 404) for the one with `%` — and 404 even for `plain.txt` when only its *folder* has a `#` or `%` in the name.
 - A folder existence check says `Exists: false` about a folder that exists, so the code creates a second one.
 - Files and folders appear with `%25` in their names after an upload, a folder creation, a move or a copy — and nothing reported an error.
+- A cleanup job deletes a file, gets a 404, books the file as already gone — and the file is still in the library.
 
 ## Measured
 
@@ -107,6 +108,7 @@ So an idempotent "ensure this folder exists" becomes `folders/AddUsingPath(…,O
 ## Notes
 
 - **The check and the write must use the same API.** A legacy existence check reports `Exists: false` for a folder whose name has `#` or `%`, and the code that "creates it because it is missing" then makes a `%25` twin.
+- **A 404 from the old calls means "not found", not "gone".** A cleanup that deleted files through the old calls read a 404 as "already deleted" — but the old calls answer 404 for an existing file with `#` in its name, and for one with `%` once the path is encoded (first table, measured on reads). The file stayed in the library and the job counted it as removed. The job built its own file names from slugs, so only a file somebody had put into the library by hand carried a `#` or `%` — exactly the one it could not see. Any code that reads 404 as "gone" (a cleanup, a sync, a "delete if present") then acts on the wrong state. Check existence through the same ResourcePath API you write with, the path encoded as in Fix (raw, it answers 404 for `#` too — first table); a 404 from anything else means "could not tell", the third answer next to "there" and "not there" — ["File is missing" vs. "I cannot read it"](missing-file-404-vs-cannot-read.md).
 - A special character in **any** segment breaks the path — a plain file inside `Invoices #2024` is unreachable through the old calls.
 - Microsoft lists `web/GetFileByUrl(@u)` with an absolute, properly encoded URL as unambiguous; we did not measure it here.
 - Existence checks keep their other trap on both APIs: a missing folder is a 200 with `Exists: false` — [`getfolderbyserverrelativeurl` 200s for a missing folder](getfolderbyserverrelativeurl-200-for-a-missing-folder.md). Move and copy return no usable body — [`moveto` succeeds and your code reports a failure](action-endpoints-return-an-empty-body.md).

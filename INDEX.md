@@ -2,7 +2,7 @@
 
 Every single thing in the vault, on one page. Section names link to folder READMEs; leaves link straight to the content.
 
-*Last updated: 2026-09-24*
+*Last updated: 2026-09-25*
 
 - 🧰 **[scripts/](scripts/)** — PowerShell scripts with comment-based help, read-only unless stated
   - [Terminal animations](scripts/media/) — the writing scripts as an animated PowerShell console; plain SVG, no JavaScript, respects `prefers-reduced-motion`
@@ -293,6 +293,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [A retention window computed from git history deletes the file you overwrite in place](gotchas/tooling/retention-by-git-history-deletes-files-overwritten-in-place.md) — A stable loader keeps its add date and drifts out of "the last N releases"; protect by shape (no content hash), and remember the hard 1 GB Pages limit counts the published tree
     - [A component from a linked package throws "Invalid hook call" in Jest](gotchas/tooling/jest-loads-a-second-react-through-a-linked-package.md) — Jest resolves a `file:`/junction package by its real path, so the package's `require('react')` finds a second copy; map `react` and `react-dom` to the app's copy (the SPFx build is unaffected — React is a platform component)
     - [`TextEncoder is not defined` before your first test runs](gotchas/tooling/textencoder-missing-in-jsdom-breaks-a-dependency-at-import.md) — jsdom has no Encoding API and a dependency that builds `new TextEncoder()` at module level dies on import, before `beforeAll`; import a polyfill module first or use `setupFiles`, and make the dependency lazy
+    - [A bundle's `.LICENSE.txt` never reaches your CDN](gotchas/tooling/bundle-license-files-never-reach-your-cdn.md) — webpack moves third-party license comments into `<bundle>.js.LICENSE.txt` and leaves only a pointer in the bundle; a publish step that copies `*.js`, or an allowlist `.gitignore`, ships the code without the texts MIT and BSD require. The file is build output: publish it next to its bundle, prune it with it, and make every build-vs-published check expect it
 - 🧭 **[guides/](guides/)** — end-to-end walkthroughs
   - [Calling SharePoint REST like a pro](guides/calling-sharepoint-rest-like-a-pro.md) — The client landscape, headers that matter, safe writes, reading well, field/list creation quirks, and a ten-minute diagnosis routine
   - [Search queries that actually work](guides/search-queries-that-actually-work.md) — The one mandatory header, practical KQL, managed properties (`RefinableString*`), paging/sorting, and the freshness/trimming traps
