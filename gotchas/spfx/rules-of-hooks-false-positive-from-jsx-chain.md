@@ -101,7 +101,7 @@ worth doing (better design, smaller file) — just don't expect it to clear the 
 
 ## Fourth trigger: ternaries in the *initial values* of hooks
 
-*Added 2026-09-24.* A ~560-line wizard gained a "resume" mode, which meant five initial values like
+*Added 2026-09-24.* A ~640-line wizard gained a "resume" mode, which meant five initial values like
 `useState(resume ? resume.campaign.Title : '')`. The plugin then flagged **26 hooks that come after them**
 as "called conditionally". Every ternary or `&&` in the component body before a hook is one more branch
 in the control-flow graph — even inside a hook's argument.
