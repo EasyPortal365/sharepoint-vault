@@ -113,9 +113,13 @@ for the content filter at all.
    `exceeded token rate limit of your current … pricing tier. Please retry after N seconds.`
    Without it an administrator has no way to tell a saturated service from an undersized deployment.
 4. **Size the deployment against one worst-case prompt, not against user count.** Take your app's
-   per-message character budget, convert conservatively (Czech and other diacritic-heavy languages
-   run near ~1.6 characters per token, far denser than the usual "4 characters" rule of thumb), and
-   make sure a single request fits with room to spare.
+   per-message character budget, convert it to tokens for your language, and make sure a single
+   request fits with room to spare. Measure rather than assume: with the GPT-5-family tokenizer, a
+   Czech business text came out at about 3.1 characters per token (roughly 2 tokens per word;
+   measured 2026-09-25 by sending the same text at two lengths and differencing `prompt_tokens`),
+   denser than the ~4 characters of English. Then add the system prompt, the conversation history
+   and the `max_tokens` you request — Azure counts the requested output against the window when
+   the request is admitted.
 5. **Check capacity on deployments that already exist — and raise it, don't just warn.** A
    provisioning script that "skips" an existing deployment leaves an undersized one in place
    forever, silently, across re-runs. Warning about it is barely better: a warning nobody acts on
