@@ -1,7 +1,7 @@
 ---
 title: Upload a generated image as a list item attachment (no file picker)
 short-title: Upload a generated image as a list item attachment
-summary: Canvas charts, placeholder banners, QR codes — `AttachmentFiles/add` takes a raw `ArrayBuffer`; item must exist first and `Blob.arrayBuffer()` is off-limits on ES2015
+summary: Canvas charts, placeholder banners, QR codes — `AttachmentFiles/add` takes a raw `ArrayBuffer`; the item must exist first
 tags: [rest-api, spfx, attachments, javascript]
 applies-to: SharePoint Online
 last-reviewed: 2026-07-30
@@ -9,9 +9,9 @@ last-reviewed: 2026-07-30
 
 # Upload a generated image as a list item attachment
 
-> **Bottom line.** `AttachmentFiles/add` takes a raw `ArrayBuffer` as the request body, so anything your page can draw — a canvas chart, a placeholder banner, a QR code — can be attached to a list item without ever touching a file picker. The two things that bite: the item must already exist, and `Blob.arrayBuffer()` is unavailable on the ES2015 lib most SPFx projects compile against.
+> **Bottom line.** `AttachmentFiles/add` takes a raw `ArrayBuffer` as the request body, so anything your page can draw — a canvas chart, a placeholder banner, a QR code — can be attached to a list item without ever touching a file picker. The main catch: the item must already exist.
 >
-> **Ve zkratce.** `AttachmentFiles/add` bere jako tělo požadavku přímo `ArrayBuffer`, takže cokoli stránka nakreslí (graf z canvasu, ukázkový banner, QR kód) jde připnout k položce seznamu bez dialogu pro výběr souboru. Dvě pasti: položka už musí existovat a `Blob.arrayBuffer()` na ES2015 knihovně, se kterou se SPFx obvykle překládá, není.
+> **Ve zkratce.** `AttachmentFiles/add` bere jako tělo požadavku přímo `ArrayBuffer`, takže cokoli stránka nakreslí (graf z canvasu, ukázkový banner, QR kód) jde připnout k položce seznamu bez dialogu pro výběr souboru. Hlavní past: položka už musí existovat.
 
 ## Why you want this
 
@@ -39,9 +39,9 @@ async function attach(webUrl, listTitle, itemId, fileName, buffer, spHttpClient,
 }
 ```
 
-## Canvas → `ArrayBuffer` without `Blob.arrayBuffer()`
+## Canvas → `ArrayBuffer`
 
-`canvas.toBlob()` gives a `Blob`, but `Blob.arrayBuffer()` is a newer API than the `ES2015` lib many SPFx `tsconfig`s target — it fails to compile (TS2339) even though the browser supports it. The data-URL route needs no polyfill and no `await`:
+`canvas.toBlob()` gives a `Blob` and `await blob.arrayBuffer()` gives the bytes — `Blob.arrayBuffer()` is a DOM API declared in TypeScript's `lib.dom`, so it type-checks in SPFx 1.22 even though `lib` stops at ES2015. The data-URL route is synchronous and needs no `await`:
 
 ```js
 function canvasToArrayBuffer(canvas) {

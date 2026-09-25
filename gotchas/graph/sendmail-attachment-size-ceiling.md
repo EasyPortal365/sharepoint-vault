@@ -78,7 +78,7 @@ Four details that matter in practice:
 - **Never send an SVG through the canvas** — and don't render one as a preview either. An `image/` MIME prefix admits `image/svg+xml`, which is script-capable; treat it as a plain file attachment with a generic icon.
 - **Enforce a total, not just a per-file limit.** Five 600 kB images pass a per-file check and still blow the request budget. Track the running sum and refuse the file that would cross it, naming the limit in the message.
 
-**Reading the file:** in a browser-targeted build without `Blob.arrayBuffer()` (ES2015 lib), use `FileReader.readAsDataURL` and strip the `data:<mime>;base64,` prefix for `contentBytes`. The byte length hidden in a data URL is `floor(base64.length * 3 / 4)` minus padding — compute it instead of trusting `File.size`, which describes the *original*, not your re-encoded copy.
+**Reading the file:** `FileReader.readAsDataURL` gives base64 directly — strip the `data:<mime>;base64,` prefix for `contentBytes`. (`Blob.arrayBuffer()` works too and type-checks in SPFx 1.22 despite the ES2015 `lib`, but then you base64-encode the bytes yourself.) The byte length hidden in a data URL is `floor(base64.length * 3 / 4)` minus padding — compute it instead of trusting `File.size`, which describes the *original*, not your re-encoded copy.
 
 **Above the ceiling** there is no `sendMail` variant that helps. Create the message as a draft (`POST /me/messages`), attach through an upload session (`POST /me/messages/{id}/attachments/createUploadSession`, then chunked `PUT`s), and send it (`POST /me/messages/{id}/send`). That is a different feature, not a bigger limit — decide up front which one you are building.
 

@@ -70,7 +70,7 @@ Details that bite:
 - **CRLF line endings**, not `\n`. MIME parsers are strict about this.
 - **Base64 wrapped at 76 characters.** One enormous line is rejected or mangled by some clients.
 - **Non-ASCII needs encoding twice over**: the subject and the attachment name via RFC 2047 encoded-words (`=?UTF-8?B?…?=`), and the filename additionally as RFC 2231 (`filename*=UTF-8''…`) so newer clients get it right.
-- **`btoa` only takes latin1** — convert through UTF-8 first (`encodeURIComponent` + `%XX` → char), and read binary content through `FileReader.readAsDataURL` if `Blob.arrayBuffer` is off-limits (it is under the ES2015 lib).
+- **`btoa` only takes latin1** — convert through UTF-8 first (`encodeURIComponent` + `%XX` → char). For binary content, `FileReader.readAsDataURL` gives you base64 without a `btoa` round trip; `Blob.arrayBuffer()` also type-checks in SPFx 1.22 (it is a DOM API, so the ES2015 `lib` does not hide it).
 - **Revoke the object URL late** (a timeout of ~20 s after the click), not immediately — some browsers start the download after the handler returns.
 
 ## Consequences worth designing for
