@@ -17,8 +17,8 @@ last-reviewed: 2026-09-25
 
 An app's help page, website or privacy text says something like *"Data stays in Azure in the region
 you chose (EU, US, …)"* or *"the AI model runs in your Azure subscription in the EU"*. The deployment
-script — like most samples and the portal's default — creates the model deployment as
-`GlobalStandard`. Nobody notices, because everything works and the resource really is in
+script — like many samples, and in line with Microsoft's own advice to start with Global Standard —
+creates the model deployment as `GlobalStandard`. Nobody notices, because everything works and the resource really is in
 `swedencentral`.
 
 ## Cause
@@ -58,8 +58,11 @@ model you actually use.
 ## Notes
 
 - Data at rest stays in the geography in all three cases; the difference is **inference**.
-- Abuse monitoring may store prompts and completions for up to 30 days unless modified abuse
-  monitoring is approved — a separate question from where processing happens.
+- Abuse monitoring may store prompts and completions that its automated checks flag for human
+  review, in the resource's geography, unless modified abuse monitoring is approved — which is
+  available only to customers managed by a Microsoft account team or in an eligible program.
+  Microsoft's current documentation no longer states a retention period (older versions said "up to
+  30 days"). This is a separate question from where processing happens.
 - For comparison: Microsoft 365 Copilot is an EU Data Boundary service, but its *flex routing*
   (inference in the US, Canada or Australia at peak load) is on by default for eligible EU tenants
   created after 25 March 2026 ([Flex routing](https://learn.microsoft.com/en-us/microsoft-365/copilot/copilot-flex-routing)).
