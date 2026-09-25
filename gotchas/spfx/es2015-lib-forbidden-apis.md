@@ -4,7 +4,7 @@ short-title: The ES2015 `lib` trap
 summary: TS2550 on `padStart` & friends, and the safe equivalents
 tags: [spfx, typescript, build]
 applies-to: SharePoint Online (SPFx)
-last-reviewed: 2026-07-15
+last-reviewed: 2026-09-25
 ---
 
 # SPFx build fails on `padStart`, `includes`, `Object.values` — the ES2015 `lib` trap
@@ -23,7 +23,7 @@ Same story for `Array.prototype.includes`, `Object.values`, `Object.entries`, `f
 
 ## Cause
 
-SPFx projects ship with `"lib": ["ES2015", ...]` in `tsconfig.json`. Anything added to JavaScript *after* ES2015 is missing from the type definitions, so TypeScript rejects it — even though evergreen browsers support it at runtime.
+SPFx projects compile with `target: es5` and a `lib` list that stops at ES2015 — `es5`, `dom` and a few ES2015 parts (`es2015.core`, `es2015.collection`, `es2015.iterable`, `es2015.promise`, `es2015.proxy`; in SPFx 1.22 inherited from the web build rig's `tsconfig-base.json`). Anything added to JavaScript *after* ES2015 is missing from the type definitions, so TypeScript rejects it — even though evergreen browsers support it at runtime.
 
 ## Fix
 
@@ -51,3 +51,4 @@ Two options:
 
 - Error numbers to recognize on sight: **TS2550** (missing lib API) and its cousin **TS2802** (iterating a `Set`/`Map` without `downlevelIteration`).
 - Sneaky cases that trip the same wire: spreading a `Set` into an array, `Blob.arrayBuffer()` (use `FileReader`), `String.prototype.trimStart`.
+- **A check outside the project can pass when the build won't.** A standalone `tsc --lib es5,es2015.promise snippet.ts` loads every `@types/*` package in `node_modules`, and current `@types/node` contains `/// <reference lib="es2020" />` — APIs from ES2016 through ES2020 then type-check and TS2550 never shows. SPFx 1.22 limits `types` to `heft-jest` and `webpack-env`, so the real build fails on the same code. Check snippets against the project's own config (a small `tsconfig` that `extends` it and lists the snippet in `files`), or at least set `"types": []`.
