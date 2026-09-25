@@ -77,3 +77,5 @@ return 'error';                                                    // assert not
 The same "no mailbox ≠ no permission" trap exists for Microsoft To-Do: `GET /me/todo/lists` returns 404 "Item not found" on mailbox-less accounts even with `Tasks.ReadWrite` consented — while Planner (group-based, no mailbox needed) works fine on the same account.
 
 The licence variant bites hardest on Teams paths (`/me/chats`, channel messages), where an unlicensed admin account gets the 403 above. If you build an admin-facing screen that reports permission status, run it once with an unlicensed, mailbox-less account before shipping: that account hits three of the four branches at once, and any branch you got wrong shows up immediately.
+
+Once the probe has found a real gap, don't offer to close it from the page: [No "grant it for me" button in a web part](../spfx/web-part-cannot-grant-its-own-graph-permissions.md) explains why, and what to show the administrator instead.

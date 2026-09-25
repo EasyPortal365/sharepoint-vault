@@ -38,3 +38,7 @@ Sources: *Manage access to Microsoft Entra ID-secured APIs* (learn.microsoft.com
 ## Verify
 
 After approval, the delegated scopes are visible under Entra → Enterprise applications → *SharePoint Online Client Extensibility Web Application Principal* → Permissions. Users must sign out and back in — a token issued before the approval does not carry the new scope, which looks like "approved but still not working".
+
+## See also
+
+- [No "grant it for me" button in a web part](../spfx/web-part-cannot-grant-its-own-graph-permissions.md) — why the web part cannot do the approving itself, even with a Global Administrator at the keyboard, and what to show the administrator instead.

@@ -4,7 +4,7 @@ short-title: Graph grants are tenant-wide
 summary: "`webApiPermissionRequests` is a request, not a grant; an approval lands on one tenant-wide principal, so a scope another solution had approved already works in yours (and may be missing at the customer)"
 tags: [spfx, graph, permissions, deployment]
 applies-to: SharePoint Online
-last-reviewed: 2026-09-04
+last-reviewed: 2026-09-25
 ---
 
 # Graph permission grants belong to the tenant, not to your solution
@@ -46,17 +46,18 @@ That combines badly with the tenant-wide rule above, because the two failure mod
 - The scope was already granted for another solution, so no request appears — and everything works.
 - The version did not change, so no request appears — and nothing works on a tenant that lacks the grant.
 
-**Check the grant before concluding anything from a missing request.** If `Microsoft Graph / <scope>` is already listed as approved in API access, you are in the first case and there is nothing to do. If it is not, bump `solution.version` and upload again, or grant the scope directly:
+**Check the grant before concluding anything from a missing request.** If `Microsoft Graph / <scope>` is already listed as approved in API access (or by `Get-SPOTenantServicePrincipalPermissionGrants`), you are in the first case and there is nothing to do. If it is not, bump `solution.version` and upload again, or grant the scope directly. The official SPO Management Shell adds a grant without any pending request, and it signs in without an app registration of your own:
 
 ```powershell
-Connect-PnPOnline -Url "https://<tenant>-admin.sharepoint.com" -Interactive
-Grant-PnPTenantServicePrincipalPermission -Scope "GroupMember.Read.All" -Resource "Microsoft Graph"
+Connect-SPOService -Url https://contoso-admin.sharepoint.com
+Approve-SPOTenantServicePrincipalPermissionGrant -Resource "Microsoft Graph" -Scope "GroupMember.Read.All"
 ```
 
-The official SPO Management Shell can only approve a request that already exists (`Approve-SPOTenantServicePrincipalPermissionRequest`); it cannot create a grant from nothing, which is why PnP is used here. The clickable equivalent is Entra ID → Enterprise applications → *SharePoint Online Client Extensibility Web Application Principal* → Permissions → grant admin consent.
+`Grant-PnPTenantServicePrincipalPermission` does the same from PnP.PowerShell, but only with your own Entra ID app registration (passed as `-ClientId` or through the `ENTRAID_APP_ID` environment variable), and PnP lists `Directory.ReadWrite.All` on Microsoft Graph among its requirements. Don't grant the scope in Entra on the principal itself: SharePoint controls that principal through the API access page, and Microsoft documents direct changes to it in the Entra admin center as unsupported.
 
 ## Notes
 
 - Same mechanics apply to extensions and library components — anything shipped as SPFx.
 - Approval is per tenant, so a dev tenant that accumulated scopes over years is a poor proxy for a customer's. Keep a note of which scopes each solution genuinely needs.
 - Nothing here applies to app-only permissions, which live on their own app registration.
+- The gap cannot be closed from inside the solution, not even with a Global Administrator at the keyboard — see [No "grant it for me" button in a web part](web-part-cannot-grant-its-own-graph-permissions.md).
