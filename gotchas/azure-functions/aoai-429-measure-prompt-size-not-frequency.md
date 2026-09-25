@@ -4,7 +4,7 @@ short-title: "Azure OpenAI 429: measure prompt size, not frequency"
 summary: One request whose prompt exceeds the deployment's TPM allowance can never fit the window, so retrying is futile — a sub-second rejection means "over the ceiling", not "busy"; separate the two with a small/large request pair, and remember that TPM costs nothing on pay-per-token SKUs, so an undersized default breaks traffic without saving a cent
 tags: [azure-functions, azure-openai, quota, rate-limiting, diagnostics, rag]
 applies-to: Any app calling Azure OpenAI chat completions through a Function App (RAG, document Q&A)
-last-reviewed: 2026-09-18
+last-reviewed: 2026-09-25
 ---
 
 # Azure OpenAI 429: measure prompt size, not request frequency
@@ -71,6 +71,23 @@ If one request's prompt exceeds it, Azure OpenAI rejects it immediately rather t
 Provisioning scripts commonly default to a small capacity — 10, meaning 10 000 TPM — which is below
 what a single document-grounded prompt needs, so the feature is broken on arrival while ordinary
 chat hides the problem.
+
+## The fix (a few minutes, no redeploy)
+
+In the Azure AI Foundry portal: open the Azure OpenAI resource → **Deployments** (newer UI:
+**Models + endpoints**) → the deployment your app calls → **Edit** → **Tokens per Minute Rate
+Limit** → raise it (100K is a sensible floor for document Q&A) → save. The Function App needs no
+restart. If the slider stops short, the subscription's regional quota for that model is used up —
+take capacity from another deployment of the same model in that region, or request more under
+**Quota**. Role needed: Owner, Contributor or Cognitive Services Contributor on the resource.
+
+From the CLI, read the model, version and SKU first and send them back unchanged —
+`deployment create` is an ARM PUT that rewrites the whole deployment:
+
+```bash
+az cognitiveservices account deployment show -g <rg> -n <account> --deployment-name <deployment> --query "{model:properties.model.name, version:properties.model.version, sku:sku.name, capacity:sku.capacity}" -o table
+az cognitiveservices account deployment create -g <rg> -n <account> --deployment-name <deployment> --model-name <model> --model-version <version> --model-format OpenAI --sku-name <sku> --sku-capacity 100
+```
 
 ## Rules
 
