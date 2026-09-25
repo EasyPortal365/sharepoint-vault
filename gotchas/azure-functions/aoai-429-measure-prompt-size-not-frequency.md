@@ -72,22 +72,34 @@ Provisioning scripts commonly default to a small capacity — 10, meaning 10 000
 what a single document-grounded prompt needs, so the feature is broken on arrival while ordinary
 chat hides the problem.
 
-## The fix (a few minutes, no redeploy)
+## The fix (no redeploy)
 
-In the Azure AI Foundry portal: open the Azure OpenAI resource → **Deployments** (newer UI:
-**Models + endpoints**) → the deployment your app calls → **Edit** → **Tokens per Minute Rate
-Limit** → raise it (100K is a sensible floor for document Q&A) → save. The Function App needs no
-restart. If the slider stops short, the subscription's regional quota for that model is used up —
-take capacity from another deployment of the same model in that region, or request more under
-**Quota**. Role needed: Owner, Contributor or Cognitive Services Contributor on the resource.
+In the Microsoft Foundry portal (formerly Azure AI Foundry): open the Azure OpenAI resource →
+**Deployments** (a resource upgraded to Foundry shows **Models + endpoints** instead) → the
+deployment your app calls → **Edit** → **Tokens per Minute Rate Limit** → raise it (100K is a
+sensible floor for document Q&A) → **Save and close**. Nothing in the app needs a restart — the
+limit is enforced by Azure OpenAI, not by your code — but Microsoft asks you to allow up to
+15 minutes for a quota change to propagate.
 
-From the CLI, read the model, version and SKU first and send them back unchanged —
-`deployment create` is an ARM PUT that rewrites the whole deployment:
+If the slider stops short, the subscription's quota for that model **and deployment type** in that
+region is used up: take TPM from another deployment of the same model and type in that region, or
+use **Request quota** on the **Quota** page. Editing a deployment needs Owner, Contributor,
+Cognitive Services Contributor or Cognitive Services OpenAI Contributor on the resource; *seeing*
+the remaining quota needs **Cognitive Services Usages Reader** (or Reader) on the subscription —
+a resource-level assignment is not enough.
+
+From the CLI, change only the SKU with a PATCH (`Deployments – Update`): its body carries just
+`sku` (and `tags`), so the model, its version and the content filter are not part of the request.
+Read the SKU name first:
 
 ```bash
-az cognitiveservices account deployment show -g <rg> -n <account> --deployment-name <deployment> --query "{model:properties.model.name, version:properties.model.version, sku:sku.name, capacity:sku.capacity}" -o table
-az cognitiveservices account deployment create -g <rg> -n <account> --deployment-name <deployment> --model-name <model> --model-version <version> --model-format OpenAI --sku-name <sku> --sku-capacity 100
+az cognitiveservices account deployment show -g <rg> -n <account> --deployment-name <deployment> --query "{sku:sku.name, capacity:sku.capacity}" -o table
+az rest --method patch --url "https://management.azure.com/subscriptions/<subscription-id>/resourceGroups/<rg>/providers/Microsoft.CognitiveServices/accounts/<account>/deployments/<deployment>?api-version=2024-10-01" --body "{\"sku\": {\"name\": \"<sku>\", \"capacity\": 100}}"
 ```
+
+Avoid `az cognitiveservices account deployment create` for this. It is a full PUT: a model version
+you leave out gets a default one assigned (per the API reference), and the command has no parameter
+for the content filter at all.
 
 ## Rules
 
@@ -109,10 +121,13 @@ az cognitiveservices account deployment create -g <rg> -n <account> --deployment
    forever, silently, across re-runs. Warning about it is barely better: a warning nobody acts on
    is as good as none, and on a deployment the script itself creates, capacity is part of the
    deployment rather than someone else's setting. Two safeguards make it safe: **never lower it**
-   (leave equal-or-higher alone, so a re-run cannot make things worse), and **read the model and
-   its version off the live deployment and send them back unchanged** — the call is an ARM PUT, so
-   a missing parameter would silently rewrite which model version is deployed; if you cannot read
-   them, do nothing and report. Read `sku.capacity` first:
+   (leave equal-or-higher alone, so a re-run cannot make things worse), and **touch only the
+   capacity** — raise it with the PATCH shown in *The fix*, which sends nothing but the SKU. If your
+   tooling can only run the CLI's `deployment create` (a full PUT), read the model and its version
+   off the live deployment and send them back unchanged, because a missing version is replaced by
+   a default; that command cannot carry the content filter either, so compare
+   `properties.raiPolicyName` before and after. If you cannot read these values, do nothing and
+   report. Read `sku.capacity` first:
    ```powershell
    az cognitiveservices account deployment show `
      --resource-group <rg> --name <account> --deployment-name <deployment> `
