@@ -4,7 +4,7 @@ short-title: A pinned Azure OpenAI model+version is a time bomb
 summary: "\"Deprecating\" blocks NEW deployments well before retirement; resolve the newest GA version at deploy time, and match the deployment name to the model family"
 tags: [azure-functions, azure-openai, deployment, powershell]
 applies-to: Azure OpenAI model deployments via `az cognitiveservices` (any IaC/CLI script)
-last-reviewed: 2026-07-18
+last-reviewed: 2026-09-25
 ---
 
 # Azure OpenAI: a pinned model+version in your deploy script is a time bomb
@@ -68,6 +68,30 @@ deployment name must reflect the family. Deploy a GPT-5 model under the name `gp
 will send `temperature`, and Azure rejects the call with **400** at chat time — long after the
 deployment "succeeded". Rule: **derive the deployment name from the model**, don't leave a stale
 default like `gpt-4o` sitting next to a new model.
+
+## The lifecycle clock — and why "new subscription" matters
+
+Microsoft's lifecycle policy for Foundry models (checked against Microsoft Learn on 2026-09-25):
+
+- A GA model gets its **retirement date 18 months after launch**, set at launch and readable from the
+  Models API — `GET https://management.azure.com/subscriptions/{sub}/providers/Microsoft.CognitiveServices/locations/{location}/models?api-version=2024-10-01`,
+  fields `lifecycleStatus` and `deprecation.inference`.
+- At **12 months** it becomes *Deprecated for new customers*: existing customers can still create
+  deployments, new ones can't. **"Existing customer" is decided per subscription** — whether that
+  subscription has ever deployed that model version; a new subscription in the same tenant does not
+  inherit access. If you deploy into each customer's *own* subscription, every new customer is a new
+  customer: your default model can already be closed to the next one while it keeps working for
+  everyone you deployed earlier.
+- At retirement every call returns **`410 Gone`**.
+- The official replacement is named roughly **90–120 days before retirement**. For Global, Data Zone
+  and Standard deployments Microsoft can then auto-upgrade at retirement (subject to
+  `versionUpgradeOption`) — to a model your app has never been tested against.
+- The API and the docs use different words: API `Deprecating` = docs "Deprecated" (blocked for new
+  customers); API `Deprecated` = docs "Retired" (410).
+
+Rule: watch `deprecation.inference` of the model your script defaults to, have a tested successor
+ready before the 12-month mark, and let the script take the model name and version as parameters so
+a new customer can be deployed with the successor the day the default closes.
 
 ## Make the failure teach
 
