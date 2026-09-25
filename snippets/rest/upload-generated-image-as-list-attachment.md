@@ -4,7 +4,7 @@ short-title: Upload a generated image as a list item attachment
 summary: Canvas charts, placeholder banners, QR codes — `AttachmentFiles/add` takes a raw `ArrayBuffer`; the item must exist first
 tags: [rest-api, spfx, attachments, javascript]
 applies-to: SharePoint Online
-last-reviewed: 2026-07-30
+last-reviewed: 2026-09-25
 ---
 
 # Upload a generated image as a list item attachment
