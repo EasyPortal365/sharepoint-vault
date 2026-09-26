@@ -1,10 +1,10 @@
 ---
 title: Creating a modern page via REST is a three-step dance, not one POST
 short-title: Create a modern page via REST (3-step)
-summary: "`CanvasContent1` won't stick on create; create → SavePageAsDraft → Publish, canvas is JSON; plain JSON is enough, `Description` needs its own write and a re-publish"
+summary: "`CanvasContent1` won't stick on create; create → SavePageAsDraft → Publish, canvas is JSON; plain JSON is enough, `Description` needs its own write and a re-publish; the file name is random — rename with moveto"
 tags: [rest-api, sitepages, pages, spfx]
 applies-to: SharePoint Online
-last-reviewed: 2026-09-24
+last-reviewed: 2026-09-26
 ---
 
 # Creating a modern page via REST is a three-step dance, not one POST
@@ -115,5 +115,19 @@ A live A/B test (2026-09-24, SharePoint Online, two pages run through the same s
   building the canvas.
 - **`controlType`**: `4` = text, `3` = client-side web part, `0` = the page settings slice
   (always include it). Section and column layout live in each control's `position`.
+- **The file name is random, not your title.** Measured 2026-09-26: `POST …/pages` with
+  `Title: "Centrum"` created `SitePages/8g6wqn5n.aspx`. If the URL matters (navigation, links
+  you hand out), rename right after publishing:
+  `POST /_api/web/GetFileByServerRelativePath(decodedurl='/sites/x/SitePages/8g6wqn5n.aspx')/moveto(newurl='/sites/x/SitePages/Centrum.aspx',flags=0)`
+  — the page keeps its content and title.
+- **Placing an existing SPFx web part on a new page** is easiest by cloning its control from a
+  page where it already sits (`_api/sitepages/pages(<id>)?$select=CanvasContent1` returns the
+  JSON form): give the copy a fresh GUID in both `id` and `webPartData.instanceId`, adjust
+  `webPartData.properties`, and use `sectionFactor: 0` for a full-width section (communication
+  sites). The list-item field `CanvasContent1` of the same page is **HTML**, not JSON — read the
+  pages endpoint, not the library item.
+- **Don't retry a timed-out script blindly.** A multi-page setup script that outlived the
+  caller's timeout still finished in the browser; re-running it would have created every page a
+  second time. Read the current state first (list pages and their web parts), then act.
 - Delegated and unremarkable on permissions: it runs as the signed-in user and needs only
   contribute on the target site — no elevation, no app-only.
