@@ -127,7 +127,8 @@ A live A/B test (2026-09-24, SharePoint Online, two pages run through the same s
   sites). The list-item field `CanvasContent1` of the same page is **HTML**, not JSON — read the
   pages endpoint, not the library item.
 - **Don't retry a timed-out script blindly.** A multi-page setup script that outlived the
-  caller's timeout still finished in the browser; re-running it would have created every page a
-  second time. Read the current state first (list pages and their web parts), then act.
+  caller's timeout still finished in the browser. A re-run would have created the NEW pages a
+  second time — the script looked pages up by file name, and the random names never match.
+  Read the current state first (list pages and their web parts), then act.
 - Delegated and unremarkable on permissions: it runs as the signed-in user and needs only
   contribute on the target site — no elevation, no app-only.
