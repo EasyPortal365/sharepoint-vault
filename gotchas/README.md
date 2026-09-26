@@ -64,6 +64,7 @@ Every article carries frontmatter with `tags` and `applies-to`, so repo search g
 | [`webUrl + serverRelativeUrl` doubles the site path](rest-api/weburl-plus-server-relative-url-doubles-the-site-path.md) | Survives for months as a display value or grouping key and breaks the first time it becomes a filter; build object URLs from the origin in one helper |
 | [A folder's `Files` collection rejects a two-level `$expand`](rest-api/folder-files-reject-a-two-level-expand.md) | `ListItemAllFields/Editor` 400s there; take `ModifiedBy`/`Author` from the file, and list one level through the folder API rather than a `FileDirRef` filter |
 | [`moveto` succeeds and your code reports a failure](rest-api/action-endpoints-return-an-empty-body.md) | Action endpoints (`moveto`, `removebyid`) return an empty body, so `response.json()` throws after the operation happened and invites a retry; decide by status, parse only what you read |
+| [`Overwrite=true` in a shared folder steals another record's file](rest-api/overwrite-true-in-a-shared-folder-steals-another-records-file.md) | Uploading with `Files/AddUsingPath(…,Overwrite=true)` under a user-supplied file name into a folder that holds documents of many records (cases, orders, tickets) lets the second `image.jpg` from a phone overwrite the first record's file; the metadata update that follows then re-links the list item to the second record. Put the record key into the file name (or give every record its own folder), and add it when moving older files |
 
 ### lists/
 
