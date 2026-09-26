@@ -77,7 +77,7 @@ Better still: **keep seeding out of the read path entirely.** A settings button 
 
 Even a per-item check with a strict read races. The seeder reads, works out what is missing and inserts — and nothing stops a second run from doing the same in the same second — for example two administrators opening the app right after an update, one person with two tabs, or the app open in Teams and in the browser at once. Both runs see the same gap and both fill it. In practice this showed up as a new option, added by a later version, appearing twice: two identical rows from the same account, created one second apart.
 
-SharePoint has no lock for list items; check-out exists only for files in libraries. A lock built from an ETag on an existing marker row works (a second `If-Match` update fails with 412), but a run that takes the lock and then fails halfway either leaves it held — unless you also build an expiry — or has to roll its marker back: you stop the duplicate and risk a seed that cannot finish. A simpler fix needs no extra state:
+For list items SharePoint documents no lock, only optimistic concurrency through ETags; check-out exists for files in libraries. A lock built from an ETag on an existing marker row works (a second `If-Match` update fails with 412), but a run that takes the lock and then fails halfway either leaves it held — unless you also build an expiry — or has to roll its marker back: you stop the duplicate and risk a seed that cannot finish. A simpler fix needs no extra state:
 
 **After inserting, re-read the list and delete your own copies that are not the oldest.**
 

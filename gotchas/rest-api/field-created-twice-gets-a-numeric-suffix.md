@@ -62,7 +62,7 @@ if (created !== name) console.error(`Duplicate column: asked for ${name}, ShareP
 ```
 
 - **"Unknown" means "try again next time", never "create".** A column missing until the next page load is cheap; a duplicate is permanent.
-- **The single-flight map covers one page only.** Two browsers in the same second can still race — SharePoint has no lock you could hold around a field creation — which is why the name check after the create matters.
+- **The single-flight map covers one page only.** Two browsers in the same second can still race — SharePoint documents no lock you could hold around a field creation — which is why the name check after the create matters.
 - **When the name does not match, log it loudly and delete nothing.** The twin may already hold data; cleaning up is an administrator's decision.
 
 ## Notes
