@@ -1,7 +1,7 @@
 ---
 title: "Printing from a web part gives a blank page when the print CSS hides `body > *` and the print layer lives inside the web part"
 short-title: "Print layer must be a direct child of `<body>`"
-summary: "A common way to print a report from an SPFx web part is to hide everything in print (`body > * { display: none }`, so the SharePoint suite bar, navigation and footer stay out) and show only a dedicated print layer. If that layer is rendered inside the web part, it is a descendant of a hidden element and the printout is blank. Render the print layer with a React portal straight into `document.body`"
+summary: "One way to print a report from an SPFx web part is to hide everything in print (`body > * { display: none }`, so the SharePoint suite bar, navigation and footer stay out) and show only a dedicated print layer. If that layer is rendered inside the web part, it is a descendant of a hidden element and the printout is blank. Render the print layer with a React portal straight into `document.body`"
 tags: [spfx, react, print, css, ux]
 applies-to: SPFx web parts (React) that print their own reports through `window.print()` and a print-only layer on a modern SharePoint page
 last-reviewed: 2026-09-26
@@ -38,6 +38,7 @@ Neither the screen nor a unit test without the print media type shows the proble
 Render the print layer as a direct child of `<body>` and make it the only way the web part prints:
 
 ```tsx
+import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
 export const PrintLayer: React.FC<{ children: React.ReactNode }> = ({ children }) =>
@@ -59,5 +60,5 @@ The specificity works out: `.app-print` (0,1,0) beats `body > *` (0,0,1) when bo
 
 ## Notes
 
-- Keep a small test that renders the layer inside a nested component and asserts it ends up in `document.body.children`, plus a source scan that fails when the print class or `window.print(` appears anywhere else. It is the only check that catches a regression, because nobody looks at print previews during development.
+- Keep a small test that renders the layer inside a nested component and asserts it ends up in `document.body.children`, plus a source scan that fails when the print class or `window.print(` appears anywhere else. It is the cheapest check that catches a regression — print previews rarely get looked at during development.
 - CSS custom properties (theme tokens) set on the web part's root do not reach a portal in `<body>`. Put them on `<html>` or on a class you also give the portal.
