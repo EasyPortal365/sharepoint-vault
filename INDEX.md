@@ -2,7 +2,7 @@
 
 Every single thing in the vault, on one page. Section names link to folder READMEs; leaves link straight to the content.
 
-*Last updated: 2026-09-25*
+*Last updated: 2026-09-26*
 
 - 🧰 **[scripts/](scripts/)** — PowerShell scripts with comment-based help, read-only unless stated
   - [Terminal animations](scripts/media/) — the writing scripts as an animated PowerShell console; plain SVG, no JavaScript, respects `prefers-reduced-motion`
@@ -302,6 +302,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [A bundle's `.LICENSE.txt` never reaches your CDN](gotchas/tooling/bundle-license-files-never-reach-your-cdn.md) — webpack moves third-party license comments into `<bundle>.js.LICENSE.txt` and leaves only a pointer in the bundle; a publish step that copies `*.js`, or an allowlist `.gitignore`, ships the code without the texts MIT and BSD require. The file is build output: publish it next to its bundle, prune it with it, and make every build-vs-published check expect it
     - [`process.exit()` after `fetch()` lies about the exit code on Windows](gotchas/tooling/process-exit-after-fetch-lies-about-the-exit-code.md) — On Windows (seen on Node.js 24), `process.exit()` right after the built-in `fetch()` sometimes aborts on a libuv assertion (`UV_HANDLE_CLOSING`) and ends with a crash code (3221226505, shown as 127 in Git Bash), so a check that has just printed OK reports a failure — intermittently. After the first network call, set `process.exitCode` and let the process finish; call `process.exit()` only before it
     - [A shell hook written without chmod runs on Windows and is skipped on Linux](gotchas/tooling/git-hook-without-exec-bit-is-skipped-on-linux-ci.md) — Git ignores a hook without the executable bit, but Git for Windows does not check that bit and runs a hook that starts with `#!/bin/sh`, so a fixture that writes `.git/hooks/pre-commit` with `writeFileSync` blocks the commit locally and not on Linux CI; `chmod 0o755` after writing (harmless on Windows), and commit hook scripts with `git add --chmod=+x`
+    - [`global.navigator = …` for jsdom is ignored on Node 21+](gotchas/tooling/global-navigator-assignment-for-jsdom-is-ignored-on-node-21.md) — Node 21 added a global `navigator` that has a getter and no setter, so the classic hand-made jsdom setup line is silently ignored (strict mode throws a TypeError) and the test sees `userAgent` "Node.js/24" and no `onLine`; define the property with `Object.defineProperty` and assert it took effect
 - 🧭 **[guides/](guides/)** — end-to-end walkthroughs
   - [Calling SharePoint REST like a pro](guides/calling-sharepoint-rest-like-a-pro.md) — The client landscape, headers that matter, safe writes, reading well, field/list creation quirks, and a ten-minute diagnosis routine
   - [Search queries that actually work](guides/search-queries-that-actually-work.md) — The one mandatory header, practical KQL, managed properties (`RefinableString*`), paging/sorting, and the freshness/trimming traps
