@@ -1,23 +1,23 @@
 ---
 title: Check-then-insert races produce duplicate rows — and "keep the lowest Id" dedup deletes the wrong one
 short-title: Check-then-insert races produce duplicate rows
-summary: No unique constraint + eventual consistency = double insert; dedup on read by version, never delete "lowest Id"
+summary: GET-check then POST-insert without a unique column races into double inserts; dedup on read by version, never delete "lowest Id"
 tags: [rest-api, concurrency, idempotency, registry]
 applies-to: SharePoint Online, SharePoint Server
-last-reviewed: 2026-07-19
+last-reviewed: 2026-09-26
 ---
 
 # Check-then-insert races produce duplicate rows — and "keep the lowest Id" dedup deletes the wrong one
 
-> **Bottom line.** A GET-check-then-POST-insert on a constraint-less SharePoint list races into duplicate rows, and "keep the lowest Id" deletes the wrong one — upsert with a normalized key on write, resolve duplicates on read by version or `Modified` (never by `Id`), and leave deletion to a human.
+> **Bottom line.** A GET-check-then-POST-insert on a SharePoint list without a unique column races into duplicate rows, and "keep the lowest Id" deletes the wrong one — upsert with a normalized key on write, resolve duplicates on read by version or `Modified` (never by `Id`), and leave deletion to a human.
 >
-> **Ve zkratce.** GET-kontrola a následné POST-vložení do SharePointového seznamu bez unikátního omezení v souběhu vytvoří duplicity a „nech nejnižší Id“ smaže tu špatnou – při zápisu dělej upsert s normalizovaným klíčem, duplicity řeš až při čtení podle verze nebo `Modified` (nikdy podle `Id`) a mazání nech na člověku.
+> **Ve zkratce.** GET-kontrola a následné POST-vložení do SharePointového seznamu bez sloupce s vynucenou jedinečností v souběhu vytvoří duplicity a „nech nejnižší Id“ smaže tu špatnou – při zápisu dělej upsert s normalizovaným klíčem, duplicity řeš až při čtení podle verze nebo `Modified` (nikdy podle `Id`) a mazání nech na člověku.
 
-A SharePoint list has no unique constraint. Any "register once" pattern built as *GET-to-check → POST-to-create* is a classic time-of-check-to-time-of-use (TOCTOU) race, and the obvious cleanup makes it worse.
+A SharePoint list enforces uniqueness only where you switch it on: one indexed column set to **Enforce unique values**, never a combination of columns. Any "register once" pattern built as *GET-to-check → POST-to-create* is a classic time-of-check-to-time-of-use (TOCTOU) race, and the obvious cleanup makes it worse.
 
 ## Symptom
 
-A list that should hold one row per logical entity (an app registry, a per-user preference, a "seen" marker) shows **two rows with identical business keys**, created seconds apart. Often they differ only in some secondary field — a version string, a timestamp — which is the tell that two writers ran concurrently.
+A list that should hold one row per logical entity (an app registry, a per-user preference, a "seen" marker) shows **two rows with identical business keys**, created close together (76 seconds apart in the case behind this article). Often they differ only in some secondary field — a version string, a timestamp — which is the tell that two writers ran, or that two builds registered the same entity.
 
 ## Cause
 
@@ -29,7 +29,7 @@ if (!existing.length) {
 }
 ```
 
-The check and the insert are not atomic, and SharePoint gives you no way to make them atomic (no unique index, no upsert). Two tabs, two web parts, or a fast reload fire both writers before either commits. Worse, list indexing is **eventually consistent** — even a slightly later `$filter` can miss a row that was just POSTed, so retries and "did it save?" re-checks create *more* duplicates, not fewer.
+The check and the insert are not atomic, and the REST API has no upsert for list items. Two tabs, two web parts, or a fast reload fire both writers before either commits. A check whose key differs from the stored one only in case or a trailing slash misses an existing row just as surely — and every retry or "did it save?" re-check built the same way adds another duplicate.
 
 ## The tempting fix that loses data
 
@@ -42,7 +42,7 @@ The check and the insert are not atomic, and SharePoint gives you no way to make
 | 4  | 10:27   | 2.8.0   |
 | 5  | 10:28   | 1.0.0   |
 
-The **newer** row carries the **older** version — e.g. a stale bundle served from cache registered last. "Keep lowest `Id`" would delete the current registration and keep the stale one. And any operation that deletes rows it didn't create, as a side effect of a routine write, is a data-loss incident waiting for the wrong inputs.
+The **newer** row carries the **older** version — e.g. a stale bundle served from cache registered last. "Keep lowest `Id`" would delete the current registration and keep the stale one. And any operation that deletes rows it didn't create, as a side effect of a routine write, is a data-loss incident waiting for the wrong inputs. The one narrow exception is a seeder removing its **own** copy of an identical default row it inserted seconds earlier — see [seed idempotency](../lists/seed-idempotency-must-key-on-the-item.md).
 
 ## The fix
 
@@ -53,6 +53,8 @@ The **newer** row carries the **older** version — e.g. a stale bundle served f
 3. **Serialize the writer client-side.** An in-flight flag ("already registering") plus "only write when something actually changed" stops one component's `init` + `onChange` from firing two writes in the same tick. This shrinks the race window that (1) and (2) then cover for.
 
 4. **If you must delete a duplicate, choose by version/recency, never by `Id`.**
+
+5. **When one column can carry the key, let SharePoint enforce it.** Store the normalized key in a single line of text column and set it to *Enforce unique values*: the column must be indexed, the setting cannot be switched on while duplicates exist, and the comparison ignores case. The second POST then fails instead of creating a twin. It does not cover a key made of two columns unless you store the combined key in one column.
 
 ## Diagnosis
 

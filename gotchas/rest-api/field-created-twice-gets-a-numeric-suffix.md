@@ -4,7 +4,7 @@ short-title: A column called `MyField0` appears
 summary: "`POST /fields` with a taken name succeeds with a numeric suffix; 429 read as \"missing\", a cached check or two concurrent web parts each make a twin — three-state check, single run per site, name check after the create"
 tags: [rest-api, fields, provisioning, throttling, concurrency]
 applies-to: SharePoint Online (REST `POST /fields`, any client-side provisioning code, SPFx included)
-last-reviewed: 2026-09-24
+last-reviewed: 2026-09-26
 ---
 
 # A column called `MyField0` appears: a throttled existence check or two web parts provisioning at once
@@ -62,7 +62,7 @@ if (created !== name) console.error(`Duplicate column: asked for ${name}, ShareP
 ```
 
 - **"Unknown" means "try again next time", never "create".** A column missing until the next page load is cheap; a duplicate is permanent.
-- **The single-flight map covers one page only.** Two browsers in the same second can still race — SharePoint offers no lock — which is why the name check after the create matters.
+- **The single-flight map covers one page only.** Two browsers in the same second can still race — SharePoint has no lock you could hold around a field creation — which is why the name check after the create matters.
 - **When the name does not match, log it loudly and delete nothing.** The twin may already hold data; cleaning up is an administrator's decision.
 
 ## Notes

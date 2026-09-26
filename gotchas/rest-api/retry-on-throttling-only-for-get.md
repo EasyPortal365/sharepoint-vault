@@ -3,7 +3,7 @@ title: "Retrying a throttled call is safe for GET only"
 summary: "429 means \"not now\", not \"nothing happened\"; no idempotency key exists, so a retried write duplicates the row (+ `RateLimit-*` headers are not guaranteed for delegated calls)"
 tags: [rest-api, throttling, reliability, spfx]
 applies-to: SharePoint Online
-last-reviewed: 2026-08-05
+last-reviewed: 2026-09-26
 ---
 
 # Retrying a throttled call is safe for GET only
@@ -39,7 +39,7 @@ A write can be throttled at several points, and only one of them is safe to repe
 
 From the client, all three look identical: no usable response. SharePoint's REST API has **no idempotency key** — there is no header you can send that makes the server recognise "this is the same write I already accepted". So a retried `POST` is a new, independent write, and `MERGE` on a list item is no better when the payload is a computed value rather than an absolute one.
 
-This is the same underlying problem as [check-then-insert races](check-then-insert-races-duplicate-rows.md): lists have no unique constraint, so nothing downstream stops the duplicate.
+This is the same underlying problem as [check-then-insert races](check-then-insert-races-duplicate-rows.md): unless a column is set to enforce unique values, nothing downstream stops the duplicate.
 
 ## Fix
 
