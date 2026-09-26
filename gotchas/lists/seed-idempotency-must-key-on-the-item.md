@@ -1,17 +1,17 @@
 ---
 title: Seed idempotency must key on the item, not the collection
 short-title: Seed idempotency must key on the item
-summary: A per-SET presence check re-inserts the whole block; lists have no unique constraint
-tags: [lists, provisioning, seeding, data-quality]
+summary: A per-SET presence check re-inserts the whole block; lists have no unique constraint, and two app starts at the same moment still race – after inserting, re-read and delete your own copies that are not the oldest
+tags: [lists, provisioning, seeding, data-quality, concurrency]
 applies-to: SharePoint Online, SharePoint Server
-last-reviewed: 2026-07-29
+last-reviewed: 2026-09-26
 ---
 
 # Seed idempotency must key on the item, not the collection
 
-> **Bottom line.** A seeder that asks *"is this whole set already there?"* is idempotent only against its own re-run. The moment the set is created through another path, it inserts the entire block a second time — and a SharePoint list has no unique constraint to stop it.
+> **Bottom line.** A seeder that asks *"is this whole set already there?"* is idempotent only against its own re-run. The moment the set is created through another path, it inserts the entire block a second time — and a SharePoint list has no unique constraint to stop it. Even a correct per-item check races when the app starts twice at the same moment; after inserting, re-read the list and delete your own copies that are not the oldest.
 >
-> **Ve zkratce.** Seed, který se ptá „je celá sada už v listu?“, je idempotentní jen vůči vlastnímu opakování. Jakmile sadu založí jiná cesta, nasype celý blok podruhé – a SharePoint list žádnou unikátnost nehlídá.
+> **Ve zkratce.** Seed, který se ptá „je celá sada už v listu?“, je idempotentní jen vůči vlastnímu opakování. Jakmile sadu založí jiná cesta, nasype celý blok podruhé – a SharePoint list žádnou unikátnost nehlídá. I správná kontrola po položkách se srazí, když se appka spustí dvakrát ve stejnou chvíli; po vložení seznam znovu přečti a smaž své kopie, které nejsou nejstarší.
 
 ## Symptom
 
@@ -73,6 +73,35 @@ A throttled request (`429`), a transient `5xx`, or a list the current user canno
 
 Better still: **keep seeding out of the read path entirely.** A settings button ("create default values") is the honest place for it. On a fresh site, fall back to the built-in values *in memory* — the UI works, nothing is written, and an admin decides when the list gets populated. Auto-seeding on read also races: two users opening a brand-new site at the same moment both see "empty" and both insert.
 
+## The third source: two app starts at the same moment
+
+Even a per-item check with a strict read races. The seeder reads, works out what is missing and inserts — and nothing stops a second run from doing the same in the same second: two administrators opening the app right after an update, one person with two tabs, the app open in Teams and in the browser at once. Both runs see the same gap and both fill it. In practice this showed up as a new option, added by a later version, appearing twice — the two rows created one second apart — and, on the same site months earlier, a whole default matrix inserted a second time.
+
+SharePoint offers no lock. A lock made from an ETag on a marker row works, but a run that takes the lock and then fails halfway either leaves it held or has to roll its marker back — you stop the duplicate and make the seed impossible to finish. A simpler fix needs no extra state:
+
+**After inserting, re-read the list and delete your own copies that are not the oldest.**
+
+```ts
+const mine: number[] = [];                                   // ids THIS run created
+for (const d of missing) {
+  const created = await post(itemsUrl, body(d));             // POST /items returns the new item
+  mine.push(created.Id);
+}
+// Fresh read: the same URL was read seconds ago, so bypass the browser cache.
+const rows = await getAll(itemsUrl + '&$select=Id,Title,SetName&_=' + Date.now());
+const first: Record<string, number> = {};
+rows.forEach(r => { const k = r.SetName + '|' + r.Title; if (first[k] === undefined || r.Id < first[k]) first[k] = r.Id; });
+const lateOwn = rows.filter(r => mine.indexOf(r.Id) !== -1 && r.Id !== first[r.SetName + '|' + r.Title]);
+for (const r of lateOwn) await remove(itemUrl(r.Id));        // best-effort
+```
+
+Why it converges: each run reads only after all of its own inserts, so for every key it sees the row of whoever inserted earlier. The run that inserted later deletes its copy; the earlier run finds nothing of its own to delete. Both pick the same winner — the lowest `Id` — so exactly one row stays, and rows created by anyone else are never touched, including duplicates an administrator made by hand.
+
+- Delete only ids from **your own** POST responses. "Delete every copy that is not the oldest" makes both runs delete each other's rows.
+- The re-read must bypass the browser cache (a unique query parameter). The list URL was read seconds earlier, and a cached "before" answer hides the twin.
+- Keep the delete best-effort: if it fails, you are back to a duplicate, not to something worse.
+- Test the interleavings: the later run deletes and the earlier one does not; a run that cannot see the other run's later copy yet deletes nothing (its author will); a whole block inserted twice, interleaved, ends with every key once; and a counterexample showing that without the "own" condition a run would delete a foreign row.
+
 ## Diagnostic shortcut
 
 Before opening a single component file, count the keys in the data:
@@ -90,5 +119,5 @@ One request separates a data duplication from a rendering bug — and it points 
 
 ## Related
 
-- Check-then-insert without a lock races and produces duplicate rows; the same list has no unique constraint to fall back on.
+- Check-then-insert without a lock races and produces duplicate rows; the same list has no unique constraint to fall back on. The lock-free cleanup of your own late copies above is the fix that does not need one.
 - Provisioning does not reconcile schema changes on existing fields — the same "it ran once, it must be fine" assumption in a different place.
