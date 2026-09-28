@@ -9,9 +9,9 @@ last-reviewed: 2026-09-28
 
 # Event dedup by timestamp watermark loses events
 
-> **Bottom line.** Polling an event API with an overlapping cursor ("read from the last position minus ten minutes, events may land late") is the right design — but only if the consumer can tell an already-counted event from a new one *inside that overlap*. A single "last counted timestamp" cannot: it drops the second of two events recorded in the **same second** (an email platform logs the implied *open* together with the *click*) and every **late** event whose timestamp is older than one already counted. Let the watermark decide only what is older than the overlap; inside it, dedupe by event identity — action + timestamp, with an occurrence count — and keep that set only for the overlap window.
+> **Bottom line.** Polling an event API with an overlapping cursor ("read from the last position minus ten minutes, events may land late") is the right design — but only if the consumer can tell an already-counted event from a new one *inside that overlap*. A single "last counted timestamp" cannot: it drops the second of two events recorded in the **same second** (Mailchimp, for example, counts a *click* as an *open* when the tracking image did not load, and both can carry the same timestamp) and every **late** event whose timestamp is older than one already counted. Let the watermark decide only what is older than the overlap; inside it, dedupe by event identity — action + timestamp, with an occurrence count — and keep that set only for the overlap window.
 >
-> **Ve zkratce.** Čtení událostí z cizího API s překryvem kurzoru („od poslední pozice minus deset minut, události chodí se zpožděním“) je správný návrh – ale jen když příjemce v tom překryvu pozná už započtenou událost od nové. Jediný „čas poslední započtené události“ to neumí: zahodí druhou ze dvou událostí zapsaných ve **stejné sekundě** (e-mailová platforma zapíše s *proklikem* i odvozené *otevření*) a každou **opožděnou** událost s časem starším než už započtená. Vodoznak ať rozhoduje jen o tom, co je starší než překryv; uvnitř něj deduplikuj podle identity události – akce + čas, i s počtem výskytů – a tu sadu drž jen pro okno překryvu.
+> **Ve zkratce.** Čtení událostí z cizího API s překryvem kurzoru („od poslední pozice minus deset minut, události chodí se zpožděním“) je správný návrh – ale jen když příjemce v tom překryvu pozná už započtenou událost od nové. Jediný „čas poslední započtené události“ to neumí: zahodí druhou ze dvou událostí zapsaných ve **stejné sekundě** (Mailchimp třeba počítá *proklik* i jako *otevření*, když se sledovací obrázek nenačetl, a obě můžou mít stejný čas) a každou **opožděnou** událost s časem starším než už započtená. Vodoznak ať rozhoduje jen o tom, co je starší než překryv; uvnitř něj deduplikuj podle identity události – akce + čas, i s počtem výskytů – a tu sadu drž jen pro okno překryvu.
 
 ## Symptom
 
@@ -34,13 +34,16 @@ events.sort(byTimestamp).forEach(e => {
 
 Two ordinary situations break it:
 
-1. **Same-second events.** Email platforms record an *open* whenever a *click* arrives without a
-   prior tracked open (common in clients that block images). Both carry the same timestamp with
-   one-second precision. The first one moves `lastAt`; the second is `<= lastAt` and is dropped —
-   on this run and on every later re-read.
-2. **Late events.** The API writes some events with a delay and an earlier timestamp. That is why the
-   cursor overlaps. But the per-recipient watermark already moved past it, so the overlap re-reads the
-   event and the watermark throws it away. The watermark defeats the overlap it relies on.
+1. **Same-second events.** Mailchimp counts a *click* as an *open* when the tracking image did not
+   load ([About Open and Click Rates](https://mailchimp.com/help/about-open-and-click-rates/)) —
+   common in mail clients that block images. In the case behind this article, the open and the
+   click came back from the email-activity endpoint with the same one-second timestamp. The first
+   one moves `lastAt`; the second is `<= lastAt` and is dropped — on this run and on every later
+   re-read.
+2. **Late events.** The overlap exists because an event can become readable later than its
+   timestamp suggests. If the per-recipient watermark has already moved past that timestamp, the
+   overlap re-reads the event and the watermark throws it away. The watermark defeats the overlap it
+   relies on.
 
 ## Fix
 
