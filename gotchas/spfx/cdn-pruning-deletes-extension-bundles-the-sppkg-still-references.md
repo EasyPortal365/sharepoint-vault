@@ -4,7 +4,7 @@ short-title: CDN pruning deleted the extension bundle the .sppkg still reference
 summary: "With `includeClientSideAssets: false` the catalog pins hashed names for customizers and command sets too; a \"keep N newest\" prune evicts the referenced hash and the extension 404s for days — protect extension bundles by name pattern or give them stable names"
 tags: [spfx, cdn, app-catalog, application-customizer, command-set, deployment, retention]
 applies-to: SharePoint Online, SPFx with includeClientSideAssets:false
-last-reviewed: 2026-09-03
+last-reviewed: 2026-09-28
 ---
 
 # CDN pruning deleted the extension bundle the deployed `.sppkg` still referenced
@@ -58,6 +58,7 @@ No new `.sppkg` is needed: the catalog is right, the CDN was wrong.
 - **Fail closed on the policy.** The orchestrating script must refuse to run when the policy lacks the patterns field. A missing setting that defaults to "no protection" is how the original bug happened in the first place.
 - **Prove the rule with a synthetic run and its counterexample.** Build a throw-away mini-CDN in a temp folder with the extension bundle in the *oldest* commit, outside the retention window, and run the real prune script twice: with the pattern it must survive, without it it must be deleted. A test that cannot fail proves nothing.
 - **Better long term: stabilize extension bundles too.** The same post-build step that copies the web part bundle to `assistant-loader.js` can copy the customizer to `assistant-widget.js` and the command set to `assistant-docs-command.js`; point the manifests at the stable names and re-upload the package once. From then on the catalog never references a hash.
+- **"Re-upload once" is the step that gets forgotten — verify it per catalog.** Stabilizing the build does nothing for a catalog that still holds the older package: the page keeps loading the old hashed customizer, and every release you ship to the stable name silently never reaches those users. After a release that changes an extension, open a page in each tenant and check the network (`performance.getEntriesByType('resource')`): a hash in the extension's file name means the catalog still has the old package. We found our own tenant six weeks behind this way — the fix was sitting on the CDN the whole time.
 - **"It stopped working" is not "it broke today".** The deleting commit's date is the outage start; ask for it before hunting in today's changes.
 
 ## Related
