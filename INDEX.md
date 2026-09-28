@@ -2,7 +2,7 @@
 
 Every single thing in the vault, on one page. Section names link to folder READMEs; leaves link straight to the content.
 
-*Last updated: 2026-09-26*
+*Last updated: 2026-09-28*
 
 - 🧰 **[scripts/](scripts/)** — PowerShell scripts with comment-based help, read-only unless stated
   - [Terminal animations](scripts/media/) — the writing scripts as an animated PowerShell console; plain SVG, no JavaScript, respects `prefers-reduced-motion`
@@ -94,6 +94,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [A folder's `Files` collection rejects a two-level `$expand`](gotchas/rest-api/folder-files-reject-a-two-level-expand.md) — `ListItemAllFields/Editor` 400s there; take `ModifiedBy`/`Author` from the file, and list one level through the folder API rather than a `FileDirRef` filter
     - [`moveto` succeeds and your code reports a failure](gotchas/rest-api/action-endpoints-return-an-empty-body.md) — Action endpoints (`moveto`, `removebyid`) return an empty body, so `response.json()` throws after the operation happened and invites a retry; decide by status, parse only what you read
     - [`Overwrite=true` in a shared folder steals another record's file](gotchas/rest-api/overwrite-true-in-a-shared-folder-steals-another-records-file.md) — Uploading with `Files/AddUsingPath(…,Overwrite=true)` under a user-supplied file name into a folder that holds documents of many records (cases, orders, tickets) lets a second file with the same generic name (such as `image.jpg`) replace the first record's file — SharePoint keeps the same list item and adds a new version — and the metadata update that follows then re-links that item to the second record. Put the record key into the file name (or give every record its own folder), and add it when moving older files
+    - [Event dedup by timestamp watermark loses events](gotchas/rest-api/event-dedup-by-timestamp-watermark-loses-events.md) — When you pull activity events (opens, clicks, audit entries) in batches with an overlapping cursor, "skip anything not newer than the last counted event" throws away a second event with the same second-precision timestamp and any late-arriving event with an older timestamp — exactly the ones the overlap exists to catch; dedupe inside the overlap by event identity (action + timestamp + occurrence count) and let the watermark decide only what lies outside it
   - **lists/**
     - [The 5,000-item view threshold](gotchas/lists/list-view-threshold-and-indexes.md) — It's scanned rows, not returned rows; index early, page always
     - [View formatting JSON can't contain `<` or `&`](gotchas/lists/view-formatter-rejects-angle-bracket-and-ampersand.md) — It's stored inside the view's schema XML; reverse the comparison and nest `if()`
