@@ -38,7 +38,7 @@ GET /sites/portal/_api/web/AssociatedVisitorGroup/Users?$select=Title,Email,Prin
 
 - **Read all three associated groups** – Owners, Members and Visitors. Visitors is where communication sites put their readers.
 - **Any row with `PrincipalType` other than 1 makes the audience unknown.** Return an explicit "unknown" with a reason (a nested group, or no group readable), not a partial list. The UI then hides "not read" and percentages and says why. The list of people who *did* confirm stays accurate, because it comes from the receipts themselves.
-- **Don't try to expand *Everyone except external users* into a list of people.** It means every internal account, including shared mailboxes and service accounts. A Microsoft 365 group can be expanded with Graph (`/groups/{id}/transitiveMembers`), but that needs a Graph permission such as `GroupMember.Read.All`. That's a product decision, not a quiet fallback.
+- **Don't try to expand *Everyone except external users* into a list of people.** It stands for every internal account in the directory; SharePoint has no call that enumerates it. A Microsoft 365 group can be expanded with Graph (`/groups/{id}/transitiveMembers`), but that needs a Graph permission with admin consent (least privileged: `GroupMember.ReadBasic.All`). That's a product decision, not a quiet fallback.
 - **Test on a site set up like production.** A test site where you added three people directly to Members hides the whole problem.
 
 ## Notes
