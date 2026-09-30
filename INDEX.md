@@ -2,7 +2,7 @@
 
 Every single thing in the vault, on one page. Section names link to folder READMEs; leaves link straight to the content.
 
-*Last updated: 2026-09-28*
+*Last updated: 2026-09-30*
 
 - 🧰 **[scripts/](scripts/)** — PowerShell scripts with comment-based help, read-only unless stated
   - [Terminal animations](scripts/media/) — the writing scripts as an animated PowerShell console; plain SVG, no JavaScript, respects `prefers-reduced-motion`
@@ -201,6 +201,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [`heft --clean` leaves stale tests in `lib-commonjs`](gotchas/spfx/heft-clean-leaves-stale-lib-commonjs-tests.md) — In SPFx projects built with Heft, Jest runs the compiled tests in `lib-commonjs`, but the rig's clean step deletes `dist`, `lib`, `release`, generated `.scss.ts`/`.resx.ts` files and parts of `temp` (and `jest-output` for the test phase) — never `lib-commonjs`. Delete, move or rename a test in `src` and its old compiled copy stays there and keeps running, even in `heft test --clean --production`. Delete `lib-commonjs` after moving or deleting files
     - [Print layer must be a direct child of `<body>`](gotchas/spfx/print-layer-must-be-a-direct-child-of-body.md) — One way to print a report from an SPFx web part is to hide everything in print (`body > * { display: none }`, so the SharePoint suite bar, navigation and footer stay out) and show only a dedicated print layer. If that layer is rendered inside the web part, it is a descendant of a hidden element and the printout is blank. Render the print layer with a React portal straight into `document.body`
     - [Teams user ID belongs to the host site](gotchas/spfx/teams-personal-app-user-id-belongs-to-root-site.md) — `legacyPageContext.userId` in a Teams personal app is the tenant root site's ID; written as the user's ID on another site it can silently point to someone else
+    - [Docking a side panel on the newer SharePoint layout](gotchas/spfx/docked-side-panel-new-sharepoint-layout-has-no-body-container.md) — A Copilot-style side panel narrows the SharePoint page by shrinking `.sp-App-bodyContainer`. On the newer page chrome (left app bar with Discover/Publish/Build) that container does not exist, so the docking code silently falls back to a floating panel with gaps around it. Dock against `#spPageChromeAppDiv` instead, and shrink it with `margin-right` – it is a flex item, so `width` has no effect.
   - **app-catalog/**
     - [Three `.sppkg` packaging pitfalls](gotchas/app-catalog/sppkg-packaging-pitfalls.md) — ASCII-only solution name, icon exactly 96×96, Publisher column is AppSource-only
   - **graph/**
