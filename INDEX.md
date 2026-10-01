@@ -2,7 +2,7 @@
 
 Every single thing in the vault, on one page. Section names link to folder READMEs; leaves link straight to the content.
 
-*Last updated: 2026-09-30*
+*Last updated: 2026-10-01*
 
 - 🧰 **[scripts/](scripts/)** — PowerShell scripts with comment-based help, read-only unless stated
   - [Terminal animations](scripts/media/) — the writing scripts as an animated PowerShell console; plain SVG, no JavaScript, respects `prefers-reduced-motion`
@@ -129,6 +129,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [The tenant root site is not necessarily readable by everyone](gotchas/permissions/tenant-root-site-is-not-readable-by-everyone.md) — Measured: unique permissions, no *Everyone except external users*, an ordinary employee's mask `High=0, Low=0`; don't anchor a must-work-for-everyone mechanism there, measure with `getusereffectivepermissions`
     - [A count over a ReadSecurity 2 list is only the reader's share](gotchas/permissions/a-count-over-a-readsecurity-2-list-is-the-readers-share.md) — Item-level read security filters rows silently, so a client-side count or ranking is the reader's own rows; show it only with `ReadSecurity = 1` or Manage Lists in the reader's mask, and don't also demand Override List Behaviors — the Edit role (`0x3C431AEF`) lacks it
     - [Counting a site's audience from its associated groups silently misses nested groups](gotchas/permissions/site-audience-from-associated-groups-misses-nested-groups.md) — Owners/Members/Visitors often contain *Everyone except external users* or the Microsoft 365 group claim (PrincipalType 4); keeping only PrincipalType 1 rows turns a whole company into one or two people – treat any nested group as 'audience unknown'
+    - [Upload-only drop box for sensitive files](gotchas/permissions/upload-only-drop-box-for-sensitive-photos.md) — Giving someone write access to a protected library folder also lets them read every file in it; a list with `ReadSecurity = 2`, Contribute for the senders and Edit for the reviewers lets people send files they alone can see — the direct attachment URL of someone else's item is denied in SharePoint Online (measured)
   - **spfx/**
     - [A zip-bomb guard on a private JSZip field fails open](gotchas/spfx/zip-bomb-guard-reading-a-private-jszip-field.md) — `entry._data.uncompressedSize` is an implementation detail, and `undefined → allow` turns the next library upgrade into a silent loss of protection; read the declared sizes from the ZIP central directory instead
     - [Hand-built .docx / .pptx: the parts Office demands](gotchas/spfx/hand-built-ooxml-missing-parts.md) — Header images are referenced from the header's own rels, Content_Types must know the image extension, namespaces are per part, and a .pptx without theme + master + layout is invalid; split parts from zipping so a strict XML parser can check them in tests
