@@ -93,6 +93,7 @@ Every article carries frontmatter with `tags` and `applies-to`, so repo search g
 | [A version is a full copy, not a delta](lists/a-version-is-a-full-copy-not-a-delta.md) | The quota counts every version at full file size and a metadata-only edit costs one; measured on a live tenant, three column edits took a 1 MiB file to 4 MB |
 | [View formatting drops CSS gradients](lists/view-formatting-drops-css-gradients.md) | `background` is not on the style allowlist and a gradient in `background-image` did not survive either; a white initial on a gradient avatar turns invisible, so use a solid `background-color` |
 | [A formatter renders empty in the tab you are iterating in](lists/formatter-renders-empty-in-your-working-tab.md) | After many REST writes the working tab shows even valid formatters blank while a fresh tab renders them; one tab per version, a scratch view, and simple formatters on fragile lists |
+| [Client-written identity vs. the server-stamped Author](lists/client-written-identity-needs-the-server-author.md) | Append-only lists let any contributor add a row with someone else's name in a text column; `Author` is stamped by SharePoint. Compare the two — but against `Author/Name` (the sign-in claim) as well, or every user whose e-mail differs from their UPN looks like a forger |
 
 ### permissions/
 
