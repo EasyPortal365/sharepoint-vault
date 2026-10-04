@@ -23,7 +23,7 @@ The sync was written as "make sure these principals have these roles" — `rolea
 
 ## What to do
 
-1. **Remove by principal Id, never by group name.** Build an index of the groups that represent owners (customer groups, team groups) by Id. On an item owned by X, remove every owner-group that is not X's: `POST …/items(n)/roleassignments/removeroleassignment(principalid=…, roledefid=…)` for each granting role, or `…/roleassignments/getbyprincipalid(…)` + `DELETE`.
+1. **Remove by principal Id, never by group name.** Build an index of the groups that represent owners (customer groups, team groups) by Id. On an item owned by X, remove every owner-group that is not X's: `POST …/items(n)/roleassignments/removeroleassignment(principalid=…, roledefid=…)` for each granting role (or without `roledefid` to remove all of that principal's roles on the item).
 2. **Keep a protected set.** The current owner's groups, the requester and the agents are never removed, even if the index wrongly lists them under another owner.
 3. **If the index can't be read, remove nothing** and say so. A partial index would remove the wrong groups.
 4. **Verify with a second read.** Read `roleassignments?$expand=Member,RoleDefinitionBindings` again after writing. If the old group is still there, or someone outside the removal set lost a role, report failure. Don't report "done".
