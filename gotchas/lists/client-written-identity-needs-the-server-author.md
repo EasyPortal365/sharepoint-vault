@@ -19,7 +19,7 @@ A "who confirmed what" list runs with add-only permissions for every recipient. 
 
 ## Cause
 
-Every column in the POST body is the client's word. Only the system fields — `Author`, `Created`, `Editor`, `Modified`, `_UIVersionString` — are set by the server; a contributor cannot override `Author` through REST (that needs `ManageLists`).
+Every column in the POST body is the client's word. The system fields — `Author`, `Created`, `Editor`, `Modified`, `_UIVersionString` — are set by the server. Whether a given role can still write `Author` itself depends on its rights on the list (list-management rights are the ones to worry about); measure it for your roles with an account that holds them before you rely on the stamp.
 
 ## Fix
 
@@ -39,11 +39,11 @@ const norm = s => (s || '').trim().toLowerCase();
 const matches = (claimed, a) => !!a && [login(a.Name), norm(a.EMail), norm(a.Title)].indexOf(norm(claimed)) !== -1;
 ```
 
-## Measured / why the sign-in name matters
+## Why the sign-in name matters (found in review before release)
 
-The first version compared only with `Author/Title` and `Author/EMail`. The page wrote the user's e-mail when present and the UPN otherwise; in tenants where the e-mail is an alias or another domain, or for accounts without a mailbox, the genuine record never matched — a rule that "does not count mismatches" would have silently zeroed those people. `Author/Name` is the only author field that carries the UPN.
+The first version compared only with `Author/Title` and `Author/EMail`. The page wrote the user's e-mail when present and the UPN otherwise; in tenants where the e-mail is an alias or another domain, or for accounts without a mailbox, the genuine record never matched — a rule that "does not count mismatches" would have silently zeroed those people. Of the author fields used here, only `Author/Name` carries the UPN (in its claim); `Title` and `EMail` do not.
 
 ## Notes
 
-- This is tamper-*evidence*, not tamper-*proof*: site owners and anyone with `ManageLists` can still rewrite `Author`.
+- This is tamper-*evidence*, not tamper-*proof*: treat site owners and anyone with list-management rights as able to rewrite `Author`.
 - Aggregations over thousands of rows need only `Author/*`, not the full stamp set — keep the payload small.
