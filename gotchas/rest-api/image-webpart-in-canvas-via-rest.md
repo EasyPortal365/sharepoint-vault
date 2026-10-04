@@ -9,9 +9,9 @@ last-reviewed: 2026-10-04
 
 # Putting an Image web part on a modern page via REST — the control JSON that renders, with a link
 
-> **Bottom line.** You can build a good-looking landing page entirely through REST with the out-of-the-box **Image** web part: upload the pictures to Site Assets, then put one control per picture into `CanvasContent1`. The file identity goes into `properties` *and* `serverProcessedContent.customMetadata`, the server-relative URL into `serverProcessedContent.imageSources.imageSource`, and the click target into `serverProcessedContent.links.linkUrl`. Verified live: it renders in a full-width section (`sectionFactor: 0`) and in a three-column section, and the whole picture is a link.
+> **Bottom line.** You can build a good-looking landing page entirely through REST with the out-of-the-box **Image** web part: upload the pictures to Site Assets, then put one control per picture into `CanvasContent1`. The file identity goes into `properties` *and* `serverProcessedContent.customMetadata`, the server-relative URL into `serverProcessedContent.imageSources.imageSource`, and the click target into `serverProcessedContent.links.linkUrl`. Verified live: it renders in a full-width section (`sectionFactor: 0`) and in a three-column section. The click-through via `linkUrl` was saved but not yet clicked in that test.
 >
-> **Ve zkratce.** Pěknou rozcestníkovou stránku jde složit čistě přes REST z OOTB webové části **Obrázek**: obrázky nahrát do Prostředků webu a za každý dát do `CanvasContent1` jeden prvek. Identita souboru patří do `properties` *i* do `serverProcessedContent.customMetadata`, URL do `imageSources.imageSource` a cíl kliknutí do `links.linkUrl`. Ověřeno naostro v sekci přes celou šířku i ve třech sloupcích; celý obrázek je odkaz.
+> **Ve zkratce.** Pěknou rozcestníkovou stránku jde složit čistě přes REST z OOTB webové části **Obrázek**: obrázky nahrát do Prostředků webu a za každý dát do `CanvasContent1` jeden prvek. Identita souboru patří do `properties` *i* do `serverProcessedContent.customMetadata`, URL do `imageSources.imageSource` a cíl kliknutí do `links.linkUrl`. Ověřeno naostro v sekci přes celou šířku i ve třech sloupcích; proklik přes `linkUrl` se uložil, ale v tom testu nebyl vyzkoušen kliknutím.
 
 ## Why bother
 
@@ -58,5 +58,5 @@ Call `POST /_api/web/lists/EnsureSiteAssetsLibrary` first — a fresh site may n
 ## Gotchas met on the way
 
 - **`moveto` does not overwrite** with `flags=0` — HTTP 400 "file already exists". Recycle the old page first (`…/GetFileByServerRelativePath(…)/recycle`), then rename.
-- **A `$expand=Author` on `ListItemAllFields` via `GetFileByServerRelativePath` failed** where the same call without the expand worked — the guard that depended on it silently skipped the recycle. Keep pre-checks to plain `$select`.
+- **A pre-check with `$expand=Author` on `ListItemAllFields` (via `GetFileByServerRelativePath`) did not return OK**, so the guard that depended on it silently skipped the recycle and the rename then hit the 400 above; the same call with a plain `$select=Id,Created` returned 200. The exact status of the failing call was not captured — keep pre-checks to plain `$select`, and make a skipped step loud, not silent.
 - After the rename, re-save with `checkoutpage` → `SavePageAsDraft` (new `Title`) → `Publish`; `SavePageAsDraft` checks the page in, so a direct `SavePage` returns 409.
