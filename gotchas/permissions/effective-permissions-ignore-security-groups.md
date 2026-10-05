@@ -1,7 +1,7 @@
 ---
 title: GetUserEffectivePermissions ignores the user's Entra security groups — and Full Control's effective mask is not the role's mask
 short-title: Effective permissions ignore security groups
-summary: "Asked on behalf of another user, `GetUserEffectivePermissions` counts Microsoft 365 group membership but not Entra security group membership — directly assigned or nested in a SharePoint group, still after 40 s — so it reports 'no access' for people who do have it once they sign in. Ask with the group's claim instead (that works), union the roles reached through the user's transitive security groups, treat a Limited-Access-only mask as no access, and drop NoScript-stripped bits (AddAndCustomizePages) before mapping a mask to a permission level"
+summary: "Asked on behalf of another user, `GetUserEffectivePermissions` counts Microsoft 365 group membership but not Entra security group membership — directly assigned or nested in a SharePoint group, still after 40 s — so it reports 'no access' for people who do have it once they sign in. Ask with the group's claim instead (that works), union the roles reached through the user's transitive security groups, treat a mask without any content bit (Limited Access, even with extra bits) as no access, and drop NoScript-stripped bits (AddAndCustomizePages) before mapping a mask to a permission level"
 tags: [permissions, rest-api, entra-id, graph]
 applies-to: SharePoint Online
 last-reviewed: 2026-10-05
@@ -33,7 +33,7 @@ Assumption that fits every measurement: SharePoint learns security group members
 ## What to do
 
 1. **User's level = mask ∪ roles reached through security groups.** Read the object's `roleassignments?$expand=Member,RoleDefinitionBindings`, take the user's transitive groups from Graph (`/users/{id}/transitiveMemberOf`), and add the roles of every security-group claim the user belongs to — directly assigned or as a member of an assigned SharePoint group. Say in the UI that this part is derived from Entra ID.
-2. **Limited Access only is no access.** A mask of `30 / 08011000` (or `0 / 0`) means the user can traverse, not read.
+2. **No content capability is no access.** A mask of `30 / 08011000` (Limited Access) or `0 / 0` means the user can traverse, not read — but don't test for "subset of Limited Access": a Limited-Access-only account measured `230 / 08011000` (an extra High `0x200` bit). Decide "no access" by the absence of every content bit (view, add, edit, delete, approve, manage).
 3. **Full Control's effective mask is not the role's mask.** On a modern site with custom scripts disabled the site collection admin measures `7fffffff / fffbffff`; the Full Control role is `7fffffff / ffffffff`. `AddAndCustomizePages` (`0x40000`) is stripped. A "role bits ⊆ mask" mapping turns both Full Control and Design into Edit — remove the bits the site strips before comparing.
 4. **`ensureuser` takes a group claim.** `POST web/ensureuser {logonName: "c:0t.c|tenant|<id>"}` (or the M365 members claim `c:0o.c|federateddirectoryclaimprovider|<id>`) returns `PrincipalType 4` and an Id usable in `addroleassignment`.
 5. **Test with both group types.** One type alone hides this.
