@@ -34,7 +34,7 @@ Assumption that fits every measurement: SharePoint learns security group members
 
 1. **User's level = mask ∪ roles reached through security groups.** Read the object's `roleassignments?$expand=Member,RoleDefinitionBindings`, take the user's transitive groups from Graph (`/users/{id}/transitiveMemberOf`), and add the roles of every security-group claim the user belongs to — directly assigned or as a member of an assigned SharePoint group. Say in the UI that this part is derived from Entra ID.
 2. **Limited Access only is no access.** A mask of `30 / 08011000` (or `0 / 0`) means the user can traverse, not read.
-3. **Full Control's effective mask is not the role's mask.** On a modern site with custom scripts disabled the site collection admin measures `7fffffff / fffbffff`; the Full Control role is `7fffffff / ffffffff`. `AddAndCustomizePages` (`0x40000`) is stripped. A "role bits ⊆ mask" mapping turns Full Control into Edit and Design into nothing — remove the bits the site strips before comparing.
+3. **Full Control's effective mask is not the role's mask.** On a modern site with custom scripts disabled the site collection admin measures `7fffffff / fffbffff`; the Full Control role is `7fffffff / ffffffff`. `AddAndCustomizePages` (`0x40000`) is stripped. A "role bits ⊆ mask" mapping turns both Full Control and Design into Edit — remove the bits the site strips before comparing.
 4. **`ensureuser` takes a group claim.** `POST web/ensureuser {logonName: "c:0t.c|tenant|<id>"}` (or the M365 members claim `c:0o.c|federateddirectoryclaimprovider|<id>`) returns `PrincipalType 4` and an Id usable in `addroleassignment`.
 5. **Test with both group types.** One type alone hides this.
 
