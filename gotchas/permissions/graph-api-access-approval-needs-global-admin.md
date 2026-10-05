@@ -4,7 +4,7 @@ short-title: Approving Graph permissions for SPFx needs a Global Administrator
 summary: API access requests for Microsoft Graph need Global Administrator (Application Administrator only covers third-party APIs), and admin consent for Graph *application* permissions such as `Sites.Selected` is explicitly excluded from Application/Cloud Application Administrator; put the role, with the citation, into the customer's preflight
 tags: [permissions, spfx, graph, entra, roles, api-access, admin-consent]
 applies-to: SharePoint Online, Microsoft Entra ID
-last-reviewed: 2026-09-03
+last-reviewed: 2026-10-05
 ---
 
 # Approving Microsoft Graph permissions for SPFx needs a Global Administrator — Application Administrator is not enough
@@ -37,7 +37,7 @@ Sources: *Manage access to Microsoft Entra ID-secured APIs* (learn.microsoft.com
 
 ## Verify
 
-After approval, the delegated scopes are visible under Entra → Enterprise applications → *SharePoint Online Client Extensibility Web Application Principal* → Permissions. Users must sign out and back in — a token issued before the approval does not carry the new scope, which looks like "approved but still not working".
+After approval, the delegated scopes are visible under Entra → Enterprise applications → *SharePoint Online Client Extensibility Web Application Principal* → Permissions. Users must sign out and back in — a token issued before the approval does not carry the new scope, which looks like "approved but still not working". The typical symptom is `403 Authorization_RequestDenied: Insufficient privileges to complete the operation.` even for a Global Administrator. You can confirm it without reading or decoding any token: in the browser console on the SharePoint page, list the *names* of the MSAL cache keys (`Object.keys(localStorage).filter(k => /accesstoken/i.test(k) && /graph\.microsoft\.com/i.test(k))`). The key name ends with the token's scopes, so a key that lists the older scopes but not the newly approved one is the stale token. Removing that single cache entry and reloading the page makes MSAL fetch a new token silently, and the call goes through. Signing out and back in does the same for end users.
 
 ## See also
 
