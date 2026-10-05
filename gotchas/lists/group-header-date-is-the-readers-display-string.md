@@ -9,13 +9,13 @@ last-reviewed: 2026-10-05
 
 # A date in a group header is the reader's display string, not a date
 
-> **Bottom line.** When a view is grouped by a Date field, `@group.fieldData` in `groupProps.headerFormatter` is the already-formatted text in the *reader's* locale (`05.10.2026` for a Czech reader), not a date value — so `getDate()`/`getMonth()` do not apply; reshape it with string functions only after checking the shape, and fall back to the raw text otherwise.
+> **Bottom line.** When a view is grouped by a Date field, `@group.fieldData` in `groupProps.headerFormatter` is the already-formatted text in the *reader's* locale (`05.10.2026` for a Czech reader), not a date value — so date functions are the wrong tool; reshape it with string functions only after checking the shape, and fall back to the raw text otherwise.
 >
-> **Ve zkratce.** Ve view seskupeném podle data je `@group.fieldData` v `groupProps.headerFormatter` hotový text v locale *čtenáře* (u českého čtenáře `05.10.2026`), ne datum – `getDate()`/`getMonth()` na něj nefungují; přeformátuj ho řetězcovými funkcemi až po kontrole tvaru a jinak nech původní text.
+> **Ve zkratce.** Ve view seskupeném podle data je `@group.fieldData` v `groupProps.headerFormatter` hotový text v locale *čtenáře* (u českého čtenáře `05.10.2026`), ne datum – datumové funkce na něj nepatří; přeformátuj ho řetězcovými funkcemi až po kontrole tvaru a jinak nech původní text.
 
 ## Symptom
 
-A grouped "by meeting date" view shows group headers like `Schůzka 05.10.2026` — readable, but not the house style (`5. 10. 2026`). Applying the usual row-formatter recipe (`getDate([$Field]) + '. ' + (getMonth([$Field]) + 1) + ...`) to `@group.fieldData` produces garbage or nothing.
+A grouped "by meeting date" view shows group headers like `Schůzka 05.10.2026` — readable, but not the house style (`5. 10. 2026`). The usual row-formatter recipe (`getDate([$Field]) + '. ' + (getMonth([$Field]) + 1) + ...`) expects a date value, which `@group.fieldData` is not.
 
 ## Cause
 
