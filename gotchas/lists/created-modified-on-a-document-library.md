@@ -4,7 +4,7 @@ short-title: Created/Modified on a document library
 summary: A plain MERGE reports 204 and SharePoint overwrites both with "now"; `ValidateUpdateListItem` + `bNewDocumentUpdate` is the only path that holds, and ISO dates fail with HTTP 200 plus a per-field `HasException`
 tags: [lists, document-library, rest-api, metadata, dates]
 applies-to: SharePoint Online
-last-reviewed: 2026-08-13
+last-reviewed: 2026-10-06
 ---
 
 # Backdating documents: Created/Modified and the two ways it silently fails
@@ -64,6 +64,23 @@ if (failed.length) throw new Error(failed.map(v => `${v.FieldName}: ${v.ErrorMes
 The date format follows the **web's locale**, not ISO 8601 — on an English-locale site
 `M/D/YYYY h:mm AM`. This applies to every field you push through `ValidateUpdateListItem`,
 not just dates: it takes display-formatted strings, not the raw values `MERGE` expects.
+
+## Same path for list items – and don't hard-code the date format
+
+The same call backdates **ordinary list items** too (verified on custom lists with item-level
+permissions: 150+ items in one run, every `Created` moved). Do not hard-code
+`M/D/YYYY h:mm AM`: derive the format from the web, because a non-English site parses a
+different order and separator.
+
+```js
+const rs = await (await fetch(`${web}/_api/web/RegionalSettings?$select=DateFormat,DateSeparator,Time24`,
+  { headers: { Accept: 'application/json;odata=nometadata' } })).json();
+// DateFormat: 0 = M/D/Y, 1 = D/M/Y, 2 = Y/M/D
+const [y, m, d] = '2026-08-06'.split('-').map(Number);
+const parts = rs.DateFormat === 1 ? [d, m, y] : rs.DateFormat === 2 ? [y, m, d] : [m, d, y];
+const time = rs.Time24 ? '9:00' : '9:00 AM';
+const value = parts.join(rs.DateSeparator || '/') + ' ' + time; // e.g. "6.8.2026 9:00" on a Czech site
+```
 
 ## Rule
 
