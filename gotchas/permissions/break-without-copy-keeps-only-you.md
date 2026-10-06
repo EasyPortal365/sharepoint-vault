@@ -4,7 +4,7 @@ short-title: Breaking inheritance without copying keeps only you
 summary: "`copyRoleAssignments=false` leaves exactly one role assignment (the caller), so re-granting Owners/Members/Visitors drops every direct grant and custom group; and an account that loses a *configuration* read can end up with that feature's limits switched off, so the hardening pass lowers security for the very account it locked out"
 tags: [permissions, security, rest-api, provisioning]
 applies-to: SharePoint Online, SharePoint Server
-last-reviewed: 2026-09-01
+last-reviewed: 2026-10-06
 ---
 
 # Breaking inheritance without copying keeps only you
@@ -83,6 +83,22 @@ If you do break without copying — the right call when the parent ACL is genuin
 - if the snapshot read failed, **abort**; do not fall back to "grant the three default groups";
 - leave **Limited Access** (`RoleTypeKind: 1`) alone — SharePoint maintains it so users can traverse to the object;
 - remember the caller is now an explicit Full Control holder there. If that is a provisioning identity rather than a person, decide deliberately whether it stays.
+
+### When the scope exists to hide data *from* the caller
+
+The caller's personal Full Control is more than untidy when the scope is meant to keep something **away from** the people who run setup — payroll documents that even the app's administrators must not see, for example. Whoever first opens the app after the update performs the break and keeps a direct grant. If that is an app administrator, they now read the very folder the policy hides from them. Their group membership is irrelevant, because the grant is personal.
+
+After granting the intended principals, remove the caller's own assignment unless the caller *is* one of them:
+
+```
+GET  /_api/web/currentuser?$select=Id
+POST /_api/web/GetFolderByServerRelativePath(decodedurl='<folder>')/ListItemAllFields
+     /roleassignments/getbyprincipalid(<that id>)/deleteObject
+```
+
+Then verify the principal is **absent** from `roleassignments`. Site collection administrators keep access regardless, and that cannot be configured away. Say so to whoever asked for the data to be hidden: the person it is hidden from must not be a site owner or collection admin.
+
+**Re-read without the browser cache.** The verification reads the same URL you read *before* the break (`?$select=HasUniqueRoleAssignments`, `/roleassignments`). A plain `fetch` can be answered from the HTTP cache with the pre-break `false` and an old ACL, so a correct change reports as failed (or, worse, a failed one as correct). Append a unique query parameter or use `cache: 'no-store'` on every post-change read.
 
 ### Prove the read still works, for a real principal
 
