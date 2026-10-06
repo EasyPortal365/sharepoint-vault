@@ -68,7 +68,7 @@ not just dates: it takes display-formatted strings, not the raw values `MERGE` e
 ## Same path for list items – and don't hard-code the date format
 
 The same call backdates **ordinary list items** too (verified on custom lists with item-level
-permissions: 150+ items in one run, every `Created` moved). Do not hard-code
+permissions: 100+ items in one run, each `Created` read back as the requested day). Do not hard-code
 `M/D/YYYY h:mm AM`: derive the format from the web, because a non-English site parses a
 different order and separator.
 
