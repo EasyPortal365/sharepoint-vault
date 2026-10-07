@@ -2,7 +2,7 @@
 
 Every single thing in the vault, on one page. Section names link to folder READMEs; leaves link straight to the content.
 
-*Last updated: 2026-10-06*
+*Last updated: 2026-10-07*
 
 - 🧰 **[scripts/](scripts/)** — PowerShell scripts with comment-based help, read-only unless stated
   - [Terminal animations](scripts/media/) — the writing scripts as an animated PowerShell console; plain SVG, no JavaScript, respects `prefers-reduced-motion`
@@ -137,6 +137,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [Add-only permission sync leaks on owner change](gotchas/permissions/add-only-permission-sync-leaks-on-owner-change.md) — Idempotent grant-only re-sync is safe at item creation but not when an item moves to another customer or team — the old group stays on the item; remove by principal Id, keep a protected set, and verify with a second roleassignments read
     - [Effective permissions ignore security groups](gotchas/permissions/effective-permissions-ignore-security-groups.md) — Asked on behalf of another user, `GetUserEffectivePermissions` counts Microsoft 365 group membership but not Entra security group membership — directly assigned or nested in a SharePoint group, still after 40 s — so it reports 'no access' for people who do have it once they sign in. Ask with the group's claim instead (that works), union the roles reached through the user's transitive security groups, treat a mask without any content bit (Limited Access, even with extra bits) as no access, and drop NoScript-stripped bits (AddAndCustomizePages) before mapping a mask to a permission level
     - [Contribute on the web can edit and delete site pages](gotchas/permissions/contribute-on-the-web-can-edit-and-delete-site-pages.md) — Modern pages are items in the Site Pages library, which inherits from the web, so a group you give Contribute on the web "so it can write list items" can also edit and delete every page; withholding Manage Lists does not help — break inheritance on Site Pages and give app roles Read there
+    - [Guests cannot join Teams shared channels](gotchas/permissions/guests-cannot-join-teams-shared-channels.md) — Shared channels admit external people only through B2B direct connect between two Entra tenants; a guest account cannot be added, so a partner without their own Microsoft 365 needs a different design
   - **spfx/**
     - [A zip-bomb guard on a private JSZip field fails open](gotchas/spfx/zip-bomb-guard-reading-a-private-jszip-field.md) — `entry._data.uncompressedSize` is an implementation detail, and `undefined → allow` turns the next library upgrade into a silent loss of protection; read the declared sizes from the ZIP central directory instead
     - [Hand-built .docx / .pptx: the parts Office demands](gotchas/spfx/hand-built-ooxml-missing-parts.md) — Header images are referenced from the header's own rels, Content_Types must know the image extension, namespaces are per part, and a .pptx without theme + master + layout is invalid; split parts from zipping so a strict XML parser can check them in tests
