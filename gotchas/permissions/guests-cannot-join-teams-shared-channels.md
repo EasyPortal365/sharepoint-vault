@@ -17,7 +17,7 @@ last-reviewed: 2026-10-07
 
 A collaboration design — a proposal, a prototype, a team template — puts external partners (an architect, a contractor, a supervisor) into a **shared channel** of the project team so they see their channel and nothing else. When it is built:
 
-- the owner tries to add the partner's e-mail to the shared channel and the partner is not found, or the add fails with an admin-policy message;
+- the owner tries to add the partner to the shared channel and the partner is not found in the people picker — B2B direct connect is blocked by default until both organisations allow it;
 - a partner who was invited to the team as a guest sees the team's standard channels, but the shared channel never appears for them;
 - partners from a company with Microsoft 365 work fine, partners using a personal or non-Microsoft address do not.
 
