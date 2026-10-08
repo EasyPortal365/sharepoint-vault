@@ -4,7 +4,7 @@ short-title: SPA router hijacks anchor clicks
 summary: "`<a href>` navigates before React `onClick` runs; use buttons for in-app actions"
 tags: [spfx, react, modern-pages, ux]
 applies-to: SharePoint Online (modern pages)
-last-reviewed: 2026-07-16
+last-reviewed: 2026-10-08
 ---
 
 # SharePoint's SPA router hijacks `<a href>` clicks — your `onClick` never fires
@@ -79,6 +79,32 @@ Make the action a **sibling** of the anchor and position it over the row:
 ```
 
 The click now lands on the button, never on the anchor, so there is nothing for the router to hijack — and the markup is valid.
+
+### The injected-HTML variant: links inside content you render as HTML
+
+Content that is generated **outside** your web part — a documentation package, a knowledge-base export, Markdown converted to HTML — often cross-links its own pages with **relative** links (`<a href="chapter-06-site-lifecycle.html">`). Rendered through `dangerouslySetInnerHTML` on a modern page, such a link resolves against the *page* URL (`/sites/x/SitePages/chapter-06-….html`) and ends in a 404. You can't fix it with a click handler either — it's an internal `<a href>`, so the router takes it first.
+
+Rewrite the HTML **before** rendering instead of trying to catch the click:
+
+```ts
+// relative link to a page the package really has → button with the target id
+html = html.replace(/<a\s+[^>]*?href="([^"]*)"[^>]*>([\s\S]*?)<\/a>/gi, (whole, href, text) => {
+  const id = targetIdFromHref(href);           // e.g. "chapter-06-….html" → "CH-06"; null for external links
+  if (!id) return whole;                       // external link: leave it as published
+  if (!knownIds.has(id)) return `<span>${text}</span>`; // dead target: plain text beats a 404
+  return `<button type="button" data-target="${id}">${text}</button>`;
+});
+```
+
+```tsx
+// one delegated listener on the container (the HTML isn't React, so per-button handlers aren't possible)
+<div onClick={e => {
+  const btn = (e.target as HTMLElement).closest('[data-target]');
+  if (btn) openInApp(btn.getAttribute('data-target')!);
+}} dangerouslySetInnerHTML={{ __html: html }} />
+```
+
+Only put a value into the attribute that you matched with a strict pattern (letters, digits, dashes), never the raw `href`. Do the same for any **export** of that content (print view, downloaded HTML): there the relative link leads nowhere, so keep just its text. And measure the whole package before you trust a sample — generators tend to repeat a pattern in every page (in one real case every section also started with an `<h2>` that duplicated the heading the reader already rendered).
 
 ## Notes
 
