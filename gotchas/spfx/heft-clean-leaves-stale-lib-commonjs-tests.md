@@ -61,7 +61,7 @@ Deleting the whole folder in a prebuild script is risky if other scripts read co
 - Add a safety stop: if `src/` is missing, or the step would delete more than half of the output (at least 10 files), skip and warn instead of deleting.
 - Log the count of deleted files and offer a `--dry-run` that only lists them.
 
-A first run over a fleet that had never cleaned the folder found 1 to 16 orphaned `.js` files per project (106 in total), including old `*.test.js` files that still ran on every build. A second build finds nothing.
+A first run over a fleet that had never cleaned the folder found up to 16 orphaned `.js` files per project (106 in total; only two projects had none), including old `*.test.js` files that still ran on every build. A second build finds nothing.
 
 ```js
 // prebuild: delete compiled files in lib-commonjs/ whose source is gone
