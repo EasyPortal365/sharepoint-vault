@@ -2,7 +2,7 @@
 
 Every single thing in the vault, on one page. Section names link to folder READMEs; leaves link straight to the content.
 
-*Last updated: 2026-10-08*
+*Last updated: 2026-10-09*
 
 - 🧰 **[scripts/](scripts/)** — PowerShell scripts with comment-based help, read-only unless stated
   - [Terminal animations](scripts/media/) — the writing scripts as an animated PowerShell console; plain SVG, no JavaScript, respects `prefers-reduced-motion`
@@ -97,6 +97,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [Event dedup by timestamp watermark loses events](gotchas/rest-api/event-dedup-by-timestamp-watermark-loses-events.md) — When you pull activity events (opens, clicks, audit entries) in batches with an overlapping cursor, "skip anything not newer than the last counted event" throws away a second event with the same second-precision timestamp and any late-arriving event with an older timestamp — exactly the ones the overlap exists to catch; dedupe inside the overlap by event identity (action + timestamp + occurrence count) and let the watermark decide only what lies outside it
     - [Image web part via REST (canvas JSON)](gotchas/rest-api/image-webpart-in-canvas-via-rest.md) — Out-of-the-box Image web part (`d1d91016-…`) in `CanvasContent1`: file ids in `properties` + `customMetadata`, the URL in `serverProcessedContent.imageSources`, the click target in `links.linkUrl`; works in a full-width section and in columns
     - [Missing field lookup = 400, not 404](gotchas/rest-api/missing-field-lookup-returns-400-not-404.md) — `fields/GetByInternalNameOrTitle` on a missing field answers 400; test existence with a `$filter` instead
+    - [Attachment add changes the ETag](gotchas/rest-api/adding-an-attachment-changes-the-item-etag.md) — `AttachmentFiles/add` bumps the item version; re-read before an `IF-MATCH` update
   - **lists/**
     - [The 5,000-item view threshold](gotchas/lists/list-view-threshold-and-indexes.md) — It's scanned rows, not returned rows; index early, page always
     - [View formatting JSON can't contain `<` or `&`](gotchas/lists/view-formatter-rejects-angle-bracket-and-ampersand.md) — It's stored inside the view's schema XML; reverse the comparison and nest `if()`

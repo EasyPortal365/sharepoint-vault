@@ -68,6 +68,7 @@ Every article carries frontmatter with `tags` and `applies-to`, so repo search g
 | [Event dedup by timestamp watermark loses events](rest-api/event-dedup-by-timestamp-watermark-loses-events.md) | When you pull activity events (opens, clicks, audit entries) in batches with an overlapping cursor, "skip anything not newer than the last counted event" throws away a second event with the same second-precision timestamp and any late-arriving event with an older timestamp — exactly the ones the overlap exists to catch; dedupe inside the overlap by event identity (action + timestamp + occurrence count) and let the watermark decide only what lies outside it |
 | [Image web part via REST (canvas JSON)](rest-api/image-webpart-in-canvas-via-rest.md) | Out-of-the-box Image web part (`d1d91016-…`) in `CanvasContent1`: file ids in `properties` + `customMetadata`, the URL in `serverProcessedContent.imageSources`, the click target in `links.linkUrl`; works in a full-width section and in columns |
 | [Missing field lookup = 400, not 404](rest-api/missing-field-lookup-returns-400-not-404.md) | `fields/GetByInternalNameOrTitle` on a missing field answers 400; test existence with a `$filter` instead |
+| [Attachment add changes the ETag](rest-api/adding-an-attachment-changes-the-item-etag.md) | `AttachmentFiles/add` bumps the item version; re-read before an `IF-MATCH` update |
 
 ### lists/
 
