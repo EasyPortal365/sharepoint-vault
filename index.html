@@ -329,9 +329,14 @@
       if (sp) {
         if (SV_GH.spark && SV_GH.spark.length) {
           var lv = '▁▂▃▄▅▆▇█', mx = 1, tot = 0, k;
-          for (k = 0; k < SV_GH.spark.length; k++) { if (SV_GH.spark[k] > mx) mx = SV_GH.spark[k]; tot += SV_GH.spark[k]; }
+          /* Okno = stari repa (max 52). Do 2026-10-09 se kreslilo vzdy 52 sloupcu a u repa
+             stareho 13 tydnu bylo 39 z nich prazdnych – vedle popisku "13 weeks". */
+          var bornT = SV_GH.born ? new Date(SV_GH.born).getTime() : 0;
+          var win = bornT ? Math.min(SV_GH.spark.length, Math.max(1, Math.ceil((Date.now() - bornT) / 604800000))) : SV_GH.spark.length;
+          var spk = SV_GH.spark.slice(SV_GH.spark.length - win);
+          for (k = 0; k < spk.length; k++) { if (spk[k] > mx) mx = spk[k]; tot += spk[k]; }
           var line = '';
-          for (k = 0; k < SV_GH.spark.length; k++) { line += lv[Math.min(7, Math.round(SV_GH.spark[k] / mx * 7))]; }
+          for (k = 0; k < spk.length; k++) { line += spk[k] ? lv[Math.max(1, Math.min(7, Math.round(spk[k] / mx * 7)))] : lv[0]; }
           /* `tot` je soucet sparkliny, a ta muze stat na fallbacku z max 100
              commitu — jako celkovy pocet by lhala. Kdyz neni znamy skutecny
              pocet, rekni to slovem "at least". Okno taky nesmi tvrdit 52
@@ -374,18 +379,33 @@
       }
     }
     function svSparkFromCommits(base) {
-      /* záloha: sparkline spočítaná z posledních 100 commitů */
-      return fetch(base + '/commits?per_page=100').then(function (r) { return r.ok ? r.json() : null; })
-        .then(function (cs) {
-          if (!cs || !cs.length) { return null; }
-          var weeks = []; for (var w = 0; w < 52; w++) { weeks.push(0); }
-          var now = Date.now();
-          for (var i = 0; i < cs.length; i++) {
-            var idx = Math.floor((now - new Date(cs[i].commit.author.date).getTime()) / 604800000);
-            if (idx >= 0 && idx < 52) { weeks[51 - idx]++; }
-          }
-          return weeks;
-        }).catch(function () { return null; });
+      /* Záloha, když GitHub stats ještě počítá (202). Stránkuje commity za posledních
+         52 týdnů (max 5 × 100). Dřív brala jen posledních 100 commitů – u repa s 383
+         commity za 13 týdnů pokryla 3 týdny a zbytek sparkliny vyšel jako nula.
+         Když strop nestačí, týdny starší než nejstarší načtený commit NEJSOU nula:
+         vrátí null a sparkline se nekreslí (poctivější než falešné prázdno). */
+      var since = new Date(Date.now() - 52 * 604800000).toISOString();
+      var all = [];
+      var page = function (p) {
+        return fetch(base + '/commits?per_page=100&page=' + p + '&since=' + encodeURIComponent(since))
+          .then(function (r) { return r.ok ? r.json() : null; })
+          .then(function (cs) {
+            if (!cs) { return false; }
+            all = all.concat(cs);
+            if (cs.length < 100) { return true; }
+            return p < 5 ? page(p + 1) : false;
+          });
+      };
+      return page(1).then(function (complete) {
+        if (!complete || !all.length) { return null; }
+        var weeks = []; for (var w = 0; w < 52; w++) { weeks.push(0); }
+        var now = Date.now();
+        for (var i = 0; i < all.length; i++) {
+          var idx = Math.floor((now - new Date(all[i].commit.author.date).getTime()) / 604800000);
+          if (idx >= 0 && idx < 52) { weeks[51 - idx]++; }
+        }
+        return weeks;
+      }).catch(function () { return null; });
     }
     function svFetchCommitTotal(base) {
       /* Skutecny pocet commitu = cislo posledni stranky pri per_page=1.
@@ -409,12 +429,12 @@
       }).catch(function () { return null; });
     }
     function svSaveCache() {
-      try { localStorage.setItem('sv-gh-v3', JSON.stringify({ t: Date.now(), d: SV_GH })); } catch (e) {}
+      try { localStorage.setItem('sv-gh-v4', JSON.stringify({ t: Date.now(), d: SV_GH })); } catch (e) {}
     }
     function svLoad() {
       var base0 = 'https://api.github.com/repos/EasyPortal365/sharepoint-vault';
       try {
-        var cached = JSON.parse(localStorage.getItem('sv-gh-v3') || 'null');
+        var cached = JSON.parse(localStorage.getItem('sv-gh-v4') || 'null');
         if (cached && Date.now() - cached.t < 1800000) {
           SV_GH = cached.d; svFill();
           if (!SV_GH.spark) {
