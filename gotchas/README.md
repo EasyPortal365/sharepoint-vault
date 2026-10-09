@@ -69,6 +69,7 @@ Every article carries frontmatter with `tags` and `applies-to`, so repo search g
 | [Image web part via REST (canvas JSON)](rest-api/image-webpart-in-canvas-via-rest.md) | Out-of-the-box Image web part (`d1d91016-…`) in `CanvasContent1`: file ids in `properties` + `customMetadata`, the URL in `serverProcessedContent.imageSources`, the click target in `links.linkUrl`; works in a full-width section and in columns |
 | [Missing field lookup = 400, not 404](rest-api/missing-field-lookup-returns-400-not-404.md) | `fields/GetByInternalNameOrTitle` on a missing field answers 400; test existence with a `$filter` instead |
 | [Attachment add changes the ETag](rest-api/adding-an-attachment-changes-the-item-etag.md) | `AttachmentFiles/add` changes the item ETag; re-read before an `IF-MATCH` update |
+| [ETag key is `@odata.etag`](rest-api/etag-key-is-odata-etag-with-at-sign.md) | SPHttpClient speaks OData v4: the item ETag comes as `@odata.etag`; reading `odata.etag` yields undefined and your IF-MATCH protection quietly disappears |
 
 ### lists/
 
@@ -118,6 +119,7 @@ Every article carries frontmatter with `tags` and `applies-to`, so repo search g
 | [Effective permissions ignore security groups](permissions/effective-permissions-ignore-security-groups.md) | Asked on behalf of another user, `GetUserEffectivePermissions` counts Microsoft 365 group membership but not Entra security group membership — directly assigned or nested in a SharePoint group, still after 40 s — so it reports 'no access' for people who do have it once they sign in. Ask with the group's claim instead (that works), union the roles reached through the user's transitive security groups, treat a mask without any content bit (Limited Access, even with extra bits) as no access, and drop NoScript-stripped bits (AddAndCustomizePages) before mapping a mask to a permission level |
 | [Contribute on the web can edit and delete site pages](permissions/contribute-on-the-web-can-edit-and-delete-site-pages.md) | Modern pages are items in the Site Pages library, which inherits from the web, so a group you give Contribute on the web "so it can write list items" can also edit and delete every page; withholding Manage Lists does not help — break inheritance on Site Pages and give app roles Read there |
 | [Guests cannot join Teams shared channels](permissions/guests-cannot-join-teams-shared-channels.md) | Shared channels admit external people only through B2B direct connect between two Entra tenants; a guest account cannot be added, so a partner without their own Microsoft 365 needs a different design |
+| [Item edit rights cover every field](permissions/item-level-edit-rights-cover-every-field.md) | Unique permissions on an item don't separate fields: whoever may edit it can set Status, Approver or a lookup Id via REST – derive trust from admin-only data and version history |
 
 ### spfx/
 
