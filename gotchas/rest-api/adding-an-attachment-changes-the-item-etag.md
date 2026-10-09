@@ -1,7 +1,7 @@
 ---
 title: Adding an attachment changes the item's ETag – the next MERGE with the old ETag fails with 412
 short-title: Attachment add changes the ETag
-summary: "`AttachmentFiles/add` bumps the item version; re-read before an `IF-MATCH` update"
+summary: "`AttachmentFiles/add` changes the item ETag; re-read before an `IF-MATCH` update"
 tags: [rest-api, lists, attachments, concurrency]
 applies-to: SharePoint Online
 last-reviewed: 2026-10-09
@@ -9,9 +9,9 @@ last-reviewed: 2026-10-09
 
 # Adding an attachment changes the item's ETag – the next MERGE with the old ETag fails with 412
 
-> **Bottom line.** `AttachmentFiles/add` is a change to the list item: it bumps the item's version and `@odata.etag`. If you then update the item with `IF-MATCH` set to the ETag you read before the upload, SharePoint rejects it with **412 Precondition Failed**. Re-read the item after the upload and continue with the new ETag.
+> **Bottom line.** `AttachmentFiles/add` is a change to the list item: its `@odata.etag` changes. If you then update the item with `IF-MATCH` set to the ETag you read before the upload, SharePoint rejects it with **412 Precondition Failed**. Re-read the item after the upload and continue with the new ETag.
 >
-> **Ve zkratce.** `AttachmentFiles/add` je změna položky: zvedne její verzi i `@odata.etag`. Když pak položku upravíš s `IF-MATCH` nastaveným na ETag z doby před nahráním, SharePoint to odmítne s **412 Precondition Failed**. Po nahrání položku znovu přečti a pokračuj s novým ETagem.
+> **Ve zkratce.** `AttachmentFiles/add` je změna položky: její `@odata.etag` se změní. Když pak položku upravíš s `IF-MATCH` nastaveným na ETag z doby před nahráním, SharePoint to odmítne s **412 Precondition Failed**. Po nahrání položku znovu přečti a pokračuj s novým ETagem.
 
 ## Symptom
 
