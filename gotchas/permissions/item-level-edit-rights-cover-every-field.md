@@ -25,11 +25,11 @@ Each of these can be driven by the employee with one REST call: set `Status` to 
 
 ## Cause
 
-Item-level permissions are per item, not per field. Column-level security doesn't exist for list items in SharePoint Online; "read-only" columns in a form are only a UI convention.
+Item-level permissions are per item, not per field: the permission scopes are site, list or library, folder and item – "the narrowest level (a single item in a list)" ([Permission levels in SharePoint](https://learn.microsoft.com/sharepoint/understanding-permission-levels)). There is no permission scope for a column, so hiding or disabling a column in your form doesn't protect it from a REST update.
 
 ## Fix
 
-1. **Identity from admin-only data.** Keep "who is the driver / manager / which vehicle" in a list only administrators write (e.g. an assignment list) and look it up there. If the item carries a link Id, verify it against the **oldest version** of the item (`items(id)/versions`, ordered by `VersionId`): an admin created it, and a user without *Delete Versions* can't remove that version.
+1. **Identity from admin-only data.** Keep "who is the driver / manager / which vehicle" in a list only administrators write (e.g. an assignment list) and look it up there. If the item carries a link Id and the item was created by an administrator, verify the Id against the **oldest version** of the item (`items(id)/versions`, lowest `VersionId`): a level without *Delete Versions* can't remove past versions. Note that the default **Contribute** level *includes* Delete Versions – use a custom level without it.
 2. **Transitions from the version history.** Read `items(id)/versions?$select=VersionId,Status,Editor` and find the version that switched to Approved. Its `Editor.LookupId` must be the expected approver (from admin-only data) or an admin; after that version, data fields must not have been changed by anyone but an admin. Otherwise don't process the item – show it to an administrator.
 3. **Validate payloads** you copy into other lists (JSON fields, amounts, dates) – UI validation isn't a boundary.
 
