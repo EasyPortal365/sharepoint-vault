@@ -4,7 +4,7 @@ short-title: ApplicationAccessPolicy rejects a shared mailbox
 summary: "\"not a security principal\"; scope app-only `Mail.Send` to a mail-enabled security group"
 tags: [graph, exchange-online, mail-send, permissions, powershell, shared-mailbox]
 applies-to: Exchange Online, Microsoft Graph (application permissions), ExchangeOnlineManagement PowerShell
-last-reviewed: 2026-08-07
+last-reviewed: 2026-10-09
 ---
 
 # `ApplicationAccessPolicy` won't scope to a shared mailbox
@@ -72,3 +72,11 @@ Propagation takes up to about an hour. Right after the change, a `403` from `sen
 **You may not need a second interactive sign-in for Graph.** If you're already signed in with Azure PowerShell as an administrator, `Get-AzAccessToken -ResourceUrl "https://graph.microsoft.com"` often returns a token whose `scp` already covers `Application.ReadWrite.All` and `AppRoleAssignment.ReadWrite.All` — enough to create the app registration and grant admin consent over REST. Decode the payload and check `scp` before relying on it. The token comes back as a `SecureString`; unwrap it with `[System.Net.NetworkCredential]::new("", $token).Password`.
 
 **Function App settings are written as a whole set.** `PUT …/config/appsettings` replaces everything. Read the current settings, merge your keys in, then write — and afterwards verify the pre-existing keys are still present. Writing only the new keys wipes the rest.
+
+## Adding a second sender later
+
+**The sender must be a mailbox.** `/users/{address}/sendMail` works for user and shared mailboxes only. A distribution list such as `info@` cannot be the sender; check `Get-Recipient <address> | Select RecipientTypeDetails` before you put the address into configuration.
+
+**Extend the scope by group membership, not by a new policy.** Add the new mailbox to the mail-enabled security group the policy points at. If the `*-ApplicationAccessPolicy` cmdlets are missing from your Exchange Online session (they were absent for a Global Administrator in ExchangeOnlineManagement 3.10 while the policy was still enforced), find the group by its members: list `Get-DistributionGroup -RecipientTypeDetails MailUniversalSecurityGroup` and pick the one that already contains the working sender mailbox.
+
+**Until the change propagates, Graph keeps answering 403** with `Access to OData is disabled: [RAOP] : Blocked by tenant configured AppOnly AccessPolicy settings.` In our case it still failed after 15 minutes and passed after about an hour. Test once after an hour instead of in a loop, especially when each test creates real records or e-mails.
