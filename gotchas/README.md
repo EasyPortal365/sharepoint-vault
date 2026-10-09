@@ -233,6 +233,7 @@ Every article carries frontmatter with `tags` and `applies-to`, so repo search g
 | [Purview audit `objectIdFilters` can return nothing — silently](graph/purview-objectidfilters-returns-nothing-silently.md) | Narrowed to one library: 0 records, no error; without the filter 1,000 records, 38 of them for that library — ask for a window, filter by object locally, A/B every server-side filter |
 | [A comma in a Graph permissions table can mean AND](graph/comma-in-a-permissions-table-can-mean-and.md) | Searching `chatMessage` needs `Chat.Read` **and** `ChannelMessage.Read.All`; the 403 spells it out, the table does not (+ `webUrl` vs `webLink` from the same endpoint) |
 | [E-mail HTML built like a web page falls apart in Outlook](graph/email-html-built-like-a-web-page-breaks-in-outlook.md) | Classic Outlook renders with Word: no flexbox, rounded corners or gradients, so white text on a gradient vanishes; tables, solid colours, literal values, a full document, and under ~102 KB for Gmail |
+| [signInActivity without P1 reports zero inactive users](graph/signinactivity-without-p1-reports-zero-inactive.md) | Selecting `signInActivity` on `/users` fails with 403 in tenants without Entra ID P1/P2; the common fallback (retry without the property) makes every user look "never signed in" or gets skipped, so inactive-user and unused-licence reports silently show 0 — store an explicit "not measured" state instead |
 
 ### azure-functions/
 
