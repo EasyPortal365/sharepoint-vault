@@ -1,10 +1,10 @@
 ---
 title: Getting bulk data into a SharePoint page from the console — a localhost server beats pasting, and beats uploading it somewhere
 short-title: Getting bulk data into a SharePoint page from the console
-summary: Serve the payload from `127.0.0.1` with CORS instead of pasting it or uploading it; loopback is a trustworthy origin so HTTPS pages may fetch it
+summary: Serve the payload from `127.0.0.1` with CORS instead of pasting it or uploading it; loopback is a trustworthy origin so HTTPS pages may fetch it – and when Chrome local network access blocks it ("Failed to fetch"), feed the files through a file input
 tags: [tooling, browser-console, sharepoint-online, cors, mixed-content, data-migration]
 applies-to: SharePoint Online, any browser DevTools / automation console
-last-reviewed: 2026-07-31
+last-reviewed: 2026-10-11
 ---
 
 # Getting bulk data into a SharePoint page from the console — a localhost server beats pasting, and beats uploading it somewhere
@@ -109,6 +109,32 @@ A bulk import that cannot be safely re-run will be re-run anyway, on the day it 
   the payload. Include a positive control (assert that a value you *know* is there really shows up),
   otherwise a broken check reports a clean run.
 - **A page reload wipes your helpers.** Anything you hung on `window` is gone; re-create it before polling.
+
+## When the localhost fetch only says "Failed to fetch"
+
+Being a trustworthy origin gets you past mixed-content blocking, but newer Chrome builds also guard
+*local network access*: a public HTTPS page reaching loopback needs a per-site permission. While that
+permission sits in its default "ask" state, the `fetch` simply rejects with `TypeError: Failed to fetch`.
+There is no CORS error in the console, and adding `Access-Control-Allow-Private-Network: true` to your
+server does not change it. (Observed October 2026, Chrome desktop, on a SharePoint Online page that had
+fetched loopback fine a few weeks earlier.)
+
+Do not click the permission through on someone else's behalf. The fallback needs no network at all:
+put a file input into the page, hand it the files, and read them as `ArrayBuffer`s.
+
+```js
+const input = Object.assign(document.createElement('input'), { type: 'file', multiple: true });
+input.style.cssText = 'position:fixed;top:4px;left:4px;z-index:99999';
+document.body.appendChild(input);
+// pick the files by hand, or from automation: CDP DOM.setFileInputFiles on this element
+// …then:
+const files = [...input.files];
+const buf = await files[0].arrayBuffer();   // same bytes as on disk – hash it before writing
+```
+
+Hash every file in the page (`crypto.subtle.digest('SHA-1', buf)`) and compare it with the hash computed
+on disk *before* the upload, then read the written file back from SharePoint and compare again. That way
+the detour through the input element cannot quietly change what lands in the library.
 
 ## See also
 

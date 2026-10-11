@@ -2,7 +2,7 @@
 
 Every single thing in the vault, on one page. Section names link to folder READMEs; leaves link straight to the content.
 
-*Last updated: 2026-10-09*
+*Last updated: 2026-10-11*
 
 - 🧰 **[scripts/](scripts/)** — PowerShell scripts with comment-based help, read-only unless stated
   - [Terminal animations](scripts/media/) — the writing scripts as an animated PowerShell console; plain SVG, no JavaScript, respects `prefers-reduced-motion`
@@ -306,7 +306,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [Driving an SPFx page from the console](gotchas/tooling/driving-a-spfx-page-from-the-console.md) — `input.value` from the console leaves React state empty (use the native setter + input event) and `window.confirm` freezes CDP automation; both fail silently as success
     - [Measuring a page in a hidden tab](gotchas/tooling/measuring-a-page-in-a-hidden-tab.md) — Hidden tabs never fire `requestAnimationFrame` and clamp `setTimeout` to ~1/s, so the run times out and looks like the very freeze you were chasing (and the code under test never ran either); CSS transitions never advance either, so `getBoundingClientRect()` keeps returning the previous position
     - [Diagnostics that cannot survive the crash](gotchas/tooling/diagnostics-that-cannot-survive-the-crash.md) — Frozen threads stop repainting, `sessionStorage` dies with the tab and the next healthy run overwrites the crash report; persist synchronously and never gate recovery on a flag
-    - [Getting bulk data into a SharePoint page from the console](gotchas/tooling/getting-bulk-data-into-a-sharepoint-page-from-the-console.md) — Serve the payload from `127.0.0.1` with CORS instead of pasting it or uploading it; loopback is a trustworthy origin so HTTPS pages may fetch it
+    - [Getting bulk data into a SharePoint page from the console](gotchas/tooling/getting-bulk-data-into-a-sharepoint-page-from-the-console.md) — Serve the payload from `127.0.0.1` with CORS instead of pasting it or uploading it; loopback is a trustworthy origin so HTTPS pages may fetch it – and when Chrome local network access blocks it ("Failed to fetch"), feed the files through a file input
     - [Git Bash mangles backslashes for native exes](gotchas/tooling/git-bash-mangles-backslashes-for-native-exes.md) — `[\\/]` arrives as `[/]`; Windows-path regexes silently under-match
     - [Contributors panel keeps a co-author you removed](gotchas/tooling/contributors-panel-stale-after-history-rewrite.md) — Panel and API answer different questions (co-authors vs authors), so verify at the source; know the documented ~24 h window before you start waiting
     - [GitHub Pages certificate stuck](gotchas/tooling/github-pages-certificate-stuck.md) — Domain added before DNS existed; remove & re-add restarts provisioning
