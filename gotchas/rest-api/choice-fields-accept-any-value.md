@@ -4,7 +4,7 @@ short-title: Choice fields accept any value
 summary: REST skips choice validation entirely; enforce vocabulary yourself
 tags: [rest-api, fields, data-quality]
 applies-to: SharePoint Online, SharePoint Server
-last-reviewed: 2026-09-24
+last-reviewed: 2026-10-12
 ---
 
 # Choice fields accept *any* value over REST — validation is a form-only illusion
@@ -54,3 +54,4 @@ Treat a Choice column as a **string column with a suggestion list**, and act acc
 - Lookup fields are the opposite: they really do require a valid target item ID — don't generalize this gotcha to them.
 - Multi-choice fields have the same non-validation (measured, see above), plus their own wire format quirks — test writes with real payloads.
 - If a write of an unknown Choice value fails for you, the vocabulary is not the reason — look at the body format, a missing field or the headers. A 400 we once blamed on the value turned out to be unmeasured: [A Choice value your field does not know is stored anyway](../lists/choice-value-missing-from-the-field-is-stored-anyway.md).
+- Re-measured 2026-10-12 on SharePoint Online: a single-choice field with six fixed values and `FillInChoice: false` accepted a POST with a value outside the list (`201`), and the item read back the exact string. Before adding a "fill-in" fix or a field update to make custom values work, measure — you probably do not need it.
