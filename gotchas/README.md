@@ -279,6 +279,7 @@ The standard server-side companion of an SPFx solution — and its own set of tr
 | [Duplicate trimming hides the file copies you search for](search/duplicate-trimming-hides-file-copies.md) | Search collapses identical content by default, so a copy-finder returns "no copies" exactly when perfect copies exist; `trimduplicates=false` on duplicate-hunting queries only |
 | [Search cannot see text inside images — and what that does to RAG](search/search-cannot-see-text-inside-images.md) | The crawler indexes the text layer only, so a value that exists only in an embedded flyer or a scan can never be found by keyword: a search-then-read pipeline is in a closed loop, the LLM re-ranker drops such documents (it scores text-layer snippets), and the only real fix is transcribing images into a crawled column |
 | [`ParentLink` from Search points at a library view](search/parentlink-points-at-a-view-not-the-library.md) | Often `…/Forms/AllItems.aspx`, so used as a path it empties a `Path:` filter and can send a save into `Forms` while a `GetList` probe still passes; normalize on read and on write |
+| [RAG finds nothing — a reasoning model used the token cap for thinking](search/reasoning-model-empty-query-falls-back-to-the-raw-question.md) | GPT-5/o-series count hidden reasoning in max_completion_tokens; a small cap on the query-generator call returns empty text (HTTP 200), and a raw-question fallback ANDs every word in KQL |
 
 ### powershell/
 
