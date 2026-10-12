@@ -31,17 +31,19 @@ Two defects that are harmless alone and fatal together.
 
 ### 1. The cap includes reasoning tokens
 
-For reasoning models, Azure OpenAI replaces `max_tokens` with `max_completion_tokens`, and that limit
-covers **both** the visible output and the hidden reasoning. A query generator with a long system
+Reasoning models accept only `max_completion_tokens` (`max_tokens` is not supported), and that limit
+is "an upper bound for the number of tokens that can be generated for a completion, including visible
+output tokens and reasoning tokens" (REST API reference). A query generator with a long system
 prompt (classification rules, KQL rules, examples) can easily think for 300+ tokens before writing
-a single word. When the cap is reached first, the response is:
+a single word. When the cap is reached first, the call still succeeds and the text is empty — here as
+relayed by the backend that wraps the Chat Completions call:
 
 ```json
 { "content": "", "usage": { "promptTokens": 1539, "completionTokens": 300 } }
 ```
 
 `completionTokens == maxTokens` with empty content is the fingerprint. Measured live against a
-`gpt-5-mini` deployment (`reasoning_effort: "low"`), same prompt, 5 runs per cell:
+`gpt-5-mini` deployment, same prompt, 5 runs per cell:
 
 | Question | cap 300 | cap 2000 |
 |---|---|---|
@@ -65,10 +67,9 @@ politely summarizes irrelevant pages.
 
 ## Fix
 
-1. **Give helper calls reasoning headroom.** Cap = expected output + a fixed reserve (≈1,500–1,700
-   tokens worked for query generation and re-ranking). The cap is only a ceiling — you pay for tokens
-   actually used, and classic models are unaffected because their output length comes from the
-   instructions, not from the cap.
+1. **Give helper calls reasoning headroom.** Cap = expected output + a fixed reserve. A cap of 2,000
+   (about 1,700 of it reserve) removed the empty answers in the measurement above. The cap is only a
+   ceiling — you are billed for the tokens actually generated, not for the cap.
 2. **Treat empty output as a failure, not as "no queries".** Log it with the usage numbers; if
    `completionTokens` equals the cap, you hit this gotcha.
 3. **Make the fallback usable on its own.** Never send the raw sentence. Strip stop words and send
@@ -87,8 +88,8 @@ politely summarizes irrelevant pages.
    Stripping punctuation also removes stray `(`, `)` and `"` that could break out of your scope
    clause (see [kql-or-escapes-your-scope-filter](kql-or-escapes-your-scope-filter.md)).
 4. **Check every helper call, not just the one that failed.** Re-rankers, title generators,
-   "suggest next step" calls and column-fill prompts all tend to have caps of 16–400 tokens copied
-   from the GPT-4 era.
+   "suggest next step" calls and column-fill prompts — in the codebase behind this article they all
+   had caps between 16 and 400 tokens.
 
 > ⚠️ **Watch for coupled limits.** If your backend uses `maxTokens` for anything else (rate
 > limiting, billing classification of "internal" vs "user" calls), raising the cap can move calls
@@ -108,5 +109,6 @@ gotcha — not at a ranking, permissions or crawl problem.
 
 ## References
 
-- [Azure OpenAI reasoning models](https://learn.microsoft.com/azure/ai-foundry/openai/how-to/reasoning) — `max_completion_tokens`, reasoning tokens, `reasoning_effort`
+- [Azure OpenAI reasoning models](https://learn.microsoft.com/azure/ai-foundry/openai/how-to/reasoning) — only `max_completion_tokens`, `max_tokens` unsupported, `reasoning_effort`
+- [Azure OpenAI REST API reference](https://learn.microsoft.com/azure/ai-foundry/openai/reference) — `max_completion_tokens` includes reasoning tokens
 - [Keyword Query Language (KQL) syntax reference](https://learn.microsoft.com/sharepoint/dev/general-development/keyword-query-language-kql-syntax-reference) — implicit AND between free-text terms
