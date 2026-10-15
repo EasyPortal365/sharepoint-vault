@@ -21,11 +21,11 @@ Creating a task (`POST /me/todo/lists/{id}/tasks`) fails with:
 HTTP 400 · invalidRequest: Invalid request
 ```
 
-The user has a mailbox and a To Do licence. Code that worked for months suddenly fails on every account. The error surfaces on the "create" button, so it looks like the POST body is wrong — but the failing request is the **list lookup before it**.
+The user has a mailbox and a To Do licence, and the code had been in production for months without changes. The error surfaces on the "create" button, so it looks like the POST body is wrong — but the failing request is the **list lookup before it**.
 
 ## Cause
 
-Measured on 2026-10-15 (Graph v1.0 and beta, delegated `Tasks.ReadWrite`):
+Measured on 2026-10-15 on one tenant and one user account (Graph v1.0 and beta, delegated `Tasks.ReadWrite`) — re-check on yours:
 
 | Request | Result |
 |---|---|
@@ -36,7 +36,7 @@ Measured on 2026-10-15 (Graph v1.0 and beta, delegated `Tasks.ReadWrite`):
 | `GET /me/todo/lists/{id}/tasks?$filter=status ne 'completed'` | 200 |
 | `GET /me/todo/lists/{id}/tasks?$select=id,title,status,dueDateTime` | **400 `RequestBroker--ParseUri`** |
 
-The documentation still lists OData query parameters for these endpoints, so treat this as a service-side change you must tolerate.
+The [List lists](https://learn.microsoft.com/graph/api/todo-list-lists) reference says only that the method "supports some of the OData query parameters", without saying which — so `$select` is not a documented guarantee. Since the same code had worked before, treat it as a service-side change you must tolerate: don't depend on `$select` here.
 
 ## Fix
 
