@@ -46,7 +46,7 @@ Don't send `$select` to To Do; filter fields client-side.
 // before: .api('/me/todo/lists').select('id,displayName,wellknownListName').top(50)
 const lists = await client.api('/me/todo/lists').top(50).get();
 
-// pick the default list; never fall back to "Flagged Emails" — it does not accept new tasks
+// pick the default list; skip "Flagged Emails" in the fallback — it holds tasks made from flagged mail (Microsoft docs), not a place for a new to-do
 const def = lists.value.find(l => l.wellknownListName === 'defaultList')
   ?? lists.value.find(l => l.wellknownListName !== 'flaggedEmails');
 
