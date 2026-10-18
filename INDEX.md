@@ -2,7 +2,7 @@
 
 Every single thing in the vault, on one page. Section names link to folder READMEs; leaves link straight to the content.
 
-*Last updated: 2026-10-15*
+*Last updated: 2026-10-18*
 
 - 🧰 **[scripts/](scripts/)** — PowerShell scripts with comment-based help, read-only unless stated
   - [Terminal animations](scripts/media/) — the writing scripts as an animated PowerShell console; plain SVG, no JavaScript, respects `prefers-reduced-motion`
@@ -246,6 +246,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [E-mail HTML built like a web page falls apart in Outlook](gotchas/graph/email-html-built-like-a-web-page-breaks-in-outlook.md) — Classic Outlook renders with Word: no flexbox, rounded corners or gradients, so white text on a gradient vanishes; tables, solid colours, literal values, a full document, and under ~102 KB for Gmail
     - [signInActivity without P1 reports zero inactive users](gotchas/graph/signinactivity-without-p1-reports-zero-inactive.md) — Selecting `signInActivity` on `/users` fails with 403 in tenants without Entra ID P1/P2; the common fallback (retry without the property) makes every user look "never signed in" or gets skipped, so inactive-user and unused-licence reports silently show 0 — store an explicit "not measured" state instead
     - [To Do rejects `$select` (400 ParseUri)](gotchas/graph/todo-rejects-select.md) — Since Oct 2026 `/me/todo/lists` and `/tasks` return 400 for any `$select` except `id`; drop `$select`, keep `$top`/`$filter`, and measure 400s call by call before trusting a docs-based theory
+    - [Graph client network failure = `statusCode: -1`](gotchas/graph/msgraph-client-network-failure-looks-like-http-error.md) — msgraph client wraps a failed `fetch` as `GraphError` statusCode -1, code `TypeError` – detect it, don't report "permission denied"
   - **azure-functions/**
     - [Windows zip deploy breaks the running app](gotchas/azure-functions/windows-zip-deploy-breaks-running-app.md) — Live `wwwroot` file locks → whole app 503; re-run the deploy, prevent with `WEBSITE_RUN_FROM_PACKAGE=1`
     - [Verifying CORS by header presence passes every origin](gotchas/azure-functions/verifying-cors-by-header-presence-passes-every-origin.md) — The header comes back for every origin (servers answer with a fallback, not an omission), so presence proves nothing; compare it to the `Origin` you sent, keep at least one case that expects *allowed*, and point the probe at a nonexistent route to prove it can fail

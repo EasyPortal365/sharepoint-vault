@@ -237,6 +237,7 @@ Every article carries frontmatter with `tags` and `applies-to`, so repo search g
 | [E-mail HTML built like a web page falls apart in Outlook](graph/email-html-built-like-a-web-page-breaks-in-outlook.md) | Classic Outlook renders with Word: no flexbox, rounded corners or gradients, so white text on a gradient vanishes; tables, solid colours, literal values, a full document, and under ~102 KB for Gmail |
 | [signInActivity without P1 reports zero inactive users](graph/signinactivity-without-p1-reports-zero-inactive.md) | Selecting `signInActivity` on `/users` fails with 403 in tenants without Entra ID P1/P2; the common fallback (retry without the property) makes every user look "never signed in" or gets skipped, so inactive-user and unused-licence reports silently show 0 — store an explicit "not measured" state instead |
 | [To Do rejects `$select` (400 ParseUri)](graph/todo-rejects-select.md) | Since Oct 2026 `/me/todo/lists` and `/tasks` return 400 for any `$select` except `id`; drop `$select`, keep `$top`/`$filter`, and measure 400s call by call before trusting a docs-based theory |
+| [Graph client network failure = `statusCode: -1`](graph/msgraph-client-network-failure-looks-like-http-error.md) | msgraph client wraps a failed `fetch` as `GraphError` statusCode -1, code `TypeError` – detect it, don't report "permission denied" |
 
 ### azure-functions/
 
