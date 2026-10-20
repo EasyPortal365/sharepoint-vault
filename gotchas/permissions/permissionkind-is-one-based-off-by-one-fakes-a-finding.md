@@ -4,7 +4,7 @@ short-title: PermissionKind is 1-based
 summary: "The flag for kind *k* is `1 << (k - 1)`, so `1 << k` invents a security finding: Contribute appears to hold `ManageLists` (it holds `ViewFormPages`). Calibrate any decoder against a known level first, and note the tell — a decode that yields a role SharePoint does not have"
 tags: [permissions, rest-api, security, csom]
 applies-to: SharePoint Online
-last-reviewed: 2026-09-04
+last-reviewed: 2026-10-20
 ---
 
 # `1 << kind` is off by one, and it lands on `ManageLists`
@@ -55,6 +55,8 @@ const has = (bp: { High: string; Low: string }, kind: number) => {
 - **Compare `RoleTypeKind`, not the display name.** A level called "Contribute" can be a custom definition; `RoleTypeKind` 2 = Read, 3 = Contribute, 6 = Edit, 5 = Full Control. Name is a label, type is the fact.
 - **Mind `Number()` on the 64-bit mask.** `Low` and `High` arrive as strings. Bits above 31 belong to `High`, and JavaScript bitwise operators are 32-bit — never `Number(Low) & (1 << 40)`.
 - **The permission that actually matters for item-level protection is `ManageLists`.** `ReadSecurity: 2` / `WriteSecurity: 2` only bind users who lack it, so *Edit* (which has it) defeats them and *Contribute* (which does not) respects them. That single bit is usually the whole question — get its position right.
+
+- **Take the kind numbers from the enum, not from memory.** The list is not contiguous (11, 15, 16 and 33–36 are unused), so neighbours are easy to misplace. A real case: `ManageWeb` written as `39` — that is `ManageAlerts`; `ManageWeb` is `31`. Other common ones: `ViewVersions` 7, `ManagePersonalViews` 10, `ManageLists` 12, `ManagePermissions` 26, `EnumeratePermissions` 63. Put the constants next to a unit test that asserts them against the documented values — a wrong constant gates nothing visibly until the day someone uses it.
 
 ## Notes
 

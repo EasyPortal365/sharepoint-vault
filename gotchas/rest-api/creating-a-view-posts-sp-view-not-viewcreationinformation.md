@@ -4,7 +4,7 @@ short-title: "`POST /views` takes an `SP.View` body"
 summary: "`ViewTypeKind` from the creation-information docs 400s, and an `@odata.type` annotation passes only with `OData-Version: 4.0`; measured recipe for view + scope + column order"
 tags: [rest-api, lists, views, spfx, odata, nometadata]
 applies-to: SharePoint Online REST (`odata=nometadata`, tested from SPFx `SPHttpClient` and from a bare `fetch`)
-last-reviewed: 2026-09-24
+last-reviewed: 2026-10-20
 ---
 
 # `POST /views` takes an `SP.View` body — `ViewTypeKind` fails, and `@odata.type` passes only under OData v4
@@ -76,6 +76,14 @@ After this sequence a read-back returns `Scope`, `RowLimit`, `Paged`, `ViewQuery
 | `3` | files only |
 
 On a library with a folder tree this is the setting that decides what the view shows; the same column list at scope `0` and scope `1` looks like two different views.
+
+### The view URL comes from `Title` — and personal views report a shared URL
+
+Measured 2026-10-20 on a throwaway list (deleted afterwards):
+
+- The `.aspx` name is built from `Title` at creation and **does not follow a later rename**. Punctuation is dropped, not converted: `faktury-po-splatnosti` became `fakturyposplatnosti.aspx`. Create with a short ASCII title, then `MERGE { "Title": "<display name>" }` — the rename returns 204 and the URL stays as created.
+- A **personal** view (`PersonalView: true`) reads back with `ServerRelativeUrl` = `…/PersonalViews.aspx`, the same for every personal view on the list. Do not use it as a link. Link any view, personal or public, as `<list DefaultViewUrl>?viewid=<view Id>`.
+- Creating a public view needs `ManageLists` on the list; a personal view needs only `ManagePersonalViews`. Check the user's `EffectiveBasePermissions` first and fall back to a personal view instead of letting the POST return 403.
 
 ## Why it bites
 
