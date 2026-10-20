@@ -4,7 +4,7 @@ short-title: Upload-only drop box for sensitive files
 summary: Giving someone write access to a protected library folder also lets them read every file in it; a list with `ReadSecurity = 2`, Contribute for the senders and Edit for the reviewers lets people send files they alone can see — the direct attachment URL of someone else's item is denied in SharePoint Online (measured)
 tags: [permissions, lists, attachments, item-level-security, libraries, sensitive-data]
 applies-to: SharePoint Online — any "people send files that only a small team may see" feature (injury photos, incident evidence, HR documents)
-last-reviewed: 2026-10-01
+last-reviewed: 2026-10-20
 ---
 
 # A drop box for sensitive files — a document library can't do it, a list with ReadSecurity 2 and attachments can
@@ -41,6 +41,8 @@ Test setup: a reviewer account (site collection admin) created an item with an a
 | Direct URL `/Lists/<inbox>/Attachments/<id>/<file>.jpg` | Access denied page ("you need access") |
 | `GetList('…')/items?$select=Id,Title` | HTTP 200, **empty** feed: the foreign item is not listed |
 | `GetList('…')/items(<id>)/AttachmentFiles` | `System.ArgumentException`: "Item does not exist" |
+
+Re-measured on 2026-10-20 on a second tenant list (chat messages with generated images stored as attachments): an account with plain read permission on the list (ViewListItems, no Manage Lists) opening another user's attachment URL got the same "you need access" page.
 
 The attachment inherits the item's item-level protection, including its direct URL. A Microsoft Q&A answer says the same and adds that on-premises SharePoint 2016 behaved differently, because attachments there sat in a separately secured folder. Measure on your own tenant before you rely on it outside SharePoint Online.
 
