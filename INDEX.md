@@ -2,7 +2,7 @@
 
 Every single thing in the vault, on one page. Section names link to folder READMEs; leaves link straight to the content.
 
-*Last updated: 2026-10-20*
+*Last updated: 2026-10-21*
 
 - 🧰 **[scripts/](scripts/)** — PowerShell scripts with comment-based help, read-only unless stated
   - [Terminal animations](scripts/media/) — the writing scripts as an animated PowerShell console; plain SVG, no JavaScript, respects `prefers-reduced-motion`
@@ -291,6 +291,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [`Export-Csv -Encoding UTF8` flips the BOM between 5.1 and 7](gotchas/powershell/export-csv-utf8-bom-flips-between-versions.md) — Same parameter, different bytes; Excel reads encoding from the BOM, so the report is readable on one machine and mojibake on the next
     - [`$host` is a constant you cannot assign](gotchas/powershell/host-is-a-constant-you-cannot-assign.md) — The obvious name for `[uri].Host` is reserved and the error blames the value; `$input`/`$args` accept the assignment silently and break later
     - [PS 5.1: `@(ConvertFrom-Json)` keeps the array wrapped](gotchas/powershell/convertfrom-json-array-not-unwrapped-in-json-output.md) — `@()` around the pipeline doesn't enumerate; later `+` nests the array and `ConvertTo-Json` writes `{value:[…],Count:n}` garbage into your JSON file
+    - [`--query "length([?…])"` from PowerShell kills `az.cmd`](gotchas/powershell/az-cmd-parentheses-in-query-break-cmd.md) — On Windows `az` is a batch file; a JMESPath query with `(` `)` and no spaces reaches cmd unquoted and breaks its IF block – return plain names and count in PowerShell
   - **security/**
     - [Sanitizer keeps script and style TEXT](gotchas/security/sanitizer-keeps-script-and-style-text.md) — An allowlist needs two sets: tags to keep, and tags to drop WITH their subtree; otherwise a pasted web page dumps its stylesheet into the article as visible text
     - [Stored XSS via list content](gotchas/security/stored-xss-from-list-content.md) — React doesn't block `javascript:` hrefs; allowlist `safeHref` with C0-strip at every sink

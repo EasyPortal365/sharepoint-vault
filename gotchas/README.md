@@ -296,6 +296,7 @@ The standard server-side companion of an SPFx solution — and its own set of tr
 | [`Export-Csv -Encoding UTF8` flips the BOM between 5.1 and 7](powershell/export-csv-utf8-bom-flips-between-versions.md) | Same parameter, different bytes; Excel reads encoding from the BOM, so the report is readable on one machine and mojibake on the next |
 | [`$host` is a constant you cannot assign](powershell/host-is-a-constant-you-cannot-assign.md) | The obvious name for `[uri].Host` is reserved and the error blames the value; `$input`/`$args` accept the assignment silently and break later |
 | [PS 5.1: `@(ConvertFrom-Json)` keeps the array wrapped](powershell/convertfrom-json-array-not-unwrapped-in-json-output.md) | `@()` around the pipeline doesn't enumerate; later `+` nests the array and `ConvertTo-Json` writes `{value:[…],Count:n}` garbage into your JSON file |
+| [`--query "length([?…])"` from PowerShell kills `az.cmd`](powershell/az-cmd-parentheses-in-query-break-cmd.md) | On Windows `az` is a batch file; a JMESPath query with `(` `)` and no spaces reaches cmd unquoted and breaks its IF block – return plain names and count in PowerShell |
 
 ### security/
 
