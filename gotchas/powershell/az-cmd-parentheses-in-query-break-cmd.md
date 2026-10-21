@@ -29,7 +29,15 @@ $count = az cognitiveservices account list -g $rg --query ("length([?name=='" + 
 
 ## Cause
 
-`az.cmd` wraps its work in a parenthesised block, roughly `IF EXIST "%~dp0..\python.exe" ( "%~dp0..\python.exe" -IBm azure.cli %* ) ELSE ( … )`. PowerShell quotes a native argument only when it contains whitespace, so `length([?name=='my-account'])` arrives in `%*` **unquoted**. When cmd expands `%*` inside the block, the `)` closes the `IF`, and the rest of the line (`-o tsv )`) is a syntax error.
+The MSI-installed `az.cmd` (source: `build_scripts/windows/scripts/az_msi.cmd` in the Azure/azure-cli repo) runs the CLI inside a parenthesised block:
+
+```bat
+@IF EXIST "%~dp0\..\python.exe" (
+  SET AZ_INSTALLER=MSI
+  "%~dp0\..\python.exe" -IBm azure.cli %*
+) ELSE ( … )
+```
+ PowerShell quotes a native argument only when it contains whitespace, so `length([?name=='my-account'])` arrives in `%*` **unquoted**. When cmd expands `%*` inside the block, the `)` closes the `IF`, and the rest of the line (`-o tsv )`) is a syntax error.
 
 Reproduce without Azure: a two-line batch file with `@IF EXIST "%~dp0x.cmd" ( echo %* )` fails the same way when called from PowerShell with that argument.
 
@@ -48,5 +56,5 @@ $exists = @($names | Where-Object { ([string]$_).Trim() -eq $name }).Count -gt 0
 ## Notes
 
 - Help texts that merely *print* a JMESPath command for the user to copy are fine – only arguments actually passed to `az.cmd` matter.
-- Quoting tricks (`'"length(...)"'`, `--%`) differ between Windows PowerShell 5.1 and PowerShell 7's native-argument modes; avoiding the characters is the only version-proof fix.
-- The same applies to other CLIs shipped as `.cmd`/`.bat` wrappers (e.g. some npm-installed tools).
+- Quoting tricks (`'"length(...)"'`, `--%`) behave differently in Windows PowerShell 5.1 and in PowerShell 7 (`$PSNativeCommandArgumentPassing`); avoiding the characters is the version-proof fix.
+- Any batch-file wrapper that expands `%*` inside an `IF ( … )` block has the same weakness – check the wrapper before passing such arguments.
