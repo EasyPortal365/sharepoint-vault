@@ -70,6 +70,7 @@ Every article carries frontmatter with `tags` and `applies-to`, so repo search g
 | [Missing field lookup = 400, not 404](rest-api/missing-field-lookup-returns-400-not-404.md) | `fields/GetByInternalNameOrTitle` on a missing field answers 400; test existence with a `$filter` instead |
 | [Attachment add changes the ETag](rest-api/adding-an-attachment-changes-the-item-etag.md) | `AttachmentFiles/add` changes the item ETag; re-read before an `IF-MATCH` update |
 | [ETag key is `@odata.etag`](rest-api/etag-key-is-odata-etag-with-at-sign.md) | SPHttpClient speaks OData v4: the item ETag comes as `@odata.etag`; reading `odata.etag` yields undefined and your IF-MATCH protection quietly disappears |
+| [Copy and Move keeps versions, timestamps and authors](rest-api/copy-and-move-keeps-versions-timestamps-and-authors.md) | The server-side Copy and Move job preserves all versions, Created/Modified and Created By/Modified By, leaves the source in place, and is callable from the browser under delegated auth; two options are mandatory or the job refuses, and a lower version limit on the destination truncates history after the transfer |
 
 ### lists/
 
