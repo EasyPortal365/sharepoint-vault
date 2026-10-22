@@ -1,7 +1,7 @@
 ---
 title: "`CreateCopyJobs` with `MoveButKeepSource` keeps version history, timestamps and authorship — and how to actually prove it"
 short-title: "Copy and Move keeps versions, timestamps and authors"
-summary: The server-side Copy and Move job preserves all versions, Created/Modified and Created By/Modified By, leaves the source in place, and is callable from the browser under delegated auth; two options are mandatory or the job refuses, and a lower version limit on the destination truncates history after the transfer
+summary: The server-side Copy and Move job preserves all versions, Created/Modified and Created By/Modified By, leaves the source in place, and is callable from the browser under delegated auth; omitting AllowSchemaMismatch is an immediate 500, a lower version limit on the destination truncates history after the transfer, and — measured — a plain CopyTo loses the version history but keeps the author
 tags: [rest-api, migration, metadata, versions, authorship, lists]
 applies-to: SharePoint Online
 last-reviewed: 2026-10-22
@@ -12,23 +12,35 @@ last-reviewed: 2026-10-22
 > **Bottom line.** `POST /_api/site/CreateCopyJobs` with `IsMoveMode: true` **and**
 > `MoveButKeepSource: true` copies a file with its **whole version history**, its original
 > `Created`/`Modified` **to the second**, and its original `Created By`/`Modified By` — while
-> leaving the source untouched. It works from the browser under the signed-in user. But you
-> cannot prove the authorship part on a file you created yourself: give the source a different
-> author first, or the result tells you nothing.
+> leaving the source untouched. A plain `CopyTo` keeps the author and the creation date but
+> **loses the version history**, so history is the reason to use the job. And you cannot prove
+> the authorship part on a file you created yourself: give the source a different author first,
+> or the result tells you nothing.
 >
 > **Ve zkratce.** `POST /_api/site/CreateCopyJobs` s `IsMoveMode: true` **a**
 > `MoveButKeepSource: true` přenese soubor s **celou historií verzí**, s původními časy
 > `Created`/`Modified` **na vteřinu** a s původním `Created By`/`Modified By` – a originál
-> nechá na místě. Z prohlížeče to jde pod přihlášeným uživatelem. Autorství ale nedokážete na
-> souboru, který jste vytvořili sami: zdroji nejdřív nastavte jiného autora, jinak výsledek
-> neříká nic.
+> nechá na místě. Obyčejné `CopyTo` autora i datum vzniku zachová, ale **historii verzí
+> ztratí** – právě kvůli historii se úloha používá. Autorství navíc nedokážete na souboru,
+> který jste vytvořili sami: zdroji nejdřív nastavte jiného autora, jinak výsledek neříká nic.
 
-## Why you would reach for this
+## Why you would reach for this — and what an ordinary copy actually does
 
-An ordinary copy (`CopyTo`, drag and drop, most scripts) takes the **current version only** and
-stamps the new file with **your** name and **today**. For a library reorganisation — new
-information architecture, documents moving to a better-designed library — that destroys exactly
-the metadata people rely on. The server-side migration job keeps it.
+`CopyTo` is usually described as the thing that "loses the metadata". Half of that is right, and
+the half that is wrong is worth knowing. Measured side by side on one file with three versions
+and a deliberately foreign author:
+
+| | `CopyTo` | copy job |
+|---|---|---|
+| version history | **0 of 3 — lost** | 3 of 3 |
+| `Created` | preserved | preserved |
+| `Created By` | **preserved** | preserved |
+
+So the reason to reach for the migration job is the **version history**, not the authorship:
+within a site collection `CopyTo` kept both the original author and the original creation date.
+If you have been avoiding `CopyTo` because it "rewrites the author", check it on your own tenant
+before building around that belief — ours did not. (Measured within one site collection; across
+site collections or tenants it was not measured.)
 
 ## The call
 
@@ -54,15 +66,25 @@ const progress = await post(`${web}/_api/site/GetCopyJobProgress`, { copyJobInfo
 
 Two things that cost time if you skip them:
 
-- **`AllowSchemaMismatch` and `AllowSmallerVersionLimitOnDestination` are not optional** in
-  practice. Without them the job refuses a target whose columns or version policy differ from
-  the source — which is nearly always, since the target is usually a freshly designed library.
+- **`AllowSchemaMismatch` is not optional** once the target's columns differ from the source's.
+  Dropping it (and `AllowSmallerVersionLimitOnDestination`) produced an immediate **HTTP 500**,
+  and the message is unusually helpful:
+
+  > `Missing or mismatched field definition on the destination list for source field
+  > 'ProjectCode' type 'Text'. … Total blocked root objects in this operation is [1].`
+
+  (`ProjectCode` stands for whatever source column the target library does not have.)
+
+  A freshly designed target library almost never matches the source, so in practice both flags
+  belong in every call.
 - `GetCopyJobProgress` returns `Logs` as an array of **JSON strings**, not objects, and
   `JobState: 0` means *finished*, not *not started*. Parse each log line and read `JobEnd` for
   `TotalErrors` / `TotalWarnings`.
 
 It is callable with `odata=nometadata` from a normal page under delegated auth — no app-only
-token, no tenant admin. (The endpoint is barely documented, so measure rather than assume.)
+token needed. The endpoint is barely documented, so measure rather than assume; and note that
+every measurement here ran as a **site collection administrator** (`IsSiteAdmin: true`), so the
+*minimum* permission level this needs is untested.
 
 ## Measured
 
@@ -101,13 +123,20 @@ authorship, the target would have named the account that started the copy.
 
 ## Known limits
 
-- **Permissions do not travel.** The job moves content and metadata, not role assignments.
+Measured:
+
 - **A lower version limit on the destination truncates history** — and *after* the transfer: a
   source with 6 versions arrived complete and was then cut to 4 by the target library's policy.
   Set the target's version policy **before** the run, not after.
-- Per-job ceilings apply (file count and total size), so large libraries need batching.
 - `StorageMetrics` on the source may answer all zeros even for a library that has items, so do
   not read zero as "empty" when sizing a transfer.
+
+Not measured here, so verify before you rely on them:
+
+- **Permissions are not expected to travel** — the job is documented as moving content and
+  metadata, not role assignments. We did not test it.
+- Per-job ceilings on file count and total size are Microsoft's documented limits, so large
+  libraries need batching.
 
 ## Rule
 
