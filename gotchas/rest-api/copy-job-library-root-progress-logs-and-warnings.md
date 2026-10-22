@@ -7,7 +7,7 @@ applies-to: SharePoint Online
 last-reviewed: 2026-10-22
 ---
 
-# Copy job monitoring: six traps measured on one evening
+# Copy job monitoring: seven traps measured on one evening
 
 > **Bottom line.** To copy a whole library, do **not** pass the library root URL to
 > `CreateCopyJobs` — it fails with HTTP 500 *"Null value for source item"*. Pass the top-level
@@ -99,5 +99,19 @@ is encoded. Do not treat this 400 as "the endpoint is not supported" — it is a
 - `TimeLastModified` of the file and `Modified` of its list item can differ by **one second** on
   the very same source file (`08:36:07` vs `08:36:06`). Compare times with a tolerance of a couple
   of seconds, or you report mismatches that are not there.
+
+## 7. `NameConflictBehavior`: what 0, 1 and 2 actually do
+
+Measured with the same file copied into the same folder:
+
+| Value | Result |
+|---|---|
+| `0` | `JobError` *"A file or folder with the name … already exists at the destination."* |
+| `1` | Replaced **in place** – the destination keeps its list item ID and `UniqueId`; the content is the source's |
+| `2` | Both kept – the copy is renamed by appending `1` to the base name, no space: `report.txt` → `report1.txt` |
+
+There is no "skip" and no "only if newer". To offer those, read the destination first and leave the existing
+(or not-newer) items out of `exportObjectUris`. `GetList('<url of a subfolder>')` resolves to the library, so the
+same read works when the destination is a folder.
 
 Related: [Copy and Move keeps versions, timestamps and authors](copy-and-move-keeps-versions-timestamps-and-authors.md).
