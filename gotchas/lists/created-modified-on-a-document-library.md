@@ -98,31 +98,40 @@ order once and read the shape out of the reply.
 
 ## The time zone is the web's, not the browser's (measured 2026-10-22)
 
-The string has no offset in it, so SharePoint has to pick a zone — and it picks the **web's
+The string carries no offset, so SharePoint has to pick a zone — and it picks the **web's
 regional time zone**, not the caller's. Format the value from the browser's clock and the date
-lands, silently, hours away from what you meant:
+lands, silently, hours away from what you meant. Measured end to end on a site whose regional
+zone is Pacific (`Bias: 480`, `DaylightBias: -60`, so UTC-7 in October), called from a
+`Europe/Prague` browser:
 
-- a document whose `Modified` was `2026-10-22T00:03:13Z`
-- formatted with `Date#getHours()` in a UTC+2 browser → `22.10.2026 2:03`
-- the site's regional zone is Pacific (UTC-7), so it was stored as `2026-10-22T09:03:00Z`
+| step | value |
+|---|---|
+| the `Modified` to preserve | `2026-10-22T00:03:13Z` |
+| formatted with `Date#getHours()` (UTC+2) | `22.10.2026 2:03` |
+| read back after the write | `2026-10-22T09:03:00Z` |
+| what the site's own zone needed | **`21.10.2026 17:03`** |
 
-Nine hours out — exactly the distance between the two zones. The write *worked*; the
-conversion did not. That is an easy thing to misread as "this cannot be done", because the
-value you read back is in the right field and simply on the wrong point of the axis.
+Nine hours out — exactly `(+2) − (−7)`. The write *worked*; the conversion did not. That is
+easy to misread as "this cannot be done", because the value you read back sits in the right
+field and simply on the wrong point of the axis.
 
-Do not compute the offset yourself (DST makes that a second bug). Ask SharePoint to convert:
+Do not compute the offset yourself — `Bias` and `DaylightBias` are two fields and DST makes
+the second one a seasonal bug. Ask SharePoint to convert:
 
 ```js
 const r = await fetch(
-  `${web}/_api/web/regionalsettings/timezone/utctolocaltime(@d)?@d='${encodeURIComponent(iso)}'`,
+  `${web}/_api/web/regionalsettings/timezone/utctolocaltime('${iso}')`,
   { method: 'POST', headers: { Accept: 'application/json;odata=nometadata',
                                'X-RequestDigest': digest } });
-const local = (await r.json()).value;   // "2026-10-22T02:03:13" in the web's zone
+const local = (await r.json()).value;   // "2026-10-21T17:03:13" for the row above
 ```
 
+The inline literal, `utctolocaltime(@dateTime)?@dateTime='…'` and an arbitrary alias name all
+answer 200 with the same `{"value":"…"}` — the alias does not have to match a parameter name.
+
 Then feed `local` into the locale format derived above. One more detail: a format without
-seconds throws the seconds away, so compare what you read back **to the minute**, or send a
-value that carries seconds.
+seconds throws the seconds away (`:13` came back as `:00`), so compare what you read back
+**to the minute**, or send a value that carries seconds.
 
 ## Rule
 
