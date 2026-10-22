@@ -1,10 +1,10 @@
 ---
 title: Created/Modified on a document library won't stick — and the API says 200 while ignoring you
 short-title: Created/Modified on a document library
-summary: A plain MERGE reports 204 and SharePoint overwrites both with "now"; `ValidateUpdateListItem` + `bNewDocumentUpdate` is the only path that holds, and ISO dates fail with HTTP 200 plus a per-field `HasException`
-tags: [lists, document-library, rest-api, metadata, dates]
+summary: A plain MERGE reports 204 and SharePoint overwrites both with "now"; `ValidateUpdateListItem` + `bNewDocumentUpdate` is the only path that holds, it wants the web's locale format (the error message tells you which) and reads it in the web's regional time zone, not the browser's
+tags: [lists, document-library, rest-api, metadata, dates, timezone]
 applies-to: SharePoint Online
-last-reviewed: 2026-10-06
+last-reviewed: 2026-10-22
 ---
 
 # Backdating documents: Created/Modified and the two ways it silently fails
@@ -82,9 +82,52 @@ const time = rs.Time24 ? '9:00' : '9:00 AM';
 const value = parts.join(rs.DateSeparator || '/') + ' ' + time; // e.g. "6.8.2026 9:00" on a Czech site
 ```
 
+## Let the error message name the format
+
+Sending the wrong shape is not a dead end — the per-field `ErrorMessage` differs depending on
+*how* wrong it is, and one of the two variants hands you the answer:
+
+| what you send | message |
+|---|---|
+| ISO (`2026-10-22T00:03:13Z`) | `You must specify a valid date within the range of 01.01.1900 and 31.12.8900.` |
+| a wrong locale order (`10/22/2026 2:03 AM` on a Czech site) | **`Enter a date and time like this: 23.02.2012 14:25`** |
+
+The second message is a worked example in the site's own format. When a date is rejected and
+you are not sure of the order, separator or clock, send something deliberately in the wrong
+order once and read the shape out of the reply.
+
+## The time zone is the web's, not the browser's (measured 2026-10-22)
+
+The string has no offset in it, so SharePoint has to pick a zone — and it picks the **web's
+regional time zone**, not the caller's. Format the value from the browser's clock and the date
+lands, silently, hours away from what you meant:
+
+- a document whose `Modified` was `2026-10-22T00:03:13Z`
+- formatted with `Date#getHours()` in a UTC+2 browser → `22.10.2026 2:03`
+- the site's regional zone is Pacific (UTC-7), so it was stored as `2026-10-22T09:03:00Z`
+
+Nine hours out — exactly the distance between the two zones. The write *worked*; the
+conversion did not. That is an easy thing to misread as "this cannot be done", because the
+value you read back is in the right field and simply on the wrong point of the axis.
+
+Do not compute the offset yourself (DST makes that a second bug). Ask SharePoint to convert:
+
+```js
+const r = await fetch(
+  `${web}/_api/web/regionalsettings/timezone/utctolocaltime(@d)?@d='${encodeURIComponent(iso)}'`,
+  { method: 'POST', headers: { Accept: 'application/json;odata=nometadata',
+                               'X-RequestDigest': digest } });
+const local = (await r.json()).value;   // "2026-10-22T02:03:13" in the web's zone
+```
+
+Then feed `local` into the locale format derived above. One more detail: a format without
+seconds throws the seconds away, so compare what you read back **to the minute**, or send a
+value that carries seconds.
+
 ## Rule
 
-Two different write paths, two different value formats, and one of them reports success it
-did not achieve. When a write "succeeds" but the value is not what you asked for, read the
+Two different write paths, two different value formats, one of them reports success it
+did not achieve — and even when it does write, the value is interpreted somewhere you did not
+choose. When a write "succeeds" but the value is not what you asked for, read the
 value back before believing the status code — and for anything going through
 `ValidateUpdateListItem`, treat `HasException` as the real status.
