@@ -1,8 +1,8 @@
 ---
 title: Created/Modified on a document library won't stick — and the API says 200 while ignoring you
 short-title: Created/Modified on a document library
-summary: A plain MERGE reports 204 and SharePoint overwrites both with "now"; `ValidateUpdateListItem` + `bNewDocumentUpdate` is the only path that holds, it wants the web's locale format (the error message tells you which), reads it in the web's regional time zone rather than the browser's, and truncates to the minute even when you send seconds
-tags: [lists, document-library, rest-api, metadata, dates, timezone]
+summary: A plain MERGE reports 204 and SharePoint overwrites both with "now"; `ValidateUpdateListItem` + `bNewDocumentUpdate` is the only path that holds, it wants the web's locale format (the error message tells you which), reads it in the web's regional time zone rather than the browser's, truncates to the minute even when you send seconds, and drops `Author` without a word unless all four author/date fields arrive together
+tags: [lists, document-library, rest-api, metadata, dates, timezone, authorship]
 applies-to: SharePoint Online
 last-reviewed: 2026-10-22
 ---
@@ -136,6 +136,36 @@ them (`21.10.2026 17:18:34`) still came back rounded down to `…:18:00Z`. The f
 the minute whatever you give it, so a restored `Modified` is accurate **to the minute, not to
 the second** — and a check that compares exact timestamps will report a failure on a write
 that actually succeeded.
+
+## Authorship: all four fields together, or `Author` is dropped in silence (measured 2026-10-22)
+
+`Created By` and `Modified By` can be rewritten the same way — but only as a complete set.
+Three variants on one item, the person always as a claim
+(`[{"Key":"i:0#.f|membership|…"}]`), dates in the web’s locale and zone,
+`bNewDocumentUpdate: true`:
+
+| fields sent | `Modified By` | `Created By` | timestamps |
+|---|---|---|---|
+| `Editor` + `Modified` | **rewritten** | — | held |
+| `Author` + `Created` | — | **unchanged** | `Modified` moved |
+| `Author` + `Editor` + `Created` + `Modified` | **rewritten** | **rewritten** | held |
+
+The middle row is the trap. `Author` sent on its own did not take **and the response said
+nothing about it**: HTTP 200, `HasException: false` on every field, and the ordinary column in
+the same call was written — so the update did happen, and the author simply stayed as it was.
+That is quieter than the failure above: there, one bad field kills the whole update and at
+least names itself in `ErrorMessage`; here a single field is ignored **without any trace in
+the response**. No amount of response checking finds it. Only reading `AuthorId` back does.
+
+So: to change authorship, send `Author`, `Editor`, `Created` and `Modified` **in one call**,
+and confirm from `AuthorId`/`EditorId` read back afterwards. Why `Author` alone is not enough
+is not established — one measurement does not explain a mechanism. (A plausible guess: with no
+`Modified` supplied, SharePoint recomputes the modification stamp and `Editor` itself, and
+discards the supplied `Author` along the way.)
+
+One more thing worth knowing: a plain `MERGE` PATCH on the item **stamps `Editor` to whoever
+is calling**. That stays invisible as long as the caller happens to be the current editor,
+which is why it is easy to miss.
 
 ## Rule
 
