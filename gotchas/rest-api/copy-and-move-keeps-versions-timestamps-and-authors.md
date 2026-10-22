@@ -132,9 +132,12 @@ Measured:
   not read zero as "empty" when sizing a transfer.
 - **Names containing `#` or `%` transfer fine** — and `exportObjectUris` wants the **raw**,
   unencoded path (`…/discount 50% final.txt`), not `%25`. It looks like an invalid URI and it
-  works. Such files can only be uploaded and read through the ResourcePath API
-  (`Files/AddUsingPath(decodedurl=…)`, `GetFileByServerRelativePath(decodedurl=…)`); the older
-  `Files/add(url=…)` and `GetFileByServerRelativeUrl` cannot reach them.
+  works on the first try.
+
+  Note the contrast with *Hash and percent in file names need the ResourcePath API*: to
+  **address** such a file you need `…ByServerRelativePath(decodedurl=…)` with the path
+  URL-encoded, but to **name it inside the copy job's payload** you pass it raw. Different
+  parameter, opposite rule — encoding it for the job is the mistake to avoid.
 
 Not measured here, so verify before you rely on them:
 
