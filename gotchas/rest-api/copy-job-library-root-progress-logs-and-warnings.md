@@ -1,13 +1,13 @@
 ---
 title: "`CreateCopyJobs`: the library root is refused, progress logs are handed out once, and `JobWarning` is not a failure"
 short-title: "Copy job: library root, one-shot logs, harmless warnings"
-summary: Passing a document library's root folder URL to CreateCopyJobs fails with HTTP 500 "Null value for source item" while a subfolder URL copies the folder with its content; GetCopyJobProgress returns only the log entries queued since the previous call, a job emits several JobStart/JobEnd pairs so JobEnd alone is not completion (JobState 0 is), a successful copy can carry a JobWarning about label based policy, and ListItemAllFields refuses $expand=Author
+summary: Passing a document library's root folder URL to CreateCopyJobs fails with HTTP 500 "Null value for source item" while a subfolder URL copies the folder with its content; several file names containing the hash sign break a multi-URI job with HTTP 400 unless it is sent as %23; GetCopyJobProgress returns only the log entries queued since the previous call, a job emits several JobStart/JobEnd pairs so JobEnd alone is not completion (JobState 0 is), a successful copy can carry a JobWarning about label based policy, and ListItemAllFields refuses $expand=Author
 tags: [rest-api, migration, copy-job, monitoring, metadata]
 applies-to: SharePoint Online
 last-reviewed: 2026-10-22
 ---
 
-# Copy job monitoring: four traps measured on one run
+# Copy job monitoring: six traps measured on one evening
 
 > **Bottom line.** To copy a whole library, do **not** pass the library root URL to
 > `CreateCopyJobs` — it fails with HTTP 500 *"Null value for source item"*. Pass the top-level
@@ -70,5 +70,24 @@ GET /_api/web/GetFileByServerRelativePath(decodedurl=@p)?@p='/sites/a/Lib/x.docx
 
 `TimeCreated`, `TimeLastModified`, `Author` and `ModifiedBy` matched the list item's `Created`,
 `Modified`, `Author` and `Editor` on both the source and the copied file.
+
+## 5. `#` in file names: encode it as `%23`
+
+The URI parser treats everything after `#` as a fragment. One file named `report #1-a.txt`
+works, but five files `report #1-a.txt`, `report #1-b.txt`, … in **one** job collapse to the
+same key and the whole call fails with HTTP 400 *"An item with the same key has already been
+added"* (`System.ArgumentException`). Sending `#` as `%23` created the job and all 14 files —
+five with `#`, one with `%` — arrived with their exact names. Keep `%` itself **raw**; only `#`
+is encoded. Do not treat this 400 as "the endpoint is not supported" — it is a data error.
+
+## 6. Times: what the job carries over, and a one-second jitter
+
+- If a file's **Created** was rewritten after upload (for example with `ValidateUpdateListItem`),
+  the copy gets the **original** creation time, not the rewritten one: source `08:35:00`
+  (rewritten), fresh copy `08:35:49` (the upload time). Verification that compares Created will
+  rightly flag it.
+- `TimeLastModified` of the file and `Modified` of its list item can differ by **one second** on
+  the very same source file (`08:36:07` vs `08:36:06`). Compare times with a tolerance of a couple
+  of seconds, or you report mismatches that are not there.
 
 Related: [Copy and Move keeps versions, timestamps and authors](copy-and-move-keeps-versions-timestamps-and-authors.md).
