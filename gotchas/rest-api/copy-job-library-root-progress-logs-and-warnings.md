@@ -68,8 +68,18 @@ GET /_api/web/GetFileByServerRelativePath(decodedurl=@p)?@p='/sites/a/Lib/x.docx
     &$expand=Author,ModifiedBy
 ```
 
-`TimeCreated`, `TimeLastModified`, `Author` and `ModifiedBy` matched the list item's `Created`,
-`Modified`, `Author` and `Editor` on both the source and the copied file.
+`TimeCreated` and `TimeLastModified` match the list item's `Created` and `Modified` (within a
+second, see section 6). **The file's `Author` is not always the item's Created By**, though: after a
+plain `CopyTo`, the file's `Author` is whoever ran the copy, while the item's Created By keeps the
+original person — and the copy job carries over the **item** value. Read the names from the item
+without `$expand`:
+
+```
+GET /_api/web/GetFileByServerRelativePath(decodedurl=@p)/ListItemAllFields/FieldValuesAsText
+    ?@p='/sites/a/Lib/x.docx'&$select=Author,Editor
+```
+
+Comparing the file's `Author` reported a mismatch on a copy that was in fact faithful.
 
 ## 5. `#` in file names: encode it as `%23`
 
