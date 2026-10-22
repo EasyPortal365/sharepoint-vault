@@ -130,6 +130,11 @@ Measured:
   Set the target's version policy **before** the run, not after.
 - `StorageMetrics` on the source may answer all zeros even for a library that has items, so do
   not read zero as "empty" when sizing a transfer.
+- **Names containing `#` or `%` transfer fine** — and `exportObjectUris` wants the **raw**,
+  unencoded path (`…/discount 50% final.txt`), not `%25`. It looks like an invalid URI and it
+  works. Such files can only be uploaded and read through the ResourcePath API
+  (`Files/AddUsingPath(decodedurl=…)`, `GetFileByServerRelativePath(decodedurl=…)`); the older
+  `Files/add(url=…)` and `GetFileByServerRelativeUrl` cannot reach them.
 
 Not measured here, so verify before you rely on them:
 
