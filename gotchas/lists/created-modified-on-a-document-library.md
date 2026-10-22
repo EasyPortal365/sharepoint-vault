@@ -1,7 +1,7 @@
 ---
 title: Created/Modified on a document library won't stick — and the API says 200 while ignoring you
 short-title: Created/Modified on a document library
-summary: A plain MERGE reports 204 and SharePoint overwrites both with "now"; `ValidateUpdateListItem` + `bNewDocumentUpdate` is the only path that holds, it wants the web's locale format (the error message tells you which) and reads it in the web's regional time zone, not the browser's
+summary: A plain MERGE reports 204 and SharePoint overwrites both with "now"; `ValidateUpdateListItem` + `bNewDocumentUpdate` is the only path that holds, it wants the web's locale format (the error message tells you which), reads it in the web's regional time zone rather than the browser's, and truncates to the minute even when you send seconds
 tags: [lists, document-library, rest-api, metadata, dates, timezone]
 applies-to: SharePoint Online
 last-reviewed: 2026-10-22
@@ -129,9 +129,13 @@ const local = (await r.json()).value;   // "2026-10-21T17:03:13" for the row abo
 The inline literal, `utctolocaltime(@dateTime)?@dateTime='…'` and an arbitrary alias name all
 answer 200 with the same `{"value":"…"}` — the alias does not have to match a parameter name.
 
-Then feed `local` into the locale format derived above. One more detail: a format without
-seconds throws the seconds away (`:13` came back as `:00`), so compare what you read back
-**to the minute**, or send a value that carries seconds.
+Then feed `local` into the locale format derived above.
+
+**Seconds do not survive, and sending them does not help.** A value that explicitly carried
+them (`21.10.2026 17:18:34`) still came back rounded down to `…:18:00Z`. The form truncates to
+the minute whatever you give it, so a restored `Modified` is accurate **to the minute, not to
+the second** — and a check that compares exact timestamps will report a failure on a write
+that actually succeeded.
 
 ## Rule
 
