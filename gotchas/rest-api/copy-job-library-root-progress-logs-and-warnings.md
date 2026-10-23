@@ -1,13 +1,13 @@
 ---
 title: "`CreateCopyJobs`: the library root is refused, progress logs are handed out once, and `JobWarning` is not a failure"
 short-title: "Copy job: library root, one-shot logs, harmless warnings"
-summary: Passing a document library's root folder URL to CreateCopyJobs fails with HTTP 500 "Null value for source item" while a subfolder URL copies the folder with its content; several file names containing the hash sign break a multi-URI job with HTTP 400 unless it is sent as %23; GetCopyJobProgress returns only the log entries queued since the previous call, a job emits several JobStart/JobEnd pairs so JobEnd alone is not completion (JobState 0 is), a successful copy can carry a JobWarning about label based policy, ListItemAllFields refuses $expand=Author, and item-level unique permissions are not copied (IncludeItemPermissions fails with HTTP 500 on a copy) but can be re-applied afterwards without touching Modified
+summary: Passing a document library's root folder URL to CreateCopyJobs fails with HTTP 500 "Null value for source item" while a subfolder URL copies the folder with its content; several file names containing the hash sign break a multi-URI job with HTTP 400 unless it is sent as %23; GetCopyJobProgress returns only the log entries queued since the previous call, a job emits several JobStart/JobEnd pairs so JobEnd alone is not completion (JobState 0 is), a successful copy can carry a JobWarning about label based policy, ListItemAllFields refuses $expand=Author, and item-level unique permissions are not copied (IncludeItemPermissions fails with HTTP 500 on a copy) but can be re-applied afterwards without touching Modified, and every job must take URIs from one parent folder into a destination that already exists
 tags: [rest-api, migration, copy-job, monitoring, metadata]
 applies-to: SharePoint Online
 last-reviewed: 2026-10-23
 ---
 
-# Copy job monitoring: eight traps measured in two days
+# Copy job monitoring: nine traps measured in two days
 
 > **Bottom line.** To copy a whole library, do **not** pass the library root URL to
 > `CreateCopyJobs` — it fails with HTTP 500 *"Null value for source item"*. Pass the top-level
@@ -149,5 +149,22 @@ destination library's roles.
   `roleassignments/getbyprincipalid(<your id>)/deleteobject()`, or the copy silently gains an extra
   principal. The final set then matched the source exactly, and `Modified` and the ETag were still
   unchanged.
+
+## 9. One parent per job, and the destination folder must exist
+
+- A job whose `exportObjectUris` came from two folder levels (files from a subfolder plus a file
+  from the library root) failed with HTTP 500 `SPMigrationQosException` *"Objects to copy or move
+  do not come from the same level of the parent object."* Nothing was copied. Group item URIs by
+  their parent folder and send one job per group.
+- Sending every file to the library root is the other half of the trap: a file from `A/B/x.txt`
+  lands as `x.txt` in the destination root. Point each group at the matching subfolder of the
+  destination instead.
+- A `destinationUri` that does not exist yet fails at job creation with HTTP 500 *"Failed to verify
+  the existence of destination location"*. Create the folders first – **one level at a time**:
+  `web/folders/AddUsingPath` with two missing levels returns 500, while
+  `GetFolderByServerRelativePath(parent)/Folders/AddUsingPath(decodedurl='name')` returns 200. An
+  existing folder returns **400** "already exists", so check `?$select=Exists` first (it returns
+  `{ "Exists": false }` with 200 for a missing folder). In PnP PowerShell, `Resolve-PnPFolder` does
+  both.
 
 Related: [Copy and Move keeps versions, timestamps and authors](copy-and-move-keeps-versions-timestamps-and-authors.md).
