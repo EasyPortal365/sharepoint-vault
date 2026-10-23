@@ -150,6 +150,14 @@ destination library's roles.
   principal. The final set then matched the source exactly, and `Modified` and the ETag were still
   unchanged.
 
+Folders with unique permissions lose them the same way. Re-apply them through
+`GetFolderByServerRelativePath(…)/ListItemAllFields` **before** the files and with
+`clearSubscopes=false` – `true` would wipe the unique permissions of everything already inside the
+folder. Files that inherit from a restricted folder in the source are then just as restricted in
+the destination. SharePoint adds a hidden `Limited Access` entry on the parents of an item with
+unique permissions (even for the caller who was on that item only briefly). Leave it out of any
+comparison.
+
 ## 9. One parent per job, and the destination folder must exist
 
 - A job whose `exportObjectUris` came from two folder levels (files from a subfolder plus a file
