@@ -1,26 +1,28 @@
 ---
 title: "`CreateCopyJobs`: the library root is refused, progress logs are handed out once, and `JobWarning` is not a failure"
 short-title: "Copy job: library root, one-shot logs, harmless warnings"
-summary: Passing a document library's root folder URL to CreateCopyJobs fails with HTTP 500 "Null value for source item" while a subfolder URL copies the folder with its content; several file names containing the hash sign break a multi-URI job with HTTP 400 unless it is sent as %23; GetCopyJobProgress returns only the log entries queued since the previous call, a job emits several JobStart/JobEnd pairs so JobEnd alone is not completion (JobState 0 is), a successful copy can carry a JobWarning about label based policy, and ListItemAllFields refuses $expand=Author
+summary: Passing a document library's root folder URL to CreateCopyJobs fails with HTTP 500 "Null value for source item" while a subfolder URL copies the folder with its content; several file names containing the hash sign break a multi-URI job with HTTP 400 unless it is sent as %23; GetCopyJobProgress returns only the log entries queued since the previous call, a job emits several JobStart/JobEnd pairs so JobEnd alone is not completion (JobState 0 is), a successful copy can carry a JobWarning about label based policy, ListItemAllFields refuses $expand=Author, and item-level unique permissions are not copied (IncludeItemPermissions fails with HTTP 500 on a copy) but can be re-applied afterwards without touching Modified
 tags: [rest-api, migration, copy-job, monitoring, metadata]
 applies-to: SharePoint Online
-last-reviewed: 2026-10-22
+last-reviewed: 2026-10-23
 ---
 
-# Copy job monitoring: seven traps measured on one evening
+# Copy job monitoring: eight traps measured in two days
 
 > **Bottom line.** To copy a whole library, do **not** pass the library root URL to
 > `CreateCopyJobs` — it fails with HTTP 500 *"Null value for source item"*. Pass the top-level
 > folders (a subfolder URL copies the folder with everything in it) and the root-level files one
 > by one. When polling `GetCopyJobProgress`, **keep every batch of logs**: each call returns only
 > what was queued since the last one. Treat the job as finished only when `JobState` is `0`, and
-> do not count `JobWarning` as a failure.
+> do not count `JobWarning` as a failure. Item-level unique permissions do **not** travel with a
+> copy; re-apply them afterwards – that does not change `Modified`.
 >
 > **Ve zkratce.** Celou knihovnu do `CreateCopyJobs` neposílejte adresou jejího kořene – úloha
 > spadne na HTTP 500 *„Null value for source item“*. Pošlete nejvyšší složky (adresu podsložky
 > úloha bere i s obsahem) a soubory z kořene jednotlivě. Při dotazování `GetCopyJobProgress`
 > **schovávejte všechny dávky logu** – každé volání vrací jen to, co přibylo od minula. Hotovo je
-> až při `JobState` 0 a `JobWarning` není chyba.
+> až při `JobState` 0 a `JobWarning` není chyba. Vlastní oprávnění položek kopie **nepřenese** –
+> dopište je po kopii, datum změny se tím nepohne.
 
 ## 1. Library root vs. subfolder
 
@@ -113,5 +115,23 @@ Measured with the same file copied into the same folder:
 There is no "skip" and no "only if newer". To offer those, read the destination first and leave the existing
 (or not-newer) items out of `exportObjectUris`. `GetList('<url of a subfolder>')` resolves to the library, so the
 same read works when the destination is a folder.
+
+## 8. Item-level permissions are not copied – re-apply them afterwards
+
+Three files were copied library to library in one site collection: one with unique permissions
+(inheritance broken, Visitors: Read), one inheriting, one with unique permissions plus Visitors:
+Contribute. In the destination **all three** had `HasUniqueRoleAssignments: false` and the
+destination library's roles.
+
+- `options.IncludeItemPermissions: true` (documented as *"Reserved for internal use only"*) on a
+  copy fails with HTTP 500 `SPMigrationQosException` *"MoveAndShareFile scenario is not enabled for
+  non-move operations"* – the job is not created.
+- Re-applying permissions on the copied item – `ListItemAllFields/breakroleinheritance(copyRoleAssignments=false,clearSubscopes=true)`
+  and `roleassignments/addroleassignment(principalid=…,roledefid=…)` – left `TimeLastModified`,
+  the item's `Modified`, the version label, Modified By and the **ETag** unchanged. Unlike writing a
+  field value, a permission change does not bump the modification date.
+- Principal IDs are scoped to the site collection: SharePoint groups of the source do not exist in
+  another site collection, and users have to be resolved there (`ensureuser`) before
+  `addroleassignment`.
 
 Related: [Copy and Move keeps versions, timestamps and authors](copy-and-move-keeps-versions-timestamps-and-authors.md).
