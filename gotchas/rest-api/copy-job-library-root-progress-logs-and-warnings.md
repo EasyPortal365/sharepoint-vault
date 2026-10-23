@@ -133,5 +133,21 @@ destination library's roles.
 - Principal IDs are scoped to the site collection: SharePoint groups of the source do not exist in
   another site collection, and users have to be resolved there (`ensureuser`) before
   `addroleassignment`.
+- **Trap:** the associated Owners, Visitors and Members groups had the **same IDs (3, 4, 5) in two
+  different site collections**. Code that copies the source `PrincipalId` "works" by accident and,
+  in a collection created in a different order, grants rights to an unrelated group. Map a
+  SharePoint group by its role (source associated Owner/Member/Visitor → the destination's group of
+  the same kind), otherwise by name – never by ID.
+- Across two site collections, `ensureuser` in the destination with the source `LoginName` returned
+  200 for a user (`i:0#.f|membership|…`) and for a security group (`c:0t.c|tenant|…`); both got new
+  IDs there. `PrincipalType`: 1 user, 4 security or Microsoft 365 group, 8 SharePoint group. Skip
+  hidden roles (`Limited Access`, `Web-Only Limited Access`) and the `Limited Access System Group`;
+  map roles by `RoleTypeKind` (2 Read, 3 Contribute, 4 Design, 5 Full Control, 6 Edit), custom
+  roles (0) by name.
+- `breakroleinheritance(copyRoleAssignments=false)` leaves only **the caller**, with Full Control
+  (a site collection admin too). After adding the source roles, remove yourself with
+  `roleassignments/getbyprincipalid(<your id>)/deleteobject()`, or the copy silently gains an extra
+  principal. The final set then matched the source exactly, and `Modified` and the ETag were still
+  unchanged.
 
 Related: [Copy and Move keeps versions, timestamps and authors](copy-and-move-keeps-versions-timestamps-and-authors.md).
