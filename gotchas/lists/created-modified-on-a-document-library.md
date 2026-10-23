@@ -4,7 +4,7 @@ short-title: Created/Modified on a document library
 summary: A plain MERGE reports 204 and SharePoint overwrites both with "now"; `ValidateUpdateListItem` + `bNewDocumentUpdate` is the only path that holds, it wants the web's locale format (the error message tells you which), reads it in the web's regional time zone rather than the browser's, truncates to the minute even when you send seconds, and drops `Author` without a word unless all four author/date fields arrive together
 tags: [lists, document-library, rest-api, metadata, dates, timezone, authorship]
 applies-to: SharePoint Online
-last-reviewed: 2026-10-22
+last-reviewed: 2026-10-23
 ---
 
 # Backdating documents: Created/Modified and the two ways it silently fails
@@ -166,6 +166,19 @@ discards the supplied `Author` along the way.)
 One more thing worth knowing: a plain `MERGE` PATCH on the item **stamps `Editor` to whoever
 is calling**. That stays invisible as long as the caller happens to be the current editor,
 which is why it is easy to miss.
+
+## Site Pages: the "no new version" switch still leaves a draft (measured 2026-10-20)
+
+On the **Site Pages** library (minor versions on, pages published as majors), running
+`ValidateUpdateListItem` with `bNewDocumentUpdate: true` to rewrite `Author`/`Editor` on
+published pages bumped every page from `x.0` to `x.1`. Readers kept seeing the last published
+major, but owners and editors got the page bar **"Draft, published on …"** with a
+**"Publish changes"** button – on the home page, too. Nothing in the response hints at it.
+
+Check `OData__UIVersionString` before and after. To clean up, publish each page again
+(`GetFileByServerRelativePath(decodedurl='…')/Publish('')`) – that creates the next major
+version and sets `Editor` (not `Author`) to the caller, so do the authorship rewrite **before**
+the final publish, or accept the caller as last editor.
 
 ## Rule
 
