@@ -29,9 +29,9 @@ Reads with the same identifier work (`GET /users/user@contoso.com/transitiveMemb
 
 ## Cause
 
-`/users/{id | userPrincipalName}` accepts both forms, but the `directoryObjects/{id}` reference used by `$ref` (and the `members/{id}/$ref` path for removal) resolves **directory objects by object ID only**. A UPN is not an object identifier there.
+`/users/{id | userPrincipalName}` accepts both forms, but the `directoryObjects/{id}` reference used by `$ref` resolves **directory objects by object ID only** — a UPN is not an object identifier there (measured on `POST …/members/$ref`). The removal path `DELETE /groups/{id}/members/{id}/$ref` is documented with the directory object ID as well; we resolve the UPN there too rather than rely on undocumented behaviour.
 
-A missing permission would look different: **403 `Authorization_RequestDenied`**. A 400 right after granting consent points at the input format, not at the grant.
+A missing permission looks different: the documentation lists **403 Forbidden** for adding a member you don't have permissions to add, and **400** for input problems (already a member, unsupported member type, a just-created group that hasn't replicated). A 400 right after granting consent points at the input, not at the grant.
 
 ## Fix
 
@@ -58,6 +58,8 @@ await client.api(`/groups/${groupId}/members/${await objectId(client, user)}/$re
 Treat 400 "One or more added object references already exist" on add as success (the user is already a member).
 
 ## See also
+
+- Microsoft Learn: [Add members](https://learn.microsoft.com/en-us/graph/api/group-post-members?view=graph-rest-1.0) · [Remove member](https://learn.microsoft.com/en-us/graph/api/group-delete-members?view=graph-rest-1.0)
 
 - [`directoryobject-collections-reject-select-and-top.md`](directoryobject-collections-reject-select-and-top.md)
 - [`reread-fresh-before-bulk-membership-removal.md`](reread-fresh-before-bulk-membership-removal.md)
