@@ -1,7 +1,7 @@
 ---
 title: The memberOf operator in dynamic group rules stops working on 3 November 2026 — groups freeze instead of failing
 short-title: "Dynamic `memberOf` rules freeze after 3 Nov 2026"
-summary: "Entra ends the `memberOf` preview operator in dynamic membership rules on 3 Nov 2026 (MC1448379): affected groups, dynamic admin units and auto-assignment policies keep their last membership and never update again. Offboarding tools that skip dynamic groups leave departed users inside them. The Graph `/memberOf` endpoints are not affected."
+summary: "Entra ends the `memberOf` preview operator in dynamic membership rules on 3 Nov 2026 (MC1448379): affected groups, dynamic admin units and auto-assignment policies keep their last membership and never update again. Offboarding tools that skip dynamic groups leave departed users inside them. The notice covers only the rule operator, not the Graph `/memberOf` endpoints."
 tags: [graph, groups, dynamic-membership, entra-id, offboarding, governance]
 applies-to: Microsoft Entra ID dynamic membership groups, dynamic administrative units, entitlement management auto-assignment policies
 last-reviewed: 2026-10-25
@@ -20,7 +20,7 @@ last-reviewed: 2026-10-25
 | Dynamic groups with `memberOf` in `membershipRule` | Membership frozen in its last state |
 | Dynamic administrative units using `memberOf` | Frozen |
 | Entitlement management auto-assignment policies using `memberOf` | Frozen |
-| Graph `GET /users/{id}/memberOf`, `/transitiveMemberOf`, `/groups/{id}/members` | **Unchanged** — this is only the rule operator |
+| Graph `GET /users/{id}/memberOf`, `/transitiveMemberOf`, `/groups/{id}/members` | Not part of the notice — it covers only the operator inside `membershipRule` |
 
 The operator never left preview. Even before the cutoff it had a documented limitation that matters for offboarding: removing a member from a *child* group does not remove them from the `memberOf` group until the rule is edited.
 
@@ -51,4 +51,5 @@ During offboarding, read the rule of each skipped dynamic group (`GET /groups/{i
 ## Sources
 
 - Microsoft Learn — [Configure dynamic membership groups with the memberOf operator (preview)](https://learn.microsoft.com/entra/identity/users/groups-dynamic-rule-member-of), section *Migrate before the preview ends* and *Preview limitations*
-- Message Center MC1448379 — *Microsoft Entra ID: Replace MemberOf rules by November 3, 2026*
+- Message Center MC1448379 — *Microsoft Entra ID: Replace MemberOf rules by November 3, 2026* ([mirror](https://mc.merill.net/message/MC1448379))
+- Microsoft Graph — [Remove member](https://learn.microsoft.com/graph/api/group-delete-members?view=graph-rest-1.0) ("You can't remove a member from groups with dynamic memberships") and [group resource](https://learn.microsoft.com/graph/api/resources/group?view=graph-rest-1.0#properties) (`membershipRule` filters: `eq`, `ne`, `not`, `ge`, `le`, `startsWith`)
