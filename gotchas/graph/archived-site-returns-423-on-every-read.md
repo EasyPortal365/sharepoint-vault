@@ -42,7 +42,7 @@ Measured with a delegated token (SharePoint Administrator, `Sites.Archive.All` g
 | `GET /v1.0/sites?search=project-x` | `200`, empty `value` |
 | `POST /beta/sites/{host},{siteCollectionId}/unarchive` | `202`, site reachable again within seconds |
 
-An archived site is locked for reads, and `archivalDetails` is only visible while you can read the site. In practice you can't tell `recentlyArchived` from `fullyArchived` through Graph. A site locked with `Set-SPOSite -LockState NoAccess` returns the same `423`, so a 423 alone doesn't prove the site is archived.
+An archived site is locked for reads, and `archivalDetails` is only visible while you can read the site. In practice you can't tell `recentlyArchived` from `fullyArchived` through Graph. `resourceLocked` is the generic "site is locked" signal; a site locked with `Set-SPOSite -LockState NoAccess` is blocked as well (not measured here), so don't treat a 423 alone as proof that the site is archived.
 
 ## Fix
 
@@ -54,7 +54,7 @@ An archived site is locked for reads, and `archivalDetails` is only visible whil
    await client.api(`/sites/${r.id}/archive`).version('beta').post({});
    ```
 
-2. **When a read returns 423** and you have the GUID, treat the site as "archived or locked, phase unknown" instead of failing. Don't flip your own records to "archived" on that basis, because a NoAccess lock looks identical.
+2. **When a read returns 423** and you have the GUID, treat the site as "archived or locked, phase unknown" instead of failing. Don't flip your own records to "archived" on that basis – a site locked with NoAccess is blocked too.
 
 3. **Reactivate by the stored GUID:**
 
