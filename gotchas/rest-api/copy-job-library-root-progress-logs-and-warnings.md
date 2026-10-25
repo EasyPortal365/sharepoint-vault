@@ -1,10 +1,10 @@
 ---
 title: "`CreateCopyJobs`: the library root is refused, progress logs are handed out once, and `JobWarning` is not a failure"
 short-title: "Copy job: library root, one-shot logs, harmless warnings"
-summary: Passing a document library's root folder URL to CreateCopyJobs fails with HTTP 500 "Null value for source item" while a subfolder URL copies the folder with its content; several file names containing the hash sign break a multi-URI job with HTTP 400 unless it is sent as %23; GetCopyJobProgress returns only the log entries queued since the previous call, a job emits several JobStart/JobEnd pairs so JobEnd alone is not completion (JobState 0 is), a successful copy can carry a JobWarning about label based policy, ListItemAllFields refuses $expand=Author, and item-level unique permissions are not copied (IncludeItemPermissions fails with HTTP 500 on a copy) but can be re-applied afterwards without touching Modified, and every job must take URIs from one parent folder into a destination that already exists
+summary: Passing a document library's root folder URL to CreateCopyJobs fails with HTTP 500 "Null value for source item" while a subfolder URL copies the folder with its content; several file names containing the hash sign break a multi-URI job with HTTP 400 unless it is sent as %23; GetCopyJobProgress returns only the log entries queued since the previous call, a job emits several JobStart/JobEnd pairs so JobEnd alone is not completion (JobState 0 is), a successful copy can carry a JobWarning about label based policy, ListItemAllFields refuses $expand=Author, and item-level unique permissions are not copied (IncludeItemPermissions fails with HTTP 500 on a copy) but can be re-applied afterwards without touching Modified, every job must take URIs from one parent folder into a destination that already exists, and NameConflictBehavior 0 silently skips an existing file when the same job also carries a new one, so the conflict count must come from the destination, not from the log
 tags: [rest-api, migration, copy-job, monitoring, metadata]
 applies-to: SharePoint Online
-last-reviewed: 2026-10-23
+last-reviewed: 2026-10-25
 ---
 
 # Copy job monitoring: nine traps measured in two days
@@ -115,6 +115,20 @@ Measured with the same file copied into the same folder:
 There is no "skip" and no "only if newer". To offer those, read the destination first and leave the existing
 (or not-newer) items out of `exportObjectUris`. `GetList('<url of a subfolder>')` resolves to the library, so the
 same read works when the destination is a folder.
+
+**`0` does not report every conflict.** Measured on one job each (`IsMoveMode` + `MoveButKeepSource`):
+
+| Job content | Result |
+|---|---|
+| one file that already exists | `JobError` "already exists" |
+| two files, both already exist | two `JobError` entries |
+| two files, one exists, one is new | the new one is copied, the existing one is **skipped silently** – `TotalErrors: 0`, no `JobError` |
+
+A run that treats "the job ended without `JobError`/`ObjectError`" as "every item was copied" will report a
+full copy into a destination where nothing changed. `JobFinishedObjectInfo` cannot fix the count either: four
+new files arrived and the log carried **one** `JobFinishedObjectInfo`. Decide conflicts from the destination
+state read **before** the job – whatever already exists under the same path cannot have been copied with `0` –
+and keep those items out of `exportObjectUris`, reported as conflicts.
 
 ## 8. Item-level permissions are not copied – re-apply them afterwards
 
