@@ -25,7 +25,7 @@ POST /sites/demo/_api/site/JoinHubSite('<hub B id>')  → 200
 GET  /sites/demo/_api/site?$select=HubSiteId          → hub B
 ```
 
-The caller needs site-admin rights on the site; the hub itself must allow the join (hubs with join approval behave differently).
+Measured as a site collection admin of the site, with `odata=nometadata` headers (the docs list 204 for success; we got 200 – treat any 2xx as success). If the hub restricts **who can associate sites** with it, the caller must be on that list.
 
 ## Fix
 
@@ -41,7 +41,7 @@ const current = HubSiteId === '00000000-0000-0000-0000-000000000000' ? '' : HubS
 // otherwise          → "moves from hub A to hub B" – show it before writing
 ```
 
-Use `JoinHubSite('00000000-0000-0000-0000-000000000000')` to leave a hub.
+Use `JoinHubSite('00000000-0000-0000-0000-000000000000')` to leave a hub ([JoinHubSite](https://learn.microsoft.com/sharepoint/dev/features/hub-site/rest-joinhubsite-method)).
 
 ## Related
 
