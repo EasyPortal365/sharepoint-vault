@@ -4,7 +4,7 @@ short-title: "Copy and Move keeps versions, timestamps and authors"
 summary: The server-side Copy and Move job preserves all versions, Created/Modified and Created By/Modified By, leaves the source in place, and is callable from the browser under delegated auth; omitting AllowSchemaMismatch is an immediate 500, a lower version limit on the destination truncates history after the transfer, and — measured — a plain CopyTo loses the version history but keeps the author
 tags: [rest-api, migration, metadata, versions, authorship, lists]
 applies-to: SharePoint Online
-last-reviewed: 2026-10-22
+last-reviewed: 2026-10-25
 ---
 
 # Copy and Move: what survives a transfer, and the trap in proving it
@@ -82,9 +82,25 @@ Two things that cost time if you skip them:
   `TotalErrors` / `TotalWarnings`.
 
 It is callable with `odata=nometadata` from a normal page under delegated auth — no app-only
-token needed. The endpoint is barely documented, so measure rather than assume; and note that
-every measurement here ran as a **site collection administrator** (`IsSiteAdmin: true`), so the
-*minimum* permission level this needs is untested.
+token needed. The endpoint is barely documented, so measure rather than assume.
+
+**Minimum permissions (measured):** you do **not** need to be a site collection administrator.
+With an account that was not a site admin on either site, and libraries with unique permissions
+granted only to that account:
+
+| Source library | Destination library | Result |
+|---|---|---|
+| Read | Contribute | OK — file arrives |
+| Contribute | Contribute | OK |
+| Contribute | Read | **HTTP 500**, *"You do not have permission to perform this action"* — the job is never created |
+| Full Control | Full Control | OK |
+| Read (plain copy, no `IsMoveMode`) | Contribute | OK |
+
+So the floor is **Read on the source, Contribute on the destination**. Two things to plan for:
+a missing right on the destination comes back as a **500**, not a 403 — do not treat it as a
+service outage; and Contribute cannot change the destination library's settings (setting
+`MajorVersionLimit` answers 403), so the "align the version limit before the run" step below
+needs Full Control on the destination library.
 
 ## Measured
 
