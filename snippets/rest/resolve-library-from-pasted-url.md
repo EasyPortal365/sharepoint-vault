@@ -13,7 +13,7 @@ last-reviewed: 2026-10-26
 >
 > **Ve zkratce.** Ať správce vloží adresu z prohlížeče, jak je, a rozlož si ji sám: `POST <aktuální web>/_api/SP.Web.GetWebUrlFromPageUrl` s `{ pageFullUrl }` vrátí web, pod který adresa patří – i v jiné kolekci webů – a 404 pro web, který neexistuje. Knihovna je první segment cesty pod webem, zbytek je složka.
 
-**When to reach for it:** a setting like "the library the scanner saves to" or "export target folder". People paste `…/Forms/AllItems.aspx`, a URL with the opened folder in `?id=`, or a "Copy link" URL (`/:f:/r/…`). Asking them for "server-relative URL of the library" fails; parsing it yourself works.
+**When to reach for it:** a setting like "the library the scanner saves to" or "export target folder". People paste `…/Forms/AllItems.aspx`, a URL with the opened folder in `?id=`, or a direct link (`/:f:/r/<path>` — measured: it redirects to that same path). Asking them for "server-relative URL of the library" fails; parsing it yourself works. A sharing link with a token (`/:f:/s/<token>`, `/:f:/g/…`) does not contain the path at all — refuse it and ask for the address bar URL.
 
 ## Measured (SharePoint Online, 26 October 2026, browser `fetch`)
 
@@ -36,9 +36,10 @@ function parsePasted(input: string, origin: string): { absolute: string; path: s
   let u: URL;
   try { u = new URL(input.trim()); } catch { return null; }
   if (u.protocol !== 'https:' || u.origin.toLowerCase() !== origin.toLowerCase()) return null;
+  if (/^\/:[a-z]:\/(?!r\/)/i.test(u.pathname)) return null;  // token sharing link: no path in it
   const id = u.searchParams.get('id');                       // opened folder, already decoded
   let path = id && id.startsWith('/') ? id : decodeURIComponent(u.pathname);
-  path = path.replace(/^\/:[a-z]:\/[rs](?=\/)/i, '')        // "Copy link" prefix
+  path = path.replace(/^\/:[a-z]:\/r(?=\/)/i, '')           // direct link prefix
              .replace(/\/Forms\/[^/]*$/i, '').replace(/\/[^/]+\.aspx$/i, '').replace(/\/+$/, '');
   if (!path) return null;
   // encode per segment, so a '#' in a folder name does not become a fragment
@@ -71,7 +72,7 @@ async function resolveLibrary(currentWeb: string, pasted: string, digest: string
 ## Notes
 
 - `GetWebUrlFromPageUrl` only finds the **web**. A typo in the library name still resolves — `GetList` is what proves the library exists, and `BaseTemplate` 101 that it is a document library (a list URL would otherwise pass).
-- Under `/Lists/` sit lists, not document libraries, so "first segment under the web" is safe for libraries; if you accept lists too, handle `Lists/<name>` as two segments.
+- "First segment under the web" assumes the library's root folder sits directly under the web, which is where the UI creates document libraries (lists go under `/Lists/`). If that assumption does not hold for some URL, `GetList` on the guessed path fails and you report it instead of guessing.
 - Read and write the folder with the ResourcePath API (`GetFolderByServerRelativePath(decodedurl=…)`, `MoveToUsingPath`) — a pasted path is exactly where `#` and `%` show up: [A `#` or `%` in a file or folder name](../../gotchas/rest-api/hash-and-percent-in-file-names-need-the-resourcepath-api.md).
 - Measured the same evening: a file moved with `MoveToUsingPath(DecodedUrl=…,moveOperations=0)` into a subfolder of the same library keeps its `UniqueId`, so a key built from `UniqueId` still matches after the move; `moveOperations=0` on an existing target name fails instead of overwriting.
 - If the pasted URL can point at your own app's storage, compare `libraryPath` with it and refuse — otherwise the app reads what it just wrote.
