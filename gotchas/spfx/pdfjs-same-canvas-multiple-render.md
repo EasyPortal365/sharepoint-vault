@@ -3,7 +3,7 @@ title: "pdf.js: \"Cannot use the same canvas during multiple render() operations
 short-title: pdf.js refuses two renders into one canvas
 summary: A React effect that re-renders a PDF page on every resize starts a second render() before the first finishes; cancel the running task in cleanup and chain renders so they never overlap
 tags: [spfx, pdfjs, canvas, react, resize-observer]
-applies-to: pdf.js 2.x–4.x in the browser (SPFx web parts or any React app showing a PDF preview)
+applies-to: pdf.js 3.11 in the browser (measured; later versions keep the same render task API) – SPFx web parts or any React app showing a PDF preview
 last-reviewed: 2026-10-26
 ---
 
