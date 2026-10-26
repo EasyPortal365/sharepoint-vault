@@ -13,6 +13,7 @@ Small, self-contained fragments to copy straight into your solution — each wit
 | [Check another user's effective permissions](rest/check-another-users-effective-permissions.md) | Verify what a normal user can actually reach — from your own session, no test account; mind `Open` = `Low` bit 16 |
 | [Upload a generated image as a list item attachment](rest/upload-generated-image-as-list-attachment.md) | Canvas charts, placeholder banners, QR codes — `AttachmentFiles/add` takes a raw `ArrayBuffer`; the item must exist first |
 | [Write to Azure Table Storage without the SDK (SharedKeyLite)](rest/azure-table-storage-no-sdk-sharedkeylite.md) | Telemetry/counters from an Azure Function without `@azure/data-tables` bloat — Table-flavored SharedKeyLite signing, first-`=` connection-string parsing, 409 = fine |
+| [Resolve a pasted library URL (web, library, folder)](rest/resolve-library-from-pasted-url.md) | `SP.Web.GetWebUrlFromPageUrl`, called on the CURRENT web, resolves the web of any URL in the tenant (other site collections too, 404 for a missing site); strip `Forms/…aspx`, prefer the `?id=` folder, take the first segment under the web as the library, check `BaseTemplate` 101 — all measured from the browser |
 
 ### cli/
 
