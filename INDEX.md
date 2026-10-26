@@ -2,7 +2,7 @@
 
 Every single thing in the vault, on one page. Section names link to folder READMEs; leaves link straight to the content.
 
-*Last updated: 2026-10-25*
+*Last updated: 2026-10-26*
 
 - 🧰 **[scripts/](scripts/)** — PowerShell scripts with comment-based help, read-only unless stated
   - [Terminal animations](scripts/media/) — the writing scripts as an animated PowerShell console; plain SVG, no JavaScript, respects `prefers-reduced-motion`
@@ -218,6 +218,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [Teams user ID belongs to the host site](gotchas/spfx/teams-personal-app-user-id-belongs-to-root-site.md) — `legacyPageContext.userId` in a Teams personal app is the tenant root site's ID; written as the user's ID on another site it can silently point to someone else
     - [Docking a side panel on the newer SharePoint layout](gotchas/spfx/docked-side-panel-new-sharepoint-layout-has-no-body-container.md) — A Copilot-style side panel narrows the SharePoint page by shrinking `.sp-App-bodyContainer`. On the newer page chrome (left app bar with Discover/Publish/Build) that container does not exist, so the docking code silently falls back to a floating panel with gaps around it. Dock against `#spPageChromeAppDiv` instead, and shrink it with `margin-right` – it is a flex item, so `width` has no effect.
     - [M365 roadmap API has no CORS](gotchas/spfx/m365-roadmap-api-has-no-cors.md) — `releasecommunications/api/v1/m365` answers 200 without `Access-Control-Allow-Origin`; proxy it server-side
+    - [pdf.js refuses two renders into one canvas](gotchas/spfx/pdfjs-same-canvas-multiple-render.md) — A React effect that re-renders a PDF page on every resize starts a second render() before the first finishes; cancel the running task in cleanup and chain renders so they never overlap
   - **app-catalog/**
     - [Three `.sppkg` packaging pitfalls](gotchas/app-catalog/sppkg-packaging-pitfalls.md) — ASCII-only solution name, icon exactly 96×96, Publisher column is AppSource-only
   - **graph/**
