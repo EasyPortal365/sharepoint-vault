@@ -1,6 +1,6 @@
 ---
 title: Multi-line text in a document library stops at 255 characters
-summary: "A REST MERGE stores 70k characters, but ValidateUpdateListItem rejects anything over 255 unless the column has UnlimitedLengthInDocumentLibrary – set it at creation or PATCH it later; lists are not affected"
+summary: "A REST MERGE stores 70k characters, but ValidateUpdateListItem rejects anything over 255 unless the column has UnlimitedLengthInDocumentLibrary – set it at creation or PATCH it later"
 tags: [lists, libraries, fields, rest-api, provisioning]
 applies-to: SharePoint Online
 last-reviewed: 2026-10-27
@@ -35,7 +35,7 @@ A temporary library got three Note columns. Each was written with a 1,008-charac
 | created with `UnlimitedLengthInDocumentLibrary: true` in the `POST /fields` body | saved, 1,008 characters read back |
 | created without the flag, then `PATCH`ed to `true` | saved, 1,008 characters read back |
 
-In a **list** (not a library) a Note column has no such cap.
+The test covered a library only; a Note column in a list was not measured. The flag name says it is a library setting.
 
 ## Fix
 
@@ -65,5 +65,5 @@ The `odata=nometadata` variant of the `POST /fields` body with `@odata.type` ret
 ## Watch out
 
 - Read the current state with its own request: `$select=UnlimitedLengthInDocumentLibrary` on a field of another type returns 400. Don't put it into the request that checks whether a field exists, or a missing-property error will look like a missing field and you will create a duplicate.
-- Changing the flag needs *Manage Lists*. Treat a 403 as "not done yet", not as success.
+- Changing a column definition needs permission to manage the list. If the `PATCH` fails, treat the column as "not done yet", not as success, and retry on the next provisioning run.
 - Large values are still bounded by the 2 MB limit on a single REST request body.
