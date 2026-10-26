@@ -102,6 +102,7 @@ Every article carries frontmatter with `tags` and `applies-to`, so repo search g
 | [A formatter renders empty in the tab you are iterating in](lists/formatter-renders-empty-in-your-working-tab.md) | After many REST writes the working tab shows even valid formatters blank while a fresh tab renders them; one tab per version, a scratch view, and simple formatters on fragile lists |
 | [Client-written identity vs. the server-stamped Author](lists/client-written-identity-needs-the-server-author.md) | Append-only lists let any contributor add a row with someone else's name in a text column; `Author` is stamped by SharePoint. Compare the two — but against `Author/Name` (the sign-in claim) as well, or every user whose e-mail differs from their UPN looks like a forger |
 | [Group header date = reader's display string](lists/group-header-date-is-the-readers-display-string.md) | `@group.fieldData` of a Date field is text in the reader's locale; reformat only when the shape matches |
+| [Multi-line text in a document library stops at 255 characters](lists/library-multiline-text-255-limit.md) | A REST MERGE stores 70k characters, but ValidateUpdateListItem rejects anything over 255 unless the column has UnlimitedLengthInDocumentLibrary – set it at creation or PATCH it later; lists are not affected |
 
 ### permissions/
 
