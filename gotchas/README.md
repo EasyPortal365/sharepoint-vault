@@ -75,6 +75,7 @@ Every article carries frontmatter with `tags` and `applies-to`, so repo search g
 | [JoinHubSite moves sites between hubs](rest-api/joinhubsite-moves-site-between-hubs.md) | Calling `JoinHubSite` on a site that sits in hub A returns 200 and the site is in hub B at once — no unjoin step, no warning, so any "apply hub" plan must read the current hub first |
 | [REST request body is capped at 2 MB](rest-api/rest-request-body-2mb-limit.md) | SharePoint Online rejects any REST request whose body exceeds 2,097,152 bytes (after JSON escaping, in UTF-8). A multi-line text field in a list holds far more than that – the cap is the request, not the field – so measure body bytes and split large JSON into parts. |
 | [Reindex a library from code under NoScript](rest-api/reindex-library-from-code-works-under-noscript.md) | Bumping `vti_searchversion` on the library's RootFolder property bag via CSOM succeeds on sites with custom scripts disabled (unlike the web property bag); find the library from any item URL with `GetWebUrlFromPageUrl` + `web/GetList` |
+| [Missing attachment is 400, not 404](rest-api/missing-attachment-returns-400-not-404.md) | `AttachmentFiles('name')` on a missing attachment returns 400 ArgumentOutOfRangeException; check existence from the attachment list |
 
 ### lists/
 
