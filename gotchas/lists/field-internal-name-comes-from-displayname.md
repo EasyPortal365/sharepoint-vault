@@ -1,17 +1,17 @@
 ---
 title: createfieldasxml ignores Name/StaticName — the internal name is derived from DisplayName
 short-title: Column internal name comes from DisplayName
-summary: "`createfieldasxml` ignores `Name`/`StaticName` when adding to a list; a localized label is escaped into the internal name permanently, so create with ASCII and rename the Title"
+summary: "`createfieldasxml` on a list ignores `Name`/`StaticName` unless you pass `Options: 8` (AddFieldInternalNameHint); otherwise the internal name is escaped from the label – create with ASCII and rename, or use the hint to keep a source name"
 tags: [lists, columns, rest-api, provisioning, formatting]
 applies-to: SharePoint Online
-last-reviewed: 2026-08-13
+last-reviewed: 2026-10-27
 ---
 
 # Column internal names: SharePoint derives them from the label, whatever your XML says
 
-> **Bottom line.** Adding a field to a **list** with `createfieldasxml` ignores `Name` and `StaticName` in your schema XML and builds the internal name from `DisplayName` — so a localized label leaves you with `_x00da_tvar` forever. Create the field with an ASCII `DisplayName`, then rename its `Title`: the internal name is fixed at creation, the label is not.
+> **Bottom line.** Adding a field to a **list** with `createfieldasxml` and `Options: 0` ignores `Name` and `StaticName` in your schema XML and builds the internal name from `DisplayName` — so a localized label leaves you with `_x00da_tvar` forever. Create the field with an ASCII `DisplayName` and rename its `Title`, or pass `Options: 8` (AddFieldInternalNameHint) and `Name` is used as given. The internal name is fixed at creation, the label is not.
 >
-> **Ve zkratce.** Když přidáváš pole do **seznamu** přes `createfieldasxml`, SharePoint `Name` ani `StaticName` ze schématu nepoužije a interní název odvodí z `DisplayName` – z lokalizovaného popisku ti tak napořád zůstane `_x00da_tvar`. Zakládej s ASCII `DisplayName` a hezký `Title` nastav až potom: interní název je dán okamžikem vzniku, popisek ne.
+> **Ve zkratce.** Když přidáváš pole do **seznamu** přes `createfieldasxml`, SharePoint `Name` ani `StaticName` ze schématu nepoužije a interní název odvodí z `DisplayName` – z lokalizovaného popisku ti tak napořád zůstane `_x00da_tvar`. Zakládej s ASCII `DisplayName` a hezký `Title` nastav až potom, nebo pošli `Options: 8` (AddFieldInternalNameHint) a SharePoint `Name` použije. Interní název je dán okamžikem vzniku, popisek ne.
 
 ## Symptom
 
@@ -48,6 +48,29 @@ const internal = (await r.json()).InternalName;      // "Utvar"
 await sp.post(`${web}/_api/web/GetList('${listRel}')/fields/getbyinternalnameortitle('${internal}')`,
   { headers: { 'IF-MATCH': '*', 'X-HTTP-Method': 'MERGE' }, body: JSON.stringify({ Title: 'Útvar' }) });
 ```
+
+
+## Or keep the source name: `Options: 8` (AddFieldInternalNameHint)
+
+When you must reproduce an *existing* internal name (copying a list's schema to another site,
+where mappings and lookups refer to the source names), the ASCII-then-rename trick cannot
+produce `Z_x00e1_kazn_x00ed_k`. Pass `Options: 8` (`AddFieldInternalNameHint`) and SharePoint
+uses `Name` from the XML. Measured 2026-10-27 on a list:
+
+| SchemaXml | Options | InternalName returned |
+|---|---|---|
+| `Name="Z_x00e1_kazn_x00ed_k" DisplayName="Jiný popisek"` | 8 | `Z_x00e1_kazn_x00ed_k` |
+| `Name="StavX" DisplayName="Stav úkolu"` (Choice) | 8 | `StavX` |
+| `Name="Kod_x0020_A" DisplayName="Bez hintu"` | 0 | `Bez_x0020_hintu` |
+
+```js
+await sp.post(`${listApi}/fields/CreateFieldAsXml`, {
+  parameters: { SchemaXml: "<Field Type='Text' Name='Zakaznik' StaticName='Zakaznik' DisplayName='Zákazník' />", Options: 8 }
+});
+```
+
+Still compare the returned `InternalName` with what you asked for — if the name is already
+taken in the list, you get a suffix instead (see `field-created-twice-gets-a-numeric-suffix.md`).
 
 ## Why it is worth the extra call
 
