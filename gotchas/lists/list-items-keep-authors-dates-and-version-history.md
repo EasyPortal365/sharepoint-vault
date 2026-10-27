@@ -89,7 +89,7 @@ Reading does change:
 
 Page by `Id` and filter in code. An incremental "since last run" mark works as `Id gt N`, but not as a `Modified` filter.
 
-`ItemCount` on the list **does not keep up during a bulk write**: it read 87 when 637 items existed. Count what you wrote from your own run log (or `$orderby=Id desc&$top=1`), not from `ItemCount` right after writing.
+Count what you wrote from your own run log, or with `$orderby=Id desc&$top=1`. If you read `ItemCount` during the run, fetch it with `cache: 'no-store'`: repeating the same GET URL in the browser kept returning an early value (87 when more than 600 items existed). That was most likely the browser cache, not SharePoint.
 
 ## Rule
 
