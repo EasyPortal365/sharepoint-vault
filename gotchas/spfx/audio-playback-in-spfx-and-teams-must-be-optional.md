@@ -42,7 +42,7 @@ function playStep(url: string | undefined, text: string, muted: boolean): Promis
 }
 ```
 
-- Call the first `play()` **inside the click handler** of the button that starts the narration; later steps in the same session are then usually allowed too.
+- Call the first `play()` **inside the click handler** of the button that starts the narration. In our test (Chrome on SharePoint, Teams) the following steps then played without another click — but keep the fallback for every step, not just the first.
 - Remember the user's mute choice per browser (`localStorage`, wrapped in try/catch).
 - Keep a stop/pause control that cancels both the audio and the silent timer, so a superseded step never advances the flow.
 - Pre-generate audio files and host them as static assets; no speech service is called at runtime, so there is no key in the bundle and nothing to rate-limit.

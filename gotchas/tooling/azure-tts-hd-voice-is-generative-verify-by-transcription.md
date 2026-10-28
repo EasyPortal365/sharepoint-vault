@@ -1,7 +1,7 @@
 ---
 title: "Azure TTS HD voices are generative — the same sentence gives a different recording each time, so verify every file by transcription"
 short-title: "Azure HD voice is generative — verify by transcription"
-summary: DragonHD output varies per call and sometimes garbles a term; transcribe each MP3 with fast transcription and regenerate on a miss. Use <lang> for a non-native language, text substitution instead of <sub>/<prosody>, and honor Retry-After on 429
+summary: DragonHD output varies per call and sometimes garbles a term; transcribe each MP3 with fast transcription and regenerate on a miss. Use <lang> for a non-native language, playbackRate instead of the unsupported <prosody>, and honor Retry-After on 429
 tags: [azure, speech, text-to-speech, ssml, tooling]
 applies-to: Azure AI Speech REST (text-to-speech v1, fast transcription 2024-11-15), HD voices such as en-US-Andrew:DragonHDLatestNeural
 last-reviewed: 2026-10-28
@@ -19,7 +19,7 @@ A batch of short narration clips sounds fine. You regenerate one sentence after 
 
 ## Why
 
-HD voices sample their output. Prosody, timing and occasionally pronunciation differ between calls even with byte-identical SSML. Treat each recording as a new draft, not as a deterministic build artifact.
+HD voices sample their output: Microsoft's HD voices article describes "slight variations in each output" and a `temperature` parameter that defaults to 1.0. Prosody, timing and occasionally pronunciation differ between calls even with byte-identical SSML. Treat each recording as a new draft, not as a deterministic build artifact.
 
 ## Fix: synthesize → transcribe → compare
 
@@ -60,7 +60,8 @@ The transcript is a sieve, not a judge: it cannot tell similar-sounding short to
 ## Related traps on the same API
 
 - **Non-native language needs `<lang>`.** A multilingual English HD voice speaks Czech (or another language) only when the text is wrapped in `<lang xml:lang="…">` inside `<voice>`. Without it you get the language read with English phonetics.
-- **No `<sub>`, `<phoneme>` or `<prosody>` on HD voices.** Fix pronunciation by **substituting the text** before synthesis (a small lexicon: term → spelling the voice reads correctly; keep any inflection suffix that follows the term). Control speed on playback (`audio.playbackRate`), not in SSML. Acronyms read most clearly spelled out letter by letter with hyphens.
+- **No `<prosody>` (and no `<emphasis>`, `<audio>`, `mstts:silence`) on HD voices** — see the SSML support table in Microsoft's HD voices article. Control speed on playback (`audio.playbackRate`), not in SSML. The same table lists `<sub>`, `<phoneme>` and alias-only `<lexicon>` as supported on DragonHD (not `<phoneme>` on Dragon HD Omni). We fix pronunciation by **substituting the text** before synthesis instead (a small lexicon: term → spelling the voice reads correctly; keep any inflection suffix that follows the term): it works the same for every voice model and the transcription check can test it. In our tests, acronyms came out clearest spelled letter by letter with hyphens.
+- **Less variation is configurable.** The voice element takes `parameters='temperature=…'` (0–1, default 1.0; lower = more predictable) and `enhancePronunciation=true` for acronyms and proper nouns. Neither makes the output deterministic, so keep the transcription check.
 - **Hash the text you show, not the text you send.** If file names come from a hash of the displayed text, a lexicon change does not change the hash — delete the affected files explicitly and regenerate.
 - **429 on the free tier.** Read `Retry-After` (seconds) and wait that long, a bounded number of times; run requests sequentially.
 - **Keep the key out of the repo and out of logs.** Read it from a file outside any git working tree and refuse to start if the file is inside one; never echo the key in errors.
