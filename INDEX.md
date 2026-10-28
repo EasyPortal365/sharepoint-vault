@@ -226,6 +226,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [M365 roadmap API has no CORS](gotchas/spfx/m365-roadmap-api-has-no-cors.md) — `releasecommunications/api/v1/m365` answers 200 without `Access-Control-Allow-Origin`; proxy it server-side
     - [pdf.js refuses two renders into one canvas](gotchas/spfx/pdfjs-same-canvas-multiple-render.md) — A React effect that re-renders a PDF page on every resize starts a second render() before the first finishes; cancel the running task in cleanup and chain renders so they never overlap
     - [Extension bundle imports a module the manifest lacks](gotchas/spfx/cdn-hosted-extension-bundle-imports-module-the-manifest-lacks.md) — Replacing an extension's stable-named bundle on the CDN without a new .sppkg works only while its `define([...])` lists modules already in the installed manifest's `scriptResources` — one new value import and the extension silently never starts
+    - [DecompressionStream and trailing bytes in PDF streams](gotchas/spfx/decompressionstream-trailing-bytes-pdf-streams.md) — Inflating a PDF FlateDecode stream in the browser fails completely because a line break sits between the data and `endstream`; trim trailing CR/LF and read chunk by chunk, keeping what arrived before the error
   - **app-catalog/**
     - [Three `.sppkg` packaging pitfalls](gotchas/app-catalog/sppkg-packaging-pitfalls.md) — ASCII-only solution name, icon exactly 96×96, Publisher column is AppSource-only
   - **graph/**
