@@ -8,9 +8,9 @@ last-reviewed: 2026-10-28
 
 # POST /fields rejects a subtype property like RichText unless the body names the subtype
 
-> **Bottom line.** A `POST …/fields` body is deserialised as the base type `SP.Field` unless it says otherwise. `FieldTypeKind: 3` does not change that, so a property that only exists on the subtype – `RichText`, `NumberOfLines`, `Choices` – fails with 400. Create the column with `CreateFieldAsXml`, or add `'@odata.type': '#SP.FieldMultiLineText'` (OData v4 client). Check every column after a loop of creates: the text columns go through and the list is left half-built.
+> **Bottom line.** A `POST …/fields` body is deserialised as the base type `SP.Field` unless it says otherwise. `FieldTypeKind: 3` does not change that, so a property that only exists on the subtype fails with 400 (measured with `RichText`; other subtype-only properties fall under the same type rule). Create the column with `CreateFieldAsXml`, or add `'@odata.type': '#SP.FieldMultiLineText'` (OData v4 client). Check every column after a loop of creates: the text columns go through and the list is left half-built.
 >
-> **Ve zkratce.** Tělo `POST …/fields` se čte jako základní typ `SP.Field`, pokud neřekne jinak. `FieldTypeKind: 3` na tom nic nemění, takže vlastnost, která existuje až u podtypu – `RichText`, `NumberOfLines`, `Choices` – skončí chybou 400. Sloupec založ přes `CreateFieldAsXml`, nebo přidej `'@odata.type': '#SP.FieldMultiLineText'` (klient OData v4). Po smyčce zakládání ověř všechny sloupce: textové projdou a seznam zůstane napůl založený.
+> **Ve zkratce.** Tělo `POST …/fields` se čte jako základní typ `SP.Field`, pokud neřekne jinak. `FieldTypeKind: 3` na tom nic nemění, takže vlastnost, která existuje až u podtypu, skončí chybou 400 (změřeno s `RichText`; ostatní vlastnosti jen z podtypu spadají pod totéž pravidlo typu). Sloupec založ přes `CreateFieldAsXml`, nebo přidej `'@odata.type': '#SP.FieldMultiLineText'` (klient OData v4). Po smyčce zakládání ověř všechny sloupce: textové projdou a seznam zůstane napůl založený.
 
 ## Symptom
 
