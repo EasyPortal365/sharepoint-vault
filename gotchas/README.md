@@ -128,6 +128,7 @@ Every article carries frontmatter with `tags` and `applies-to`, so repo search g
 | [Contribute on the web can edit and delete site pages](permissions/contribute-on-the-web-can-edit-and-delete-site-pages.md) | Modern pages are items in the Site Pages library, which inherits from the web, so a group you give Contribute on the web "so it can write list items" can also edit and delete every page; withholding Manage Lists does not help — break inheritance on Site Pages and give app roles Read there |
 | [Guests cannot join Teams shared channels](permissions/guests-cannot-join-teams-shared-channels.md) | Shared channels admit external people only through B2B direct connect between two Entra tenants; a guest account cannot be added, so a partner without their own Microsoft 365 needs a different design |
 | [Item edit rights cover every field](permissions/item-level-edit-rights-cover-every-field.md) | Unique permissions on an item don't separate fields: whoever may edit it can set Status, Approver or a lookup Id via REST – derive trust from admin-only data and version history |
+| [FirstUniqueAncestorSecurableObject has no type in nometadata](permissions/first-unique-ancestor-has-no-type-in-nometadata.md) | The endpoint returns a web, a list or a list item depending on where inheritance breaks, and with `odata=nometadata` nothing names the type; classify by properties (`FileSystemObjectType` = item, `BaseTemplate` = list, otherwise web) and treat an unknown shape as restricted |
 
 ### spfx/
 

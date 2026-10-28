@@ -2,7 +2,7 @@
 
 Every single thing in the vault, on one page. Section names link to folder READMEs; leaves link straight to the content.
 
-*Last updated: 2026-10-27*
+*Last updated: 2026-10-28*
 
 - 🧰 **[scripts/](scripts/)** — PowerShell scripts with comment-based help, read-only unless stated
   - [Terminal animations](scripts/media/) — the writing scripts as an animated PowerShell console; plain SVG, no JavaScript, respects `prefers-reduced-motion`
@@ -149,6 +149,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [Contribute on the web can edit and delete site pages](gotchas/permissions/contribute-on-the-web-can-edit-and-delete-site-pages.md) — Modern pages are items in the Site Pages library, which inherits from the web, so a group you give Contribute on the web "so it can write list items" can also edit and delete every page; withholding Manage Lists does not help — break inheritance on Site Pages and give app roles Read there
     - [Guests cannot join Teams shared channels](gotchas/permissions/guests-cannot-join-teams-shared-channels.md) — Shared channels admit external people only through B2B direct connect between two Entra tenants; a guest account cannot be added, so a partner without their own Microsoft 365 needs a different design
     - [Item edit rights cover every field](gotchas/permissions/item-level-edit-rights-cover-every-field.md) — Unique permissions on an item don't separate fields: whoever may edit it can set Status, Approver or a lookup Id via REST – derive trust from admin-only data and version history
+    - [FirstUniqueAncestorSecurableObject has no type in nometadata](gotchas/permissions/first-unique-ancestor-has-no-type-in-nometadata.md) — The endpoint returns a web, a list or a list item depending on where inheritance breaks, and with `odata=nometadata` nothing names the type; classify by properties (`FileSystemObjectType` = item, `BaseTemplate` = list, otherwise web) and treat an unknown shape as restricted
   - **spfx/**
     - [A zip-bomb guard on a private JSZip field fails open](gotchas/spfx/zip-bomb-guard-reading-a-private-jszip-field.md) — `entry._data.uncompressedSize` is an implementation detail, and `undefined → allow` turns the next library upgrade into a silent loss of protection; read the declared sizes from the ZIP central directory instead
     - [Hand-built .docx / .pptx: the parts Office demands](gotchas/spfx/hand-built-ooxml-missing-parts.md) — Header images are referenced from the header's own rels, Content_Types must know the image extension, namespaces are per part, and a .pptx without theme + master + layout is invalid; split parts from zipping so a strict XML parser can check them in tests
