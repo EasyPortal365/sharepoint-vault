@@ -3,15 +3,15 @@ title: "DecompressionStream throws away the whole result when bytes follow the c
 short-title: DecompressionStream and trailing bytes in PDF streams
 summary: Inflating a PDF FlateDecode stream in the browser fails completely because a line break sits between the data and `endstream`; trim trailing CR/LF and read chunk by chunk, keeping what arrived before the error
 tags: [spfx, pdf, compression, web-streams, browser]
-applies-to: DecompressionStream('deflate') in Chrome/Edge and Node 18+ (measured 2026-10-28) – any SPFx or browser code that inspects PDF files without a library
+applies-to: DecompressionStream('deflate') in Chrome and Node 24 (both measured 2026-10-28) – any SPFx or browser code that inspects PDF files without a library
 last-reviewed: 2026-10-28
 ---
 
 # DecompressionStream and trailing bytes in PDF streams
 
-> **Bottom line.** A PDF stream's bytes sit between `stream\n` and `endstream`, but there is always a line break (`\n` or `\r\n`) before `endstream`. `DecompressionStream('deflate')` treats those bytes as junk after the end of the data and the whole read fails – in Chrome `new Response(stream).arrayBuffer()` rejects with `TypeError: Failed to fetch`, in Node with *"Junk found after end of compressed data"*. You lose even the data that was already inflated. Trim trailing CR/LF before inflating, read with `getReader()` chunk by chunk, and if the error arrives after some data, keep what you have.
+> **Bottom line.** A PDF stream's bytes sit between `stream\n` and `endstream`, but there is always a line break (`\n` or `\r\n`) before `endstream`. `DecompressionStream('deflate')` treats those bytes as junk after the end of the data and the whole read fails – in Chrome `new Response(stream).arrayBuffer()` rejects with `TypeError: Failed to fetch`, in Node with `TypeError: Trailing junk found after the end of the compressed stream`. You lose even the data that was already inflated. Trim trailing CR/LF before inflating, read with `getReader()` chunk by chunk, and if the error arrives after some data, keep what you have.
 >
-> **Ve zkratce.** Obsah proudu PDF leží mezi `stream\n` a `endstream`, ale před `endstream` je vždy konec řádku. `DecompressionStream('deflate')` ho bere jako bajty za koncem dat a celé čtení spadne – v Chrome `TypeError: Failed to fetch` z `arrayBuffer()`, v Node „Junk found after end of compressed data“. Přijdete i o to, co se už rozbalilo. Před rozbalením ořízněte koncové CR/LF, čtěte po kouscích přes `getReader()` a když chyba přijde až po datech, platí to, co už přišlo.
+> **Ve zkratce.** Obsah proudu PDF leží mezi `stream\n` a `endstream`, ale před `endstream` je vždy konec řádku. `DecompressionStream('deflate')` ho bere jako bajty za koncem dat a celé čtení spadne – v Chrome `TypeError: Failed to fetch` z `arrayBuffer()`, v Node `TypeError: Trailing junk found after the end of the compressed stream`. Přijdete i o to, co se už rozbalilo. Před rozbalením ořízněte koncové CR/LF, čtěte po kouscích přes `getReader()` a když chyba přijde až po datech, platí to, co už přišlo.
 
 ## Symptom
 
