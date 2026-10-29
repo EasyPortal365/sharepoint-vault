@@ -44,7 +44,7 @@ Tohle jsou doprovodné materiály k živému kurzu, který vedu v OK System (3 d
 
 ## Lektor
 
-**[Kamil Juřík](https://www.linkedin.com/in/kamiljurik/)** – zakladatel a majitel Accelapps s.r.o. ([EasyPortal 365](https://www.easyportal365.cz)). Microsoft SharePoint MVP, MCITP, Nintex, ISO 19770-1. Se SharePointem pracuje od roku 2001; v české komunitě známý díky „Zápiskům z bojového pole", na které tento vault navazuje.
+**[Kamil Juřík](https://www.linkedin.com/in/kamiljurik/)** – zakladatel a majitel Accelapps s.r.o. ([EasyPortal 365](https://easyportal365.cz/)). Microsoft SharePoint MVP, MCITP, Nintex, ISO 19770-1. Se SharePointem pracuje od roku 2001; v české komunitě známý díky „Zápiskům z bojového pole", na které tento vault navazuje.
 
 Kontakt: [kamil.jurik@easyportal365.com](mailto:kamil.jurik@easyportal365.com)
 
