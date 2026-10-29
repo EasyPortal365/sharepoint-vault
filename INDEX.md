@@ -2,7 +2,7 @@
 
 Every single thing in the vault, on one page. Section names link to folder READMEs; leaves link straight to the content.
 
-*Last updated: 2026-10-28*
+*Last updated: 2026-10-29*
 
 - 🧰 **[scripts/](scripts/)** — PowerShell scripts with comment-based help, read-only unless stated
   - [Terminal animations](scripts/media/) — the writing scripts as an animated PowerShell console; plain SVG, no JavaScript, respects `prefers-reduced-motion`
@@ -300,6 +300,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [Search cannot see text inside images — and what that does to RAG](gotchas/search/search-cannot-see-text-inside-images.md) — The crawler indexes the text layer only, so a value that exists only in an embedded flyer or a scan can never be found by keyword: a search-then-read pipeline is in a closed loop, the LLM re-ranker drops such documents (it scores text-layer snippets), and the only real fix is transcribing images into a crawled column
     - [`ParentLink` from Search points at a library view](gotchas/search/parentlink-points-at-a-view-not-the-library.md) — Often `…/Forms/AllItems.aspx`, so used as a path it empties a `Path:` filter and can send a save into `Forms` while a `GetList` probe still passes; normalize on read and on write
     - [RAG finds nothing — a reasoning model used the token cap for thinking](gotchas/search/reasoning-model-empty-query-falls-back-to-the-raw-question.md) — GPT-5/o-series count hidden reasoning in max_completion_tokens; a small cap on the query-generator call returns empty text (HTTP 200), and a raw-question fallback ANDs every word in KQL
+    - [Inflected-language queries hit 0 — use `stem*`, and zero hits is not a listing](gotchas/search/sp-search-inflected-languages-need-prefix-wildcards.md) — KQL is implicit AND and does not stem Czech/Polish/German forms; add a `stem*` variant in code, relax before giving up, and never serve a date-sorted inventory as sources for a specific question
   - **powershell/**
     - [PS 5.1 `Get-Content` mangles UTF-8](gotchas/powershell/get-content-mangles-utf8.md) — ANSI default double-encodes diacritics; non-ASCII in the *pattern* makes `-replace` match nothing and exit 1. Use `System.IO.File` + BOM-less `UTF8Encoding`, check `git status` after a failed run
     - [Smart quotes are string delimiters](gotchas/powershell/smart-quotes-are-string-delimiters.md) — `„`/`"` parse like `"`; localized text in single-quoted here-strings
