@@ -318,6 +318,7 @@ The standard server-side companion of an SPFx solution — and its own set of tr
 | [`$host` is a constant you cannot assign](powershell/host-is-a-constant-you-cannot-assign.md) | The obvious name for `[uri].Host` is reserved and the error blames the value; `$input`/`$args` accept the assignment silently and break later |
 | [PS 5.1: `@(ConvertFrom-Json)` keeps the array wrapped](powershell/convertfrom-json-array-not-unwrapped-in-json-output.md) | `@()` around the pipeline doesn't enumerate; later `+` nests the array and `ConvertTo-Json` writes `{value:[…],Count:n}` garbage into your JSON file |
 | [`--query "length([?…])"` from PowerShell kills `az.cmd`](powershell/az-cmd-parentheses-in-query-break-cmd.md) | On Windows `az` is a batch file; a JMESPath query with `(` `)` and no spaces reaches cmd unquoted and breaks its IF block – return plain names and count in PowerShell |
+| [File names in a generated `@" "@` here-string run as code](powershell/generated-script-data-injection.md) | Data that tenant users can name (file paths, titles) breaks every textual PowerShell literal – expandable here-strings run `$(…)`, `;` splits CSV rows, `'@` ends a literal here-string; embed data as base64 JSON instead |
 
 ### security/
 

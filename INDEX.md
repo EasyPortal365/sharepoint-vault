@@ -2,7 +2,7 @@
 
 Every single thing in the vault, on one page. Section names link to folder READMEs; leaves link straight to the content.
 
-*Last updated: 2026-10-29*
+*Last updated: 2026-10-30*
 
 - 🧰 **[scripts/](scripts/)** — PowerShell scripts with comment-based help, read-only unless stated
   - [Terminal animations](scripts/media/) — the writing scripts as an animated PowerShell console; plain SVG, no JavaScript, respects `prefers-reduced-motion`
@@ -313,6 +313,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [`$host` is a constant you cannot assign](gotchas/powershell/host-is-a-constant-you-cannot-assign.md) — The obvious name for `[uri].Host` is reserved and the error blames the value; `$input`/`$args` accept the assignment silently and break later
     - [PS 5.1: `@(ConvertFrom-Json)` keeps the array wrapped](gotchas/powershell/convertfrom-json-array-not-unwrapped-in-json-output.md) — `@()` around the pipeline doesn't enumerate; later `+` nests the array and `ConvertTo-Json` writes `{value:[…],Count:n}` garbage into your JSON file
     - [`--query "length([?…])"` from PowerShell kills `az.cmd`](gotchas/powershell/az-cmd-parentheses-in-query-break-cmd.md) — On Windows `az` is a batch file; a JMESPath query with `(` `)` and no spaces reaches cmd unquoted and breaks its IF block – return plain names and count in PowerShell
+    - [File names in a generated `@" "@` here-string run as code](gotchas/powershell/generated-script-data-injection.md) — Data that tenant users can name (file paths, titles) breaks every textual PowerShell literal – expandable here-strings run `$(…)`, `;` splits CSV rows, `'@` ends a literal here-string; embed data as base64 JSON instead
   - **security/**
     - [Sanitizer keeps script and style TEXT](gotchas/security/sanitizer-keeps-script-and-style-text.md) — An allowlist needs two sets: tags to keep, and tags to drop WITH their subtree; otherwise a pasted web page dumps its stylesheet into the article as visible text
     - [Stored XSS via list content](gotchas/security/stored-xss-from-list-content.md) — React doesn't block `javascript:` hrefs; allowlist `safeHref` with C0-strip at every sink
