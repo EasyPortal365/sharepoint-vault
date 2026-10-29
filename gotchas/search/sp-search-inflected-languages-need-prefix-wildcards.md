@@ -66,7 +66,9 @@ returns phrases and full inflected words anyway.
 - Wrap each generated query in parentheses before you append scope filters (`Path:"…"`, `IsDocument:1`);
   otherwise a top-level `OR` in the generated text can leave one of its branches outside the scope.
 - A wildcard right after a very short stem (`ob*`) matches far too much. Keep at least four or five characters
-  before the `*`.
+  before the `*`, and cut only the case ending, not the derivational part of the word. Measured with the same
+  synonym group: `schval* (strop* OR limit* OR pravomoc*)` returned 1 245 hits without the target directive in the
+  top five, `schvalov* (strop* OR limit* OR pravomoc*)` returned 169 with it at position 2.
 - KQL supports the wildcard only at the end of a term, never in front of it.
 - Evaluate on real user conversations, not on demo content. On demo data, titles tend to match the test questions
   word for word, and neither failure shows up.
