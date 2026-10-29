@@ -69,5 +69,6 @@ from `X-1`. A secondary sort on `[DocId]` / `DocId` is rejected by Search REST
 
 ## See also
 
+- Microsoft: [KQL syntax reference – multiple property restrictions](https://learn.microsoft.com/sharepoint/dev/general-development/keyword-query-language-kql-syntax-reference#property-restriction-queries-in-keyql) (union for the same property, intersection for different ones; the date-range example there uses `AND`)
 - [An unparenthesized `OR` silently escapes your scope filter](kql-or-escapes-your-scope-filter.md)
 - [Search queries that actually work](../../guides/search-queries-that-actually-work.md)
