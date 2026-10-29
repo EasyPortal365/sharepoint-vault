@@ -302,6 +302,7 @@ The standard server-side companion of an SPFx solution — and its own set of tr
 | [`ParentLink` from Search points at a library view](search/parentlink-points-at-a-view-not-the-library.md) | Often `…/Forms/AllItems.aspx`, so used as a path it empties a `Path:` filter and can send a save into `Forms` while a `GetList` probe still passes; normalize on read and on write |
 | [RAG finds nothing — a reasoning model used the token cap for thinking](search/reasoning-model-empty-query-falls-back-to-the-raw-question.md) | GPT-5/o-series count hidden reasoning in max_completion_tokens; a small cap on the query-generator call returns empty text (HTTP 200), and a raw-question fallback ANDs every word in KQL |
 | [Inflected-language queries hit 0 — use `stem*`, and zero hits is not a listing](search/sp-search-inflected-languages-need-prefix-wildcards.md) | KQL is implicit AND and matches exact word forms, so Czech inflected forms miss; add a `stem*` variant in code, relax before giving up, and never serve a date-sorted inventory as sources for a specific question |
+| [`Size>=a Size<=b` returns everything — same-property restrictions are OR-ed](search/kql-same-property-restrictions-are-ored.md) | KQL joins restrictions on the SAME managed property with OR when only a space separates them, so a size or date range written as two restrictions matches every item; write ranges with explicit AND or a..b |
 
 ### powershell/
 
