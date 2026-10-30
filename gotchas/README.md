@@ -212,6 +212,7 @@ Every article carries frontmatter with `tags` and `applies-to`, so repo search g
 | [Extension bundle imports a module the manifest lacks](spfx/cdn-hosted-extension-bundle-imports-module-the-manifest-lacks.md) | Replacing an extension's stable-named bundle on the CDN without a new .sppkg works only while its `define([...])` lists modules already in the installed manifest's `scriptResources` — one new value import and the extension silently never starts |
 | [DecompressionStream and trailing bytes in PDF streams](spfx/decompressionstream-trailing-bytes-pdf-streams.md) | Inflating a PDF FlateDecode stream in the browser fails completely because a line break sits between the data and `endstream`; trim trailing CR/LF and read chunk by chunk, keeping what arrived before the error |
 | [Audio in SPFx/Teams must be optional](spfx/audio-playback-in-spfx-and-teams-must-be-optional.md) | SPO's CSP has no media-src today, so MP3 from your CDN plays; start playback from a click and fall back to silent timing on NotAllowedError, 404 or mute |
+| [Power Automate admin API is unreachable from SPFx](spfx/power-automate-admin-api-unreachable-from-spfx.md) | SharePoint's token for Microsoft Flow Service carries only Microsoft's preauthorized scopes, so an approved `User` grant never reaches the token and the tenant-wide flows list stays 401 |
 
 ### app-catalog/
 
