@@ -258,6 +258,7 @@ Every article carries frontmatter with `tags` and `applies-to`, so repo search g
 | [Group `members/$ref` needs object ID, not UPN](graph/group-member-ref-needs-object-id.md) | `POST /groups/{id}/members/$ref` and `DELETE /groups/{id}/members/{id}/$ref` accept only the user's object ID (GUID); a UPN from a people picker returns 400 Invalid object identifier — resolve it with `GET /users/{upn}?$select=id` first |
 | [Dynamic `memberOf` rules freeze after 3 Nov 2026](graph/dynamic-group-memberof-rule-retired-groups-freeze.md) | Entra ends the `memberOf` preview operator in dynamic membership rules on 3 Nov 2026 (MC1448379): affected groups, dynamic admin units and auto-assignment policies keep their last membership and never update again. Offboarding tools that skip dynamic groups leave departed users inside them. The notice covers only the rule operator, not the Graph `/memberOf` endpoints. |
 | [Archived site returns 423 on every read](graph/archived-site-returns-423-on-every-read.md) | `archivalDetails` is unreadable once archived; `POST /sites/{host},{siteCollectionId}/unarchive` still works |
+| [isPrivileged is beta-only](graph/privileged-roles-isprivileged-is-beta-only.md) | Read `isPrivileged` live from beta `roleDefinitions` – v1.0 omits it and 400s on `$select=isPrivileged`; Exchange/SharePoint/Teams admins are not privileged |
 
 ### azure-functions/
 
