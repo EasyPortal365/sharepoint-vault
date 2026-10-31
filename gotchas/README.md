@@ -77,6 +77,7 @@ Every article carries frontmatter with `tags` and `applies-to`, so repo search g
 | [Reindex a library from code under NoScript](rest-api/reindex-library-from-code-works-under-noscript.md) | Bumping `vti_searchversion` on the library's RootFolder property bag via CSOM succeeds on sites with custom scripts disabled (unlike the web property bag); find the library from any item URL with `GetWebUrlFromPageUrl` + `web/GetList` |
 | [Missing attachment is 400, not 404](rest-api/missing-attachment-returns-400-not-404.md) | `AttachmentFiles('name')` on a missing attachment returns 400 ArgumentOutOfRangeException; check existence from the attachment list |
 | [POST /fields rejects a subtype property like RichText unless the body names the subtype](rest-api/field-subtype-property-without-type-is-400.md) | { FieldTypeKind: 3, RichText: false } without @odata.type is read as SP.Field and fails with 400 – plain text columns in the same loop succeed, so the list ends up half-built; use CreateFieldAsXml or annotate the type |
+| [Copy job ends before the target is visible](rest-api/copy-job-end-before-target-visible.md) | After CreateCopyJobs reports JobState 0, the target's /items can still miss hundreds of files for a while; re-read until two reads match, and compare authors via $expand on /items, not siteusers |
 
 ### lists/
 

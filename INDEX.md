@@ -2,7 +2,7 @@
 
 Every single thing in the vault, on one page. Section names link to folder READMEs; leaves link straight to the content.
 
-*Last updated: 2026-10-30*
+*Last updated: 2026-10-31*
 
 - 🧰 **[scripts/](scripts/)** — PowerShell scripts with comment-based help, read-only unless stated
   - [Terminal animations](scripts/media/) — the writing scripts as an animated PowerShell console; plain SVG, no JavaScript, respects `prefers-reduced-motion`
@@ -106,6 +106,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [Reindex a library from code under NoScript](gotchas/rest-api/reindex-library-from-code-works-under-noscript.md) — Bumping `vti_searchversion` on the library's RootFolder property bag via CSOM succeeds on sites with custom scripts disabled (unlike the web property bag); find the library from any item URL with `GetWebUrlFromPageUrl` + `web/GetList`
     - [Missing attachment is 400, not 404](gotchas/rest-api/missing-attachment-returns-400-not-404.md) — `AttachmentFiles('name')` on a missing attachment returns 400 ArgumentOutOfRangeException; check existence from the attachment list
     - [POST /fields rejects a subtype property like RichText unless the body names the subtype](gotchas/rest-api/field-subtype-property-without-type-is-400.md) — { FieldTypeKind: 3, RichText: false } without @odata.type is read as SP.Field and fails with 400 – plain text columns in the same loop succeed, so the list ends up half-built; use CreateFieldAsXml or annotate the type
+    - [Copy job ends before the target is visible](gotchas/rest-api/copy-job-end-before-target-visible.md) — After CreateCopyJobs reports JobState 0, the target's /items can still miss hundreds of files for a while; re-read until two reads match, and compare authors via $expand on /items, not siteusers
   - **lists/**
     - [The 5,000-item view threshold](gotchas/lists/list-view-threshold-and-indexes.md) — It's scanned rows, not returned rows; index early, page always
     - [View formatting JSON can't contain `<` or `&`](gotchas/lists/view-formatter-rejects-angle-bracket-and-ampersand.md) — It's stored inside the view's schema XML; reverse the comparison and nest `if()`
