@@ -245,7 +245,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [Purview Audit Query API is async](gotchas/graph/purview-audit-query-api-is-async.md) — Hour-long queries; attach to the last succeeded, create in background
     - [`dont have any permissions` rejects the user, not the app](gotchas/graph/audit-query-permission-vs-audit-role.md) — Consent vs. Exchange audit role; Global Admin usually inherits it, so compare accounts
     - [A Teams channel exists immediately — its folder does not](gotchas/graph/channel-created-but-its-sharepoint-folder-is-not.md) — `POST /channels` returns 201 while SharePoint provisions the folder minutes later; never hand-make the folder, report the pending state and let an idempotent rerun finish it
-    - [Office files: property demotion changes the hash](gotchas/graph/office-files-property-demotion.md) — Metadata PATCH rewrites docx bytes; key change detection on `lastModifiedBy`
+    - [Office files: property demotion changes the hash](gotchas/graph/office-files-property-demotion.md) — Metadata PATCH and copy jobs rewrite Office file bytes; key change detection on `lastModifiedBy`, never compare sizes exactly
     - [Usage reports in the browser — use beta JSON](gotchas/graph/usage-reports-cors-blocked-in-browser.md) — v1.0 302 to CSV dies on CORS; beta `?$format=application/json` returns 200 from Graph; mind roles and concealed names
     - [Tenant-wide enumeration is app-only](gotchas/graph/tenant-wide-enumeration-is-app-only.md) — `getAllSites` rejects delegated tokens; check the Permissions table first
     - [`PATCH /me`: directory vs profile fields](gotchas/graph/patch-me-directory-vs-profile-fields.md) — Mixed field groups fail whole; two PATCHes, profile best-effort
