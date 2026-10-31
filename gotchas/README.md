@@ -260,6 +260,7 @@ Every article carries frontmatter with `tags` and `applies-to`, so repo search g
 | [Dynamic `memberOf` rules freeze after 3 Nov 2026](graph/dynamic-group-memberof-rule-retired-groups-freeze.md) | Entra ends the `memberOf` preview operator in dynamic membership rules on 3 Nov 2026 (MC1448379): affected groups, dynamic admin units and auto-assignment policies keep their last membership and never update again. Offboarding tools that skip dynamic groups leave departed users inside them. The notice covers only the rule operator, not the Graph `/memberOf` endpoints. |
 | [Archived site returns 423 on every read](graph/archived-site-returns-423-on-every-read.md) | `archivalDetails` is unreadable once archived; `POST /sites/{host},{siteCollectionId}/unarchive` still works |
 | [isPrivileged is beta-only](graph/privileged-roles-isprivileged-is-beta-only.md) | Read `isPrivileged` live from beta `roleDefinitions` – v1.0 omits it and 400s on `$select=isPrivileged`; Exchange/SharePoint/Teams admins are not privileged |
+| [Channel messages need a Teams license on the reader](graph/teams-channel-messages-need-a-teams-license.md) | Delegated `GET /teams/{id}/channels/{id}/messages` returns 403 'Failed to get license information for the user' for an unlicensed account even with ChannelMessage.Read.All consented and team membership; `allChannels` still lists channels of teams the admin is not a member of |
 
 ### azure-functions/
 
