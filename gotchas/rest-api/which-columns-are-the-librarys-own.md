@@ -53,7 +53,7 @@ const isOwnColumn = (f) =>
 
 Keep a small blocklist on top for the handful that slip through on document libraries (`Title`, `DocIcon`, `LinkFilename`, `ItemChildCount`, `_Compliance*`, `MediaServiceImageTags`) — they vary by template and tenant configuration, and a name-based guard is cheaper than discovering each one in the field.
 
-The one that slips through **every** modern document library is `_ExtendedDescription` (display name *Description*): visible, writable, `FromBaseType: false`, `CanBeDeleted: true` — it passes all four checks, yet SharePoint adds it by itself. A count of "custom columns" then says 1 for a library nobody customised. Dropping internal names that start with `_` removes it and the rest of that family.
+One that slips through on modern document libraries is `_ExtendedDescription` (display name *Description*): not hidden, not read-only, `FromBaseType: false`, `CanBeDeleted: true` — it passes all four checks, yet SharePoint adds it by itself (measured on newly created libraries in SharePoint Online, 2026-11). A count of "custom columns" then says 1 for a library nobody customised. Dropping internal names that start with `_` removes it.
 
 ## Notes
 
