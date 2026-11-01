@@ -78,6 +78,7 @@ Every article carries frontmatter with `tags` and `applies-to`, so repo search g
 | [Missing attachment is 400, not 404](rest-api/missing-attachment-returns-400-not-404.md) | `AttachmentFiles('name')` on a missing attachment returns 400 ArgumentOutOfRangeException; check existence from the attachment list |
 | [POST /fields rejects a subtype property like RichText unless the body names the subtype](rest-api/field-subtype-property-without-type-is-400.md) | { FieldTypeKind: 3, RichText: false } without @odata.type is read as SP.Field and fails with 400 – plain text columns in the same loop succeed, so the list ends up half-built; use CreateFieldAsXml or annotate the type |
 | [Copy job ends before the target is visible](rest-api/copy-job-end-before-target-visible.md) | After CreateCopyJobs reports JobState 0, the target's /items can still miss hundreds of files for a while; re-read until two reads match, and compare authors via $expand on /items, not siteusers |
+| [Copy job by files: folder metadata is lost](rest-api/copy-job-item-batches-folder-metadata.md) | A CreateCopyJobs job that gets folder URIs carries folder metadata, a job fed with file URIs needs existing target folders, and folders created with AddUsingPath show the running account and the creation time until you rewrite Created/Modified/Author/Editor with ValidateUpdateListItem; the JobWarning 'Field TaxCatchAll cannot be found' comes from the automatic Image Tags column |
 
 ### lists/
 
