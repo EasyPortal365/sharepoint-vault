@@ -21,12 +21,13 @@ During the same run, one job log carried:
 
 ```
 JobWarning: Field TaxCatchAll cannot be found. Field value will not be imported
+JobWarning: Field lcf76f155ced4ddcb4097134ff3c332f cannot be found. Field value will not be imported
 ```
 
 ## Cause
 
 1. **Folder URI vs file URIs.** With a folder URI the job copies the folder item itself (earlier runs in this mode kept folder metadata). With file URIs it copies only the files into a destination folder that must already exist (a job takes URIs from one parent folder into one existing destination). The tool switched to file URIs whenever it had to leave some files out (skip-existing, newer-only, retries), and created the destination folders itself with `Folders/AddUsingPath`. Those folder items are ordinary new items: author = caller, Created = now.
-2. **TaxCatchAll.** SharePoint adds the managed-metadata column *Image Tags* (`MediaServiceImageTags`, `TaxonomyFieldTypeMulti`) and the hidden lookup `TaxCatchAll` to document libraries on its own (media processing). In our tenant both fields were present in site asset and template libraries and absent from an empty Documents library; we did not pin down the exact trigger. A freshly created destination library has neither, so the job cannot carry the hidden field and warns. The files are fine; only the automatically generated image tags do not travel.
+2. **TaxCatchAll.** SharePoint adds the managed-metadata column *Image Tags* (`MediaServiceImageTags`, `TaxonomyFieldTypeMulti`) with its hidden note field `lcf76f155ced4ddcb4097134ff3c332f` (title "Image Tags_0") and the hidden lookup `TaxCatchAll` to document libraries on its own (media processing). In our tenant both fields were present in site asset and template libraries and absent from an empty Documents library; we did not pin down the exact trigger. A freshly created destination library has neither, so the job cannot carry the hidden field and warns. The files are fine; only the automatically generated image tags do not travel.
 
 ## Fix
 
