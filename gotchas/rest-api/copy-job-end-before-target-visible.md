@@ -4,7 +4,7 @@ short-title: Copy job ends before the target is visible
 summary: "After CreateCopyJobs reports JobState 0, the target's /items can still miss hundreds of files for a while; re-read until two reads match, and compare authors via $expand on /items, not siteusers"
 tags: [rest-api, copy-move, migration, verification]
 applies-to: SharePoint Online
-last-reviewed: 2026-10-31
+last-reviewed: 2026-11-01
 ---
 
 # A copy job reports "finished" before the target shows every file – verify after the target settles, and read authors with $expand
@@ -55,3 +55,4 @@ GET {web}/_api/web/GetList(@a)/items?$select=Id,FileRef,Author/Title,Author/EMai
 
 - Observed on SharePoint Online on 31 October 2026 (copy job finish vs. target count) and measured the same day (`$expand` on `/items` in a library and in a list).
 - The size of the lag depends on the tenant and the transfer; do not hard-code a single delay – wait for the count to stop changing.
+- A 10-minute cap was too short for a library of 2,135 files: after 10 minutes the target showed 1,633, and within the hour the item counts of source and target matched (measured 1 November 2026). Keep waiting while the count grows, with a cap of around 30 minutes.
