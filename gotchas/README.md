@@ -238,7 +238,7 @@ Every article carries frontmatter with `tags` and `applies-to`, so repo search g
 | [Purview Audit Query API is async](graph/purview-audit-query-api-is-async.md) | Hour-long queries; attach to the last succeeded, create in background |
 | [`dont have any permissions` rejects the user, not the app](graph/audit-query-permission-vs-audit-role.md) | Consent vs. Exchange audit role; Global Admin usually inherits it, so compare accounts |
 | [A Teams channel exists immediately — its folder does not](graph/channel-created-but-its-sharepoint-folder-is-not.md) | `POST /channels` returns 201 while SharePoint provisions the folder minutes later; never hand-make the folder, report the pending state and let an idempotent rerun finish it |
-| [Office files: property demotion changes the hash](graph/office-files-property-demotion.md) | Metadata PATCH and copy jobs rewrite Office file bytes; key change detection on `lastModifiedBy`, never compare sizes exactly |
+| [Office files: property demotion changes the hash](graph/office-files-property-demotion.md) | Metadata PATCH and copy jobs rewrite Office, .msg and .htm file bytes; key change detection on `lastModifiedBy`, never compare sizes exactly |
 | [Usage reports in the browser — use beta JSON](graph/usage-reports-cors-blocked-in-browser.md) | v1.0 302 to CSV dies on CORS; beta `?$format=application/json` returns 200 from Graph; mind roles and concealed names |
 | [Tenant-wide enumeration is app-only](graph/tenant-wide-enumeration-is-app-only.md) | `getAllSites` rejects delegated tokens; check the Permissions table first |
 | [`PATCH /me`: directory vs profile fields](graph/patch-me-directory-vs-profile-fields.md) | Mixed field groups fail whole; two PATCHes, profile best-effort |

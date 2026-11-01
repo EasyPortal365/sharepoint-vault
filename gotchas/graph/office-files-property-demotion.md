@@ -1,10 +1,10 @@
 ---
 title: Office files change their content hash when you PATCH metadata — property demotion
 short-title: "Office files: property demotion changes the hash"
-summary: Metadata PATCH and copy jobs rewrite Office file bytes; key change detection on `lastModifiedBy`, never compare sizes exactly
+summary: Metadata PATCH and copy jobs rewrite Office, .msg and .htm file bytes; key change detection on `lastModifiedBy`, never compare sizes exactly
 tags: [graph, files, sharepoint-online, automation, migration, copy-job]
 applies-to: SharePoint Online (Microsoft Graph / REST)
-last-reviewed: 2026-10-31
+last-reviewed: 2026-11-01
 ---
 
 # Office files change their *content hash* when you PATCH metadata — property demotion
@@ -66,3 +66,16 @@ So a copy job does not copy Office files byte for byte — SharePoint demotes th
 - Never compare `File/Length` of Office files exactly between source and target. Compare file presence and count exactly; for OOXML extensions, treat a small size delta (we allow up to 64 kB — schema size grows with the number of library columns) as metadata, and report it as such instead of "size mismatch".
 - Keep exact comparison for non-Office files and flag any Office delta beyond the threshold — a truncated or failed copy shows up as a whole-file difference, not hundreds of bytes.
 - To prove content integrity of an Office file, compare the CRCs of its content parts from the ZIP central directory, not the file hash or length.
+
+## Not only OOXML: old binary Office, Outlook messages and HTML
+
+Measured on a second migration (November 2026, a library of 2,135 files, grouped by extension after the copy):
+
+| Extension | Files with a different size | Delta | What changed |
+|---|---|---|---|
+| `.xls`, `.doc` (OLE) | 28 of 32, 33 of 43 | −4.6 kB to +2 kB | metadata streams; 161 of 194 512-byte sectors unchanged in one `.xls` |
+| `.msg` (OLE) | 39 of 39 | −2 kB to +2.5 kB | same as `.xls`: 87 of 99 sectors unchanged |
+| `.htm` | 5 of 5 | +1,185 to +1,289 characters | a block `<!--[if gte mso 9]><xml><o:CustomDocumentProperties>…</xml><![endif]-->` with the library columns in `<head>`, `xmlns:msdt` on `<html>`, an empty `<title>` |
+| `.pdf`, `.jpg`, `.png`, `.tif`, `.txt`, `.eml`, `.rtf`, `.odt`, `.zip` | 0 | — | nothing |
+
+The two `.htm` files measured in detail (7 kB and 62 kB) grew by exactly the same 1,185 characters, and the rest of the file was unchanged. So the metadata allowance in a migration check must cover old binary Office, `.msg` and `.htm/.html` too, not just OOXML. To find the formats you forgot, compare sizes for the whole library grouped by extension, not file by file.
