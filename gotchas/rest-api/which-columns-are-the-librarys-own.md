@@ -4,7 +4,7 @@ short-title: Telling a list's own columns from inherited ones
 summary: "`Hidden` is not enough; `FromBaseType` + `CanBeDeleted` are what separate the list's own columns"
 tags: [rest-api, lists, fields, provisioning]
 applies-to: SharePoint Online (REST `/fields`)
-last-reviewed: 2026-07-28
+last-reviewed: 2026-11-01
 ---
 
 # Telling a list's own columns from inherited ones — `Hidden` is not enough
@@ -52,6 +52,8 @@ const isOwnColumn = (f) =>
 ```
 
 Keep a small blocklist on top for the handful that slip through on document libraries (`Title`, `DocIcon`, `LinkFilename`, `ItemChildCount`, `_Compliance*`, `MediaServiceImageTags`) — they vary by template and tenant configuration, and a name-based guard is cheaper than discovering each one in the field.
+
+The one that slips through **every** modern document library is `_ExtendedDescription` (display name *Description*): visible, writable, `FromBaseType: false`, `CanBeDeleted: true` — it passes all four checks, yet SharePoint adds it by itself. A count of "custom columns" then says 1 for a library nobody customised. Dropping internal names that start with `_` removes it and the rest of that family.
 
 ## Notes
 
