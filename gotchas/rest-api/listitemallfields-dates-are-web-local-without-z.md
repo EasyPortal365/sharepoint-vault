@@ -9,13 +9,13 @@ last-reviewed: 2026-11-01
 
 # A file's time is not its item's time – a copy job carries the item time, and ListItemAllFields returns dates in the web's zone without "Z"
 
-> **Bottom line.** In a document library, the file's `TimeCreated`/`TimeLastModified` and the list item's `Created`/`Modified` are two different values. In old content they can differ by seconds (a PDF: file 10:47:11Z, item 10:47:06Z) or by years (an `.xls`: file modified 2025, item modified 2016 – SharePoint rewrote the file later). `CreateCopyJobs` carries the **item** time, and in the target the file gets the same value. A verification that compares file times on both sides therefore reports mismatches no user will ever see; compare the item times. And read them from `GetList(...)/items(id)`: `GetFileByServerRelativePath(...)/ListItemAllFields?$select=Created,Modified` returns the dates in the **web's regional time zone without a trailing "Z"**, so treating them as UTC shifts them by hours, and two webs in different zones cannot be compared at all.
+> **Bottom line.** In a document library, the file's `TimeCreated`/`TimeLastModified` and the list item's `Created`/`Modified` are two different values. In old content they can differ by seconds (a PDF: file 10:47:11Z, item 10:47:06Z) or by years (an `.xls`: file modified 2025, item modified 2016 – the file was rewritten later while the item kept its date). `CreateCopyJobs` carries the **item** time, and in the target the file gets the same value. A verification that compares file times on both sides therefore reports mismatches no user will ever see; compare the item times. And read them from `GetList(...)/items(id)`: `GetFileByServerRelativePath(...)/ListItemAllFields?$select=Created,Modified` returns the dates in the **web's regional time zone without a trailing "Z"**, so treating them as UTC shifts them by hours, and two webs in different zones cannot be compared at all.
 >
-> **Ve zkratce.** V knihovně dokumentů jsou `TimeCreated`/`TimeLastModified` souboru a `Created`/`Modified` položky dvě různé hodnoty. U starého obsahu se liší o vteřiny (PDF: soubor 10:47:11Z, položka 10:47:06Z) i o roky (`.xls`: soubor změněn 2025, položka 2016 – soubor později přepsal SharePoint). `CreateCopyJobs` přenáší čas **položky** a soubor v cíli dostane stejnou hodnotu. Ověření, které porovnává časy souborů, proto hlásí rozdíly, které uživatel nikdy neuvidí – porovnávej časy položek. A čti je z `GetList(...)/items(id)`: `GetFileByServerRelativePath(...)/ListItemAllFields?$select=Created,Modified` vrací datum v **regionální zóně webu bez koncového „Z“**, takže jako UTC je posunuté o hodiny a dva weby v různých zónách nejdou porovnat vůbec.
+> **Ve zkratce.** V knihovně dokumentů jsou `TimeCreated`/`TimeLastModified` souboru a `Created`/`Modified` položky dvě různé hodnoty. U starého obsahu se liší o vteřiny (PDF: soubor 10:47:11Z, položka 10:47:06Z) i o roky (`.xls`: soubor změněn 2025, položka 2016 – soubor byl později přepsán a položka si datum nechala). `CreateCopyJobs` přenáší čas **položky** a soubor v cíli dostane stejnou hodnotu. Ověření, které porovnává časy souborů, proto hlásí rozdíly, které uživatel nikdy neuvidí – porovnávej časy položek. A čti je z `GetList(...)/items(id)`: `GetFileByServerRelativePath(...)/ListItemAllFields?$select=Created,Modified` vrací datum v **regionální zóně webu bez koncového „Z“**, takže jako UTC je posunuté o hodiny a dva weby v různých zónách nejdou porovnat vůbec.
 
 ## Symptom
 
-After a copy job between two libraries, a verification sampled files and compared `TimeCreated`/`TimeLastModified` of the source and target files. PDFs came back as "Created/Modified mismatch" by 4–5 seconds, with the target **earlier** than the source; in a large library 26 of 50 sampled files reported "Modified mismatch", several of them by years. All files were present and their content was intact.
+After a copy job between two libraries, a verification sampled files and compared `TimeCreated`/`TimeLastModified` of the source and target files. PDFs came back as "Created/Modified mismatch" by 4–5 seconds, with the target **earlier** than the source; in a large library 26 of 50 sampled files reported "Modified mismatch"; the one measured in detail differed by years. All files were present and their content was intact.
 
 ## Cause
 
@@ -27,7 +27,7 @@ Measured on SharePoint Online on 1 November 2026, the same files read four ways:
 | target PDF | `2017-02-01T10:47:06Z` | `2017-02-01T10:47:06Z` |
 
 - The copy job writes the source **item** time to the target item **and** to the target file. The source file's own time is not carried.
-- The file time in the source can be later than the item time (upload versus item commit) or much later (an `.xls` whose file `TimeLastModified` is 2025 while the item `Modified` is 2016 – the file was rewritten by SharePoint without a new item version).
+- The file time in the source can be a few seconds later than the item time, or years later (an `.xls` whose file `TimeLastModified` is 2025 while the item `Modified` is 2016).
 
 Reading the item through the file returns a local time:
 
