@@ -69,9 +69,10 @@ subtract — one extra `RowLimit: 1` call per query (`TotalRows` only).
 `LastModifiedTime` on a `contentclass:STS_Site` row is the root web's timestamp (often a
 settings change), not content activity — don't use it. Signals that come in bulk:
 
-- **Views:** `ViewsRecent` (last 14 days) and `ViewsLastMonths1..3` (monthly buckets) are
-  returned on the site row of the inventory query. The current month overlaps the 14-day
-  value — take the larger of the two, don't add them.
+- **Views:** `ViewsRecent` and `ViewsLastMonths1..3` (monthly buckets) are retrievable on the
+  site row of the inventory query ([managed properties overview](https://learn.microsoft.com/sharepoint/technical-reference/crawled-and-managed-properties-overview)).
+  Microsoft doesn't document the window of `ViewsRecent` (commonly described as the last
+  14 days); it overlaps the current month, so take the larger of the two, don't add them.
 - **Changed documents per site:** one query
   `IsDocument:1 AND LastModifiedTime>=2026-08-05` with refiner `SPSiteUrl(filter=5000/0/*)`
   gives a count per site collection. The refiner can be truncated — a site missing from a
