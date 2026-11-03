@@ -3,7 +3,7 @@ title: Multi-line text in a document library stops at 255 characters
 summary: "A REST MERGE stores 70k characters, but ValidateUpdateListItem rejects anything over 255 unless the column has UnlimitedLengthInDocumentLibrary – set it at creation or PATCH it later"
 tags: [lists, libraries, fields, rest-api, provisioning]
 applies-to: SharePoint Online
-last-reviewed: 2026-10-27
+last-reviewed: 2026-11-03
 ---
 
 # Multi-line text in a document library stops at 255 characters
@@ -64,6 +64,6 @@ The `odata=nometadata` variant of the `POST /fields` body with `@odata.type` ret
 
 ## Watch out
 
-- Read the current state with its own request: `$select=UnlimitedLengthInDocumentLibrary` on a field of another type returns 400. Don't put it into the request that checks whether a field exists, or a missing-property error will look like a missing field and you will create a duplicate.
+- Reading the flag is safe on any field (re-measured 2026-11-03): `$select=UnlimitedLengthInDocumentLibrary` on a Text field returns 200 with the property simply left out, and on the whole `/fields` collection it returns 200 too (164 fields of many types, with `nometadata`, plain `application/json`, `verbose` and OData v4 headers alike). What does return 400 is `getbyinternalnameortitle('X')` for a column that **does not exist** ("Column X does not exist"), with or without the `$select`. So don't build an existence check on a 404 – a missing column is a 400 here, and treating 400 as "some other error" makes you skip creating it, while treating every 400 as "missing" can create a duplicate when the 400 has another cause.
 - Changing a column definition needs permission to manage the list. If the `PATCH` fails, treat the column as "not done yet", not as success, and retry on the next provisioning run.
 - Large values are still bounded by the 2 MB limit on a single REST request body.
