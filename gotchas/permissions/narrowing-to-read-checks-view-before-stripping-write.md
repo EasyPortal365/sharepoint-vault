@@ -66,3 +66,8 @@ A stateful fake ACL catches this in seconds where a mocked "returns OK" never wi
 - the same sabotage for `removeroleassignment`.
 
 The general rule behind it: "principal has capability X" computed over the sum of its bindings says nothing about what remains after you remove one of them.
+
+## Sources
+
+- [Permission levels in SharePoint](https://learn.microsoft.com/sharepoint/understanding-permission-levels) — the list-permissions table shows *View Items* in Full Control, Design, Edit and Contribute, not only in Read.
+- Measured with a stateful fake ACL in the test suite of a shared provisioning package (15 cases, including add/remove sabotage); the defect was present in two independent copies of the routine.
