@@ -3,7 +3,7 @@ title: A mail-permission probe that can't tell "no mailbox" from "no consent" li
 summary: "`/me/messages` 404 `MailboxNotEnabled*` on mailbox-less accounts ≠ missing consent; three verdicts, and never cache a negative probe result"
 tags: [graph, mail, consent, permissions, exchange, licensing, diagnostics]
 applies-to: Microsoft Graph (/me/messages, /me/chats, /me/todo/lists, delegated), SPFx AadHttpClient
-last-reviewed: 2026-09-22
+last-reviewed: 2026-11-03
 ---
 
 # A mail-permission probe that can't tell "no mailbox" from "no consent" lies to admins
