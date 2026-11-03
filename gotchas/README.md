@@ -134,6 +134,7 @@ Every article carries frontmatter with `tags` and `applies-to`, so repo search g
 | [Guests cannot join Teams shared channels](permissions/guests-cannot-join-teams-shared-channels.md) | Shared channels admit external people only through B2B direct connect between two Entra tenants; a guest account cannot be added, so a partner without their own Microsoft 365 needs a different design |
 | [Item edit rights cover every field](permissions/item-level-edit-rights-cover-every-field.md) | Unique permissions on an item don't separate fields: whoever may edit it can set Status, Approver or a lookup Id via REST – derive trust from admin-only data and version history |
 | [FirstUniqueAncestorSecurableObject has no type in nometadata](permissions/first-unique-ancestor-has-no-type-in-nometadata.md) | The endpoint returns a web, a list or a list item depending on where inheritance breaks, and with `odata=nometadata` nothing names the type; classify by properties (`FileSystemObjectType` = item, `BaseTemplate` = list, otherwise web) and treat an unknown shape as restricted |
+| [Narrowing to Read leaves the principal with nothing](permissions/narrowing-to-read-checks-view-before-stripping-write.md) | Edit and Contribute contain the View bit, so a "does it already read?" check passes, Read is never added, and the step that removes the write binding then removes the only binding that carried read access — the principal ends with no access and the routine reports unreconciled forever |
 
 ### spfx/
 
