@@ -22,7 +22,7 @@ Four constraints are documented on the cmdlet, and these are the ones that bite:
 
 - **The target must be the root site or the search centre.** Nothing else can be swapped.
 - **Neither site may be connected to a Microsoft 365 group.** A group-connected team site cannot be promoted this way; a communication site can.
-- **Neither site may be a hub site or associated with a hub.** The documented procedure is to unregister or disassociate, swap, then register or reassociate. Unregistering is not instant: `Unregister-SPOHubSite` leaves associated sites *appearing* associated **for up to an hour**, and the documented way to speed that up is to call `Remove-SPOHubSiteAssociation` on every child first. A swap attempted straight after the unregister can therefore still be refused.
+- **Neither site may be a hub site or associated with a hub.** The documented procedure is to unregister or disassociate, swap, then register or reassociate. Unregistering is not instant: `Unregister-SPOHubSite` leaves associated sites *appearing* associated **for up to an hour**, and the documented way to speed that up is to call `Remove-SPOHubSiteAssociation` on every child first. Whether the swap's own validation reads that stale state is not documented — not measured here either, so treat a swap fired straight after the unregister as untested rather than safe.
 - **If the Publishing feature has previously been activated or is currently activated on the source site, the swap cannot be used.** The wording is "previously been activated" — deactivating it does not restore eligibility.
 
 Two further effects are not refusals but surprises:
@@ -43,12 +43,18 @@ By default a redirect is left at the source address, so links to `/sites/new-int
 ## Fix
 
 - **Check both blockers before you promise a cut-over date.** Hub registration and association are reversible in minutes; Publishing is not reversible at all. Verify them on the actual source site, not on a site built the same way.
-- **Script the hub dance as part of the cut-over,** not as a thing somebody remembers, and in this order: record the topology, `Remove-SPOHubSiteAssociation` for every child, `Unregister-SPOHubSite`, verify that nothing reports as associated any more, swap, `Register-SPOHubSite`, re-associate every child, then restore the hub's name, logo and navigation with `Set-SPOHubSite`. Record what was associated to what **before** you start — once the associations are gone there is nothing left to read them from. Budget for the gap: between the first removal and the last re-association, global navigation is missing for everyone.
-- **A site intended for the root is a bad choice for the parent hub** while the swap is still ahead of you. If the topology has not been built yet, swapping first and registering the hub afterwards skips the whole dance.
+- **Swap first, register the hub afterwards.** This is the one that makes the rest unnecessary: if the site you are promoting is not yet a hub and nothing is associated to it, both hub conditions are satisfied by construction. Where the hub topology does not exist yet — a greenfield intranet, say — build the new root as an ordinary site, swap, *then* register it as the hub and associate the children. A site you intend to promote is a bad candidate for the parent hub while the swap is still ahead of you.
+- **If the topology already exists, script the dance** rather than leaving it to whoever is on shift, and in this order: record the topology, `Remove-SPOHubSiteAssociation` for every child, `Unregister-SPOHubSite`, verify that nothing reports as associated any more, swap, `Register-SPOHubSite`, re-associate every child. Record what was associated to what **before** you start — once the associations are gone there is nothing left to read them from. Budget for the gap: while the children are disassociated, they lose the hub's shared navigation.
+- **Re-registering does not restore how the hub looked.** `Set-SPOHubSite` carries `Title`, `Logo`, `Description` and `HideNameInNavigation` — it does *not* set the hub's navigation links, which are maintained on the hub site itself. Capture both separately before unregistering.
 - **Treat Publishing as a one-way door on any site you might ever promote.** If a site is a candidate for the root, say so where people administer it; "we'll just turn it off again" does not work here.
 - **Plan for the archived root's URLs.** Decide the archive address in advance, and tell the people who use what lived there. Content survives the move intact; addresses do not.
 - **Capture the root's own settings first.** Featured links, external sharing and site permissions are the three that are known to differ; compare them on the source before the swap and verify them after.
 
 ## Source
 
-[`Invoke-SPOSiteSwap`](https://learn.microsoft.com/powershell/module/microsoft.online.sharepoint.powershell/invoke-spositeswap?view=sharepoint-ps) — Microsoft Learn, read 2026-11-04.
+Microsoft Learn, read 2026-11-04:
+
+- [`Invoke-SPOSiteSwap`](https://learn.microsoft.com/powershell/module/microsoft.online.sharepoint.powershell/invoke-spositeswap?view=sharepoint-ps) — the swap's own preconditions.
+- [`Unregister-SPOHubSite`](https://learn.microsoft.com/powershell/module/microsoft.online.sharepoint.powershell/unregister-spohubsite?view=sharepoint-ps) — associations may appear to survive for up to an hour.
+- [`Set-SPOHubSite`](https://learn.microsoft.com/powershell/module/microsoft.online.sharepoint.powershell/set-spohubsite?view=sharepoint-ps) — what re-registering can and cannot restore.
+- [PowerShell cmdlets for SharePoint hub sites](https://learn.microsoft.com/sharepoint/dev/features/hub-site/hub-site-powershell) — the full cmdlet set.
