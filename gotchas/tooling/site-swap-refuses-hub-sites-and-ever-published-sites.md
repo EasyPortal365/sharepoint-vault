@@ -1,6 +1,6 @@
 ---
 title: Root site swap refuses hub sites, and any site Publishing ever touched
-summary: "`Invoke-SPOSiteSwap` rejects a source or target that is a hub site or associated with one, and rejects a source where the Publishing feature was *ever* activated — not just currently; plan the unregister/reassociate dance, and never activate Publishing on the site you intend to promote"
+summary: "`Invoke-SPOSiteSwap` rejects a source or target that is a hub site or associated with one, and rejects a source where the Publishing feature was *ever* activated — not just currently; unregistering a hub leaves children appearing associated for up to an hour, so remove the associations explicitly before the swap, and never activate Publishing on the site you intend to promote"
 tags: [tooling, powershell, migration, root-site]
 applies-to: SharePoint Online
 last-reviewed: 2026-11-04
@@ -22,7 +22,7 @@ Four constraints are documented on the cmdlet, and these are the ones that bite:
 
 - **The target must be the root site or the search centre.** Nothing else can be swapped.
 - **Neither site may be connected to a Microsoft 365 group.** A group-connected team site cannot be promoted this way; a communication site can.
-- **Neither site may be a hub site or associated with a hub.** The documented procedure is to unregister or disassociate, swap, then register or reassociate.
+- **Neither site may be a hub site or associated with a hub.** The documented procedure is to unregister or disassociate, swap, then register or reassociate. Unregistering is not instant: `Unregister-SPOHubSite` leaves associated sites *appearing* associated **for up to an hour**, and the documented way to speed that up is to call `Remove-SPOHubSiteAssociation` on every child first. A swap attempted straight after the unregister can therefore still be refused.
 - **If the Publishing feature has previously been activated or is currently activated on the source site, the swap cannot be used.** The wording is "previously been activated" — deactivating it does not restore eligibility.
 
 Two further effects are not refusals but surprises:
@@ -43,7 +43,8 @@ By default a redirect is left at the source address, so links to `/sites/new-int
 ## Fix
 
 - **Check both blockers before you promise a cut-over date.** Hub registration and association are reversible in minutes; Publishing is not reversible at all. Verify them on the actual source site, not on a site built the same way.
-- **Script the hub dance as part of the cut-over,** not as a thing somebody remembers: unregister the hub or disassociate, swap, then restore exactly the previous hub topology. Record what was associated to what beforehand — after the swap there is nothing left to read it from.
+- **Script the hub dance as part of the cut-over,** not as a thing somebody remembers, and in this order: record the topology, `Remove-SPOHubSiteAssociation` for every child, `Unregister-SPOHubSite`, verify that nothing reports as associated any more, swap, `Register-SPOHubSite`, re-associate every child, then restore the hub's name, logo and navigation with `Set-SPOHubSite`. Record what was associated to what **before** you start — once the associations are gone there is nothing left to read them from. Budget for the gap: between the first removal and the last re-association, global navigation is missing for everyone.
+- **A site intended for the root is a bad choice for the parent hub** while the swap is still ahead of you. If the topology has not been built yet, swapping first and registering the hub afterwards skips the whole dance.
 - **Treat Publishing as a one-way door on any site you might ever promote.** If a site is a candidate for the root, say so where people administer it; "we'll just turn it off again" does not work here.
 - **Plan for the archived root's URLs.** Decide the archive address in advance, and tell the people who use what lived there. Content survives the move intact; addresses do not.
 - **Capture the root's own settings first.** Featured links, external sharing and site permissions are the three that are known to differ; compare them on the source before the swap and verify them after.
