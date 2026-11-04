@@ -1,10 +1,10 @@
 ---
 title: DateTime fields — write full ISO with a time zone, derive the day locally
 short-title: "DateTime: write full ISO, derive days locally"
-summary: No-timezone writes 400; UTC reads shift the day; read a day in the zone it was written in — including noon-UTC dates, which read locally show the next day at UTC+12 to +14
+summary: No-timezone writes 400; UTC reads shift the day; read a day in the zone it was written in — including noon-UTC dates at UTC+12 to +14; a bare date in $filter is UTC midnight, so `le` drops the last day of a range
 tags: [rest-api, datetime, timezone]
 applies-to: SharePoint Online, SharePoint Server
-last-reviewed: 2026-09-24
+last-reviewed: 2026-11-04
 ---
 
 # DateTime fields: write full ISO with a time zone, derive the day locally
@@ -73,6 +73,30 @@ Two more things the three-zone test surfaced:
 
 - **Old values keep their old convention.** After switching from UTC midnight to noon, legacy UTC-midnight values still read correctly in Europe and in Kiribati, and one day early in New York.
 - **"Today" in a server-side filter is an instant, not a day.** A token that expands to `datetime'<now>'` compares a noon-stored expiry against the current moment, so the item flips to "expired" at 12:00 UTC while your app — comparing days — still says "valid until the end of today". Whoever compares against the stored day from outside (a filter, a flow, a search query) must use the same convention.
+
+## Trap 3: a bare date in `$filter` is UTC midnight — `le 'last day'` drops the last day
+
+### Symptom
+
+A month view built with `$filter=EventDate ge '2026-11-01' and EventDate le '2026-11-30'` never shows items on November 30, and a "days booked this month" count is one short. Measured live: `ge '2026-09-28' and le '2026-09-29'` returned only the item from the 28th; the item at `2026-09-29T07:00:00Z` (9:00 local on the 29th) was missing, while `lt '2026-09-30'` returned both.
+
+### Cause
+
+A bare date in an OData filter over a DateTime column is an **instant — midnight UTC** — not "the whole day". Anything stored with a time on the last day (a morning start, or the noon convention above) is after that instant. The lower bound has the mirror trap: an item stored as *local* midnight is the previous evening in UTC, and `ge 'first day'` misses it.
+
+### Fix
+
+Query a window one day wider on both sides with a strict upper bound, then trim by the **local** day in code — once, in the service, not in every caller:
+
+```ts
+const from1 = new Date(from.getFullYear(), from.getMonth(), from.getDate() - 1);
+const to2 = new Date(to.getFullYear(), to.getMonth(), to.getDate() + 2);
+const filter = `EventDate ge '${dayKey(from1)}' and EventDate lt '${dayKey(to2)}'`;
+// …fetch…
+return rows.filter(r => { const d = localDay(r.EventDate); return d >= from && d <= to; });
+```
+
+The same applies to "overdue" checks: `DueDate lt 'today'` flags an invoice as overdue on its due date if the date was stored as local midnight. Query `lt 'tomorrow'` and compare local days in code. Test it with an item on the **last** day that has a time — sample data stored at 00:00 hides the bug.
 
 Test day logic in more than one zone, and prove the zone is real: run the calculation in a child process started with `TZ` set and assert the offset first — setting `TZ` inside Jest does nothing ([Setting `process.env.TZ` inside Jest does not change the time zone](../tooling/jest-process-env-tz-does-not-change-the-time-zone.md)).
 
