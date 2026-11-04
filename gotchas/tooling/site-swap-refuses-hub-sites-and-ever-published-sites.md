@@ -38,7 +38,7 @@ Invoke-SPOSiteSwap `
   -ArchiveUrl https://contoso.sharepoint.com/sites/archive-old-root
 ```
 
-By default a redirect is left at the source address, so links to `/sites/new-intranet` keep working. **No redirect is created for the archived old root**, so anything that lived on it — lists people had bookmarked, in particular — answers on a new address and every saved link to it breaks.
+By default a redirect is left at the source address, so links to `/sites/new-intranet` keep working. **Saved links into the old root break regardless**, and not because a redirect is missing: the promoted site now occupies that address, so a request for a list that used to live at the root reaches the new site, which does not have it. Anything people had bookmarked there answers on the archive address from now on, and the documentation describes a redirect only for the source location — so don't plan around one for the archived site.
 
 ## Fix
 
