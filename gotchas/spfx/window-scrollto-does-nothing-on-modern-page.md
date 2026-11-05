@@ -20,19 +20,19 @@ You add `window.scrollTo(0, 0)` on view change. Nothing happens. `window.pageYOf
 
 ## Cause
 
-Modern pages keep the suite bar fixed and scroll the page body inside an element (historically with the class `contentScrollRegion`, marked `data-is-scrollable="true"`). The window itself never scrolls, so `window.scrollTo` has nothing to move.
+Modern pages keep the suite bar fixed and scroll the page body inside an element: an element with generated (hashed) class names and `data-is-scrollable="true"`, `overflow-y: scroll`. The window itself does not scroll, so `window.scrollTo` has nothing to move. Measured on a modern team-site page in November 2026: `window.scrollTo(0, 500)` left `window.pageYOffset` at `0`.
 
 The scrolling element is not stable either:
 
-- Normally it is SharePoint's canvas region.
+- On a page it is SharePoint's canvas element.
 - If your web part has its own "maximize" or full-screen mode with a fixed height, **your own** main area becomes the scroll container.
-- In Teams or in a full-page app host the window *can* be the scroller.
+- Other hosts can put the scroll somewhere else again — which is why the helper below searches instead of assuming, and falls back to the window when no scrolling ancestor exists.
 
-Hard-coding a class name breaks on the next layout change; hard-coding `window` breaks on every modern page.
+Hard-coding a class name breaks when SharePoint regenerates it; hard-coding `window` breaks on every modern page.
 
 ## Fix
 
-Find the scroller at runtime: the nearest ancestor whose content overflows **and** whose computed `overflow-y` allows scrolling. Both conditions matter — a wrapper with `overflow: hidden` overflows too, but setting its `scrollTop` moves nothing visible, so stopping there fails just as silently. Then scroll only when the top of your web part is actually above the visible area — a web part placed lower on the page must not yank the page up on every click.
+Find the scroller at runtime: the nearest ancestor whose content overflows **and** whose computed `overflow-y` allows scrolling. Both conditions matter — a wrapper with `overflow: hidden` overflows too, but it is not the element the user scrolls, so stopping there resets the wrong box. Then scroll only when the top of your web part is actually above the visible area — a web part placed lower on the page must not yank the page up on every click.
 
 ```ts
 function scrolls(el: HTMLElement): boolean {
@@ -64,7 +64,7 @@ export function scrollAppToTop(el: HTMLElement | null, nearPageTop = 320): void 
   }
   if (elTop >= 0) return;
   const y = elTop + (window.pageYOffset || 0);
-  window.scrollTo(0, y < nearPageTop ? 0 : y);            // Teams / full-page host
+  window.scrollTo(0, y < nearPageTop ? 0 : y);            // no scrolling ancestor: the window scrolls
 }
 ```
 
@@ -83,7 +83,7 @@ React.useEffect(() => {
 
 1. On a modern page, scroll a long view of the web part down, then switch to a short view: the view header is visible.
 2. Place the web part below other content, scroll so the web part is fully visible, switch views: the page does not jump.
-3. Repeat 1 in the web part's maximized mode (if it has one) and in Teams.
+3. Repeat 1 in the web part's maximized mode (if it has one) and in every other host you support.
 
 Check in DevTools which element moved: `document.querySelector('[data-is-scrollable="true"]').scrollTop` changes, `window.pageYOffset` stays `0`.
 
