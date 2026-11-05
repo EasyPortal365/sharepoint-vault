@@ -220,7 +220,7 @@ Every article carries frontmatter with `tags` and `applies-to`, so repo search g
 | [Audio in SPFx/Teams must be optional](spfx/audio-playback-in-spfx-and-teams-must-be-optional.md) | SPO's CSP has no media-src today, so MP3 from your CDN plays; start playback from a click and fall back to silent timing on NotAllowedError, 404 or mute |
 | [Power Automate admin API is unreachable from SPFx](spfx/power-automate-admin-api-unreachable-from-spfx.md) | SharePoint's token for Microsoft Flow Service carries only Microsoft's preauthorized scopes, so an approved `User` grant never reaches the token and the tenant-wide flows list stays 401 |
 | [`window.scrollTo` does nothing in an SPFx web part on a modern page](spfx/window-scrollto-does-nothing-on-modern-page.md) | The page scrolls inside a canvas element, not the window; switching views in a single-page web part leaves the user mid-page. Find the real scrolling ancestor and reset that |
-| [Shared style tag – the first web part wins](spfx/shared-style-tag-first-web-part-wins.md) | A library that injects `<style id=…>` only if the id is missing lets whichever bundle renders first decide the CSS for every web part on the page, so a fixed rule in a newer bundle silently loses to an older copy |
+| [Shared style tag – the first web part wins](spfx/shared-style-tag-first-web-part-wins.md) | A library that injects `<style id=…>` only if the id is missing lets whichever bundle renders first decide the CSS for every web part on the page, so a fixed rule in a newer bundle can silently lose to an older copy that rendered first |
 
 ### app-catalog/
 

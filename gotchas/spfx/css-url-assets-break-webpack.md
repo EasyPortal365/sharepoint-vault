@@ -4,7 +4,7 @@ short-title: Third-party CSS breaks webpack
 summary: "`url(images/...)` without `./` kills the build; inject a `<link>` instead"
 tags: [spfx, webpack, css, leaflet]
 applies-to: SharePoint Online (SPFx)
-last-reviewed: 2026-07-15
+last-reviewed: 2026-11-05
 ---
 
 # Importing third-party CSS with `url(images/...)` breaks the SPFx build
@@ -53,3 +53,4 @@ Call it on component mount. The `id` guard keeps multiple web part instances fro
 - For tenants that block external CDNs (strict CSP, offline), the fallback is to copy the CSS into your own styles, fix every `url(images/...)` to `url(./images/...)`, and ship the image assets yourself. It works, but it's brittle across library upgrades — prefer the `<link>` inject.
 - The same inject-with-id-guard pattern is the reliable way to load **web fonts** in SPFx — SCSS `@import` of font CSS has its own set of problems.
 - Pin the library version in the CDN URL (`leaflet@1.9.4`) so a silent upstream bump can't change your styling.
+- The id guard does not know about versions: if two solutions on one page pin different versions under the same id, the one that renders first decides for both – see [A shared stylesheet injected once per page keeps the version that rendered first](shared-style-tag-first-web-part-wins.md).
