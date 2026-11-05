@@ -219,6 +219,7 @@ Every article carries frontmatter with `tags` and `applies-to`, so repo search g
 | [DecompressionStream and trailing bytes in PDF streams](spfx/decompressionstream-trailing-bytes-pdf-streams.md) | Inflating a PDF FlateDecode stream in the browser fails completely because a line break sits between the data and `endstream`; trim trailing CR/LF and read chunk by chunk, keeping what arrived before the error |
 | [Audio in SPFx/Teams must be optional](spfx/audio-playback-in-spfx-and-teams-must-be-optional.md) | SPO's CSP has no media-src today, so MP3 from your CDN plays; start playback from a click and fall back to silent timing on NotAllowedError, 404 or mute |
 | [Power Automate admin API is unreachable from SPFx](spfx/power-automate-admin-api-unreachable-from-spfx.md) | SharePoint's token for Microsoft Flow Service carries only Microsoft's preauthorized scopes, so an approved `User` grant never reaches the token and the tenant-wide flows list stays 401 |
+| [`window.scrollTo` does nothing in an SPFx web part on a modern page](spfx/window-scrollto-does-nothing-on-modern-page.md) | The page scrolls inside a canvas element, not the window; switching views in a single-page web part leaves the user mid-page. Find the real scrolling ancestor and reset that |
 
 ### app-catalog/
 

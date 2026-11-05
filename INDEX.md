@@ -2,7 +2,7 @@
 
 Every single thing in the vault, on one page. Section names link to folder READMEs; leaves link straight to the content.
 
-*Last updated: 2026-11-04*
+*Last updated: 2026-11-05*
 
 - 🧰 **[scripts/](scripts/)** — PowerShell scripts with comment-based help, read-only unless stated
   - [Terminal animations](scripts/media/) — the writing scripts as an animated PowerShell console; plain SVG, no JavaScript, respects `prefers-reduced-motion`
@@ -236,6 +236,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [DecompressionStream and trailing bytes in PDF streams](gotchas/spfx/decompressionstream-trailing-bytes-pdf-streams.md) — Inflating a PDF FlateDecode stream in the browser fails completely because a line break sits between the data and `endstream`; trim trailing CR/LF and read chunk by chunk, keeping what arrived before the error
     - [Audio in SPFx/Teams must be optional](gotchas/spfx/audio-playback-in-spfx-and-teams-must-be-optional.md) — SPO's CSP has no media-src today, so MP3 from your CDN plays; start playback from a click and fall back to silent timing on NotAllowedError, 404 or mute
     - [Power Automate admin API is unreachable from SPFx](gotchas/spfx/power-automate-admin-api-unreachable-from-spfx.md) — SharePoint's token for Microsoft Flow Service carries only Microsoft's preauthorized scopes, so an approved `User` grant never reaches the token and the tenant-wide flows list stays 401
+    - [`window.scrollTo` does nothing in an SPFx web part on a modern page](gotchas/spfx/window-scrollto-does-nothing-on-modern-page.md) — The page scrolls inside a canvas element, not the window; switching views in a single-page web part leaves the user mid-page. Find the real scrolling ancestor and reset that
   - **app-catalog/**
     - [Three `.sppkg` packaging pitfalls](gotchas/app-catalog/sppkg-packaging-pitfalls.md) — ASCII-only solution name, icon exactly 96×96, Publisher column is AppSource-only
   - **graph/**
