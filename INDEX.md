@@ -2,7 +2,7 @@
 
 Every single thing in the vault, on one page. Section names link to folder READMEs; leaves link straight to the content.
 
-*Last updated: 2026-11-05*
+*Last updated: 2026-11-06*
 
 - 🧰 **[scripts/](scripts/)** — PowerShell scripts with comment-based help, read-only unless stated
   - [Terminal animations](scripts/media/) — the writing scripts as an animated PowerShell console; plain SVG, no JavaScript, respects `prefers-reduced-motion`
@@ -277,6 +277,8 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [Archived site returns 423 on every read](gotchas/graph/archived-site-returns-423-on-every-read.md) — `archivalDetails` is unreadable once archived; `POST /sites/{host},{siteCollectionId}/unarchive` still works
     - [isPrivileged is beta-only](gotchas/graph/privileged-roles-isprivileged-is-beta-only.md) — Read `isPrivileged` live from beta `roleDefinitions` – v1.0 omits it and 400s on `$select=isPrivileged`; Exchange/SharePoint/Teams admins are not privileged
     - [Channel messages need a Teams license on the reader](gotchas/graph/teams-channel-messages-need-a-teams-license.md) — Delegated `GET /teams/{id}/channels/{id}/messages` returns 403 'Failed to get license information for the user' for an unlicensed account even with ChannelMessage.Read.All consented and team membership; a licensed member gets 403 UnknownError on a private channel it is not in; `allChannels` still lists channels of teams the admin is not a member of
+    - [Audit query filters silently by scope](gotchas/graph/audit-query-silently-filters-by-scope.md) — With only AuditLogsQuery-SharePoint.Read.All, Exchange and Entra queries return 201 → succeeded → 0 records; an unfiltered query returns only SharePoint records
+    - [Exchange Admin API — no CORS from SPFx](gotchas/graph/exchange-admin-api-no-cors-from-browser.md) — adminapi/beta/{tenant}/InvokeCommand fails with 'Failed to fetch' even with a fake token; read Exchange config with an admin-run script and import, or use Graph message trace and mailbox reports
   - **azure-functions/**
     - [Windows zip deploy breaks the running app](gotchas/azure-functions/windows-zip-deploy-breaks-running-app.md) — Live `wwwroot` file locks → whole app 503; re-run the deploy, prevent with `WEBSITE_RUN_FROM_PACKAGE=1`
     - [Verifying CORS by header presence passes every origin](gotchas/azure-functions/verifying-cors-by-header-presence-passes-every-origin.md) — The header comes back for every origin (servers answer with a fallback, not an omission), so presence proves nothing; compare it to the `Origin` you sent, keep at least one case that expects *allowed*, and point the probe at a nonexistent route to prove it can fail

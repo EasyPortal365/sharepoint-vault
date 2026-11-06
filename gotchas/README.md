@@ -268,6 +268,8 @@ Every article carries frontmatter with `tags` and `applies-to`, so repo search g
 | [Archived site returns 423 on every read](graph/archived-site-returns-423-on-every-read.md) | `archivalDetails` is unreadable once archived; `POST /sites/{host},{siteCollectionId}/unarchive` still works |
 | [isPrivileged is beta-only](graph/privileged-roles-isprivileged-is-beta-only.md) | Read `isPrivileged` live from beta `roleDefinitions` – v1.0 omits it and 400s on `$select=isPrivileged`; Exchange/SharePoint/Teams admins are not privileged |
 | [Channel messages need a Teams license on the reader](graph/teams-channel-messages-need-a-teams-license.md) | Delegated `GET /teams/{id}/channels/{id}/messages` returns 403 'Failed to get license information for the user' for an unlicensed account even with ChannelMessage.Read.All consented and team membership; a licensed member gets 403 UnknownError on a private channel it is not in; `allChannels` still lists channels of teams the admin is not a member of |
+| [Audit query filters silently by scope](graph/audit-query-silently-filters-by-scope.md) | With only AuditLogsQuery-SharePoint.Read.All, Exchange and Entra queries return 201 → succeeded → 0 records; an unfiltered query returns only SharePoint records |
+| [Exchange Admin API — no CORS from SPFx](graph/exchange-admin-api-no-cors-from-browser.md) | adminapi/beta/{tenant}/InvokeCommand fails with 'Failed to fetch' even with a fake token; read Exchange config with an admin-run script and import, or use Graph message trace and mailbox reports |
 
 ### azure-functions/
 
