@@ -270,7 +270,7 @@ Every article carries frontmatter with `tags` and `applies-to`, so repo search g
 | [Channel messages need a Teams license on the reader](graph/teams-channel-messages-need-a-teams-license.md) | Delegated `GET /teams/{id}/channels/{id}/messages` returns 403 'Failed to get license information for the user' for an unlicensed account even with ChannelMessage.Read.All consented and team membership; a licensed member gets 403 UnknownError on a private channel it is not in; `allChannels` still lists channels of teams the admin is not a member of |
 | [Audit query filters silently by scope](graph/audit-query-silently-filters-by-scope.md) | With only AuditLogsQuery-SharePoint.Read.All, Exchange and Entra queries return 201 → succeeded → 0 records; an unfiltered query returns only SharePoint records |
 | [Exchange Admin API — no CORS from SPFx](graph/exchange-admin-api-no-cors-from-browser.md) | adminapi/beta/{tenant}/InvokeCommand fails with 'Failed to fetch' even with a fake token; read Exchange config with an admin-run script and import, or use Graph message trace and mailbox reports |
-| [Disabled accounts include shared mailboxes](graph/disabled-accounts-include-shared-mailboxes.md) | blocked members ≠ former employees; tell shared mailboxes apart via the mailbox usage report's `recipientType` — impossible when report names are concealed |
+| [Disabled accounts include shared mailboxes](graph/disabled-accounts-include-shared-mailboxes.md) | blocked members ≠ former employees; tell shared mailboxes apart via the mailbox usage report's `recipientType` (needs real names) or `mailboxSettings.userPurpose` (per user) |
 
 ### azure-functions/
 
