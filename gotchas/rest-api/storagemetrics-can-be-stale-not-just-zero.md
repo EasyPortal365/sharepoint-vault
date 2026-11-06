@@ -19,7 +19,7 @@ Two screens of the same tool show two sizes for the same library: a pre-migratio
 
 ## Why
 
-The metrics are not computed when you read them — they are refreshed in the background (observed, not documented). A fresh library has none yet (zeros, `LastModified` `0001-01-01`); a library that changed a lot since the last calculation keeps the old figures. Nothing in the response says which state you got.
+The metrics are not computed when you read them — they are refreshed in the background (observed, not documented). A fresh library has none yet (zeros, `LastModified` `0001-01-01`); a library that changed a lot since the last calculation keeps the old figures. We know of no field in the response that reliably tells a stale answer from a current one — hence the count check below.
 
 ## Fix
 
@@ -34,7 +34,7 @@ const libraryBytes = sumOfFileLength;                                     // alw
 
 - **No percentage tolerance.** 261 vs 794 is not rounding; a threshold only moves the line below which the numbers lie again.
 - If you can't count all files (read cap hit), you can't validate the metrics — don't use them.
-- Files under the library's `Forms` folder (view pages, content-type templates) are not list items. Whether `TotalFileCount` includes them we could not confirm (every library on our test tenant returned zeros), so if you allow for them, count them (`…/GetFolderByServerRelativePath(decodedurl='<root>/Forms')?$expand=Files,Folders/Files`) rather than guessing a constant.
+- Files under the library's `Forms` folder (view pages, content-type templates) are not list items — a default library has 8 of them (`AllItems.aspx`, `DispForm.aspx`, `EditForm.aspx`, `Upload.aspx`, `Combine.aspx`, `repair.aspx`, `Thumbnails.aspx`, `template.dotx`). Whether `TotalFileCount` includes them we could not confirm (every library on our test tenant returned zeros), so if you allow for them, count them (`…/GetFolderByServerRelativePath(decodedurl='<root>/Forms')?$select=Name&$expand=Files,Folders/Files`) rather than guessing a constant.
 - Show current-version size from the per-file sum everywhere, so a scan and a later verification can't disagree.
 
 ## Related
