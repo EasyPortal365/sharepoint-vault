@@ -28,17 +28,19 @@ Measured from a SharePoint page with a delegated token that carried only `AuditL
 | `serviceFilters: ["AzureActiveDirectory"]` | `succeeded`, **0** records |
 | no filter at all | `succeeded`, 540 records — **all** SharePoint record types, none from Exchange, Entra ID or Teams |
 
-The service applies the scope by filtering the records, not by refusing the query. (A direct A/B with a second scope granted was not part of this test.)
+The service applies the scope by filtering the records, not by refusing the query.
+
+**A/B, same day:** after `AuditLogsQuery-Exchange.Read.All` and `AuditLogsQuery-Entra.Read.All` were granted, the same queries for the same day returned **16** Exchange items (before: 0), **75** Entra ID records (before: 0) and **747** records unfiltered (before: 540). The unfiltered result now included the services `Exchange` (120, mostly `MailItemsAccessed`) and `AzureActiveDirectory` (61, mostly `UserLoggedIn`). Note also that the record type `exchangeItem` (16) is narrower than the Exchange service as a whole (120): `MailItemsAccessed` is a different record type.
 
 ## Fix
 
 - Before you interpret a result, check which `AuditLogsQuery-*` scopes the token carries (decode the `scp` claim). A service without a scope is **"not measured"**, never "no activity".
 - Treat "unfiltered" as "everything I have scope for" and say so in the UI.
-- Request the per-service scopes you need (`AuditLogsQuery-Exchange.Read.All`, `-Entra.Read.All`, `-OneDrive.Read.All` …, or `AuditLogsQuery.Read.All`), then repeat the test.
+- Request the per-service scopes you need (`AuditLogsQuery-Exchange.Read.All`, `-Entra.Read.All`, `-OneDrive.Read.All` …, or `AuditLogsQuery.Read.All`), then repeat the test. In SPFx, Graph grants are tenant-wide for all solutions, so a scope another solution requested may already be in the token.
 
 ## OneDrive is not a separate case here
 
-OneDrive file activity arrives as `SharePointFileOperation` records with service `SharePoint` and an object path on `-my.sharepoint.com/personal/` — in the same test, 26 such records over 14 days, confirmed by the OneDrive usage report. A query with `recordTypeFilters: ["oneDrive"]` over the same 14 days returned **0**. So the SharePoint scope does cover OneDrive files, and a zero for the `oneDrive` record type means nothing. Recognise OneDrive by the path, not by the record type.
+OneDrive file activity arrives as `SharePointFileOperation` records with service `SharePoint` and an object path on `-my.sharepoint.com/personal/` — in the same test, 26 such records over 14 days, confirmed by the OneDrive usage report. A query with `recordTypeFilters: ["oneDrive"]` over the same 14 days returned **0**. So the SharePoint scope does cover OneDrive files, and a zero for the `oneDrive` record type means nothing. It stayed zero after `AuditLogsQuery-OneDrive.Read.All` was granted too — no effect of that scope was observed in this test. Recognise OneDrive by the path, not by the record type.
 
 ## Related limits worth knowing
 
