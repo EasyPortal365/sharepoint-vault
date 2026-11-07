@@ -33,9 +33,6 @@
 - **✂️ Snippets**
   - [All snippets](/snippets/README.md)
 
-- **📦 Templates (planned)**
-  - [Overview](/templates/README.md)
-
 - **🔗 Resources**
   - [Curated links](/resources/README.md)
 

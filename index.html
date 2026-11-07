@@ -222,6 +222,10 @@
     .sv-starbtn:hover { background:var(--teal7); border-color:var(--teal7); }
     .sv-starbtn .st { color:#FFD45C; font-size:14px; line-height:1; }
     .sidebar .sv-starside { display:flex; justify-content:center; margin:2px 14px 14px; }
+    .sidebar .sv-sidelinks { display:flex; flex-wrap:wrap; gap:4px 14px; justify-content:center; margin:-4px 14px 12px; font-family:var(--mono); font-size:11.5px; }
+    .sidebar .sv-sidelinks a { color:var(--teal7); text-decoration:none; }
+    .sidebar .sv-sidelinks a:hover { text-decoration:underline; text-underline-offset:3px; }
+    html.sv-going #app, html.sv-going .sv-status { visibility:hidden; }
     .sv-star { margin-top:40px; padding:16px 20px; border-radius:14px; background:linear-gradient(120deg, var(--mint), #fff); border:1px solid var(--line); font-size:14px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
     .sv-star .sv-starbtn { margin-left:auto; }
     .sv-hero .sv-starbtn { margin-top:16px; font-size:13px; padding:10px 20px; }
@@ -255,6 +259,86 @@
     <span class="right"><a href="https://github.com/EasyPortal365/sharepoint-vault/commits/main.atom" target="_blank" rel="noopener" title="Subscribe to vault updates (Atom feed)">feed</a>&nbsp;·&nbsp;<a href="https://github.com/EasyPortal365/sharepoint-vault" target="_blank" rel="noopener"><span id="sv-stars"></span>github.com/EasyPortal365/sharepoint-vault</a></span>
   </div>
   <script>
+    /* ── Jeden web: každý článek, skript a sekce má statickou stránku s vlastní URL
+       (tools/build-site.mjs). Docsify zůstává jen úvodní stránkou; staré odkazy
+       #/cesta (fóra, záložky, výsledky hledání docsify) vedou na statickou stránku.
+       Přesměruje jen na URL, která je v /pages.json – jinak docsify vykreslí jako dřív. */
+    /* Vlastní měřicí endpoint doplní build z proměnné repa VAULT_API; bez ní se neměří. */
+    var SV_API = '__VAULT_API__';
+    if (SV_API.indexOf('http') !== 0) { SV_API = ''; }
+    var SV_PAGES = null;
+    function svLoadPages() {
+      if (SV_PAGES) { return Promise.resolve(SV_PAGES); }
+      return fetch('/pages.json').then(function (r) { return r.ok ? r.json() : null; }).then(function (list) {
+        if (!list) { return null; }
+        SV_PAGES = {};
+        for (var i = 0; i < list.length; i++) { SV_PAGES[list[i].u] = list[i]; }
+        return SV_PAGES;
+      }).catch(function () { return null; });
+    }
+    function svStaticFor(hash) {
+      var m = /^#\/([^?]*)(?:\?(.*))?$/.exec(hash || '');
+      if (!m) { return null; }
+      var p = decodeURIComponent(m[1]);
+      if (!p || /^README(\.md)?$/i.test(p)) { return null; }
+      var anchor = '';
+      var id = m[2] ? /(?:^|&)id=([^&]+)/.exec(m[2]) : null;
+      if (id) { anchor = '#' + id[1]; }
+      var url;
+      if (/^INDEX(\.md)?$/i.test(p)) { url = '/full-index'; }
+      else if (/(^|\/)README(\.md)?$/i.test(p)) { url = '/' + p.replace(/README(\.md)?$/i, ''); }
+      else if (/\/$/.test(p)) { url = '/' + p; }
+      else { url = '/' + p.replace(/\.(md|ps1|psm1)$/i, ''); }
+      return { url: url, anchor: anchor };
+    }
+    function svRedirect() {
+      var t = svStaticFor(location.hash);
+      if (!t) { document.documentElement.classList.remove('sv-going'); return; }
+      document.documentElement.classList.add('sv-going');
+      svLoadPages().then(function (pages) {
+        if (pages && pages[t.url]) { location.replace(t.url + t.anchor); return; }
+        document.documentElement.classList.remove('sv-going');
+      });
+      setTimeout(function () { document.documentElement.classList.remove('sv-going'); }, 3000);
+    }
+    svRedirect();
+    window.addEventListener('hashchange', svRedirect);
+
+    /* Návštěvnost bez cookies a bez třetích stran – vlastní endpoint, jen úvod
+       (statické stránky posílají totéž ze svého skriptu). */
+    (function () {
+      if (!SV_API || svStaticFor(location.hash)) { return; }
+      try {
+        var d = JSON.stringify({ p: '/', r: document.referrer, w: window.innerWidth });
+        if (!(navigator.sendBeacon && navigator.sendBeacon(SV_API + '/visit', d))) {
+          fetch(SV_API + '/visit', { method: 'POST', body: d, keepalive: true, mode: 'no-cors' });
+        }
+      } catch (e) {}
+    })();
+
+    /* Nejčtenější za 7 dní: agregát z vlastního endpointu + titulky z /pages.json */
+    function svPopular() {
+      var el = document.getElementById('sv-popular');
+      if (!el || el.dataset.done) { return; }
+      if (!SV_API) { el.parentNode.removeChild(el.previousSibling); el.parentNode.removeChild(el); return; }
+      el.dataset.done = '1';
+      Promise.all([
+        fetch(SV_API + '/stats?days=7').then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; }),
+        svLoadPages()
+      ]).then(function (res) {
+        var st = res[0], pages = res[1], out = '', n = 0;
+        if (st && st.pages && pages) {
+          for (var i = 0; i < st.pages.length && n < 5; i++) {
+            var pg = pages[st.pages[i].path];
+            if (!pg || pg.u === '/' || /\/$/.test(pg.u) || pg.u === '/full-index') { continue; }
+            n++;
+            out += '<div><span class="hl">' + st.pages[i].views + '×</span> <a href="' + pg.u + '" style="border:none;color:var(--navy)">' + svEsc(pg.t) + '</a></div>';
+          }
+        }
+        el.innerHTML = n >= 3 ? out : '<span style="color:var(--soft)">still counting — check back in a few days</span>';
+      });
+    }
+
     var SV_HERO =
       '<div class="sv-hero">' +
         '<div class="bar"><span class="ttl">⧉ spvault — battlefield session — 80×24</span><span class="winbtns"><b>─</b><b>□</b><b>✕</b></span></div>' +
@@ -265,13 +349,16 @@
           '<div class="out">Field-tested scripts, hard-won gotchas and guides for SharePoint professionals.<br>No marketing. No doc rewrites. Only things that <span class="hl">survived contact with production</span>.</div>' +
           '<a class="sv-starbtn" href="https://github.com/EasyPortal365/sharepoint-vault" target="_blank" rel="noopener"><span class="st">★</span> Star the vault on GitHub</a>' +
           '<div style="margin-top:14px"><span class="p">PS SPVault:\\&gt;</span> <span class="cmd">Get-Vault | Measure-Object</span></div>' +
-          '<div class="out" id="sv-counts">gotchas&nbsp;&nbsp;guides&nbsp;&nbsp;scripts&nbsp;&nbsp;snippets&nbsp;&nbsp;templates&nbsp;&nbsp;resources&nbsp;&nbsp;<span class="ok">[all field-tested ✓]</span></div>' +
+          '<div class="out" id="sv-counts">gotchas&nbsp;&nbsp;guides&nbsp;&nbsp;scripts&nbsp;&nbsp;snippets&nbsp;&nbsp;resources&nbsp;&nbsp;<span class="ok">[all field-tested ✓]</span></div>' +
           '<div style="margin-top:14px"><span class="p">PS SPVault:\\&gt;</span> <span class="cmd">git log --oneline -5</span></div>' +
           '<div class="out" id="sv-gitlog">fetching from origin…</div>' +
           '<div style="margin-top:14px"><span class="p">PS SPVault:\\&gt;</span> <span class="cmd">Get-CommitActivity -Weeks 52 | Show-Sparkline</span></div>' +
           '<div class="out" id="sv-spark">…</div>' +
           '<div style="margin-top:14px"><span class="p">PS SPVault:\\&gt;</span> <span class="cmd">Get-ChildItem -Added -Since 7d</span></div>' +
           '<div class="out" id="sv-neww">…</div>' +
+          '<div style="margin-top:14px"><span class="p">PS SPVault:\\&gt;</span> <span class="cmd">Get-MostRead -Since 7d -Top 5</span></div>' +
+          '<div class="out" id="sv-popular">…</div>' +
+          '<div style="margin-top:14px"><span class="p">PS SPVault:\\&gt;</span> <a href="/errors" class="cmd" style="border-bottom:1px dashed var(--teal6)" title="Paste an error message, find the article">Find-Error</a> <span class="out">·</span> <a href="/tags/" class="cmd" style="border-bottom:1px dashed var(--teal6)" title="Browse by topic">Get-Tag</a></div>' +
           '<div style="margin-top:14px"><span class="p">PS SPVault:\\&gt;</span> <a href="#" id="sv-random" class="cmd" style="border-bottom:1px dashed var(--teal6)" title="Open a random gotcha">Get-Gotcha -Random</a></div>' +
           '<div style="margin-top:14px"><span class="p">PS SPVault:\\&gt;</span> <span class="cursor"></span></div>' +
         '</div>' +
@@ -368,8 +455,8 @@
         if (SV_GH.neww && SV_GH.neww.length) {
           var shown = SV_GH.neww.slice(0, 6), out = '';
           for (k = 0; k < shown.length; k++) {
-            var route = shown[k].replace(/\.md$/, '');
-            out += '<div><span class="ok">+</span> <a href="#/' + route + '" style="border:none;color:var(--navy)">' + shown[k] + '</a></div>';
+            var route = shown[k].replace(/\.(md|ps1)$/, '');
+            out += '<div><span class="ok">+</span> <a href="/' + route + '" style="border:none;color:var(--navy)">' + shown[k] + '</a></div>';
           }
           if (SV_GH.neww.length > 6) { out += '<div style="color:var(--soft)">… and ' + (SV_GH.neww.length - 6) + ' more</div>'; }
           nw.innerHTML = out;
@@ -385,7 +472,7 @@
           e.preventDefault();
           if (SV_GH.gpaths && SV_GH.gpaths.length) {
             var pick = SV_GH.gpaths[Math.floor(Math.random() * SV_GH.gpaths.length)];
-            window.location.hash = '#/' + pick.replace(/\.md$/, '');
+            window.location.href = '/' + pick.replace(/\.md$/, '');
           }
         });
       }
@@ -668,7 +755,13 @@
               sbtn.innerHTML = '<span class="st">★</span> Star on GitHub';
               var appName = sbar.querySelector('.app-name');
               if (appName) { appName.insertAdjacentElement('afterend', sbtn); } else { sbar.insertBefore(sbtn, sbar.firstChild); }
+              /* rozcestník na statické nástroje (stejný jako v menu statických stránek) */
+              var sl = document.createElement('div');
+              sl.className = 'sv-sidelinks';
+              sl.innerHTML = '<a href="/errors">error lookup</a><a href="/tags/">tags</a><a href="/full-index">full index</a>';
+              sbtn.insertAdjacentElement('afterend', sl);
             }
+            if (vm.route.path === '/') { svPopular(); }
             svFill();
             /* footer článku: Last updated + History/Edit/Source (lazy, cache 6 h) */
             var file = vm.route.file;

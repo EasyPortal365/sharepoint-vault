@@ -27,7 +27,6 @@ It is **not** another copy of Microsoft's documentation. Everything in the vault
 - 💥 **Gotchas** — short *symptom → cause → fix* write-ups of the traps that cost us hours, so they cost you minutes
 - 🧭 **Guides** — end-to-end walkthroughs that connect the dots (REST, Microsoft Graph, SPFx, search)
 - ✂️ **Snippets** — copy-paste fragments: REST calls, CAML, list formatting JSON
-- 📦 **Templates** *(planned)* — reusable artifacts: site scripts, formatting templates, schema definitions; the folder lists the categories we intend to fill
 - 🔗 **Resources** — a curated shortlist of the tools and sources we actually use
 
 ## Vault map
@@ -40,7 +39,6 @@ It is **not** another copy of Microsoft's documentation. Everything in the vault
 | [`course/`](course/) | *SharePoint Online – administrace od A do Z* — full CZ course materials (IT Pro admin) |
 | [`talks/`](talks/) | Slide decks from public talks and conferences (CZ) |
 | [`snippets/`](snippets/) | Small copy-paste fragments for daily work |
-| [`templates/`](templates/) | *Planned* — reusable templates (site scripts, list formatting, schemas); contributions welcome |
 | [`resources/`](resources/) | Curated links — tools, docs, community sources |
 
 Prefer everything on a single page? Browse the 🗂️ **[full vault index](INDEX.md)** — a tree of every item in the repo.

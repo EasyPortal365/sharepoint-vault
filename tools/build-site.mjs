@@ -22,6 +22,12 @@ import loadLanguages from 'prismjs/components/index.js';
 
 const SITE = 'https://sharepointvault.online';
 const GH = 'https://github.com/EasyPortal365/sharepoint-vault';
+/**
+ * Own measuring endpoint: no cookies, no third party. Comes from the repository variable
+ * VAULT_API (set in the Pages workflow), never from a file. Without it the site builds
+ * fine, just without page views, votes and the "most read" list.
+ */
+const API = (process.env.VAULT_API || '').replace(/\/+$/, '');
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const OUT = resolve(process.argv[2] || '_site');
 if (OUT === ROOT) { console.error('outDir must not be the repo root'); process.exit(2); }
@@ -73,6 +79,8 @@ function pageUrl(rel) {
 }
 /** URL path → output file (GitHub Pages serves /a/b from a/b.html and /a/ from a/index.html). */
 const outFile = (url) => (url.endsWith('/') ? url + 'index.html' : url + '.html').replace(/^\//, '');
+/** Share image of a page (rendered by tools/build-og.mjs). */
+const ogPath = (url) => '/og' + (url.endsWith('/') ? url + 'index' : url) + '.png';
 
 function slugger() {
   const seen = {};
@@ -124,6 +132,7 @@ for (const rel of tracked) {
   if (/\.md$/i.test(rel)) {
     if (rel === 'README.md' || SKIP.has(rel)) continue; // home = the docsify app
     if (base.startsWith('_')) continue;
+    if (rel.startsWith('templates/')) continue; // section is planned and hidden until it has content
   } else if (!CODE_EXT.test(rel)) continue;
   pages.push({ rel, url: pageUrl(rel) });
 }
@@ -226,11 +235,73 @@ const EXTRA_CSS = `
 .sv-related h2 { margin-top:0 !important; font-size:15px !important; }
 .sv-related ul { margin:0; padding-left:18px; }
 .sv-related li { margin:4px 0; }
-.sv-searchlink { display:block; margin:6px 14px 12px; font-family:var(--mono); font-size:12px; color:var(--soft); border:1px solid var(--line); border-radius:999px; padding:8px 14px; background:var(--bg); text-decoration:none; }
-.sv-searchlink:hover { border-color:var(--teal6); color:var(--teal7); }
+a.sv-tag { border-bottom:none !important; text-decoration:none; }
+a.sv-tag:hover { background:var(--teal7); color:#fff; }
+.sv-searchform { margin:0 14px 8px; }
+.sv-searchform input { width:100%; box-sizing:border-box; font-family:var(--mono); font-size:12px; color:var(--navy); border:1px solid var(--line); border-radius:999px; padding:8px 14px; background:var(--bg); outline:none; }
+.sv-searchform input:focus { border-color:var(--teal6); box-shadow:0 0 0 3px rgba(0,206,215,.15); }
+.sv-sidelinks { display:flex; gap:12px; margin:0 16px 12px; font-family:var(--mono); font-size:11px; }
+.sv-sidelinks a { color:var(--teal7); text-decoration:none; font-weight:600; }
+.sv-sidelinks a:hover { text-decoration:underline; text-underline-offset:3px; }
+.sv-helpful { margin-top:40px; padding:14px 18px; border:1px dashed var(--line2); border-radius:14px; display:flex; align-items:center; gap:10px; flex-wrap:wrap; font-size:14px; }
+.sv-helpful b { font-weight:600; }
+.sv-helpful .sv-btn { padding:6px 14px; }
+.sv-helpful .sv-discuss { margin-left:auto; font-family:var(--mono); font-size:11px; }
+.sv-helpful-msg { flex-basis:100%; color:var(--muted); font-size:13px; }
+.sv-taglist { display:flex; flex-wrap:wrap; gap:8px; margin:16px 0 28px; }
+.sv-taglist a { font-family:var(--mono); font-size:12px; background:var(--bg); border:1px solid var(--line); border-radius:999px; padding:5px 12px; color:var(--navy); border-bottom:1px solid var(--line) !important; }
+.sv-taglist a:hover { border-color:var(--teal6) !important; color:var(--teal7); }
+.sv-taglist small { color:var(--soft); margin-left:4px; }
+.sv-cards { list-style:none; padding:0 !important; }
+.sv-cards li { padding:12px 0; border-bottom:1px solid var(--line); }
+.sv-cards li::before { display:none; }
+.sv-cards .sv-sum { display:block; color:var(--muted); font-size:13.5px; margin-top:3px; }
+.sv-cards .sv-sec { font-family:var(--mono); font-size:10.5px; color:var(--soft); margin-left:8px; text-transform:uppercase; letter-spacing:.06em; }
+.sv-filter { width:100%; max-width:520px; box-sizing:border-box; font-family:var(--mono); font-size:13px; border:1px solid var(--line2); border-radius:999px; padding:10px 16px; margin:8px 0 18px; }
+.sv-errs td:first-child { white-space:nowrap; font-family:var(--mono); font-weight:700; }
+.sv-msgs li { margin:6px 0; }
+.sv-msgs code { white-space:normal; }
+#sv-pf { --pagefind-ui-primary:#002163; --pagefind-ui-text:#002163; --pagefind-ui-border:#E0E6EF; --pagefind-ui-tag:#E4F7F6; --pagefind-ui-border-radius:14px; --pagefind-ui-font:'Plus Jakarta Sans',system-ui,sans-serif; }
+#sv-pf mark { background:var(--mint); color:var(--navy); }
 `;
 
-function layout({ url, title, description, lang, bodyClass, content, ld, ogType = 'article' }) {
+const tagSlug = (t) => String(t).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+const discussUrl = (title, url) => `${GH}/discussions/new?category=q-a&title=${encodeURIComponent('Re: ' + deEmoji(title))}&body=${encodeURIComponent(`About ${SITE}${url}\n\n`)}`;
+
+/** „Was this helpful?" + a way to ask. Votes go to our own endpoint (no cookies, no third party). */
+const helpful = (title, url) => `<div class="sv-helpful" data-svurl="${esc(url)}"><b>Was this helpful?</b><button type="button" class="sv-btn" data-svvote="up">👍 Yes</button><button type="button" class="sv-btn" data-svvote="down">👎 No</button><a class="sv-discuss" href="${esc(discussUrl(title, url))}" target="_blank" rel="noopener">ask or add your experience on GitHub →</a><span class="sv-helpful-msg" hidden></span></div>`;
+
+/** Page view beacon + vote handler. sendBeacon with a string = text/plain, a simple CORS request without preflight. */
+const TRACK_JS = `<script>
+(function () {
+  var API = '${API ? API + '/visit' : ''}';
+  function send(o) { if (!API) { return; } try { var d = JSON.stringify(o); if (navigator.sendBeacon && navigator.sendBeacon(API, d)) { return; } fetch(API, { method: 'POST', body: d, keepalive: true, mode: 'no-cors' }); } catch (e) {} }
+  send({ p: location.pathname, r: document.referrer, w: window.innerWidth });
+  var box = document.querySelector('.sv-helpful');
+  if (!box) { return; }
+  var key = 'sv-vote:' + location.pathname, prev = null;
+  try { prev = localStorage.getItem(key); } catch (e) {}
+  var msg = box.querySelector('.sv-helpful-msg');
+  function thank(v) {
+    msg.hidden = false;
+    msg.innerHTML = v === 'up'
+      ? 'Thanks! If it saved you time, a <a href="${GH}" target="_blank" rel="noopener">star on GitHub</a> helps other SharePoint people find the vault.'
+      : 'Sorry about that. What was missing or wrong? <a href="' + box.querySelector('.sv-discuss').href + '" target="_blank" rel="noopener">Tell us on GitHub</a> and we will fix the article.';
+    box.querySelectorAll('[data-svvote]').forEach(function (b) { b.disabled = true; b.style.opacity = b.getAttribute('data-svvote') === v ? 1 : .45; });
+  }
+  if (prev === 'up' || prev === 'down') { thank(prev); }
+  box.addEventListener('click', function (e) {
+    var b = e.target.closest ? e.target.closest('[data-svvote]') : null;
+    if (!b || b.disabled) { return; }
+    var v = b.getAttribute('data-svvote');
+    send({ p: location.pathname, w: window.innerWidth, f: v });
+    try { localStorage.setItem(key, v); } catch (e2) {}
+    thank(v);
+  });
+})();
+</script>`;
+
+function layout({ url, title, description, lang, bodyClass, content, ld, ogType = 'article', image, pagefind = false }) {
   const canonical = SITE + url;
   const fullTitle = `${deEmoji(title)} | SharePoint Vault`;
   return `<!DOCTYPE html>
@@ -246,7 +317,7 @@ function layout({ url, title, description, lang, bodyClass, content, ld, ogType 
   <meta property="og:description" content="${esc(description)}">
   <meta property="og:type" content="${ogType}">
   <meta property="og:url" content="${esc(canonical)}">
-  <meta property="og:image" content="${SITE}/assets/og-vault.png">
+  <meta property="og:image" content="${SITE}${image || '/assets/og-vault.png'}">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🗝️</text></svg>">
   ${HEAD_FONTS}
@@ -259,11 +330,12 @@ function layout({ url, title, description, lang, bodyClass, content, ld, ogType 
   <aside class="sidebar">
     <h1 class="app-name"><a class="app-name-link" href="/">SharePoint<b>Vault</b> <i>~$</i></a></h1>
     <a class="sv-starbtn sv-starside" href="${GH}" target="_blank" rel="noopener"><span class="st">★</span> Star on GitHub</a>
-    <a class="sv-searchlink" href="/">⌕ search the vault…</a>
+    <form class="sv-searchform" action="/search" method="get" role="search"><input type="search" name="q" placeholder="⌕ search the vault…" aria-label="Search the vault"></form>
+    <nav class="sv-sidelinks" aria-label="Browse"><a href="/tags/">tags</a><a href="/errors">error lookup</a><a href="/full-index">full index</a></nav>
     <div class="sidebar-nav">${sidebar(url)}</div>
   </aside>
   <section class="content">
-    <article class="markdown-section" id="main">
+    <article class="markdown-section" id="main"${pagefind ? ' data-pagefind-body' : ''}>
 ${content}
     </article>
   </section>
@@ -271,6 +343,7 @@ ${content}
 <script>
   document.querySelector('.sidebar-toggle').addEventListener('click', function () { document.body.classList.toggle('close'); });
 </script>
+${TRACK_JS}
 </body>
 </html>
 `;
@@ -311,6 +384,8 @@ for (const rel of tracked) {
   mkdirSync(dirname(dst), { recursive: true });
   copyFileSync(join(ROOT, rel), dst);
 }
+// The docsify home gets the same endpoint as the static pages (placeholder in index.html).
+writeFileSync(join(OUT, 'index.html'), indexHtml.replace("'__VAULT_API__'", JSON.stringify(API)));
 
 // Pass 1: metadata (titles are needed for related lists and breadcrumbs).
 for (const p of pages) {
@@ -375,6 +450,7 @@ for (const p of pages) {
 ${intro ? `<div class="sv-intro">${intro.anim ? `<img class="sv-intro-anim" src="${esc(intro.anim)}" alt="${esc(name)} running in a PowerShell window">` : ''}<p><span class="sv-lang">EN</span> ${intro.en}</p><p><span class="sv-lang">CZ</span> ${intro.cz}</p></div>` : `<blockquote><p>${esc(p.summary)}</p></blockquote>`}
 <div class="sv-fileact"><button type="button" class="sv-btn" onclick="navigator.clipboard.writeText(document.getElementById('sv-code').innerText);this.textContent='✓ copied'">⧉ copy to clipboard</button><a class="sv-btn" href="/${p.rel}" download="${esc(name)}">⬇ download</a><a class="sv-btn" href="${GH}/blob/main/${p.rel}" target="_blank" rel="noopener">view on GitHub ↗</a><span class="sv-filemeta">${lines} lines · ${kb} KB</span></div>
 <pre data-lang="powershell"><code class="lang-powershell" id="sv-code">${h.html}</code></pre>
+${helpful(p.title, p.url)}
 ${related(p)}
 ${footer(p.rel, null)}`;
     ld.push({
@@ -387,12 +463,12 @@ ${footer(p.rel, null)}`;
     const d = p.data;
     const meta = [];
     if (d['applies-to']) meta.push(`<span><b>applies to:</b> ${esc(d['applies-to'])}</span>`);
-    if (Array.isArray(d.tags) && d.tags.length) meta.push(`<span>${d.tags.map((t) => `<span class="sv-tag">${esc(t)}</span>`).join('')}</span>`);
+    if (Array.isArray(d.tags) && d.tags.length) meta.push(`<span>${d.tags.map((t) => `<a class="sv-tag" href="/tags/${tagSlug(t)}/">${esc(t)}</a>`).join('')}</span>`);
     // Meta line goes right under the H1.
     const html = meta.length ? r.html.replace(/(<\/h1>\n?)/, `$1<div class="sv-meta">${meta.join('')}</div>\n`) : r.html;
     content = `${crumbsHtml(trail)}
 ${html}
-${p.kind === 'article' ? related(p) : ''}
+${p.kind === 'article' ? helpful(p.title, p.url) + related(p) : ''}
 ${footer(p.rel, d['last-reviewed'])}`;
     if (p.kind === 'article') {
       ld.push({
@@ -411,12 +487,171 @@ ${footer(p.rel, d['last-reviewed'])}`;
     url: p.url, title: p.title, description, lang: p.lang, content, ld,
     bodyClass: p.rel.startsWith('course/') ? 'is-course' : '',
     ogType: p.kind === 'index' ? 'website' : 'article',
+    image: p.kind === 'index' ? null : ogPath(p.url),
+    pagefind: p.kind !== 'index',
   }));
 }
 
+// ── tags ───────────────────────────────────────────────────────────────────
+const tagMap = new Map();
+for (const p of pages) {
+  if (p.kind !== 'article' || !Array.isArray(p.data.tags)) continue;
+  for (const t of p.data.tags) {
+    const s = tagSlug(t);
+    if (!s) continue;
+    if (!tagMap.has(s)) tagMap.set(s, { name: t, items: [] });
+    tagMap.get(s).items.push(p);
+  }
+}
+const tagsSorted = [...tagMap.entries()].sort((a, b) => b[1].items.length - a[1].items.length || a[0].localeCompare(b[0]));
+const sectionOf = (p) => p.rel.split('/').slice(0, -1).join(' / ');
+const cardList = (items) => `<ul class="sv-cards">${items.map((q) => `<li><a href="${q.url}">${esc(deEmoji(q.title))}</a><span class="sv-sec">${esc(sectionOf(q))}</span>${q.summary ? `<span class="sv-sum">${esc(clip(q.summary, 220))}</span>` : ''}</li>`).join('')}</ul>`;
+const extraUrls = [];
+function writePage(url, opts) {
+  const dst = join(OUT, outFile(url));
+  mkdirSync(dirname(dst), { recursive: true });
+  writeFileSync(dst, layout({ url, lang: 'en', ogType: 'website', ...opts }));
+}
+// Only tags with 3+ articles get a page: a page with one or two links is thin content.
+const tagPages = tagsSorted.filter(([, v]) => v.items.length >= 3);
+writePage('/tags/', {
+  title: 'Tags', description: `Browse ${pages.filter((p) => p.kind === 'article').length} SharePoint gotchas and guides by topic: ${tagPages.slice(0, 8).map(([, v]) => v.name).join(', ')} and more.`,
+  ld: [crumbsLd([{ name: 'Vault', url: '/' }], { name: 'Tags', url: '/tags/' })],
+  content: `${crumbsHtml([{ name: 'Vault', url: '/' }])}
+<h1 id="tags">Browse by tag</h1>
+<p>Every article in the vault carries tags. Pick a topic to see everything we have on it.</p>
+<div class="sv-taglist">${tagPages.map(([s, v]) => `<a href="/tags/${s}/">${esc(v.name)}<small>${v.items.length}</small></a>`).join('')}</div>`,
+});
+extraUrls.push('/tags/');
+for (const [s, v] of tagPages) {
+  const url = `/tags/${s}/`;
+  const items = v.items.slice().sort((a, b) => a.title.localeCompare(b.title));
+  const trail = [{ name: 'Vault', url: '/' }, { name: 'Tags', url: '/tags/' }];
+  writePage(url, {
+    title: `${v.name}: ${items.length} SharePoint gotchas and guides`,
+    description: clip(`${items.length} field-tested notes tagged “${v.name}”: ${items.slice(0, 4).map((q) => deEmoji(q.data['short-title'] || q.title)).join('; ')}.`, 160),
+    ld: [crumbsLd(trail, { name: v.name, url })],
+    content: `${crumbsHtml(trail)}
+<h1 id="tag">${esc(v.name)} <small style="font-size:.5em;color:var(--soft)">${items.length} articles</small></h1>
+${cardList(items)}`,
+  });
+  extraUrls.push(url);
+}
+
+// ── error lookup ───────────────────────────────────────────────────────────
+// Built from the Symptom section and the bottom line of every gotcha: the exact
+// status codes and error texts people paste into a search engine.
+const STATUS_NAMES = { 400: 'Bad Request', 401: 'Unauthorized', 403: 'Forbidden', 404: 'Not Found', 405: 'Method Not Allowed', 406: 'Not Acceptable', 409: 'Conflict', 412: 'Precondition Failed', 413: 'Payload Too Large', 414: 'URI Too Long', 423: 'Locked', 429: 'Too Many Requests', 500: 'Internal Server Error', 502: 'Bad Gateway', 503: 'Service Unavailable', 504: 'Gateway Timeout' };
+// A bare status code in a Symptom section is a status code — unless a unit follows (500 items, 404 ms).
+const STATUS_RE = new RegExp(`(?<![\\d.,/-])\\b(${Object.keys(STATUS_NAMES).join('|')})\\b(?![\\d.,]\\d|\\s*(?:ms|s|sec|seconds?|items?|rows?|KB|MB|GB|px|%|days?|char|characters?|users?|sites?|files?|times|×|x\\b|lines?|words?|tokens?|entries|lists?|columns?|fields?))`, 'gi');
+const ERRWORD = /(exception|error|denied|not found|cannot|can't|could not|couldn't|does not exist|doesn't exist|prohibited|exceed|invalid|unauthori[sz]ed|forbidden|timed? ?out|throttl|failed|not allowed|unable|blocked|refused|not supported|unexpected|is locked|no permission|access is|not authorized)/i;
+function symptomScope(body) {
+  const sym = (body.match(/^##\s+Symptom[^\n]*\n([\s\S]*?)(?=^##\s)/m) || [, ''])[1];
+  const bottom = (body.match(/\*\*Bottom line\.\*\*([^\n]*)/) || [, ''])[1];
+  return `${sym}\n${bottom}`;
+}
+const byStatus = new Map();
+const byMsg = new Map();
+for (const p of pages) {
+  if (p.kind !== 'article' || !p.rel.startsWith('gotchas/')) continue;
+  const scope = symptomScope(p.body);
+  const text = `${scope}\n${p.title}`;
+  // Code blocks out of the prose first, so a status code inside a request line still counts
+  // but backtick spans are not cut across block boundaries.
+  const blocks = [...scope.matchAll(/^```[^\n]*\n([\s\S]*?)^```/gm)].map((m) => m[1]);
+  const prose = scope.replace(/^```[^\n]*\n[\s\S]*?^```/gm, ' ');
+  for (const m of text.matchAll(STATUS_RE)) {
+    const code = Number(m[1]);
+    if (!byStatus.has(code)) byStatus.set(code, new Set());
+    byStatus.get(code).add(p);
+  }
+  const cands = [];
+  for (const m of prose.matchAll(/`([^`\n]{8,180})`/g)) cands.push(m[1]);
+  for (const b of blocks) {
+    // JSON / XML error bodies: take the values, not the braces.
+    for (const m of b.matchAll(/"(?:message|code|value|Body)"\s*:\s*"((?:[^"\\]|\\.){6,220})"/g)) cands.push(m[1].replace(/\\"/g, '"'));
+    for (const m of b.matchAll(/<m:(?:message|code)[^>]*>([^<]{6,220})</g)) cands.push(m[1]);
+    for (const line of b.split('\n')) {
+      const t = line.trim();
+      if (t.length >= 10 && t.length <= 180 && /^[A-Za-z0-9(]/.test(t) && !/["{}<>]/.test(t)) cands.push(t);
+    }
+  }
+  for (const c of cands) {
+    const s = c.trim().replace(/[.:,;]+$/, '');
+    if (!ERRWORD.test(s)) continue;
+    // Code, not a message: calls, assignments, paths and URLs are not what people paste from an error dialog.
+    if (/^(GET|POST|PUT|PATCH|DELETE|MERGE|const|let|var|await|return|if|import|\$|Get-|Set-|New-|Invoke-|Connect-|Remove-|Add-|npm|node|gulp|heft|\/_api|https?:|\.\.?\/)/i.test(s)) continue;
+    if (/[{}|*]|=>|===|console\.|\(\)\s*[.;]|^\s*[#/]|\s—\s|\s–\s|:\s*'[^']*'$/.test(s)) continue;
+    // Prose fragments: a lower-case start followed by more words is a sentence, not an error text.
+    if (/^[a-z][a-z',"]*\s+\S/.test(s) && !/^(cannot|could not|access|invalid|unable|unexpected|the |error|button )/.test(s)) continue;
+    // One token = an identifier; only error-shaped ones (FooException, AccessDenied, InvalidValue) are messages.
+    if (!/\s/.test(s) && (/[()]/.test(s) || !/(Exception|Error|Forbidden|Denied|^Invalid\w*|AccessDenied\S*)$/.test(s))) continue;
+    if (/^[^A-Za-z0-9'(-]/.test(s)) continue;
+    const key = s.toLowerCase().replace(/\s+/g, ' ');
+    if (!byMsg.has(key)) byMsg.set(key, { text: s, items: new Set() });
+    byMsg.get(key).items.add(p);
+  }
+}
+// The same message once complete and once cut short: keep one entry, the longer text.
+for (const k of [...byMsg.keys()].sort((a, b) => a.length - b.length)) {
+  const longer = [...byMsg.keys()].find((o) => o !== k && o.length > k.length && o.startsWith(k));
+  if (longer && byMsg.has(k)) { byMsg.get(k).items.forEach((i) => byMsg.get(longer).items.add(i)); byMsg.delete(k); }
+}
+const short = (q) => deEmoji(q.data['short-title'] || q.title);
+const statusRows = [...byStatus.entries()].sort((a, b) => a[0] - b[0]).map(([code, set]) => {
+  const items = [...set].sort((a, b) => short(a).localeCompare(short(b)));
+  return `<tr data-svf="${code} ${esc(STATUS_NAMES[code])} ${esc(items.map(short).join(' ').toLowerCase())}"><td>${code}</td><td>${esc(STATUS_NAMES[code])}</td><td>${items.map((q) => `<a href="${q.url}">${esc(short(q))}</a>`).join('<br>')}</td></tr>`;
+}).join('');
+const msgs = [...byMsg.values()].sort((a, b) => a.text.localeCompare(b.text, 'en', { sensitivity: 'base' }));
+writePage('/errors', {
+  title: 'SharePoint error lookup: status codes and error messages',
+  description: `Paste the error you got. ${byStatus.size} HTTP status codes and ${msgs.length} SharePoint, SPFx and Graph error messages, each linked to the gotcha that explains the cause and the fix.`,
+  ld: [crumbsLd([{ name: 'Vault', url: '/' }], { name: 'Error lookup', url: '/errors' })],
+  pagefind: true,
+  content: `${crumbsHtml([{ name: 'Vault', url: '/' }])}
+<h1 id="error-lookup">Error lookup</h1>
+<blockquote><p>Got an error from SharePoint, SPFx or Microsoft Graph? Type a status code or a few words of the message. Every entry links to the gotcha that explains <b>why</b> it happens and how to fix it. Built automatically from the <i>Symptom</i> section of each gotcha.</p></blockquote>
+<input class="sv-filter" type="search" placeholder="filter: 404, threshold, access denied…" aria-label="Filter errors" oninput="var q=this.value.toLowerCase();document.querySelectorAll('[data-svf]').forEach(function(r){r.style.display=!q||r.getAttribute('data-svf').indexOf(q)>-1?'':'none'})">
+<h2 id="by-status">By HTTP status</h2>
+<table class="sv-errs"><thead><tr><th>Status</th><th>Meaning</th><th>Gotchas where it shows up</th></tr></thead><tbody>${statusRows}</tbody></table>
+<h2 id="by-message">By error message</h2>
+<ul class="sv-msgs">${msgs.map((m) => { const items = [...m.items]; return `<li data-svf="${esc((m.text + ' ' + items.map(short).join(' ')).toLowerCase())}"><code>${esc(m.text)}</code> → ${items.map((q) => `<a href="${q.url}">${esc(short(q))}</a>`).join(', ')}</li>`; }).join('')}</ul>`,
+});
+extraUrls.push('/errors');
+
+// ── search (Pagefind, index built after this script: npx pagefind --site <out>) ──
+writePage('/search', {
+  title: 'Search', description: 'Full-text search across every gotcha, guide, snippet and script in the SharePoint Vault.',
+  ld: [],
+  content: `<h1 id="search">Search the vault</h1>
+<link href="/pagefind/pagefind-ui.css" rel="stylesheet">
+<div id="sv-pf"></div>
+<script src="/pagefind/pagefind-ui.js"></script>
+<script>
+  (function () {
+    if (!window.PagefindUI) { document.getElementById('sv-pf').innerHTML = '<p>Search index is not available right now — try the <a href="/full-index">full index</a>.</p>'; return; }
+    var ui = new PagefindUI({ element: '#sv-pf', showSubResults: true, showImages: false, resetStyles: false, autofocus: true });
+    var q = new URLSearchParams(location.search).get('q');
+    if (q) { ui.triggerSearch(q); }
+  })();
+</script>`,
+});
+
+// Data for the docsify home („most read this week") and for the share images.
+// All pages incl. section indexes: the docsify home redirects old #/ links only to URLs listed here.
+writeFileSync(join(OUT, 'pages.json'), JSON.stringify(pages.map((p) => ({ u: p.url, t: deEmoji(p.data && p.data['short-title'] ? p.data['short-title'] : p.title), k: p.rel.split('/')[0] }))));
+writeFileSync(join(OUT, 'og-manifest.json'), JSON.stringify(pages.filter((p) => p.kind !== 'index').map((p) => ({
+  url: p.url, out: ogPath(p.url),
+  // A card holds about 100 characters at a readable size; longer titles use the short title.
+  title: deEmoji(p.title.length > 100 && p.data && p.data['short-title'] ? p.data['short-title'] : p.title),
+  kicker: p.kind === 'script' ? `PowerShell script · ${p.rel.split('/')[1]}` : `${(sectionTitles[p.rel.split('/')[0]] || p.rel.split('/')[0]).replace(/s$/, '')} · ${p.rel.split('/').length > 2 ? p.rel.split('/')[1] : ''}`.replace(/ · $/, ''),
+}))));
+
 // sitemap, robots, 404
 const lastmod = (p) => (gitDate[p.rel] || (p.data && p.data['last-reviewed']) || '').slice(0, 10);
-const urls = [{ loc: SITE + '/', lastmod: (gitDate['README.md'] || '').slice(0, 10) }, ...pages.map((p) => ({ loc: SITE + p.url, lastmod: lastmod(p) }))];
+const newest = Object.values(gitDate).sort().pop() || '';
+const urls = [{ loc: SITE + '/', lastmod: (gitDate['README.md'] || '').slice(0, 10) }, ...pages.map((p) => ({ loc: SITE + p.url, lastmod: lastmod(p) })),
+  ...extraUrls.map((u) => ({ loc: SITE + u, lastmod: newest.slice(0, 10) }))];
 writeFileSync(join(OUT, 'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${urls.map((u) => `  <url><loc>${esc(encodeURI(u.loc))}</loc>${u.lastmod ? `<lastmod>${u.lastmod}</lastmod>` : ''}</url>`).join('\n')}
@@ -432,5 +667,6 @@ writeFileSync(join(OUT, '404.html'), layout({
 </script>`,
 }).replace('<link rel="canonical" href="https://sharepointvault.online/404">\n', '').replace('<meta name="description"', '<meta name="robots" content="noindex">\n  <meta name="description"'));
 
+console.log(`[build-site] tags: ${tagPages.length} pages · error lookup: ${byStatus.size} status codes, ${msgs.length} messages`);
 console.log(`[build-site] ${pages.length} pages (${pages.filter((p) => p.kind === 'article').length} articles, ${pages.filter((p) => p.kind === 'script').length} scripts, ${pages.filter((p) => p.kind === 'index').length} indexes) + sitemap (${urls.length} URLs) → ${OUT}`);
 if (warnings.length) { console.warn(`[build-site] ${warnings.length} warning(s):`); warnings.slice(0, 40).forEach((w) => console.warn('  ' + w)); }

@@ -1,7 +1,8 @@
 # Builds and deploys sharepointvault.online.
 #
 # The docsify app is published as it is; tools/build-site.mjs adds one static,
-# crawlable page per article and script, plus sitemap.xml, robots.txt and 404.html.
+# crawlable page per article and script, tag pages, /errors, /search, sitemap.xml,
+# robots.txt and 404.html; build-og.mjs renders the share images, Pagefind the search index.
 # Generated files are never committed — they exist only in the Pages artifact.
 name: Pages
 
@@ -33,6 +34,14 @@ jobs:
       - run: npm ci
       - run: node tools/check-vault.mjs
       - run: node tools/build-site.mjs _site
+        env:
+          VAULT_API: ${{ vars.VAULT_API }} # own page-view endpoint; empty = no measuring
+      # one share image per page (Chrome is preinstalled on ubuntu-latest)
+      - run: node tools/build-og.mjs _site
+        env:
+          CHROME_PATH: /usr/bin/google-chrome
+      # static search index for /search
+      - run: npx pagefind --site _site
       - uses: actions/upload-pages-artifact@v3
         with:
           path: _site
