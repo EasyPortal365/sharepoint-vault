@@ -2,7 +2,7 @@
 
 Every single thing in the vault, on one page. Section names link to folder READMEs; leaves link straight to the content.
 
-*Last updated: 2026-11-06*
+*Last updated: 2026-11-07*
 
 - 🧰 **[scripts/](scripts/)** — PowerShell scripts with comment-based help, read-only unless stated
   - [Terminal animations](scripts/media/) — the writing scripts as an animated PowerShell console; plain SVG, no JavaScript, respects `prefers-reduced-motion`
@@ -158,6 +158,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [FirstUniqueAncestorSecurableObject has no type in nometadata](gotchas/permissions/first-unique-ancestor-has-no-type-in-nometadata.md) — The endpoint returns a web, a list or a list item depending on where inheritance breaks, and with `odata=nometadata` nothing names the type; classify by properties (`FileSystemObjectType` = item, `BaseTemplate` = list, otherwise web) and treat an unknown shape as restricted
     - [Narrowing to Read leaves the principal with nothing](gotchas/permissions/narrowing-to-read-checks-view-before-stripping-write.md) — Edit and Contribute contain the View bit, so a "does it already read?" check passes, Read is never added, and the step that removes the write binding then removes the only binding that carried read access — the principal ends with no access and the routine reports unreconciled forever
     - [Page-only reader is denied at the site root](gotchas/permissions/page-only-reader-is-denied-at-the-site-root.md) — When a principal has Read on a single page in Site Pages and only Limited Access on the site, opening the site URL ends on AccessDenied.aspx even though the page itself opens fine — so a link that falls back to the site root breaks exactly for the narrow audience it was meant for
+    - [Restoring inheritance is a one-way door](gotchas/permissions/reset-inheritance-is-a-one-way-door.md) — `resetroleinheritance` throws away every unique role assignment and SharePoint keeps no copy, so an "undo" is only possible if the code saved the assignments BEFORE the call; re-breaking with `copyRoleAssignments=true` gives you the parent's ACL, not the old one, so the undo has to reconcile (add missing, remove extra) against the snapshot — keyed by principal id and role definition NAME, skipping Limited Access
   - **spfx/**
     - [A zip-bomb guard on a private JSZip field fails open](gotchas/spfx/zip-bomb-guard-reading-a-private-jszip-field.md) — `entry._data.uncompressedSize` is an implementation detail, and `undefined → allow` turns the next library upgrade into a silent loss of protection; read the declared sizes from the ZIP central directory instead
     - [Hand-built .docx / .pptx: the parts Office demands](gotchas/spfx/hand-built-ooxml-missing-parts.md) — Header images are referenced from the header's own rels, Content_Types must know the image extension, namespaces are per part, and a .pptx without theme + master + layout is invalid; split parts from zipping so a strict XML parser can check them in tests
