@@ -260,6 +260,9 @@ a.sv-tag:hover { background:var(--teal7); color:#fff; }
 .sv-msgs code { white-space:normal; }
 #sv-pf { --pagefind-ui-primary:#002163; --pagefind-ui-text:#002163; --pagefind-ui-border:#E0E6EF; --pagefind-ui-tag:#E4F7F6; --pagefind-ui-border-radius:14px; --pagefind-ui-font:'Plus Jakarta Sans',system-ui,sans-serif; }
 #sv-pf mark { background:var(--mint); color:var(--navy); }
+.markdown-section pre::after { display:none; } /* vue.css repeats the language top right; ours is in the bar on the left */
+.markdown-section pre .sv-copy { position:absolute; top:5px; right:10px; font-family:var(--mono); font-size:10px; font-weight:700; color:#fff; background:var(--navy); border:none; border-radius:6px; padding:4px 10px; cursor:pointer; opacity:.85; }
+.markdown-section pre .sv-copy:hover { opacity:1; background:var(--teal7); }
 `;
 
 const tagSlug = (t) => String(t).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
@@ -340,6 +343,20 @@ ${content}
 </main>
 <script>
   document.querySelector('.sidebar-toggle').addEventListener('click', function () { document.body.classList.toggle('close'); });
+  /* copy button on every code block (the docsify app had docsify-copy-code) */
+  document.querySelectorAll('.markdown-section pre > code').forEach(function (code) {
+    var pre = code.parentNode;
+    if (pre.querySelector('.sv-copy')) { return; }
+    var b = document.createElement('button');
+    b.type = 'button'; b.className = 'sv-copy'; b.textContent = '⧉ copy';
+    b.addEventListener('click', function () {
+      if (!navigator.clipboard) { return; }
+      navigator.clipboard.writeText(code.innerText).then(function () {
+        b.textContent = '✓ copied'; setTimeout(function () { b.textContent = '⧉ copy'; }, 1600);
+      });
+    });
+    pre.appendChild(b);
+  });
 </script>
 ${TRACK_JS}
 </body>
