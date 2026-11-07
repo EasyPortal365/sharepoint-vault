@@ -217,6 +217,14 @@
 
     /* ── sidebar badge počty + článkový footer ── */
     .sv-badge { font-family:var(--mono); font-size:9.5px; font-weight:700; color:var(--teal7); background:var(--mint); border-radius:999px; padding:1px 8px; margin-left:8px; vertical-align:1px; letter-spacing:0; }
+    /* ── Star on GitHub: v menu, pod článkem a na úvodu (sdílí i statické stránky z build-site) ── */
+    .sv-starbtn { display:inline-flex; align-items:center; gap:7px; font-family:var(--mono); font-size:12px; font-weight:700; color:#fff !important; background:var(--navy); border:1px solid var(--navy); border-radius:999px; padding:8px 16px; text-decoration:none !important; white-space:nowrap; }
+    .sv-starbtn:hover { background:var(--teal7); border-color:var(--teal7); }
+    .sv-starbtn .st { color:#FFD45C; font-size:14px; line-height:1; }
+    .sidebar .sv-starside { display:flex; justify-content:center; margin:2px 14px 14px; }
+    .sv-star { margin-top:40px; padding:16px 20px; border-radius:14px; background:linear-gradient(120deg, var(--mint), #fff); border:1px solid var(--line); font-size:14px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+    .sv-star .sv-starbtn { margin-left:auto; }
+    .sv-hero .sv-starbtn { margin-top:16px; font-size:13px; padding:10px 20px; }
     .sv-artfoot { margin-top:48px; padding-top:14px; border-top:1px dashed var(--line2); font-family:var(--mono); font-size:11px; color:var(--soft); display:flex; gap:18px; flex-wrap:wrap; }
     .sv-fileact { display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin:14px 0 4px; }
     .sv-btn { font-family:var(--mono); font-size:11.5px; font-weight:600; color:var(--navy); background:var(--bg); border:1px solid var(--line); border-radius:999px; padding:8px 15px; cursor:pointer; text-decoration:none; }
@@ -255,6 +263,7 @@
           '<h1>SharePoint Vault<span class="tick">_</span></h1>' +
           '<div class="sub">„Zápisky z bojového pole“ — notes from the battlefield.</div>' +
           '<div class="out">Field-tested scripts, hard-won gotchas and guides for SharePoint professionals.<br>No marketing. No doc rewrites. Only things that <span class="hl">survived contact with production</span>.</div>' +
+          '<a class="sv-starbtn" href="https://github.com/EasyPortal365/sharepoint-vault" target="_blank" rel="noopener"><span class="st">★</span> Star the vault on GitHub</a>' +
           '<div style="margin-top:14px"><span class="p">PS SPVault:\\&gt;</span> <span class="cmd">Get-Vault | Measure-Object</span></div>' +
           '<div class="out" id="sv-counts">gotchas&nbsp;&nbsp;guides&nbsp;&nbsp;scripts&nbsp;&nbsp;snippets&nbsp;&nbsp;templates&nbsp;&nbsp;resources&nbsp;&nbsp;<span class="ok">[all field-tested ✓]</span></div>' +
           '<div style="margin-top:14px"><span class="p">PS SPVault:\\&gt;</span> <span class="cmd">git log --oneline -5</span></div>' +
@@ -649,6 +658,17 @@
             var can = document.querySelector('link[rel="canonical"]');
             if (!can) { can = document.createElement('link'); can.rel = 'canonical'; document.head.appendChild(can); }
             can.href = 'https://sharepointvault.online' + svPerma(vm);
+            /* Star on GitHub v menu – postranní panel docsify přežívá navigaci, vložit jednou */
+            var sbar = document.querySelector('.sidebar');
+            if (sbar && !sbar.querySelector('.sv-starside')) {
+              var sbtn = document.createElement('a');
+              sbtn.className = 'sv-starbtn sv-starside';
+              sbtn.href = 'https://github.com/EasyPortal365/sharepoint-vault';
+              sbtn.target = '_blank'; sbtn.rel = 'noopener';
+              sbtn.innerHTML = '<span class="st">★</span> Star on GitHub';
+              var appName = sbar.querySelector('.app-name');
+              if (appName) { appName.insertAdjacentElement('afterend', sbtn); } else { sbar.insertBefore(sbtn, sbar.firstChild); }
+            }
             svFill();
             /* footer článku: Last updated + History/Edit/Source (lazy, cache 6 h) */
             var file = vm.route.file;
@@ -663,6 +683,11 @@
                 '<a href="' + gh + '/commits/main/' + file + '" target="_blank" rel="noopener">history</a>' +
                 '<a href="' + gh + '/edit/main/' + file + '" target="_blank" rel="noopener">edit on GitHub</a>' +
                 '<a href="' + gh + '/blob/main/' + file + '" target="_blank" rel="noopener">view source</a>';
+              var star = document.createElement('div');
+              star.className = 'sv-star';
+              star.innerHTML = '<span>Saved you an hour? A star on GitHub helps other SharePoint people find the vault.</span>' +
+                '<a class="sv-starbtn" href="' + gh + '" target="_blank" rel="noopener"><span class="st">★</span> Star on GitHub</a>';
+              sect.appendChild(star);
               sect.appendChild(foot);
               var updEl = foot.querySelector('#sv-upd');
               var ck = 'sv-upd:' + file;

@@ -226,8 +226,6 @@ const EXTRA_CSS = `
 .sv-related h2 { margin-top:0 !important; font-size:15px !important; }
 .sv-related ul { margin:0; padding-left:18px; }
 .sv-related li { margin:4px 0; }
-.sv-star { margin-top:22px; padding:14px 18px; border-radius:14px; background:linear-gradient(120deg, var(--mint), #fff); border:1px solid var(--line); font-size:14px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
-.sv-star a.sv-btn { margin-left:auto; }
 .sv-searchlink { display:block; margin:6px 14px 12px; font-family:var(--mono); font-size:12px; color:var(--soft); border:1px solid var(--line); border-radius:999px; padding:8px 14px; background:var(--bg); text-decoration:none; }
 .sv-searchlink:hover { border-color:var(--teal6); color:var(--teal7); }
 `;
@@ -260,6 +258,7 @@ function layout({ url, title, description, lang, bodyClass, content, ld, ogType 
   <button class="sidebar-toggle" aria-label="Menu"><div class="sidebar-toggle-button"><span></span><span></span><span></span></div></button>
   <aside class="sidebar">
     <h1 class="app-name"><a class="app-name-link" href="/">SharePoint<b>Vault</b> <i>~$</i></a></h1>
+    <a class="sv-starbtn sv-starside" href="${GH}" target="_blank" rel="noopener"><span class="st">★</span> Star on GitHub</a>
     <a class="sv-searchlink" href="/">⌕ search the vault…</a>
     <div class="sidebar-nav">${sidebar(url)}</div>
   </aside>
@@ -299,7 +298,7 @@ const crumbsLd = (trail, self) => ({
 
 function footer(rel, reviewed) {
   const upd = gitDate[rel] ? gitDate[rel].slice(0, 10) : null;
-  return `<div class="sv-star"><span>Saved you an hour? A ⭐ on GitHub helps other SharePoint people find the vault.</span><a class="sv-btn" href="${GH}" target="_blank" rel="noopener">★ Star on GitHub</a></div>
+  return `<div class="sv-star"><span>Saved you an hour? A star on GitHub helps other SharePoint people find the vault.</span><a class="sv-starbtn" href="${GH}" target="_blank" rel="noopener"><span class="st">★</span> Star on GitHub</a></div>
 <div class="sv-artfoot">${reviewed ? `<span>last reviewed: ${esc(reviewed)}</span>` : ''}${upd ? `<span>last updated: ${upd}</span>` : ''}<a href="${GH}/commits/main/${rel}" target="_blank" rel="noopener">history</a><a href="${GH}/edit/main/${rel}" target="_blank" rel="noopener">edit on GitHub</a><a href="${GH}/blob/main/${rel}" target="_blank" rel="noopener">view source</a></div>`;
 }
 
