@@ -336,6 +336,7 @@ function layout({ url, title, description, lang, bodyClass, content, ld, ogType 
   </aside>
   <section class="content">
     <article class="markdown-section" id="main"${pagefind ? ' data-pagefind-body' : ''}>
+${pagefind ? `<span data-pagefind-meta="title" hidden>${esc(deEmoji(title))}</span>` : ''}
 ${content}
     </article>
   </section>
