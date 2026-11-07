@@ -19,6 +19,7 @@ import { fileURLToPath } from 'node:url';
 import { Marked } from 'marked';
 import Prism from 'prismjs';
 import loadLanguages from 'prismjs/components/index.js';
+import { buildExtras } from './site-extras.mjs';
 
 const SITE = 'https://sharepointvault.online';
 const GH = 'https://github.com/EasyPortal365/sharepoint-vault';
@@ -38,14 +39,15 @@ const LANG_ALIAS = { ps1: 'powershell', psm1: 'powershell', pwsh: 'powershell', 
 const CODE_EXT = /\.(ps1|psm1)$/i;
 /** Sections whose README is a listing page; root-level docs that also get a page. */
 const SKIP = new Set(['README.md', '_sidebar.md', '_file.md']);
-const SKIP_DIRS = /^(\.github|tools|node_modules|_site)\//;
+const SKIP_DIRS = /^(\.github|tools|node_modules|_site|_data)\//;
 
 // ── helpers ────────────────────────────────────────────────────────────────
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 const plain = (s) => String(s || '').replace(/`([^`]*)`/g, '$1').replace(/\*\*?([^*]+)\*\*?/g, '$1').replace(/\[([^\]]*)\]\([^)]*\)/g, '$1').replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim();
 const clip = (s, n) => { if (s.length <= n) return s; const cut = s.slice(0, n - 1); return cut.slice(0, Math.max(cut.lastIndexOf(' '), n - 20)).replace(/[,;:\s]+$/, '') + '…'; };
 const NO_EMOJI = /[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\u{2B00}-\u{2BFF}\u{FE0F}\u{200D}]/gu;
-const deEmoji = (s) => String(s).replace(NO_EMOJI, '').replace(/\s{2,}/g, ' ').trim();
+// Titles as plain text (lists, <title>, feed, share images): no emoji and no markdown code backticks.
+const deEmoji = (s) => String(s).replace(NO_EMOJI, '').replace(/`([^`]*)`/g, '$1').replace(/\s{2,}/g, ' ').trim();
 const jsonLd = (o) => JSON.stringify(o).replace(/</g, '\\u003c');
 
 function frontmatter(text) {
@@ -114,6 +116,17 @@ try {
     if (f && cur && !gitDate[f]) gitDate[f] = cur;
   }
 } catch { /* shallow clone or no git: lastmod falls back to last-reviewed */ }
+/** Date each file was first added (newest-first log, so the last hit is the oldest add). Renamed files keep no add date. */
+const gitAdded = {};
+try {
+  const log = execFileSync('git', ['log', '--diff-filter=A', '--format=%x01%cI', '--name-only'], { cwd: ROOT, encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 });
+  let cur = null;
+  for (const line of log.split('\n')) {
+    if (line.startsWith('\x01')) { cur = line.slice(1).trim(); continue; }
+    const f = line.trim();
+    if (f && cur) gitAdded[f] = cur;
+  }
+} catch { /* no git: no feed entries */ }
 
 const indexHtml = readFileSync(join(ROOT, 'index.html'), 'utf8');
 const STYLE = (indexHtml.match(/<style>([\s\S]*?)<\/style>/) || [, ''])[1];
@@ -260,6 +273,14 @@ a.sv-tag:hover { background:var(--teal7); color:#fff; }
 .sv-msgs code { white-space:normal; }
 #sv-pf { --pagefind-ui-primary:#002163; --pagefind-ui-text:#002163; --pagefind-ui-border:#E0E6EF; --pagefind-ui-tag:#E4F7F6; --pagefind-ui-border-radius:14px; --pagefind-ui-font:'Plus Jakarta Sans',system-ui,sans-serif; }
 #sv-pf mark { background:var(--mint); color:var(--navy); }
+.sv-lead { font-size:16px; color:var(--muted); }
+.markdown-section ol.sv-path { padding-left:0; list-style:none; counter-reset:svp; }
+.markdown-section ol.sv-path > li { counter-increment:svp; position:relative; padding:12px 14px 12px 52px; margin:10px 0; border:1px solid var(--line); border-radius:12px; background:rgba(255,255,255,.85); }
+.markdown-section ol.sv-path > li::before { content:counter(svp); position:absolute; left:14px; top:12px; width:26px; height:26px; border-radius:50%; background:var(--navy); color:#fff; font-family:var(--mono); font-size:12px; font-weight:700; display:flex; align-items:center; justify-content:center; }
+.sv-path a { font-family:var(--mono); font-weight:700; font-size:14px; border-bottom:none; }
+.sv-path .sv-why { display:block; color:var(--navy); font-size:14px; margin-top:4px; }
+.sv-path .sv-sum { display:block; color:var(--muted); font-size:13px; margin-top:3px; }
+.markdown-section h1 code.sv-errmsg { font-size:.62em; line-height:1.5; white-space:normal; word-break:break-word; display:inline-block; padding:8px 12px; }
 .markdown-section pre::after { display:none; } /* vue.css repeats the language top right; ours is in the bar on the left */
 .markdown-section pre .sv-copy { position:absolute; top:5px; right:10px; font-family:var(--mono); font-size:10px; font-weight:700; color:#fff; background:var(--navy); border:none; border-radius:6px; padding:4px 10px; cursor:pointer; opacity:.85; }
 .markdown-section pre .sv-copy:hover { opacity:1; background:var(--teal7); }
@@ -319,6 +340,7 @@ function layout({ url, title, description, lang, bodyClass, content, ld, ogType 
   <meta property="og:url" content="${esc(canonical)}">
   <meta property="og:image" content="${SITE}${image || '/assets/og-vault.png'}">
   <meta name="twitter:card" content="summary_large_image">
+  <link rel="alternate" type="application/atom+xml" title="SharePoint Vault — new articles" href="/feed.xml">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🗝️</text></svg>">
   ${HEAD_FONTS}
   <style>${STYLE}${EXTRA_CSS}</style>
@@ -331,7 +353,7 @@ function layout({ url, title, description, lang, bodyClass, content, ld, ogType 
     <h1 class="app-name"><a class="app-name-link" href="/">SharePoint<b>Vault</b> <i>~$</i></a></h1>
     <a class="sv-starbtn sv-starside" href="${GH}" target="_blank" rel="noopener"><span class="st">★</span> Star on GitHub</a>
     <form class="sv-searchform" action="/search" method="get" role="search"><input type="search" name="q" placeholder="⌕ search the vault…" aria-label="Search the vault"></form>
-    <nav class="sv-sidelinks" aria-label="Browse"><a href="/tags/">tags</a><a href="/errors">error lookup</a><a href="/full-index">full index</a></nav>
+    <nav class="sv-sidelinks" aria-label="Browse"><a href="/start/">start here</a><a href="/errors">error lookup</a><a href="/tags/">tags</a><a href="/whats-new">what's new</a><a href="/full-index">full index</a></nav>
     <div class="sidebar-nav">${sidebar(url)}</div>
   </aside>
   <section class="content">
@@ -553,86 +575,8 @@ ${cardList(items)}`,
   extraUrls.push(url);
 }
 
-// ── error lookup ───────────────────────────────────────────────────────────
-// Built from the Symptom section and the bottom line of every gotcha: the exact
-// status codes and error texts people paste into a search engine.
-const STATUS_NAMES = { 400: 'Bad Request', 401: 'Unauthorized', 403: 'Forbidden', 404: 'Not Found', 405: 'Method Not Allowed', 406: 'Not Acceptable', 409: 'Conflict', 412: 'Precondition Failed', 413: 'Payload Too Large', 414: 'URI Too Long', 423: 'Locked', 429: 'Too Many Requests', 500: 'Internal Server Error', 502: 'Bad Gateway', 503: 'Service Unavailable', 504: 'Gateway Timeout' };
-// A bare status code in a Symptom section is a status code — unless a unit follows (500 items, 404 ms).
-const STATUS_RE = new RegExp(`(?<![\\d.,/-])\\b(${Object.keys(STATUS_NAMES).join('|')})\\b(?![\\d.,]\\d|\\s*(?:ms|s|sec|seconds?|items?|rows?|KB|MB|GB|px|%|days?|char|characters?|users?|sites?|files?|times|×|x\\b|lines?|words?|tokens?|entries|lists?|columns?|fields?))`, 'gi');
-const ERRWORD = /(exception|error|denied|not found|cannot|can't|could not|couldn't|does not exist|doesn't exist|prohibited|exceed|invalid|unauthori[sz]ed|forbidden|timed? ?out|throttl|failed|not allowed|unable|blocked|refused|not supported|unexpected|is locked|no permission|access is|not authorized)/i;
-function symptomScope(body) {
-  const sym = (body.match(/^##\s+Symptom[^\n]*\n([\s\S]*?)(?=^##\s)/m) || [, ''])[1];
-  const bottom = (body.match(/\*\*Bottom line\.\*\*([^\n]*)/) || [, ''])[1];
-  return `${sym}\n${bottom}`;
-}
-const byStatus = new Map();
-const byMsg = new Map();
-for (const p of pages) {
-  if (p.kind !== 'article' || !p.rel.startsWith('gotchas/')) continue;
-  const scope = symptomScope(p.body);
-  const text = `${scope}\n${p.title}`;
-  // Code blocks out of the prose first, so a status code inside a request line still counts
-  // but backtick spans are not cut across block boundaries.
-  const blocks = [...scope.matchAll(/^```[^\n]*\n([\s\S]*?)^```/gm)].map((m) => m[1]);
-  const prose = scope.replace(/^```[^\n]*\n[\s\S]*?^```/gm, ' ');
-  for (const m of text.matchAll(STATUS_RE)) {
-    const code = Number(m[1]);
-    if (!byStatus.has(code)) byStatus.set(code, new Set());
-    byStatus.get(code).add(p);
-  }
-  const cands = [];
-  for (const m of prose.matchAll(/`([^`\n]{8,180})`/g)) cands.push(m[1]);
-  for (const b of blocks) {
-    // JSON / XML error bodies: take the values, not the braces.
-    for (const m of b.matchAll(/"(?:message|code|value|Body)"\s*:\s*"((?:[^"\\]|\\.){6,220})"/g)) cands.push(m[1].replace(/\\"/g, '"'));
-    for (const m of b.matchAll(/<m:(?:message|code)[^>]*>([^<]{6,220})</g)) cands.push(m[1]);
-    for (const line of b.split('\n')) {
-      const t = line.trim();
-      if (t.length >= 10 && t.length <= 180 && /^[A-Za-z0-9(]/.test(t) && !/["{}<>]/.test(t)) cands.push(t);
-    }
-  }
-  for (const c of cands) {
-    const s = c.trim().replace(/[.:,;]+$/, '');
-    if (!ERRWORD.test(s)) continue;
-    // Code, not a message: calls, assignments, paths and URLs are not what people paste from an error dialog.
-    if (/^(GET|POST|PUT|PATCH|DELETE|MERGE|const|let|var|await|return|if|import|\$|Get-|Set-|New-|Invoke-|Connect-|Remove-|Add-|npm|node|gulp|heft|\/_api|https?:|\.\.?\/)/i.test(s)) continue;
-    if (/[{}|*]|=>|===|console\.|\(\)\s*[.;]|^\s*[#/]|\s—\s|\s–\s|:\s*'[^']*'$/.test(s)) continue;
-    // Prose fragments: a lower-case start followed by more words is a sentence, not an error text.
-    if (/^[a-z][a-z',"]*\s+\S/.test(s) && !/^(cannot|could not|access|invalid|unable|unexpected|the |error|button )/.test(s)) continue;
-    // One token = an identifier; only error-shaped ones (FooException, AccessDenied, InvalidValue) are messages.
-    if (!/\s/.test(s) && (/[()]/.test(s) || !/(Exception|Error|Forbidden|Denied|^Invalid\w*|AccessDenied\S*)$/.test(s))) continue;
-    if (/^[^A-Za-z0-9'(-]/.test(s)) continue;
-    const key = s.toLowerCase().replace(/\s+/g, ' ');
-    if (!byMsg.has(key)) byMsg.set(key, { text: s, items: new Set() });
-    byMsg.get(key).items.add(p);
-  }
-}
-// The same message once complete and once cut short: keep one entry, the longer text.
-for (const k of [...byMsg.keys()].sort((a, b) => a.length - b.length)) {
-  const longer = [...byMsg.keys()].find((o) => o !== k && o.length > k.length && o.startsWith(k));
-  if (longer && byMsg.has(k)) { byMsg.get(k).items.forEach((i) => byMsg.get(longer).items.add(i)); byMsg.delete(k); }
-}
-const short = (q) => deEmoji(q.data['short-title'] || q.title);
-const statusRows = [...byStatus.entries()].sort((a, b) => a[0] - b[0]).map(([code, set]) => {
-  const items = [...set].sort((a, b) => short(a).localeCompare(short(b)));
-  return `<tr data-svf="${code} ${esc(STATUS_NAMES[code])} ${esc(items.map(short).join(' ').toLowerCase())}"><td>${code}</td><td>${esc(STATUS_NAMES[code])}</td><td>${items.map((q) => `<a href="${q.url}">${esc(short(q))}</a>`).join('<br>')}</td></tr>`;
-}).join('');
-const msgs = [...byMsg.values()].sort((a, b) => a.text.localeCompare(b.text, 'en', { sensitivity: 'base' }));
-writePage('/errors', {
-  title: 'SharePoint error lookup: status codes and error messages',
-  description: `Paste the error you got. ${byStatus.size} HTTP status codes and ${msgs.length} SharePoint, SPFx and Graph error messages, each linked to the gotcha that explains the cause and the fix.`,
-  ld: [crumbsLd([{ name: 'Vault', url: '/' }], { name: 'Error lookup', url: '/errors' })],
-  pagefind: true,
-  content: `${crumbsHtml([{ name: 'Vault', url: '/' }])}
-<h1 id="error-lookup">Error lookup</h1>
-<blockquote><p>Got an error from SharePoint, SPFx or Microsoft Graph? Type a status code or a few words of the message. Every entry links to the gotcha that explains <b>why</b> it happens and how to fix it. Built automatically from the <i>Symptom</i> section of each gotcha.</p></blockquote>
-<input class="sv-filter" type="search" placeholder="filter: 404, threshold, access denied…" aria-label="Filter errors" oninput="var q=this.value.toLowerCase();document.querySelectorAll('[data-svf]').forEach(function(r){r.style.display=!q||r.getAttribute('data-svf').indexOf(q)>-1?'':'none'})">
-<h2 id="by-status">By HTTP status</h2>
-<table class="sv-errs"><thead><tr><th>Status</th><th>Meaning</th><th>Gotchas where it shows up</th></tr></thead><tbody>${statusRows}</tbody></table>
-<h2 id="by-message">By error message</h2>
-<ul class="sv-msgs">${msgs.map((m) => { const items = [...m.items]; return `<li data-svf="${esc((m.text + ' ' + items.map(short).join(' ')).toLowerCase())}"><code>${esc(m.text)}</code> → ${items.map((q) => `<a href="${q.url}">${esc(short(q))}</a>`).join(', ')}</li>`; }).join('')}</ul>`,
-});
-extraUrls.push('/errors');
+// ── error lookup, reading paths, what's new, feed (tools/site-extras.mjs) ──
+const extras = buildExtras({ ROOT, OUT, SITE, pages, writePage, extraUrls, esc, clip, deEmoji, crumbsHtml, crumbsLd, cardList, gitDate, gitAdded });
 
 // ── search (Pagefind, index built after this script: npx pagefind --site <out>) ──
 writePage('/search', {
@@ -682,6 +626,6 @@ writeFileSync(join(OUT, '404.html'), layout({
 </script>`,
 }).replace('<link rel="canonical" href="https://sharepointvault.online/404">\n', '').replace('<meta name="description"', '<meta name="robots" content="noindex">\n  <meta name="description"'));
 
-console.log(`[build-site] tags: ${tagPages.length} pages · error lookup: ${byStatus.size} status codes, ${msgs.length} messages`);
+console.log(`[build-site] tags: ${tagPages.length} pages · error lookup: ${extras.errors} · ${extras.collections || 'no collections'} · ${extras.feed}`);
 console.log(`[build-site] ${pages.length} pages (${pages.filter((p) => p.kind === 'article').length} articles, ${pages.filter((p) => p.kind === 'script').length} scripts, ${pages.filter((p) => p.kind === 'index').length} indexes) + sitemap (${urls.length} URLs) → ${OUT}`);
 if (warnings.length) { console.warn(`[build-site] ${warnings.length} warning(s):`); warnings.slice(0, 40).forEach((w) => console.warn('  ' + w)); }

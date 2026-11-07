@@ -1,0 +1,142 @@
+{
+  "paths": [
+    {
+      "slug": "admin",
+      "title": "Start here: SharePoint admin",
+      "intro": "For SharePoint Online admins and IT pros who run the tenant with PowerShell and the admin center. After this path you can inventory sites, audit permissions and sharing, keep big lists and search healthy, and find where storage goes.",
+      "items": [
+        {"path": "snippets/cli/spo-management-shell-one-liners.md", "why": "Quick answers on storage, sharing, deleted sites and locks with no script file; a gentle warm-up for the scripts that follow."},
+        {"path": "scripts/reporting/Get-SiteCollectionInventory.ps1", "why": "One CSV of every site with owner, storage, sharing and last activity; the baseline every later audit builds on."},
+        {"path": "scripts/permissions/Get-UniquePermissionsReport.ps1", "why": "Shows where inheritance is broken at web, list and item level, and says PARTIAL instead of pretending a capped scan is complete."},
+        {"path": "gotchas/permissions/break-without-copy-keeps-only-you.md", "why": "Breaking inheritance without copying leaves only you on the object; read this before you lock anything down by hand or script."},
+        {"path": "scripts/permissions/Get-ExternalSharingReport.ps1", "why": "Sharing level per site plus every guest, and why a tenant wide guest count can stop early and is only a floor."},
+        {"path": "gotchas/lists/list-view-threshold-and-indexes.md", "why": "The 5,000 limit counts scanned rows, not returned ones; explains why big lists fail and why indexes must come early."},
+        {"path": "guides/search-queries-that-actually-work.md", "why": "The mandatory header, practical KQL, managed properties, paging and the freshness and trimming traps to know before you report on search."},
+        {"path": "gotchas/search/site-missing-from-the-index-looks-like-a-permissions-problem.md", "why": "Three queries tell you whether a site is in the index at all, before you lose an afternoon chasing a permission issue."},
+        {"path": "gotchas/lists/a-version-is-a-full-copy-not-a-delta.md", "why": "Every version counts at full file size and a metadata edit costs one; the usual reason a library eats the storage quota."},
+        {"path": "scripts/cleanup/Get-FileVersionBloatReport.ps1", "why": "Measures what version history really costs per library and per file, so cleanup starts where it pays off most."}
+      ]
+    },
+    {
+      "slug": "spfx",
+      "title": "Start here: SPFx developer",
+      "intro": "For developers who build SharePoint Framework web parts and extensions and ship them to the app catalog and Teams. After this path you can call SharePoint REST correctly, package and deploy without surprises, debug runtime errors and render list content safely.",
+      "items": [
+        {"path": "guides/calling-sharepoint-rest-like-a-pro.md", "why": "The client landscape, headers that matter, safe writes and a ten minute diagnosis routine; the base for everything that follows."},
+        {"path": "gotchas/app-catalog/sppkg-packaging-pitfalls.md", "why": "ASCII solution name, an exact 96x96 icon, and why the Publisher column stays empty; three upload time traps in one place."},
+        {"path": "gotchas/spfx/cdn-hosted-bundle-still-needs-new-sppkg.md", "why": "Hosting assets on a CDN does not free you from versioning; the manifest pins a hashed file name, so old packages never update."},
+        {"path": "gotchas/spfx/teams-personal-app-needs-global-deploy.md", "why": "A Teams personal app needs skipFeatureDeployment plus deploy to all sites, and the teams icon folder convention to show up at all."},
+        {"path": "gotchas/spfx/graph-permission-grants-are-tenant-wide.md", "why": "webApiPermissionRequests is only a request and grants land on one shared principal; explains why a scope works here but not at a customer."},
+        {"path": "gotchas/rest-api/metadata-body-requires-verbose.md", "why": "Old tutorial payloads with __metadata fail under SPHttpClient; write plain JSON and save yourself a round of puzzling 400s."},
+        {"path": "gotchas/rest-api/get-list-by-url-not-by-title.md", "why": "getbytitle breaks as soon as someone renames a list; resolving by URL is the habit that keeps deployed web parts working."},
+        {"path": "gotchas/spfx/react-minified-errors-cheatsheet.md", "why": "Decodes the minified React errors you see in production bundles, so a blank web part points to a cause instead of a guess."},
+        {"path": "gotchas/spfx/spa-router-hijacks-anchor-clicks.md", "why": "An a href navigates before your onClick runs on a published modern page; use buttons for in-app actions so clicks stop navigating away."},
+        {"path": "gotchas/security/stored-xss-from-list-content.md", "why": "React does not block javascript: links taken from list items; an allowlist helper at every link sink closes that stored XSS hole."}
+      ]
+    },
+    {
+      "slug": "graph",
+      "title": "Start here: Graph and REST from outside SharePoint",
+      "intro": "For developers who call Microsoft Graph or SharePoint REST from scripts, services and Azure Functions rather than from a page in SharePoint. After this path you can pick the right API and permission model, write queries Graph accepts, retry safely and deploy a function app that stays up.",
+      "items": [
+        {"path": "guides/sharepoint-rest-vs-microsoft-graph.md", "why": "A capability table, the auth differences and throttling budgets; decides which API you should call before you write code."},
+        {"path": "gotchas/graph/tenant-wide-enumeration-is-app-only.md", "why": "getAllSites and similar calls reject delegated tokens with 403; check the permissions table first, or use an admin PowerShell export."},
+        {"path": "gotchas/graph/az-cli-cannot-grant-sites-selected.md", "why": "Granting Sites.Selected needs Sites.FullControl.All, which the az CLI client cannot request; the Graph PowerShell SDK can."},
+        {"path": "gotchas/graph/comma-in-a-permissions-table-can-mean-and.md", "why": "A comma in the docs table can mean both permissions are required; the 403 says so, the table does not, so read errors closely."},
+        {"path": "gotchas/graph/graph-client-does-not-encode-filter-values.md", "why": "The Graph JS client sends $filter values unencoded, so # and & quietly cut your query; double apostrophes, then encode."},
+        {"path": "gotchas/graph/directoryobject-collections-reject-select-and-top.md", "why": "Selecting user fields on members fails with 400; an OData cast fixes $select, and $top has to be probed per endpoint."},
+        {"path": "gotchas/graph/group-member-ref-needs-object-id.md", "why": "Adding or removing group members takes only the object ID, not a UPN; resolve the user first and skip the Invalid object identifier error."},
+        {"path": "gotchas/rest-api/retry-on-throttling-only-for-get.md", "why": "A 429 means not now, not nothing happened; retrying a write can duplicate rows, so retry policy has to depend on the method."},
+        {"path": "gotchas/azure-functions/windows-zip-deploy-breaks-running-app.md", "why": "Zip deploy on Windows can lock wwwroot and take the whole app down with 503; WEBSITE_RUN_FROM_PACKAGE prevents it."},
+        {"path": "gotchas/azure-functions/retry-only-fast-failures.md", "why": "A gateway error after 230 s is a timeout, not a blip; retrying it multiplies the wait and the bill, so decide by elapsed time."}
+      ]
+    }
+  ],
+  "top": [
+    {
+      "slug": "throttling",
+      "title": "Top 10 throttling and limits traps",
+      "intro": "SharePoint and its neighbours enforce limits that stay invisible until a list grows or a loop speeds up. These ten cost the most time, from the 5,000 item threshold to 429 responses that quietly corrupt data.",
+      "items": [
+        {"path": "gotchas/lists/list-view-threshold-and-indexes.md", "why": "The limit counts scanned rows, so past 5,000 items a filter on an unindexed column fails however few rows would match."},
+        {"path": "gotchas/rest-api/unbounded-promise-all-fanout-throttling.md", "why": "A Promise.all sized by customer data works in test and gets throttled in production; bounded batch and worker pool patterns."},
+        {"path": "gotchas/rest-api/retry-on-throttling-only-for-get.md", "why": "Blind retries on 429 duplicate writes because there is no idempotency key; retry reads freely and treat writes with care."},
+        {"path": "gotchas/lists/indexing-built-in-fields-title-created.md", "why": "Provisioning indexes only its own columns, so Title and Created stay unindexed and reads start failing past 5,000 items."},
+        {"path": "snippets/rest/get-all-list-items-paged.md", "why": "$top caps at 5,000 and $skip is ignored; follow nextLink and never return a partial list that looks complete."},
+        {"path": "gotchas/rest-api/field-created-twice-gets-a-numeric-suffix.md", "why": "A throttled existence check reads as missing and the column is created again as MyField0; use a three state check."},
+        {"path": "gotchas/rest-api/dont-cache-a-throttled-permission-probe.md", "why": "Cache a 429 permission probe and the user is stuck read only for the whole TTL; persist only a confirmed 200 result."},
+        {"path": "gotchas/rest-api/page-size-cap-reported-as-a-result.md", "why": "A round number like 100 or 5000 in a report is often the request limit, not the tenant; learn to spot it before it is cached."},
+        {"path": "gotchas/rest-api/rest-request-body-2mb-limit.md", "why": "Any REST body over 2 MB is rejected even though the field can hold more; measure bytes after escaping and split the payload."},
+        {"path": "gotchas/azure-functions/aoai-429-measure-prompt-size-not-frequency.md", "why": "An Azure OpenAI 429 can mean one prompt exceeds the TPM ceiling and will never fit; a small and large request pair tells you which."}
+      ]
+    },
+    {
+      "slug": "permissions",
+      "title": "Top 10 permissions and sharing traps",
+      "intro": "Permission mistakes in SharePoint rarely fail loudly: they either lock out the people who need access or leave content open to everyone. These ten are the ones that most often cost a day of investigation or a data exposure.",
+      "items": [
+        {"path": "gotchas/permissions/break-without-copy-keeps-only-you.md", "why": "copyRoleAssignments=false leaves only the caller, so re-adding the three default groups silently drops every other grant."},
+        {"path": "gotchas/security/field-hiding-is-not-a-permission.md", "why": "Hiding a field in the UI hides nothing from REST or export; shows what real confidentiality takes and the traps it brings."},
+        {"path": "gotchas/permissions/write-security-4-needs-managelists.md", "why": "Item level write blocks are bypassed by Manage Lists, and giving a group Contribute after a break grants nothing extra."},
+        {"path": "gotchas/permissions/contribute-on-the-web-can-edit-and-delete-site-pages.md", "why": "Contribute on the web, meant for list items, also lets people edit and delete every site page; break inheritance on Site Pages."},
+        {"path": "gotchas/lists/item-level-permissions-defaults-on-provisioned-lists.md", "why": "ReadSecurity=2 looks perfect to an admin and empty to everyone else; test lists as an ordinary user before you ship."},
+        {"path": "gotchas/permissions/reset-inheritance-is-a-one-way-door.md", "why": "Resetting inheritance discards unique assignments with no copy kept; undo works only if you saved them before the call."},
+        {"path": "gotchas/permissions/effective-permissions-ignore-security-groups.md", "why": "Checking another user's access ignores Entra security groups and reports no access for people who have it; the reliable workaround."},
+        {"path": "gotchas/security/entra-group-inside-a-sharepoint-group-is-invisible-to-membership-checks.md", "why": "SharePoint never expands an Entra group inside a site group, so membership checks miss its people; resolve it through Graph."},
+        {"path": "snippets/rest/find-externally-shared-content-search.md", "why": "One security trimmed search query lists files shared outside the organisation; a fast start for an oversharing review."},
+        {"path": "gotchas/permissions/guests-cannot-join-teams-shared-channels.md", "why": "Shared channels admit outsiders only through B2B direct connect, not guest accounts; know it before you promise a partner access."}
+      ]
+    },
+    {
+      "slug": "rest-writes",
+      "title": "Top 10 SharePoint REST write traps",
+      "intro": "Reads forgive a lot, writes do not: a wrong body, date or fallback can lose data while the response still says success. These ten write traps cost the most time to diagnose and the most data when missed.",
+      "items": [
+        {"path": "gotchas/rest-api/metadata-body-requires-verbose.md", "why": "A classic 400 on write: __metadata bodies from old tutorials; the plain JSON form that works under SPHttpClient."},
+        {"path": "gotchas/rest-api/silent-fallbacks-poison-destructive-writes.md", "why": "A catch that returns an empty array feeding delete then insert wipes data; strict reads for any destructive operation."},
+        {"path": "gotchas/rest-api/datetime-write-full-iso-read-local-day.md", "why": "Dates without a time zone 400 and UTC reads shift the day; write full ISO and derive the calendar day where it was entered."},
+        {"path": "gotchas/rest-api/delete-is-permanent-recycle-is-the-bin.md", "why": "The usual DELETE skips both recycle bins; call recycle() when users expect to restore what they removed."},
+        {"path": "gotchas/rest-api/request-digest-expires-mid-session.md", "why": "Writes on a long open page fail with security validation is invalid; refresh the digest, and do not override SPHttpClient's own."},
+        {"path": "gotchas/lists/created-modified-on-a-document-library.md", "why": "A plain MERGE on Created or Modified reports 204 and stamps now; ValidateUpdateListItem with the right format is the only path."},
+        {"path": "gotchas/rest-api/validate-endpoint-answers-200-when-nothing-was-written.md", "why": "AddValidateUpdateItemUsingPath returns 200 with field errors inside and creates nothing; always inspect the response body."},
+        {"path": "gotchas/rest-api/lookup-fields-need-expand.md", "why": "Lookups are read with $expand and written through the NameId field; covers the query limit you hit with many lookups."},
+        {"path": "gotchas/rest-api/hyperlink-field-takes-an-object-not-a-string.md", "why": "A Hyperlink column needs an object with Url and Description; a plain string fails the whole save with 400."},
+        {"path": "gotchas/rest-api/decimal-comma-erases-a-number-column.md", "why": "A decimal comma becomes NaN, then null, and SharePoint empties the column with a 204; parse locale input before saving."}
+      ]
+    },
+    {
+      "slug": "graph-traps",
+      "title": "Top 10 Microsoft Graph traps",
+      "intro": "Microsoft Graph looks uniform, yet permissions, query options and mailbox rules differ by endpoint and licence. These ten traps cost the most time when building on Graph, whether from a script, a service or SPFx.",
+      "items": [
+        {"path": "gotchas/graph/tenant-wide-enumeration-is-app-only.md", "why": "Tenant wide calls such as getAllSites reject delegated tokens; saves a redesign late in the project."},
+        {"path": "gotchas/graph/az-cli-cannot-grant-sites-selected.md", "why": "The usual way to scope an app to a few sites cannot be granted with az CLI; the PowerShell SDK route that does work."},
+        {"path": "gotchas/graph/comma-in-a-permissions-table-can-mean-and.md", "why": "Some endpoints need two permissions listed with a comma; read the 403 text instead of trusting the table alone."},
+        {"path": "gotchas/graph/sendmail-from-is-the-signed-in-user.md", "why": "Delegated sendMail always sends as the signed-in user and cannot impersonate; set Reply-To for the address you meant."},
+        {"path": "gotchas/graph/graph-client-does-not-encode-filter-values.md", "why": "The JS client passes $filter values into the URL as is, so # and & break queries; escape and encode them yourself."},
+        {"path": "gotchas/graph/directoryobject-collections-reject-select-and-top.md", "why": "User fields on members and transitiveMembers fail with 400; the OData cast that fixes $select and how to probe $top."},
+        {"path": "gotchas/graph/filter-on-group-members-needs-count-too.md", "why": "Filtering group members needs $count=true besides the header; without it the call fails every time, not just now and then."},
+        {"path": "gotchas/graph/group-member-ref-needs-object-id.md", "why": "members/$ref takes only an object ID; a UPN from a people picker returns 400 until you resolve it first."},
+        {"path": "gotchas/graph/mail-probe-no-mailbox-vs-no-consent.md", "why": "A missing mailbox and missing consent both look like failure; separate verdicts stop you telling admins to grant what they have."},
+        {"path": "gotchas/graph/signinactivity-without-p1-reports-zero-inactive.md", "why": "Without Entra ID P1 the signInActivity fallback makes inactive user reports show zero; record not measured instead."}
+      ]
+    },
+    {
+      "slug": "search",
+      "title": "Top 10 search and KQL traps",
+      "intro": "SharePoint Search often answers HTTP 200 even when the query, the property or the index is wrong, so failures hide as empty or oversized results. These ten traps cost the most time for anyone building search, reports or RAG on top of it.",
+      "items": [
+        {"path": "gotchas/rest-api/search-api-needs-odata-version-3.md", "why": "The one header behind mysterious search 500s from SPFx; set it once and a whole class of errors disappears."},
+        {"path": "gotchas/search/unknown-managed-properties-fail-silently.md", "why": "A misspelled property name answers 200 with an empty or Null result instead of an error; only sortlist tells you it does not exist."},
+        {"path": "gotchas/search/site-missing-from-the-index-looks-like-a-permissions-problem.md", "why": "Confirm the site is indexed with three queries before you debug a query or permissions that were never wrong."},
+        {"path": "gotchas/search/kql-or-escapes-your-scope-filter.md", "why": "AND binds tighter than OR, so an unparenthesised OR escapes your scope filter; parentheses alone are not enough either."},
+        {"path": "gotchas/search/kql-same-property-restrictions-are-ored.md", "why": "Two restrictions on the same property are joined with OR, so a size or date range matches everything; write ranges explicitly."},
+        {"path": "gotchas/search/nocrawl-on-a-library-silently-blinds-your-rag.md", "why": "A library excluded from search returns 0 with no error, so search based AI never sees it; check NoCrawl first."},
+        {"path": "gotchas/search/duplicate-trimming-hides-file-copies.md", "why": "Search collapses identical files by default, so a duplicate finder reports none exactly when perfect copies exist."},
+        {"path": "gotchas/search/graph-search-raw-question-returns-nothing.md", "why": "Passing a user's question as queryString returns 0 hits; turn it into keywords and treat what's new as a listing."},
+        {"path": "gotchas/search/sp-search-inflected-languages-need-prefix-wildcards.md", "why": "KQL matches exact word forms with implicit AND, so inflected languages miss; add stem* variants and relax before giving up."},
+        {"path": "gotchas/search/scope-search-to-a-list-of-sites-refinementfilters.md", "why": "To limit search to a list of sites use postquery RefinementFilters; or() with one value returns zero rows, use equals()."}
+      ]
+    }
+  ]
+}

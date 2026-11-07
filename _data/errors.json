@@ -1,0 +1,1244 @@
+[
+  {
+    "message": "-1, System.Xml.XmlException",
+    "status": null,
+    "source": "SharePoint REST",
+    "articles": [
+      "gotchas/lists/view-formatter-rejects-angle-bracket-and-ampersand.md"
+    ]
+  },
+  {
+    "message": "-2130575251, Microsoft.SharePoint.SPException",
+    "status": 403,
+    "source": "SharePoint REST",
+    "articles": [
+      "gotchas/rest-api/request-digest-expires-mid-session.md"
+    ]
+  },
+  {
+    "message": "-2130575336, Microsoft.SharePoint.SPException",
+    "status": 500,
+    "source": "SharePoint REST",
+    "articles": [
+      "gotchas/rest-api/invalid-text-value-is-a-maxlength-500.md"
+    ]
+  },
+  {
+    "message": "-2147024809, System.ArgumentException",
+    "status": 400,
+    "source": "SharePoint REST",
+    "articles": [
+      "gotchas/rest-api/getbyinternalnameortitle-400-not-404.md"
+    ]
+  },
+  {
+    "message": "-o was unexpected at this time",
+    "status": null,
+    "source": "cmd.exe",
+    "articles": [
+      "gotchas/powershell/az-cmd-parentheses-in-query-break-cmd.md"
+    ]
+  },
+  {
+    "message": "'@odata.type' is an invalid instance annotation name",
+    "status": 400,
+    "source": "SharePoint REST",
+    "articles": [
+      "gotchas/rest-api/creating-a-view-posts-sp-view-not-viewcreationinformation.md",
+      "gotchas/rest-api/metadata-body-requires-verbose.md",
+      "gotchas/rest-api/provisioning-skips-schema-changes-to-existing-fields.md",
+      "gotchas/search/nocrawl-on-a-library-silently-blinds-your-rag.md"
+    ]
+  },
+  {
+    "message": "(FlagMustBeSetForRestore) An existing resource with ID '…/accounts/<name>' has been soft-deleted",
+    "status": null,
+    "source": "Azure CLI",
+    "articles": [
+      "gotchas/azure-functions/fresh-subscription-blocks-your-first-deployment.md"
+    ]
+  },
+  {
+    "message": "(InvalidResourceGroupLocation) Invalid resource group location 'germanywestcentral'. The Resource group already exists in location 'westeurope'",
+    "status": null,
+    "source": "Azure CLI",
+    "articles": [
+      "gotchas/azure-functions/fresh-subscription-blocks-your-first-deployment.md"
+    ]
+  },
+  {
+    "message": "(MissingSubscriptionRegistration) The subscription is not registered to use namespace 'Microsoft.CognitiveServices'",
+    "status": null,
+    "source": "Azure CLI",
+    "articles": [
+      "gotchas/azure-functions/fresh-subscription-blocks-your-first-deployment.md"
+    ]
+  },
+  {
+    "message": "(ServiceModelDeprecating) The model 'Format:OpenAI,Name:gpt-4o,Version:2024-08-06' is in deprecating state and cannot be used for new deployments",
+    "status": null,
+    "source": "Azure CLI",
+    "articles": [
+      "gotchas/azure-functions/azure-openai-pinned-model-version-is-a-time-bomb.md"
+    ]
+  },
+  {
+    "message": "14 UNAVAILABLE: No connection established",
+    "status": null,
+    "source": "Azure Functions",
+    "articles": [
+      "gotchas/azure-functions/windows-zip-deploy-breaks-running-app.md"
+    ]
+  },
+  {
+    "message": "A file or folder with the name … already exists",
+    "status": 400,
+    "source": "SharePoint REST",
+    "articles": [
+      "gotchas/rest-api/hash-and-percent-in-file-names-need-the-resourcepath-api.md",
+      "gotchas/spfx/drag-drop-folders-webkitgetasentry.md"
+    ]
+  },
+  {
+    "message": "A file or folder with the name … already exists at the destination",
+    "status": null,
+    "source": "SharePoint REST",
+    "articles": [
+      "gotchas/rest-api/copy-job-library-root-progress-logs-and-warnings.md"
+    ]
+  },
+  {
+    "message": "A file with the name … already exists",
+    "status": 400,
+    "source": "SharePoint REST",
+    "articles": [
+      "gotchas/rest-api/hash-and-percent-in-file-names-need-the-resourcepath-api.md"
+    ]
+  },
+  {
+    "message": "AADSTS500011",
+    "status": null,
+    "source": "Microsoft Entra ID",
+    "articles": [
+      "gotchas/spfx/power-automate-admin-api-unreachable-from-spfx.md"
+    ]
+  },
+  {
+    "message": "AADSTS65002: The client application '04b07795-8ddb-461a-bbee-02f9e1bf7b46' is not authorized to request an access token for the resource",
+    "status": null,
+    "source": "Microsoft Entra ID",
+    "articles": [
+      "gotchas/graph/az-cli-cannot-grant-sites-selected.md"
+    ]
+  },
+  {
+    "message": "AADSTS700213: No matching federated identity record found for presented assertion subject 'repo:octo-org@123456/my-repo@456789:ref:refs/heads/main'. Check your federated identity credential Subject, Audience and Issuer",
+    "status": null,
+    "source": "GitHub Actions",
+    "articles": [
+      "gotchas/azure-functions/github-oidc-immutable-subject-claim.md"
+    ]
+  },
+  {
+    "message": "AADSTS90015: Requested query string is too long",
+    "status": null,
+    "source": "Teams",
+    "articles": [
+      "gotchas/spfx/share-text-via-url-hits-length-limits.md"
+    ]
+  },
+  {
+    "message": "Access to fetch at 'https://www.microsoft.com/releasecommunications/api/v1/m365' from origin 'https://contoso.sharepoint.com' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource",
+    "status": null,
+    "source": "Browser",
+    "articles": [
+      "gotchas/spfx/m365-roadmap-api-has-no-cors.md"
+    ]
+  },
+  {
+    "message": "Access to ChatMessage in Graph API requires the following permissions: Chat.Read or Chat.ReadWrite, ChannelMessage.Read.All. However, the application only has",
+    "status": 403,
+    "source": "Microsoft Graph",
+    "articles": [
+      "gotchas/graph/comma-in-a-permissions-table-can-mean-and.md"
+    ]
+  },
+  {
+    "message": "Access to OData is disabled: [RAOP] : Blocked by tenant configured AppOnly AccessPolicy settings",
+    "status": 403,
+    "source": "Microsoft Graph",
+    "articles": [
+      "gotchas/graph/application-access-policy-rejects-shared-mailbox.md"
+    ]
+  },
+  {
+    "message": "Access to this site has been blocked. Please contact the administrator to resolve this problem",
+    "status": 423,
+    "source": "Microsoft Graph",
+    "articles": [
+      "gotchas/graph/archived-site-returns-423-on-every-read.md"
+    ]
+  },
+  {
+    "message": "accessDenied",
+    "status": 403,
+    "source": "Microsoft Graph",
+    "articles": [
+      "gotchas/graph/audit-query-permission-vs-audit-role.md"
+    ]
+  },
+  {
+    "message": "Additions to this Web site have been blocked",
+    "status": 500,
+    "source": "SharePoint REST",
+    "articles": [
+      "gotchas/rest-api/create-modern-page-via-rest-sitepages.md"
+    ]
+  },
+  {
+    "message": "An error occurred while parsing EntityName. Line 3, position 53",
+    "status": null,
+    "source": "SharePoint REST",
+    "articles": [
+      "gotchas/lists/view-formatter-rejects-angle-bracket-and-ampersand.md"
+    ]
+  },
+  {
+    "message": "An error occurred while trying to prepopulate newly created mailbox … Error: 0x8004010F",
+    "status": null,
+    "source": "Exchange Online PowerShell",
+    "articles": [
+      "gotchas/graph/application-access-policy-rejects-shared-mailbox.md"
+    ]
+  },
+  {
+    "message": "An unknown error occurred",
+    "status": null,
+    "source": "SharePoint Search",
+    "articles": [
+      "gotchas/search/unknown-managed-properties-fail-silently.md"
+    ]
+  },
+  {
+    "message": "Assertion failed: !(handle->flags & UV_HANDLE_CLOSING), file src\\win\\async.c, line 94",
+    "status": null,
+    "source": "Node.js",
+    "articles": [
+      "gotchas/tooling/process-exit-after-fetch-lies-about-the-exit-code.md"
+    ]
+  },
+  {
+    "message": "Authorization_RequestDenied",
+    "status": 403,
+    "source": "Microsoft Graph",
+    "articles": [
+      "gotchas/graph/audit-query-permission-vs-audit-role.md",
+      "gotchas/permissions/graph-api-access-approval-needs-global-admin.md"
+    ]
+  },
+  {
+    "message": "bad XRef entry",
+    "status": null,
+    "source": "Node.js",
+    "articles": [
+      "gotchas/azure-functions/pdf-parse-and-pdfjs-dist-cannot-share-a-process.md"
+    ]
+  },
+  {
+    "message": "Binary file ... matches",
+    "status": null,
+    "source": "grep",
+    "articles": [
+      "gotchas/tooling/nul-byte-makes-grep-treat-file-as-binary.md"
+    ]
+  },
+  {
+    "message": "Calls to WebProxy without an app context are not allowed",
+    "status": 403,
+    "source": "SharePoint REST",
+    "articles": [
+      "gotchas/spfx/webproxy-is-add-in-only.md"
+    ]
+  },
+  {
+    "message": "Cannot convert the literal '2026-06-30T08:00:00' to the expected type 'Edm.DateTimeOffset'",
+    "status": 400,
+    "source": "SharePoint REST",
+    "articles": [
+      "gotchas/rest-api/datetime-write-full-iso-read-local-day.md"
+    ]
+  },
+  {
+    "message": "Cannot destructure property 'componentType' of 'this.context.webPartManifest'",
+    "status": null,
+    "source": "Teams",
+    "articles": [
+      "gotchas/spfx/teams-personal-app-needs-global-deploy.md"
+    ]
+  },
+  {
+    "message": "Cannot find module '@msinternal/ecs-flight' from 'node_modules/@microsoft/sp-core-library/lib-commonjs/SPFlight.js'",
+    "status": null,
+    "source": "Jest",
+    "articles": [
+      "gotchas/spfx/jest-mock-doesnt-hoist-in-heft.md"
+    ]
+  },
+  {
+    "message": "Cannot overwrite variable Host because it is read-only or constant",
+    "status": null,
+    "source": "PowerShell",
+    "articles": [
+      "gotchas/powershell/host-is-a-constant-you-cannot-assign.md"
+    ]
+  },
+  {
+    "message": "Cannot rename \"y\" to \"w\": destination already exists",
+    "status": 400,
+    "source": "SharePoint REST",
+    "articles": [
+      "gotchas/rest-api/hash-and-percent-in-file-names-need-the-resourcepath-api.md"
+    ]
+  },
+  {
+    "message": "cannot spawn .git/hooks/pre-commit",
+    "status": null,
+    "source": "Git",
+    "articles": [
+      "gotchas/tooling/git-hook-without-exec-bit-is-skipped-on-linux-ci.md"
+    ]
+  },
+  {
+    "message": "Cannot use the same canvas during multiple render() operations. Use different canvas or ensure previous operations were cancelled or completed",
+    "status": null,
+    "source": "pdf.js",
+    "articles": [
+      "gotchas/spfx/pdfjs-same-canvas-multiple-render.md"
+    ]
+  },
+  {
+    "message": "Cannot validate argument on parameter 'Encoding'",
+    "status": null,
+    "source": "PowerShell",
+    "articles": [
+      "gotchas/powershell/export-csv-utf8-bom-flips-between-versions.md"
+    ]
+  },
+  {
+    "message": "Column 'MyField' does not exist",
+    "status": 400,
+    "source": "SharePoint REST",
+    "articles": [
+      "gotchas/rest-api/getbyinternalnameortitle-400-not-404.md"
+    ]
+  },
+  {
+    "message": "Could not find a property named 'userPrincipalName' on type 'Microsoft.DirectoryServices.DirectoryObject'",
+    "status": 400,
+    "source": "Microsoft Graph",
+    "articles": [
+      "gotchas/graph/directoryobject-collections-reject-select-and-top.md"
+    ]
+  },
+  {
+    "message": "didn't understand your search terms",
+    "status": null,
+    "source": "SharePoint Search",
+    "articles": [
+      "gotchas/search/unknown-managed-properties-fail-silently.md"
+    ]
+  },
+  {
+    "message": "does not meet the required size of '96' pixels",
+    "status": null,
+    "source": "SharePoint App Catalog",
+    "articles": [
+      "gotchas/app-catalog/sppkg-packaging-pitfalls.md"
+    ]
+  },
+  {
+    "message": "ERR_NAME_NOT_RESOLVED",
+    "status": null,
+    "source": "Browser",
+    "articles": [
+      "gotchas/azure-functions/unique-default-hostname-no-such-host.md"
+    ]
+  },
+  {
+    "message": "Exceeded timeout of 5000 ms for a test",
+    "status": null,
+    "source": "Jest",
+    "articles": [
+      "gotchas/tooling/jest-default-timeout-under-load-breaks-the-next-test.md"
+    ]
+  },
+  {
+    "message": "exceeded token rate limit of your current … pricing tier. Please retry after N seconds",
+    "status": 429,
+    "source": "Azure OpenAI",
+    "articles": [
+      "gotchas/azure-functions/aoai-429-measure-prompt-size-not-frequency.md"
+    ]
+  },
+  {
+    "message": "Exception setting \"SaveAs2\": Cannot convert the \"C:\\out\\Document.docx\" value of type \"psobject\" to type \"Object\"",
+    "status": null,
+    "source": "PowerShell",
+    "articles": [
+      "gotchas/powershell/ps7-ref-arguments-break-com-calls.md"
+    ]
+  },
+  {
+    "message": "ExternalStartupException: Error building configuration in an external startup class",
+    "status": null,
+    "source": "Azure Functions",
+    "articles": [
+      "gotchas/azure-functions/windows-zip-deploy-breaks-running-app.md"
+    ]
+  },
+  {
+    "message": "Failed to execute 'json' on 'Response': Unexpected end of JSON input",
+    "status": null,
+    "source": "Browser",
+    "articles": [
+      "gotchas/rest-api/action-endpoints-return-an-empty-body.md"
+    ]
+  },
+  {
+    "message": "Failed to get license information for the user",
+    "status": 403,
+    "source": "Microsoft Graph",
+    "articles": [
+      "gotchas/graph/mail-probe-no-mailbox-vs-no-consent.md",
+      "gotchas/graph/teams-channel-messages-need-a-teams-license.md"
+    ]
+  },
+  {
+    "message": "Failed to register resource provider 'microsoft.operationalinsights'",
+    "status": null,
+    "source": "Azure CLI",
+    "articles": [
+      "gotchas/azure-functions/fresh-subscription-blocks-your-first-deployment.md"
+    ]
+  },
+  {
+    "message": "Field lcf76f155ced4ddcb4097134ff3c332f cannot be found. Field value will not be imported",
+    "status": null,
+    "source": "SharePoint REST",
+    "articles": [
+      "gotchas/rest-api/copy-job-item-batches-folder-metadata.md"
+    ]
+  },
+  {
+    "message": "Field TaxCatchAll cannot be found. Field value will not be imported",
+    "status": null,
+    "source": "SharePoint REST",
+    "articles": [
+      "gotchas/rest-api/copy-job-item-batches-folder-metadata.md"
+    ]
+  },
+  {
+    "message": "Function host is not running",
+    "status": 503,
+    "source": "Azure Functions",
+    "articles": [
+      "gotchas/azure-functions/windows-zip-deploy-breaks-running-app.md"
+    ]
+  },
+  {
+    "message": "Group cannot be found",
+    "status": 500,
+    "source": "SharePoint REST",
+    "articles": [
+      "gotchas/rest-api/getbyinternalnameortitle-400-not-404.md"
+    ]
+  },
+  {
+    "message": "Insufficient privileges to complete the operation",
+    "status": 403,
+    "source": "Microsoft Graph",
+    "articles": [
+      "gotchas/permissions/graph-api-access-approval-needs-global-admin.md"
+    ]
+  },
+  {
+    "message": "Invalid hook call",
+    "status": null,
+    "source": "SPFx runtime",
+    "articles": [
+      "gotchas/spfx/react-minified-errors-cheatsheet.md",
+      "gotchas/tooling/jest-loads-a-second-react-through-a-linked-package.md"
+    ]
+  },
+  {
+    "message": "Invalid hook call. Hooks can only be called inside of the body of a function component",
+    "status": null,
+    "source": "Jest",
+    "articles": [
+      "gotchas/tooling/jest-loads-a-second-react-through-a-linked-package.md"
+    ]
+  },
+  {
+    "message": "Invalid object identifier 'user@contoso.com'",
+    "status": 400,
+    "source": "Microsoft Graph",
+    "articles": [
+      "gotchas/graph/group-member-ref-needs-object-id.md"
+    ]
+  },
+  {
+    "message": "Invalid text value. A text field contains invalid data",
+    "status": 500,
+    "source": "SharePoint REST",
+    "articles": [
+      "gotchas/rest-api/invalid-text-value-is-a-maxlength-500.md"
+    ]
+  },
+  {
+    "message": "invalidRequest: Invalid request",
+    "status": 400,
+    "source": "Microsoft Graph",
+    "articles": [
+      "gotchas/graph/todo-rejects-select.md"
+    ]
+  },
+  {
+    "message": "InvalidValue",
+    "status": 400,
+    "source": "Microsoft Graph",
+    "articles": [
+      "gotchas/graph/preauthorized-app-needs-existing-scope.md"
+    ]
+  },
+  {
+    "message": "ISPHttpClientConfiguration.jsonRequest is enabled, which requires the \"OData-Version\" header to be 3.0 or 4.0",
+    "status": null,
+    "source": "SPFx runtime",
+    "articles": [
+      "gotchas/rest-api/file-upload-406-needs-verbose.md"
+    ]
+  },
+  {
+    "message": "Item does not exist",
+    "status": null,
+    "source": "SharePoint REST",
+    "articles": [
+      "gotchas/permissions/upload-only-drop-box-for-sensitive-photos.md",
+      "gotchas/spfx/previewing-library-files-in-your-app.md"
+    ]
+  },
+  {
+    "message": "Item not found",
+    "status": 404,
+    "source": "Microsoft Graph",
+    "articles": [
+      "gotchas/graph/todo-requires-exchange-mailbox.md",
+      "gotchas/graph/mail-probe-no-mailbox-vs-no-consent.md"
+    ]
+  },
+  {
+    "message": "List '/sites/team/shared' does not exist at site with URL 'https://contoso.sharepoint.com/sites/team'",
+    "status": null,
+    "source": "PowerShell",
+    "articles": [
+      "gotchas/powershell/get-pnplist-identity-rejects-server-relative-url.md"
+    ]
+  },
+  {
+    "message": "Load failed",
+    "status": null,
+    "source": "Browser",
+    "articles": [
+      "gotchas/graph/msgraph-client-network-failure-looks-like-http-error.md"
+    ]
+  },
+  {
+    "message": "MailboxNotEnabledForRESTAPI",
+    "status": 404,
+    "source": "Microsoft Graph",
+    "articles": [
+      "gotchas/graph/mail-probe-no-mailbox-vs-no-consent.md",
+      "gotchas/graph/sendmail-fallback-reported-as-sent.md"
+    ]
+  },
+  {
+    "message": "Maximum update depth exceeded",
+    "status": null,
+    "source": "SPFx runtime",
+    "articles": [
+      "gotchas/spfx/react-minified-errors-cheatsheet.md"
+    ]
+  },
+  {
+    "message": "Microsoft.Exchange.Management.UnifiedPolicy.InvalidLicenseException",
+    "status": null,
+    "source": "Microsoft Purview",
+    "articles": [
+      "gotchas/search/sensitivity-labels-in-search-and-licensing.md"
+    ]
+  },
+  {
+    "message": "Microsoft.SharePoint.Client.InvalidClientQueryException",
+    "status": null,
+    "source": "SharePoint REST",
+    "articles": [
+      "gotchas/rest-api/field-subtype-property-without-type-is-400.md",
+      "gotchas/rest-api/rest-request-body-2mb-limit.md",
+      "gotchas/spfx/conditional-spread-hides-a-phantom-list-column.md",
+      "gotchas/spfx/server-request-path-is-not-the-page-url.md"
+    ]
+  },
+  {
+    "message": "Missing required query string: @a1",
+    "status": null,
+    "source": "SharePoint REST",
+    "articles": [
+      "gotchas/spfx/server-request-path-is-not-the-page-url.md"
+    ]
+  },
+  {
+    "message": "Module not found: Error: Can't resolve 'images/layers.png'",
+    "status": null,
+    "source": "SPFx build",
+    "articles": [
+      "gotchas/spfx/css-url-assets-break-webpack.md"
+    ]
+  },
+  {
+    "message": "Name cannot begin with the ' ' character, hexadecimal value 0x20. Line 3, position 218",
+    "status": null,
+    "source": "SharePoint REST",
+    "articles": [
+      "gotchas/lists/view-formatter-rejects-angle-bracket-and-ampersand.md"
+    ]
+  },
+  {
+    "message": "Neither tenant is B2C or tenant doesn't have premium license",
+    "status": 403,
+    "source": "Microsoft Graph",
+    "articles": [
+      "gotchas/graph/signinactivity-without-p1-reports-zero-inactive.md"
+    ]
+  },
+  {
+    "message": "NetworkError when attempting to fetch resource",
+    "status": null,
+    "source": "Browser",
+    "articles": [
+      "gotchas/graph/msgraph-client-network-failure-looks-like-http-error.md"
+    ]
+  },
+  {
+    "message": "No job functions found",
+    "status": null,
+    "source": "Azure Functions",
+    "articles": [
+      "gotchas/azure-functions/funcignore-unanchored-pattern-strips-node-modules.md"
+    ]
+  },
+  {
+    "message": "No such host is known",
+    "status": null,
+    "source": "DNS",
+    "articles": [
+      "gotchas/azure-functions/unique-default-hostname-no-such-host.md"
+    ]
+  },
+  {
+    "message": "node exited with code 1 (0x1)",
+    "status": null,
+    "source": "Azure Functions",
+    "articles": [
+      "gotchas/azure-functions/windows-zip-deploy-breaks-running-app.md"
+    ]
+  },
+  {
+    "message": "notAllowed",
+    "status": 423,
+    "source": "Microsoft Graph",
+    "articles": [
+      "gotchas/graph/archived-site-returns-423-on-every-read.md"
+    ]
+  },
+  {
+    "message": "notifyDecision is not a function",
+    "status": null,
+    "source": "SPFx runtime",
+    "articles": [
+      "gotchas/spfx/read-only-mode-must-cover-graph-too.md"
+    ]
+  },
+  {
+    "message": "Null value for source item",
+    "status": 500,
+    "source": "SharePoint REST",
+    "articles": [
+      "gotchas/rest-api/copy-job-library-root-progress-logs-and-warnings.md"
+    ]
+  },
+  {
+    "message": "Objects are not valid as a React child",
+    "status": null,
+    "source": "SPFx runtime",
+    "articles": [
+      "gotchas/rest-api/hyperlink-field-takes-an-object-not-a-string.md",
+      "gotchas/spfx/react-minified-errors-cheatsheet.md"
+    ]
+  },
+  {
+    "message": "Operation cannot be completed without additional quota. Additional details - Location:  Current Limit (Y1 VMs): 0 Current Usage: 0 Amount required for this deployment (Y1 VMs): 1",
+    "status": null,
+    "source": "Azure CLI",
+    "articles": [
+      "gotchas/azure-functions/fresh-subscription-blocks-your-first-deployment.md"
+    ]
+  },
+  {
+    "message": "Out of memory",
+    "status": null,
+    "source": "Browser",
+    "articles": [
+      "gotchas/spfx/parser-entry-and-collector-must-share-one-shape.md"
+    ]
+  },
+  {
+    "message": "Page build failed",
+    "status": null,
+    "source": "GitHub Pages",
+    "articles": [
+      "gotchas/tooling/github-pages-without-nojekyll-freezes-a-static-cdn.md"
+    ]
+  },
+  {
+    "message": "Page Unresponsive",
+    "status": null,
+    "source": "Browser",
+    "articles": [
+      "gotchas/spfx/parser-entry-and-collector-must-share-one-shape.md"
+    ]
+  },
+  {
+    "message": "ParserError: Unexpected token 'Reserve' in expression or statement",
+    "status": null,
+    "source": "PowerShell",
+    "articles": [
+      "gotchas/powershell/smart-quotes-are-string-delimiters.md"
+    ]
+  },
+  {
+    "message": "Parsing JSON Light feeds or entries in requests without entity set is not supported",
+    "status": 400,
+    "source": "SharePoint REST",
+    "articles": [
+      "gotchas/rest-api/metadata-body-requires-verbose.md"
+    ]
+  },
+  {
+    "message": "Property api.preAuthorizedApplications.delegatedPermissionIds has a Permission Id that cannot be found in the AppPermissions sets",
+    "status": 400,
+    "source": "Microsoft Graph",
+    "articles": [
+      "gotchas/graph/preauthorized-app-needs-existing-scope.md"
+    ]
+  },
+  {
+    "message": "React Hook React.useCallback is called conditionally. React Hooks must be called in the exact same order in every component render",
+    "status": null,
+    "source": "SPFx build",
+    "articles": [
+      "gotchas/spfx/rules-of-hooks-false-positive-from-jsx-chain.md"
+    ]
+  },
+  {
+    "message": "ReferenceError: TextEncoder is not defined",
+    "status": null,
+    "source": "Jest",
+    "articles": [
+      "gotchas/tooling/textencoder-missing-in-jsdom-breaks-a-dependency-at-import.md"
+    ]
+  },
+  {
+    "message": "Refused to execute inline script because it violates the following Content Security Policy directive: \"script-src 'self' 'unsafe-eval' https://…\"",
+    "status": null,
+    "source": "Browser",
+    "articles": [
+      "gotchas/spfx/tenant-csp-is-inherited-by-srcdoc-frames.md"
+    ]
+  },
+  {
+    "message": "RenderingCancelledException",
+    "status": null,
+    "source": "pdf.js",
+    "articles": [
+      "gotchas/spfx/pdfjs-same-canvas-multiple-render.md"
+    ]
+  },
+  {
+    "message": "Request_UnsupportedQuery",
+    "status": 400,
+    "source": "Microsoft Graph",
+    "articles": [
+      "gotchas/graph/directoryobject-collections-reject-select-and-top.md",
+      "gotchas/graph/filter-on-group-members-needs-count-too.md"
+    ]
+  },
+  {
+    "message": "Request_UnsupportedQuery: This resource does not support custom page sizes. Please retry without a page size argument",
+    "status": 400,
+    "source": "Microsoft Graph",
+    "articles": [
+      "gotchas/graph/directoryobject-collections-reject-select-and-top.md"
+    ]
+  },
+  {
+    "message": "RequestBroker--ParseUri",
+    "status": 400,
+    "source": "Microsoft Graph",
+    "articles": [
+      "gotchas/graph/todo-rejects-select.md"
+    ]
+  },
+  {
+    "message": "RequestDisallowedByAzure",
+    "status": null,
+    "source": "Azure CLI",
+    "articles": [
+      "gotchas/azure-functions/fresh-subscription-blocks-your-first-deployment.md"
+    ]
+  },
+  {
+    "message": "Resource '…' was disallowed by Azure: The selected region is currently not accepting new customers: https://aka.ms/locationineligible",
+    "status": null,
+    "source": "Azure CLI",
+    "articles": [
+      "gotchas/azure-functions/fresh-subscription-blocks-your-first-deployment.md"
+    ]
+  },
+  {
+    "message": "Resource is not allowed",
+    "status": null,
+    "source": "SharePoint REST",
+    "articles": [
+      "gotchas/graph/todo-rejects-select.md"
+    ]
+  },
+  {
+    "message": "resourceLocked",
+    "status": 423,
+    "source": "Microsoft Graph",
+    "articles": [
+      "gotchas/graph/archived-site-returns-423-on-every-read.md"
+    ]
+  },
+  {
+    "message": "Service principal-less authentication failed",
+    "status": 403,
+    "source": "Microsoft Graph",
+    "articles": [
+      "gotchas/graph/exchange-admin-api-no-cors-from-browser.md"
+    ]
+  },
+  {
+    "message": "SPMigrationQosException",
+    "status": 500,
+    "source": "SharePoint REST",
+    "articles": [
+      "gotchas/rest-api/copy-job-library-root-progress-logs-and-warnings.md"
+    ]
+  },
+  {
+    "message": "SPQueryThrottledException",
+    "status": 500,
+    "source": "SharePoint REST",
+    "articles": [
+      "gotchas/lists/indexing-built-in-fields-title-created.md",
+      "gotchas/lists/list-items-keep-authors-dates-and-version-history.md",
+      "gotchas/lists/list-view-threshold-and-indexes.md"
+    ]
+  },
+  {
+    "message": "SubscriptionIsOverQuotaForSku",
+    "status": null,
+    "source": "Azure CLI",
+    "articles": [
+      "gotchas/azure-functions/fresh-subscription-blocks-your-first-deployment.md"
+    ]
+  },
+  {
+    "message": "System.ArgumentOutOfRangeException",
+    "status": 400,
+    "source": "SharePoint REST",
+    "articles": [
+      "gotchas/rest-api/missing-attachment-returns-400-not-404.md"
+    ]
+  },
+  {
+    "message": "Test suite failed to run",
+    "status": null,
+    "source": "Jest",
+    "articles": [
+      "gotchas/spfx/jest-mock-doesnt-hoist-in-heft.md",
+      "gotchas/tooling/textencoder-missing-in-jsdom-breaks-a-dependency-at-import.md"
+    ]
+  },
+  {
+    "message": "The $expand query is not valid for field 'Author'",
+    "status": 400,
+    "source": "SharePoint REST",
+    "articles": [
+      "gotchas/rest-api/copy-job-end-before-target-visible.md",
+      "gotchas/rest-api/copy-job-library-root-progress-logs-and-warnings.md"
+    ]
+  },
+  {
+    "message": "The $expand query is not valid for field 'Editor'",
+    "status": 400,
+    "source": "SharePoint REST",
+    "articles": [
+      "gotchas/rest-api/folder-files-reject-a-two-level-expand.md"
+    ]
+  },
+  {
+    "message": "The attempted operation is prohibited because it exceeds the list view threshold",
+    "status": 500,
+    "source": "SharePoint REST",
+    "articles": [
+      "gotchas/lists/list-view-threshold-and-indexes.md"
+    ]
+  },
+  {
+    "message": "The certificate does not exist yet",
+    "status": 404,
+    "source": "GitHub API",
+    "articles": [
+      "gotchas/tooling/github-pages-certificate-stuck.md"
+    ]
+  },
+  {
+    "message": "The expression \"Title eq 'Zk Plus\" is not valid",
+    "status": 400,
+    "source": "SharePoint REST",
+    "articles": [
+      "gotchas/rest-api/unencoded-hash-in-a-filter-value-cuts-the-url.md"
+    ]
+  },
+  {
+    "message": "The expression \"Title eq 'Zk\" is not valid",
+    "status": 400,
+    "source": "SharePoint REST",
+    "articles": [
+      "gotchas/rest-api/unencoded-hash-in-a-filter-value-cuts-the-url.md"
+    ]
+  },
+  {
+    "message": "The field or property 'X' does not exist",
+    "status": 400,
+    "source": "SharePoint REST",
+    "articles": [
+      "gotchas/search/enumerate-every-site-from-the-browser-console.md"
+    ]
+  },
+  {
+    "message": "The HTTP header ACCEPT is missing or its value is invalid",
+    "status": null,
+    "source": "SharePoint REST",
+    "articles": [
+      "gotchas/rest-api/file-upload-406-needs-verbose.md",
+      "gotchas/rest-api/metadata-body-requires-verbose.md"
+    ]
+  },
+  {
+    "message": "The identity of the policy scope is not a security principal",
+    "status": null,
+    "source": "Exchange Online PowerShell",
+    "articles": [
+      "gotchas/graph/application-access-policy-rejects-shared-mailbox.md"
+    ]
+  },
+  {
+    "message": "The mailbox is either inactive, soft-deleted, or is hosted on-premise",
+    "status": 404,
+    "source": "Microsoft Graph",
+    "articles": [
+      "gotchas/graph/mail-probe-no-mailbox-vs-no-consent.md",
+      "gotchas/graph/sendmail-fallback-reported-as-sent.md"
+    ]
+  },
+  {
+    "message": "The property '__metadata' does not exist on type 'SP.Data.TasksListItem'",
+    "status": 400,
+    "source": "SharePoint REST",
+    "articles": [
+      "gotchas/rest-api/metadata-body-requires-verbose.md"
+    ]
+  },
+  {
+    "message": "The property '…' does not exist on type '…'",
+    "status": 400,
+    "source": "SharePoint REST",
+    "articles": [
+      "gotchas/rest-api/validate-endpoint-answers-200-when-nothing-was-written.md"
+    ]
+  },
+  {
+    "message": "The property 'CompanyId' does not exist on type 'SP.Data.ContactsListItem'. Make sure to only use property names that are defined by the type",
+    "status": 400,
+    "source": "SharePoint REST",
+    "articles": [
+      "gotchas/spfx/conditional-spread-hides-a-phantom-list-column.md"
+    ]
+  },
+  {
+    "message": "The property 'RichText' does not exist on type 'SP.Field'. Make sure to only use property names that are defined by the type",
+    "status": 400,
+    "source": "SharePoint REST",
+    "articles": [
+      "gotchas/rest-api/field-subtype-property-without-type-is-400.md"
+    ]
+  },
+  {
+    "message": "The property 'ViewTypeKind' does not exist on type 'SP.View'. Make sure to only use property names that are defined by the type",
+    "status": 400,
+    "source": "SharePoint REST",
+    "articles": [
+      "gotchas/rest-api/creating-a-view-posts-sp-view-not-viewcreationinformation.md"
+    ]
+  },
+  {
+    "message": "The query string userName is missing or invalid",
+    "status": 400,
+    "source": "SharePoint REST",
+    "articles": [
+      "gotchas/security/group-created-by-code-hides-its-membership.md"
+    ]
+  },
+  {
+    "message": "The request is currently not supported on the targeted entity set",
+    "status": null,
+    "source": "Microsoft Graph",
+    "articles": [
+      "gotchas/graph/patch-me-directory-vs-profile-fields.md"
+    ]
+  },
+  {
+    "message": "The request message is too big. The server does not allow messages larger than 2097152 bytes",
+    "status": 400,
+    "source": "SharePoint REST",
+    "articles": [
+      "gotchas/rest-api/rest-request-body-2mb-limit.md"
+    ]
+  },
+  {
+    "message": "The requested permission isn't valid. Reject this request and contact the developer to fix the problem and redeploy the solution",
+    "status": null,
+    "source": "SharePoint admin center",
+    "articles": [
+      "gotchas/spfx/custom-api-permission-request-invalid.md"
+    ]
+  },
+  {
+    "message": "The security validation for this page is invalid and might be corrupted. Please use your web browser's Back button to try your operation again",
+    "status": 403,
+    "source": "SharePoint REST",
+    "articles": [
+      "gotchas/rest-api/request-digest-expires-mid-session.md"
+    ]
+  },
+  {
+    "message": "The specified filter to the reference property query is currently not supported",
+    "status": 400,
+    "source": "Microsoft Graph",
+    "articles": [
+      "gotchas/graph/filter-on-group-members-needs-count-too.md"
+    ]
+  },
+  {
+    "message": "The type SP.PropertyValues does not support HTTP PATCH method",
+    "status": 400,
+    "source": "SharePoint REST",
+    "articles": [
+      "gotchas/search/nocrawl-on-a-library-silently-blinds-your-rag.md"
+    ]
+  },
+  {
+    "message": "The webpage cannot be found",
+    "status": null,
+    "source": "SharePoint UI",
+    "articles": [
+      "gotchas/security/url-sanitiser-strips-spaces.md"
+    ]
+  },
+  {
+    "message": "This field can have no more than 255 characters",
+    "status": null,
+    "source": "SharePoint REST",
+    "articles": [
+      "gotchas/lists/library-multiline-text-255-limit.md"
+    ]
+  },
+  {
+    "message": "This tenant does not support label based policy",
+    "status": null,
+    "source": "SharePoint REST",
+    "articles": [
+      "gotchas/rest-api/copy-job-library-root-progress-logs-and-warnings.md"
+    ]
+  },
+  {
+    "message": "This tenant is not licensed to be able to run this operation, you can start a trial",
+    "status": null,
+    "source": "Microsoft Purview",
+    "articles": [
+      "gotchas/search/sensitivity-labels-in-search-and-licensing.md"
+    ]
+  },
+  {
+    "message": "TS1003: Identifier expected",
+    "status": null,
+    "source": "SPFx build",
+    "articles": [
+      "gotchas/spfx/jsx-attributes-and-smart-quotes.md"
+    ]
+  },
+  {
+    "message": "TS1382: Unexpected token. Did you mean {'>'}?",
+    "status": null,
+    "source": "SPFx build",
+    "articles": [
+      "gotchas/spfx/jsx-attributes-and-smart-quotes.md"
+    ]
+  },
+  {
+    "message": "TS2550: Property 'padStart' does not exist on type 'string'. Do you need to change your target library?",
+    "status": null,
+    "source": "SPFx build",
+    "articles": [
+      "gotchas/spfx/es2015-lib-forbidden-apis.md"
+    ]
+  },
+  {
+    "message": "TypeError: Cannot set property navigator of #<Object> which has only a getter",
+    "status": null,
+    "source": "Node.js",
+    "articles": [
+      "gotchas/tooling/global-navigator-assignment-for-jsdom-is-ignored-on-node-21.md"
+    ]
+  },
+  {
+    "message": "TypeError: Failed to fetch",
+    "status": null,
+    "source": "Browser",
+    "articles": [
+      "gotchas/graph/exchange-admin-api-no-cors-from-browser.md",
+      "gotchas/graph/msgraph-client-network-failure-looks-like-http-error.md",
+      "gotchas/spfx/decompressionstream-trailing-bytes-pdf-streams.md",
+      "gotchas/tooling/getting-bulk-data-into-a-sharepoint-page-from-the-console.md"
+    ]
+  },
+  {
+    "message": "TypeError: Trailing junk found after the end of the compressed stream",
+    "status": null,
+    "source": "Node.js",
+    "articles": [
+      "gotchas/spfx/decompressionstream-trailing-bytes-pdf-streams.md"
+    ]
+  },
+  {
+    "message": "UnauthorizedAccessException",
+    "status": null,
+    "source": "SharePoint CSOM",
+    "articles": [
+      "gotchas/search/crawl-log-exists-in-spo-via-csom.md"
+    ]
+  },
+  {
+    "message": "Uncaught Error: Minified React error #310; visit https://reactjs.org/docs/error-decoder.html?invariant=310 for the full message",
+    "status": null,
+    "source": "SPFx runtime",
+    "articles": [
+      "gotchas/spfx/react-minified-errors-cheatsheet.md"
+    ]
+  },
+  {
+    "message": "Unexpected end of JSON input",
+    "status": null,
+    "source": "Browser",
+    "articles": [
+      "gotchas/rest-api/action-endpoints-return-an-empty-body.md",
+      "gotchas/spfx/people-search-endpoints-that-work.md"
+    ]
+  },
+  {
+    "message": "Unexpected token '?' in expression or statement",
+    "status": null,
+    "source": "PowerShell",
+    "articles": [
+      "gotchas/powershell/ps7-parse-check-misses-ps51-syntax-errors.md"
+    ]
+  },
+  {
+    "message": "UnknownError",
+    "status": null,
+    "source": "Microsoft Graph",
+    "articles": [
+      "gotchas/graph/purview-audit-query-api-is-async.md",
+      "gotchas/graph/teams-channel-messages-need-a-teams-license.md"
+    ]
+  },
+  {
+    "message": "User:someone@contoso.onmicrosoft.com dont have any permissions",
+    "status": null,
+    "source": "Microsoft Graph",
+    "articles": [
+      "gotchas/graph/audit-query-permission-vs-audit-role.md"
+    ]
+  },
+  {
+    "message": "UserImpersonationScopeMissing",
+    "status": 401,
+    "source": "Power Automate API",
+    "articles": [
+      "gotchas/spfx/power-automate-admin-api-unreachable-from-spfx.md"
+    ]
+  },
+  {
+    "message": "WARNING: The output includes credentials that you must protect. Be sure that you do not include these credentials in your code",
+    "status": null,
+    "source": "Azure CLI",
+    "articles": [
+      "gotchas/powershell/erroractionpreference-stop-native-stderr.md"
+    ]
+  },
+  {
+    "message": "We cannot save your changes because a site member has ended your editing session",
+    "status": 409,
+    "source": "SharePoint REST",
+    "articles": [
+      "gotchas/rest-api/create-modern-page-via-rest-sitepages.md"
+    ]
+  },
+  {
+    "message": "Worker was unable to load entry point \"dist/functions/routes.js\": Cannot find module 'C:\\home\\site\\wwwroot\\node_modules\\debug\\src\\index.js'. Please verify that the package.json has a valid \"main\" entry",
+    "status": null,
+    "source": "Azure Functions",
+    "articles": [
+      "gotchas/azure-functions/funcignore-unanchored-pattern-strips-node-modules.md"
+    ]
+  },
+  {
+    "message": "XmlValidationException: ... NameDefinition — The Pattern constraint failed",
+    "status": null,
+    "source": "SPFx build",
+    "articles": [
+      "gotchas/app-catalog/sppkg-packaging-pitfalls.md"
+    ]
+  },
+  {
+    "message": "You must specify a valid date within the range of 1/1/1900 and 12/31/8900",
+    "status": 200,
+    "source": "SharePoint REST",
+    "articles": [
+      "gotchas/lists/created-modified-on-a-document-library.md"
+    ]
+  }
+]

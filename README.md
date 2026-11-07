@@ -53,7 +53,7 @@ Prefer everything on a single page? Browse the 🗂️ **[full vault index](INDE
 
 ## How to use the vault
 
-Browse the folders above, or search within the repo — every article carries frontmatter with `tags` and `applies-to` (SharePoint Online / Server), so a repo search like `path:gotchas threshold` usually gets you straight to the answer.
+On [sharepointvault.online](https://sharepointvault.online/) you can [start with a reading path](https://sharepointvault.online/start/) for your role, type a status code or a few words of an error into the [error lookup](https://sharepointvault.online/errors), or follow [what's new](https://sharepointvault.online/whats-new) in a feed reader. Here on GitHub, browse the folders above, or search within the repo — every gotcha, guide and snippet carries frontmatter with `tags` and `applies-to` (SharePoint Online / Server), so a repo search like `path:gotchas threshold` usually gets you straight to the answer.
 
 All scripts in the vault:
 

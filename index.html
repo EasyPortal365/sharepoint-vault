@@ -12,6 +12,7 @@
   <meta property="og:url" content="https://sharepointvault.online/">
   <meta property="og:image" content="https://sharepointvault.online/assets/og-vault.png">
   <meta name="twitter:card" content="summary_large_image">
+  <link rel="alternate" type="application/atom+xml" title="SharePoint Vault — new articles" href="/feed.xml">
   <link rel="canonical" href="https://sharepointvault.online/">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🗝️</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -255,7 +256,7 @@
     <span class="ok">● main <span id="sv-sha"></span></span>
     <span class="hide-m" id="sv-pushed"></span>
     <span class="hide-m">MIT · maintained by <a href="https://easyportal365.cz/en/" target="_blank" rel="noopener">EasyPortal 365</a></span>
-    <span class="right"><a href="https://github.com/EasyPortal365/sharepoint-vault/commits/main.atom" target="_blank" rel="noopener" title="Subscribe to vault updates (Atom feed)">feed</a>&nbsp;·&nbsp;<a href="https://github.com/EasyPortal365/sharepoint-vault" target="_blank" rel="noopener"><span id="sv-stars"></span>github.com/EasyPortal365/sharepoint-vault</a></span>
+    <span class="right"><a href="/feed.xml" title="New articles as an Atom feed (feed reader, Teams channel)">feed</a>&nbsp;·&nbsp;<a href="https://github.com/EasyPortal365/sharepoint-vault" target="_blank" rel="noopener"><span id="sv-stars"></span>github.com/EasyPortal365/sharepoint-vault</a></span>
   </div>
   <script>
     /* ── Jeden web: každý článek, skript a sekce má statickou stránku s vlastní URL
@@ -357,7 +358,7 @@
           '<div class="out" id="sv-neww">…</div>' +
           '<div style="margin-top:14px"><span class="p">PS SPVault:\\&gt;</span> <span class="cmd">Get-MostRead -Since 7d -Top 5</span></div>' +
           '<div class="out" id="sv-popular">…</div>' +
-          '<div style="margin-top:14px"><span class="p">PS SPVault:\\&gt;</span> <a href="/errors" class="cmd" style="border-bottom:1px dashed var(--teal6)" title="Paste an error message, find the article">Find-Error</a> <span class="out">·</span> <a href="/tags/" class="cmd" style="border-bottom:1px dashed var(--teal6)" title="Browse by topic">Get-Tag</a></div>' +
+          '<div style="margin-top:14px"><span class="p">PS SPVault:\\&gt;</span> <a href="/start/" class="cmd" style="border-bottom:1px dashed var(--teal6)" title="Reading paths by role and Top 10 lists">Start-Here</a> <span class="out">·</span> <a href="/whats-new" class="cmd" style="border-bottom:1px dashed var(--teal6)" title="New articles, with an Atom feed">Get-WhatsNew</a> <span class="out">·</span> <a href="/errors" class="cmd" style="border-bottom:1px dashed var(--teal6)" title="Paste an error message, find the article">Find-Error</a> <span class="out">·</span> <a href="/tags/" class="cmd" style="border-bottom:1px dashed var(--teal6)" title="Browse by topic">Get-Tag</a></div>' +
           '<div style="margin-top:14px"><span class="p">PS SPVault:\\&gt;</span> <a href="#" id="sv-random" class="cmd" style="border-bottom:1px dashed var(--teal6)" title="Open a random gotcha">Get-Gotcha -Random</a></div>' +
           '<div style="margin-top:14px"><span class="p">PS SPVault:\\&gt;</span> <span class="cursor"></span></div>' +
         '</div>' +
@@ -752,7 +753,7 @@
               /* rozcestník na statické nástroje (stejný jako v menu statických stránek) */
               var sl = document.createElement('div');
               sl.className = 'sv-sidelinks';
-              sl.innerHTML = '<a href="/errors">error lookup</a><a href="/tags/">tags</a><a href="/full-index">full index</a>';
+              sl.innerHTML = '<a href="/start/">start here</a><a href="/errors">error lookup</a><a href="/tags/">tags</a><a href="/whats-new">what\'s new</a><a href="/full-index">full index</a>';
               sbtn.insertAdjacentElement('afterend', sl);
               /* hledání = stejný formulář jako na statických stránkách → /search */
               var sf = document.createElement('form');

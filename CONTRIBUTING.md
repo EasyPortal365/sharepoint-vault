@@ -102,4 +102,11 @@ The frontmatter must be valid YAML — GitHub renders it as a table and shows an
 
    It exits non-zero when something is off and names the file. If it reports a count in a sentence, prefer deleting the number over correcting it: prose that says "20 scripts" is wrong again the next time somebody adds one. It also warns — without failing — when a commit dated more than 30 days after an article's `last-reviewed` changed more than four lines of its text (frontmatter doesn't count): review the article and move the date.
 
+### Curated lists on the website
+
+Two hand-curated files in [`_data/`](_data/) feed pages of sharepointvault.online; the site build fails when they name an article that does not exist, so a renamed article needs its path updated there too:
+
+- `_data/errors.json` — exact error messages for the [error lookup](https://sharepointvault.online/errors), each copied **verbatim** from the article it links to (never paraphrased or completed). If your gotcha shows an error text in its *Symptom* section, add it here with the article path.
+- `_data/collections.json` — the [Start here](https://sharepointvault.online/start/) reading paths and the Top 10 lists. Every `why` sentence must say only what the linked article says.
+
 Not sure whether something fits? [Open an issue](https://github.com/EasyPortal365/sharepoint-vault/issues) and ask.
