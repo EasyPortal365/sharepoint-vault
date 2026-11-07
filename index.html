@@ -77,12 +77,11 @@
     .sidebar-toggle { background:transparent; }
     .sidebar-toggle span { background-color:var(--teal7); }
 
-    /* ── search plugin ── */
-    .search { border-bottom:1px solid var(--line); padding:6px 14px 12px; }
-    .search input { font-family:var(--mono); font-size:12px; background:var(--bg); border:1px solid var(--line); border-radius:999px; padding:8px 14px; color:var(--navy); }
-    .search input:focus { border-color:var(--teal6); box-shadow:0 0 0 3px rgba(0,206,215,.15); }
-    .search .results-panel h2 { font-family:var(--mono); font-size:13px; color:var(--navy); }
-    .search .matching-post { border-bottom:1px solid var(--line); }
+    /* ── hledání: pole v menu odešle dotaz na /search (Pagefind, výsledky přes celou šířku).
+       Dřív docsify search plugin vypisoval výsledky přímo v úzkém postranním panelu. ── */
+    .sv-searchform { margin:0 14px 8px; }
+    .sv-searchform input { width:100%; box-sizing:border-box; font-family:var(--mono); font-size:12px; color:var(--navy); border:1px solid var(--line); border-radius:999px; padding:8px 14px; background:var(--bg); outline:none; }
+    .sv-searchform input:focus { border-color:var(--teal6); box-shadow:0 0 0 3px rgba(0,206,215,.15); }
 
     /* ── content ── */
     .content { padding-bottom:52px; }
@@ -606,11 +605,6 @@
       subMaxLevel: 2,
       auto2top: true,
       maxLevel: 3,
-      search: {
-        placeholder: 'search the vault…',
-        noData: 'Nothing found — try a different term.',
-        depth: 3
-      },
       frontMatter: {},
       plugins: [
         function (hook, vm) {
@@ -760,6 +754,11 @@
               sl.className = 'sv-sidelinks';
               sl.innerHTML = '<a href="/errors">error lookup</a><a href="/tags/">tags</a><a href="/full-index">full index</a>';
               sbtn.insertAdjacentElement('afterend', sl);
+              /* hledání = stejný formulář jako na statických stránkách → /search */
+              var sf = document.createElement('form');
+              sf.className = 'sv-searchform'; sf.action = '/search'; sf.method = 'get'; sf.setAttribute('role', 'search');
+              sf.innerHTML = '<input type="search" name="q" placeholder="⌕ search the vault…" aria-label="Search the vault">';
+              sbtn.insertAdjacentElement('afterend', sf);
             }
             if (vm.route.path === '/') { svPopular(); }
             svFill();
@@ -836,7 +835,6 @@
     };
   </script>
   <script src="https://cdn.jsdelivr.net/npm/docsify@4/lib/docsify.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/docsify@4/lib/plugins/search.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/docsify@4/lib/plugins/front-matter.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/docsify-copy-code@2/dist/docsify-copy-code.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-typescript.min.js"></script>

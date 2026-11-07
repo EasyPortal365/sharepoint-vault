@@ -237,9 +237,6 @@ const EXTRA_CSS = `
 .sv-related li { margin:4px 0; }
 a.sv-tag { border-bottom:none !important; text-decoration:none; }
 a.sv-tag:hover { background:var(--teal7); color:#fff; }
-.sv-searchform { margin:0 14px 8px; }
-.sv-searchform input { width:100%; box-sizing:border-box; font-family:var(--mono); font-size:12px; color:var(--navy); border:1px solid var(--line); border-radius:999px; padding:8px 14px; background:var(--bg); outline:none; }
-.sv-searchform input:focus { border-color:var(--teal6); box-shadow:0 0 0 3px rgba(0,206,215,.15); }
 .sv-sidelinks { display:flex; gap:12px; margin:0 16px 12px; font-family:var(--mono); font-size:11px; }
 .sv-sidelinks a { color:var(--teal7); text-decoration:none; font-weight:600; }
 .sv-sidelinks a:hover { text-decoration:underline; text-underline-offset:3px; }
