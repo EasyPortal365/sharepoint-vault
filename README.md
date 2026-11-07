@@ -19,6 +19,8 @@
 
 **SharePoint Vault** is a growing library of practical material for people who build on, administer, and troubleshoot SharePoint — Online first, on-premises where noted.
 
+> ⭐ **Saved you an hour?** Star the repo — it is how other SharePoint people find the vault. Every article also has its own permanent link on [sharepointvault.online](https://sharepointvault.online/), ready to paste into a forum answer or a ticket.
+
 It is **not** another copy of Microsoft's documentation. Everything in the vault comes from real projects and real tenants: scripts we actually run, traps we actually fell into, and patterns that survived contact with production.
 
 - 🧰 **Scripts** — PowerShell you can run today, with proper help and safe defaults

@@ -10,6 +10,9 @@
   <meta property="og:description" content="Field-tested scripts, hard-won lessons, and practical guides for SharePoint professionals.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://sharepointvault.online/">
+  <meta property="og:image" content="https://sharepointvault.online/assets/og-vault.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="canonical" href="https://sharepointvault.online/">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🗝️</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -535,6 +538,18 @@
             }
           };
           window.SV_INTRO = SV_INTRO;
+          /* Každý článek a skript existuje i jako statická stránka s vlastní URL
+             (tools/build-site.mjs, staví se v GitHub Actions) – kvůli vyhledávačům
+             a sdílení. Tady jen stejné mapování cesty, jaké používá build. */
+          var svPerma = function (vm) {
+            var p = vm.route.path || '/';
+            if (/\.(ps1|psm1)$/i.test(p)) { return p.replace(/\.(ps1|psm1)$/i, ''); }
+            var file = vm.route.file || '';
+            if (!file || file === 'README.md' || p === '/') { return '/'; }
+            if (file === 'INDEX.md') { return '/full-index'; }
+            if (/(^|\/)README\.md$/i.test(file)) { return '/' + file.replace(/README\.md$/i, ''); }
+            return '/' + file.replace(/\.md$/i, '');
+          };
           /* Docsify bere titulek stránky z textu odkazu v sidebaru, včetně
              emoji — a protože favicon je taky 🗝️, měla záložka dva klíče
              vedle sebe. Emoji patří do navigace, ne do <title>. */
@@ -630,6 +645,10 @@
                 }
               }
             }
+            /* canonical = statická stránka téhož obsahu (při každé navigaci, i zpět na úvod) */
+            var can = document.querySelector('link[rel="canonical"]');
+            if (!can) { can = document.createElement('link'); can.rel = 'canonical'; document.head.appendChild(can); }
+            can.href = 'https://sharepointvault.online' + svPerma(vm);
             svFill();
             /* footer článku: Last updated + History/Edit/Source (lazy, cache 6 h) */
             var file = vm.route.file;
@@ -638,7 +657,9 @@
               var gh = 'https://github.com/EasyPortal365/sharepoint-vault';
               var foot = document.createElement('div');
               foot.className = 'sv-artfoot';
+              var perma = svPerma(vm);
               foot.innerHTML = '<span id="sv-upd">last updated: …</span>' +
+                '<a href="' + perma + '">permalink</a>' +
                 '<a href="' + gh + '/commits/main/' + file + '" target="_blank" rel="noopener">history</a>' +
                 '<a href="' + gh + '/edit/main/' + file + '" target="_blank" rel="noopener">edit on GitHub</a>' +
                 '<a href="' + gh + '/blob/main/' + file + '" target="_blank" rel="noopener">view source</a>';

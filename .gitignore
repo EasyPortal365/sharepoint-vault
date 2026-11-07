@@ -6,3 +6,7 @@ desktop.ini
 # Logs and local script output
 *.log
 *.csv
+
+# Static site build (generated in CI, never committed)
+node_modules/
+_site/
