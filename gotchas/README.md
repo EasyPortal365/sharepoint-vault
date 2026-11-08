@@ -82,6 +82,7 @@ Every article carries frontmatter with `tags` and `applies-to`, so repo search g
 | [File time vs. item time, and ListItemAllFields dates](rest-api/listitemallfields-dates-are-web-local-without-z.md) | TimeCreated/TimeLastModified of a file can differ from the item's Created/Modified by seconds or years; copy jobs carry the item time, so compare items – and read them from /items(id) (UTC), because ListItemAllFields returns web-local time without Z |
 | [/_api/hubsites is trimmed per user](rest-api/hubsites-list-is-trimmed-per-user.md) | `GET /_api/hubsites` returned 2 hubs to an admin and 1 to an ordinary user who had Full Control on the missing hub's site, so client code that discovers something by walking the hub list works for the editor and silently fails for readers; resolve it at authoring time and store the result in the web part properties |
 | [StorageMetrics can be stale, not just zero](rest-api/storagemetrics-can-be-stale-not-just-zero.md) | zero = not calculated, but non-zero can be stale (261 files / 3.1 GB vs real 794 / 9.5 GB); trust it only when `TotalFileCount` exactly matches the files you counted |
+| [Concurrent MERGE to one item: 409](rest-api/concurrent-merge-same-item-409-save-conflict.md) | `IF-MATCH: *` only switches off the ETag check (412); SharePoint still refuses a second save of the same item while the first is in flight with 409 Save Conflict. Queue writes per item (`list#id`), retry 409 briefly, never retry 412, and do not let a state-carrying write fail silently |
 
 ### lists/
 
