@@ -1,10 +1,10 @@
 ---
 title: File versions come back oldest-first, so $top truncates the newest ones
 short-title: File versions come back oldest-first
-summary: "`/Versions` is ascending, so `$top` drops the NEWEST ones; sorting the result descending afterwards hides it; do not assume `$orderby` is honoured"
+summary: "`/Versions` is ascending, so `$top` drops the NEWEST ones; sorting the result descending afterwards hides it; `$orderby=ID desc` IS honoured together with `$top` (measured), and the list never contains the current version"
 tags: [rest-api, files, versioning, paging, diagnostics]
 applies-to: SharePoint Online
-last-reviewed: 2026-09-24
+last-reviewed: 2026-11-08
 ---
 
 # File versions come back oldest-first, so `$top` truncates the newest ones
@@ -39,7 +39,7 @@ The trap is that both halves of the code look right in review: the query has a s
 
 ## What to do
 
-**Do not reach for `$orderby` as the fix.** Ordering support on this collection is not something to assume, and SharePoint does not reliably fail on a parameter it will not honour — a silently ignored `$orderby` leaves you with the same wrong data and a false sense of having fixed it. If you want to use it, prove it works on a file with more versions than your `$top` before trusting it.
+**`$orderby=ID desc` works on SharePoint Online** (measured, see below) – but SharePoint does not reliably fail on a parameter it will not honour, so prove it on your platform with a file that has more versions than your `$top` before relying on it alone (on-premises versions were not measured).
 
 Two things that do hold:
 
@@ -66,6 +66,25 @@ const hist = rows
 ```
 
 Then surface `truncated` in the UI. "This file has more than 500 versions — the list is incomplete, check the date on the version you pick" costs one line and turns a wrong answer into a qualified one.
+
+## Measured on SharePoint Online (2026-11-08)
+
+A file with four versions (current `4.0`, three earlier ones), read with different parameters:
+
+| Request | Returned labels |
+|---|---|
+| `/Versions?$select=ID,VersionLabel` | `1.0, 2.0, 3.0` (ascending) |
+| `/Versions?…&$top=1` | `1.0` (the oldest) |
+| `/Versions?…&$orderby=ID desc&$top=1` | `3.0` (the newest earlier version) |
+| `/Versions?…&$orderby=ID desc&$top=2` | `3.0, 2.0` |
+
+So on SPO `$orderby=ID desc` **is** applied before `$top` – with it, a cap keeps the newest end. Keep the client-side sort and the truncation flag anyway (cheap insurance if the behaviour ever changes), and re-run the same four calls when in doubt.
+
+Three more facts from the same run that trip up version-history UIs:
+
+- **The current version is not in `/Versions`.** Every row has `IsCurrentVersion: false`. Labelling the first row "current" marks an old version. Read the current one from the file itself: `GetFileByServerRelativePath(…)?$select=UIVersionLabel,TimeLastModified,CheckInComment,Length,ModifiedBy/Title&$expand=ModifiedBy`.
+- **`Url` is web-relative** (`_vti_history/512/Library/file.png`) and serves the old content directly (200, original content type) – prefix the web path and encode each segment. `CreatedBy` can be expanded (`$expand=CreatedBy`, `CreatedBy/Title`) for the author; `CheckInComment` is the version note.
+- **`Versions/RestoreByLabel(versionlabel='1.0')` restores the file content only.** It creates a new current version; the list item fields (Title and custom columns) keep their current values, even when the restored version had them empty. History is not shortened.
 
 ## How to confirm it on your tenant
 

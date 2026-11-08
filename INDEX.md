@@ -2,7 +2,7 @@
 
 Every single thing in the vault, on one page. Section names link to folder READMEs; leaves link straight to the content.
 
-*Last updated: 2026-11-07*
+*Last updated: 2026-11-08*
 
 - 🧰 **[scripts/](scripts/)** — PowerShell scripts with comment-based help, read-only unless stated
   - [Terminal animations](scripts/media/) — the writing scripts as an animated PowerShell console; plain SVG, no JavaScript, respects `prefers-reduced-motion`
@@ -83,7 +83,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [There is no `sitegroups/removebyname`](gotchas/rest-api/delete-group-by-name-no-removebyname.md) — `GroupCollection` has `GetByName` but only `RemoveById`; resolve the Id first, then delete; verify with `getbyname` → 404
     - [Telling a list's own columns from inherited ones](gotchas/rest-api/which-columns-are-the-librarys-own.md) — `Hidden` is not enough; `FromBaseType` + `CanBeDeleted` are what separate the list's own columns
     - [A page-size cap reported as a finding](gotchas/rest-api/page-size-cap-reported-as-a-result.md) — A round number (100 / 500 / 999 / 5000) is the tell; the limit of the request presented as a measurement of the tenant, then cached
-    - [File versions come back oldest-first](gotchas/rest-api/file-versions-are-oldest-first.md) — `/Versions` is ascending, so `$top` drops the NEWEST ones; sorting the result descending afterwards hides it; do not assume `$orderby` is honoured
+    - [File versions come back oldest-first](gotchas/rest-api/file-versions-are-oldest-first.md) — `/Versions` is ascending, so `$top` drops the NEWEST ones; sorting the result descending afterwards hides it; `$orderby=ID desc` IS honoured together with `$top` (measured), and the list never contains the current version
     - [`RecycleByID` sends a file version to the recycle bin — `DeleteByID` does not](gotchas/rest-api/recycle-file-versions-instead-of-deleting-them.md) — The two removal methods on `/Versions` differ: permanent vs. site recycle bin (`ItemType 2`, restorable); measured, with `vid = major*512 + minor`
     - [Retrying a throttled call is safe for GET only](gotchas/rest-api/retry-on-throttling-only-for-get.md) — 429 means "not now", not "nothing happened"; no idempotency key exists, so a retried write duplicates the row (+ `RateLimit-*` headers are not guaranteed for delegated calls)
     - [`fields/getbyinternalnameortitle` 400s for a missing field](gotchas/rest-api/getbyinternalnameortitle-400-not-404.md) — It throws `ArgumentException` (HTTP 400), not 404; an existence-check that hard-fails on non-404 breaks the "field missing → create" path, and one that creates on any non-200 duplicates the column when throttled
