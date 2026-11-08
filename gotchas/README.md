@@ -224,6 +224,7 @@ Every article carries frontmatter with `tags` and `applies-to`, so repo search g
 | [Power Automate admin API is unreachable from SPFx](spfx/power-automate-admin-api-unreachable-from-spfx.md) | SharePoint's token for Microsoft Flow Service carries only Microsoft's preauthorized scopes, so an approved `User` grant never reaches the token and the tenant-wide flows list stays 401 |
 | [`window.scrollTo` does nothing in an SPFx web part on a modern page](spfx/window-scrollto-does-nothing-on-modern-page.md) | The page scrolls inside a canvas element, not the window; switching views in a single-page web part leaves the user mid-page. Find the real scrolling ancestor and reset that |
 | [Shared style tag – the first web part wins](spfx/shared-style-tag-first-web-part-wins.md) | A library that injects `<style id=…>` only if the id is missing lets whichever bundle renders first decide the CSS for every web part on the page, so a fixed rule in a newer bundle can silently lose to an older copy that rendered first |
+| [A textarea jumps after you change its text from code and restore the selection](spfx/textarea-jumps-after-programmatic-selection.md) | focus() scrolls the page to the element and setSelectionRange scrolls the textarea to the end of the selection; restore the selection with focus({ preventScroll }) and put scrollTop back |
 
 ### app-catalog/
 
