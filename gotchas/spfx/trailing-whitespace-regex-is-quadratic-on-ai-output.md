@@ -14,7 +14,7 @@ last-reviewed: 2026-11-08
 
 ## Symptom
 
-A web part renders an AI answer while it streams and parses it line by line (custom blocks, tables, key–value lines). Normal answers are fast. One answer with an odd line – a long run of spaces in the middle, for example copied from a badly formatted document – makes the tab hang for seconds on every update, and the browser offers to stop the script.
+A web part renders an AI answer while it streams and parses it line by line (custom blocks, tables, key–value lines). Normal answers are fast. One answer with an odd line – a long run of spaces in the middle, for example copied from a badly formatted document – makes the tab unresponsive for seconds on every update.
 
 ## Cause
 
