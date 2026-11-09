@@ -20,6 +20,7 @@ import { Marked } from 'marked';
 import Prism from 'prismjs';
 import loadLanguages from 'prismjs/components/index.js';
 import { buildExtras } from './site-extras.mjs';
+import { loadBlog, buildBlog } from './blog-feed.mjs';
 
 const SITE = 'https://sharepointvault.online';
 const GH = 'https://github.com/EasyPortal365/sharepoint-vault';
@@ -250,7 +251,7 @@ const EXTRA_CSS = `
 .sv-related li { margin:4px 0; }
 a.sv-tag { border-bottom:none !important; text-decoration:none; }
 a.sv-tag:hover { background:var(--teal7); color:#fff; }
-.sv-sidelinks { display:flex; gap:12px; margin:0 16px 12px; font-family:var(--mono); font-size:11px; }
+.sv-sidelinks { display:flex; flex-wrap:wrap; gap:4px 12px; margin:0 16px 12px; font-family:var(--mono); font-size:11px; }
 .sv-sidelinks a { color:var(--teal7); text-decoration:none; font-weight:600; }
 .sv-sidelinks a:hover { text-decoration:underline; text-underline-offset:3px; }
 .sv-helpful { margin-top:40px; padding:14px 18px; border:1px dashed var(--line2); border-radius:14px; display:flex; align-items:center; gap:10px; flex-wrap:wrap; font-size:14px; }
@@ -353,7 +354,7 @@ function layout({ url, title, description, lang, bodyClass, content, ld, ogType 
     <h1 class="app-name"><a class="app-name-link" href="/">SharePoint<b>Vault</b> <i>~$</i></a></h1>
     <a class="sv-starbtn sv-starside" href="${GH}" target="_blank" rel="noopener"><span class="st">★</span> Star on GitHub</a>
     <form class="sv-searchform" action="/search" method="get" role="search"><input type="search" name="q" placeholder="⌕ search the vault…" aria-label="Search the vault"></form>
-    <nav class="sv-sidelinks" aria-label="Browse"><a href="/start/">start here</a><a href="/errors">error lookup</a><a href="/tags/">tags</a><a href="/whats-new">what's new</a><a href="/full-index">full index</a></nav>
+    <nav class="sv-sidelinks" aria-label="Browse"><a href="/start/">start here</a><a href="/errors">error lookup</a><a href="/tags/">tags</a><a href="/whats-new">what's new</a><a href="/blog">blog</a><a href="/full-index">full index</a></nav>
     <div class="sidebar-nav">${sidebar(url)}</div>
   </aside>
   <section class="content">
@@ -578,6 +579,12 @@ ${cardList(items)}`,
 // ── error lookup, reading paths, what's new, feed (tools/site-extras.mjs) ──
 const extras = buildExtras({ ROOT, OUT, SITE, pages, writePage, extraUrls, esc, clip, deEmoji, crumbsHtml, crumbsLd, cardList, gitDate, gitAdded });
 
+// ── from the blog (tools/blog-feed.mjs: read from the blog's RSS, nothing copied) ──
+const blog = await loadBlog(ROOT);
+const blogStat = buildBlog({ OUT, writePage, extraUrls, esc, clip, crumbsHtml, crumbsLd }, blog);
+// The site still deploys without it, but nobody should have to find that out from a reader.
+if (!blog.items) console.log(`::warning title=From the blog::${blogStat}`);
+
 // ── search (Pagefind, index built after this script: npx pagefind --site <out>) ──
 writePage('/search', {
   title: 'Search', description: 'Full-text search across every gotcha, guide, snippet and script in the SharePoint Vault.',
@@ -626,6 +633,6 @@ writeFileSync(join(OUT, '404.html'), layout({
 </script>`,
 }).replace('<link rel="canonical" href="https://sharepointvault.online/404">\n', '').replace('<meta name="description"', '<meta name="robots" content="noindex">\n  <meta name="description"'));
 
-console.log(`[build-site] tags: ${tagPages.length} pages · error lookup: ${extras.errors} · ${extras.collections || 'no collections'} · ${extras.feed}`);
+console.log(`[build-site] tags: ${tagPages.length} pages · error lookup: ${extras.errors} · ${extras.collections || 'no collections'} · ${extras.feed} · ${blogStat}`);
 console.log(`[build-site] ${pages.length} pages (${pages.filter((p) => p.kind === 'article').length} articles, ${pages.filter((p) => p.kind === 'script').length} scripts, ${pages.filter((p) => p.kind === 'index').length} indexes) + sitemap (${urls.length} URLs) → ${OUT}`);
 if (warnings.length) { console.warn(`[build-site] ${warnings.length} warning(s):`); warnings.slice(0, 40).forEach((w) => console.warn('  ' + w)); }

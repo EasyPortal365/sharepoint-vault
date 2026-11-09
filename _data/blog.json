@@ -1,0 +1,12 @@
+{
+  "about": "Longer reads from the blog of the team behind the vault, shown at /blog. Read from the blog's own RSS feed at every build: nothing is copied into this repo, every card links to the original article. Only the categories below are shown; product articles stay on the blog.",
+  "feed": "https://easyportal365.cz/en/rss.xml",
+  "blog": "https://easyportal365.cz/en/blog/",
+  "categories": {
+    "GOVERNANCE": "Governance and the site lifecycle",
+    "NEWS": "Microsoft 365, month by month",
+    "COPILOT": "Copilot",
+    "TUTORIAL": "The basics"
+  },
+  "exclude": []
+}

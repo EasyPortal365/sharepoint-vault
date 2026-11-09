@@ -9,6 +9,10 @@ name: Pages
 on:
   push:
     branches: [main]
+  # Weekly rebuild: /blog is read from the blog's RSS at build time, so a new
+  # blog post shows up even in a week without a commit to the vault.
+  schedule:
+    - cron: '17 5 * * 1'
   workflow_dispatch:
 
 permissions:

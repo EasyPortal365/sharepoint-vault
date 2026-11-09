@@ -339,6 +339,19 @@
       });
     }
 
+    /* Tři nejnovější články blogu: /blog.json staví build (tools/blog-feed.mjs) z RSS blogu */
+    function svBlog() {
+      var el = document.getElementById('sv-blog');
+      if (!el || el.dataset.done) { return; }
+      el.dataset.done = '1';
+      fetch('/blog.json').then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; }).then(function (list) {
+        if (!list || !list.length) { el.innerHTML = '<a href="/blog" style="border:none;color:var(--navy)">longer reads on the blog →</a>'; return; }
+        el.innerHTML = list.map(function (b) {
+          return '<div><span class="hl">' + svEsc(b.d || '') + '</span> <a href="' + svEsc(b.u).replace(/"/g, '&quot;') + '" target="_blank" rel="noopener" style="border:none;color:var(--navy)">' + svEsc(b.t) + '</a></div>';
+        }).join('') + '<div><a href="/blog" style="border:none;color:var(--teal7)">all articles →</a></div>';
+      });
+    }
+
     var SV_HERO =
       '<div class="sv-hero">' +
         '<div class="bar"><span class="ttl">⧉ spvault — battlefield session — 80×24</span><span class="winbtns"><b>─</b><b>□</b><b>✕</b></span></div>' +
@@ -358,6 +371,8 @@
           '<div class="out" id="sv-neww">…</div>' +
           '<div style="margin-top:14px"><span class="p">PS SPVault:\\&gt;</span> <span class="cmd">Get-MostRead -Since 7d -Top 5</span></div>' +
           '<div class="out" id="sv-popular">…</div>' +
+          '<div style="margin-top:14px"><span class="p">PS SPVault:\\&gt;</span> <a href="/blog" class="cmd" style="border-bottom:1px dashed var(--teal6)" title="Longer reads on the blog">Get-BlogPost -Last 3</a></div>' +
+          '<div class="out" id="sv-blog">…</div>' +
           '<div style="margin-top:14px"><span class="p">PS SPVault:\\&gt;</span> <a href="/start/" class="cmd" style="border-bottom:1px dashed var(--teal6)" title="Reading paths by role and Top 10 lists">Start-Here</a> <span class="out">·</span> <a href="/whats-new" class="cmd" style="border-bottom:1px dashed var(--teal6)" title="New articles, with an Atom feed">Get-WhatsNew</a> <span class="out">·</span> <a href="/errors" class="cmd" style="border-bottom:1px dashed var(--teal6)" title="Paste an error message, find the article">Find-Error</a> <span class="out">·</span> <a href="/tags/" class="cmd" style="border-bottom:1px dashed var(--teal6)" title="Browse by topic">Get-Tag</a></div>' +
           '<div style="margin-top:14px"><span class="p">PS SPVault:\\&gt;</span> <a href="#" id="sv-random" class="cmd" style="border-bottom:1px dashed var(--teal6)" title="Open a random gotcha">Get-Gotcha -Random</a></div>' +
           '<div style="margin-top:14px"><span class="p">PS SPVault:\\&gt;</span> <span class="cursor"></span></div>' +
@@ -753,7 +768,7 @@
               /* rozcestník na statické nástroje (stejný jako v menu statických stránek) */
               var sl = document.createElement('div');
               sl.className = 'sv-sidelinks';
-              sl.innerHTML = '<a href="/start/">start here</a><a href="/errors">error lookup</a><a href="/tags/">tags</a><a href="/whats-new">what\'s new</a><a href="/full-index">full index</a>';
+              sl.innerHTML = '<a href="/start/">start here</a><a href="/errors">error lookup</a><a href="/tags/">tags</a><a href="/whats-new">what\'s new</a><a href="/blog">blog</a><a href="/full-index">full index</a>';
               sbtn.insertAdjacentElement('afterend', sl);
               /* hledání = stejný formulář jako na statických stránkách → /search */
               var sf = document.createElement('form');
@@ -761,7 +776,7 @@
               sf.innerHTML = '<input type="search" name="q" placeholder="⌕ search the vault…" aria-label="Search the vault">';
               sbtn.insertAdjacentElement('afterend', sf);
             }
-            if (vm.route.path === '/') { svPopular(); }
+            if (vm.route.path === '/') { svPopular(); svBlog(); }
             svFill();
             /* footer článku: Last updated + History/Edit/Source (lazy, cache 6 h) */
             var file = vm.route.file;
