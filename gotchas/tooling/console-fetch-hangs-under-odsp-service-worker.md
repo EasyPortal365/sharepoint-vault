@@ -20,7 +20,7 @@ last-reviewed: 2026-11-09
 - The same browser runs scripts fine on any non-SharePoint page.
 - CPU usage of the browser is flat – nothing is looping.
 
-It is tempting to blame a frozen tab or a pending `alert()` dialog in another SharePoint tab (all `*.sharepoint.com` tabs usually share one renderer process). Those do block scripts, but they block **everything**, including timers.
+It is tempting to blame a frozen tab or a pending `alert()` dialog in another SharePoint tab. Before you go hunting for one, run the check below: if timers still fire and only the network is stuck, the cause is the service worker, not a blocked page.
 
 ## Diagnose in ten seconds
 
@@ -45,4 +45,4 @@ The page stays uncontrolled until its next normal navigation, so run admin scrip
 ## Notes
 
 - The worker intercepts **cross-origin** requests from the page as well, which is why even a call to your own CDN hangs.
-- Closing other SharePoint tabs is usually not needed.
+- In the case behind this article, closing or reloading other SharePoint tabs did not help; the hard reload of the tab running the script did.
