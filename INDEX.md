@@ -2,7 +2,7 @@
 
 Every single thing in the vault, on one page. Section names link to folder READMEs; leaves link straight to the content.
 
-*Last updated: 2026-11-08*
+*Last updated: 2026-11-09*
 
 - 🧰 **[scripts/](scripts/)** — PowerShell scripts with comment-based help, read-only unless stated
   - [Terminal animations](scripts/media/) — the writing scripts as an animated PowerShell console; plain SVG, no JavaScript, respects `prefers-reduced-motion`
@@ -372,6 +372,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [Azure HD voice is generative — verify by transcription](gotchas/tooling/azure-tts-hd-voice-is-generative-verify-by-transcription.md) — DragonHD output varies per call and sometimes garbles a term; transcribe each MP3 with fast transcription and regenerate on a miss. Use <lang> for a non-native language, playbackRate instead of the unsupported <prosody>, and honor Retry-After on 429
     - [Root site swap refuses hub sites, and any site Publishing ever touched](gotchas/tooling/site-swap-refuses-hub-sites-and-ever-published-sites.md) — `Invoke-SPOSiteSwap` rejects a source or target that is a hub site or associated with one, and rejects a source where the Publishing feature was *ever* activated — not just currently; unregistering a hub leaves children appearing associated for up to an hour, so remove the associations explicitly before the swap, and never activate Publishing on the site you intend to promote
     - [Jest's 5 s default timeout fails render tests under load — and the next test with them](gotchas/tooling/jest-default-timeout-under-load-breaks-the-next-test.md) — The first jsdom + React test of a suite pays for the cold module load; on a busy build machine it passes 5 s, Jest abandons it while its async render keeps running, and the following test fails with "button not found" or a doubled write. Set `testTimeout` for the project, not per test
+    - [Console fetch hangs under the ODSP service worker](gotchas/tooling/console-fetch-hangs-under-odsp-service-worker.md) — A SharePoint page is controlled by the `odspserviceworkerproxy.aspx` service worker; when it gets stuck, every `fetch` from the page (even to another domain) never resolves while timers still run – a hard reload (Shift+F5) loads the page outside the worker and the script works
 - 🧭 **[guides/](guides/)** — end-to-end walkthroughs
   - [Calling SharePoint REST like a pro](guides/calling-sharepoint-rest-like-a-pro.md) — The client landscape, headers that matter, safe writes, reading well, field/list creation quirks, and a ten-minute diagnosis routine
   - [Search queries that actually work](guides/search-queries-that-actually-work.md) — The one mandatory header, practical KQL, managed properties (`RefinableString*`), paging/sorting, and the freshness/trimming traps
