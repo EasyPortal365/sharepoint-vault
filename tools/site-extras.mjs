@@ -111,6 +111,10 @@ ${msgHtml}`,
   });
   c.extraUrls.push('/errors');
   stats.errors = `${byStatus.size} status codes, ${msgs.length} messages`;
+  stats.nMsgs = msgs.length;
+  stats.nStatus = byStatus.size;
+  // For the Find-Error box on the home page (filters as you type).
+  writeFileSync(join(c.OUT, 'errors.json'), JSON.stringify(msgs.map((m) => ({ m: m.message, s: m.status || null, u: m.url }))));
 
   // ── reading paths and Top 10 collections ───────────────────────────────────
   const col = readJson(c.ROOT, '_data/collections.json');

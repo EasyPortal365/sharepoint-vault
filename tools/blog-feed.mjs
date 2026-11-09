@@ -54,7 +54,7 @@ export async function loadBlog(ROOT) {
   return { items, cfg, skipped };
 }
 
-/** Write /blog and /blog.json (the three newest, for the docsify home). */
+/** Write /blog and /blog.json (the three newest, for the home page). */
 export function buildBlog(c, blog) {
   const vault = [{ name: 'Vault', url: '/' }];
   const self = { name: 'From the blog', url: '/blog' };

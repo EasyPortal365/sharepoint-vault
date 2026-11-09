@@ -1,0 +1,20 @@
+{
+  "about": "Intro shown at the top of a script page: an animation of the script running and what it does, EN and CZ. Key = file name, so it survives moving the script between folders. HTML allowed.",
+  "scripts": {
+    "Set-SiteSharingCapability.ps1": {
+      "anim": "/scripts/media/set-sharing-capability.svg",
+      "en": "Turns external sharing on or off &mdash; for one site, a list of sites, or every site in the tenant. The tenant setting is a ceiling a site can never exceed, so the script refuses up front rather than letting a write appear to succeed. It writes a backup CSV of the previous state before touching anything, even under <code>-WhatIf</code>.",
+      "cz": "Zapíná a vypíná externí sdílení &ndash; pro jeden web, seznam webů nebo všechny weby v tenantu. Nastavení tenantu je strop, který web nikdy nepřekročí, takže skript odmítne předem místo toho, aby tě nechal věřit, že zápis prošel. Před jakoukoli změnou zapíše zálohu původního stavu do CSV, a to i s přepínačem <code>-WhatIf</code>."
+    },
+    "Set-SiteDefaultLinkPermission.ps1": {
+      "anim": "/scripts/media/set-default-link-permission.svg",
+      "en": "Changes the permission the Share dialog pre-selects. Setting View forbids nobody from granting Edit deliberately &mdash; it stops Edit being what happens when somebody shares without thinking. Sites with sharing switched off are skipped and counted separately, because the setting exists there but governs nothing.",
+      "cz": "Mění oprávnění, které dialog Sdílet přednastaví. Volba View nikomu nezakazuje udělit Edit vědomě &ndash; jen zabrání tomu, aby Edit vznikal bez rozmyslu. Weby s vypnutým sdílením se přeskočí a počítají zvlášť, protože tam nastavení sice existuje, ale nic neřídí."
+    },
+    "Set-SiteAccessRequestSettings.ps1": {
+      "anim": "/scripts/media/set-access-request-settings.svg",
+      "en": "Configures the per-site <em>Access Requests Settings</em> dialog end to end: who may share, who may invite into the members group, whether access requests are offered at all, where they are routed, and the message shown on the request page. Two of those settings have no cmdlet in any module and are CSOM calls.",
+      "cz": "Nastavuje celý dialog <em>Access Requests Settings</em> jednoho webu: kdo smí sdílet, kdo smí zvát do skupiny členů, zda se žádosti o přístup vůbec nabízejí, komu chodí a jaká zpráva se na stránce žádosti zobrazí. Dvě z těch nastavení nemá žádný modul jako cmdlet a jdou jen přes CSOM."
+    }
+  }
+}

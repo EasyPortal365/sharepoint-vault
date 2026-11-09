@@ -2,7 +2,7 @@
   "name": "sharepoint-vault-site",
   "private": true,
   "type": "module",
-  "description": "Static page build for sharepointvault.online (the docsify app stays as it is; every article also gets its own crawlable URL).",
+  "description": "Static site build for sharepointvault.online: every article gets its own crawlable page in one IDE-style layout.",
   "scripts": {
     "build:site": "node tools/build-site.mjs _site && node tools/build-og.mjs _site && pagefind --site _site",
     "check": "node tools/check-vault.mjs"

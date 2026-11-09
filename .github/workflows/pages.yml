@@ -1,6 +1,6 @@
 # Builds and deploys sharepointvault.online.
 #
-# The docsify app is published as it is; tools/build-site.mjs adds one static,
+# tools/build-site.mjs renders every page (home included) as static HTML: one
 # crawlable page per article and script, tag pages, /errors, /search, sitemap.xml,
 # robots.txt and 404.html; build-og.mjs renders the share images, Pagefind the search index.
 # Generated files are never committed — they exist only in the Pages artifact.

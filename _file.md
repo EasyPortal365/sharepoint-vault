@@ -1,3 +1,0 @@
-# Loading file…
-
-If this text stays visible, the file could not be rendered — [browse the repository on GitHub](https://github.com/EasyPortal365/sharepoint-vault) instead.
