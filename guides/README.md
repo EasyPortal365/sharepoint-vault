@@ -13,6 +13,7 @@ End-to-end walkthroughs that connect the dots — the "how it all fits together"
 | [Token cost of content formats (measured)](token-cost-of-sharepoint-content-formats.md) | Real numbers: the same article as `.md`/`.docx`/`.pdf`/a SharePoint page — why extraction, not format, drives the token bill; plus a CZ-vs-EN language tax and a reproducible harness |
 | [Reverse-engineering Plumsail Forms apps](reverse-engineering-plumsail-forms-apps.md) | Where the JSON definitions, custom JS, and hosting web parts live; a read-only extraction routine and the client-side patterns (dummy-item pages, UI-only security, race conditions) to flag before a migration |
 | [Provisioning folder trees at scale (measured)](provisioning-folder-trees-at-scale.md) | What creating 86 folders and breaking inheritance really costs (no throttling), the alias-parameter syntax, reading a whole tree with one item query (two calls) instead of ninety, and `copyRoleAssignments=false` silently dropping the owners group |
+| [Renaming your SharePoint domain](renaming-your-sharepoint-domain.md) | The whole tenant rename on a fresh tenant – checking the name is free, adding the matching `.onmicrosoft.com` domain the right way, the 24-hour scheduling floor (error -772), what `-WhatIf` and the status output look like, and what to freeze until it finishes |
 
 ## Planned next
 

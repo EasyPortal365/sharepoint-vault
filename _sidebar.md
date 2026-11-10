@@ -9,6 +9,7 @@
   - [Token cost of formats (measured)](/guides/token-cost-of-sharepoint-content-formats.md)
   - [Folder trees at scale (measured)](/guides/provisioning-folder-trees-at-scale.md)
   - [Reverse-engineering Plumsail Forms](/guides/reverse-engineering-plumsail-forms-apps.md)
+  - [Renaming your SharePoint domain](/guides/renaming-your-sharepoint-domain.md)
 
 - **🎓 Course (CZ)**
   - [SharePoint od A do Z](/course/README.md)
