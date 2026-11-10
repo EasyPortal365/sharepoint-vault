@@ -456,6 +456,56 @@ const UI_JS = `<script>
     }, { rootMargin: '-80px 0px -70% 0px' });
     Object.keys(map).forEach(function (id) { var h = d.getElementById(id); if (h) { io.observe(h); } });
   }
+  /* line numbers: one per block (paragraph, heading, list item, code, table), drawn in the
+     left padding. A click copies a link to that block (#L12, or the heading's own id).
+     The number sits in data-n and CSS draws it, so it is never part of the page text:
+     search engines, AI agents and the search index read the article without it. */
+  var art = d.getElementById('main');
+  if (art && art.classList.contains('markdown-section')) {
+    var blocks = [];
+    Array.prototype.forEach.call(art.children, function (el) {
+      if (/^(SCRIPT|STYLE|LINK)$/.test(el.tagName) || el.hidden) { return; }
+      if (/^(UL|OL)$/.test(el.tagName)) { Array.prototype.forEach.call(el.children, function (li) { if (li.tagName === 'LI') { blocks.push(li); } }); }
+      else { blocks.push(el); }
+    });
+    blocks = blocks.filter(function (el) { return el.getClientRects().length > 0; });
+    if (blocks.length) {
+      var gut = d.createElement('div'); gut.className = 'ln-gut'; gut.setAttribute('aria-hidden', 'true');
+      blocks.forEach(function (el, i) {
+        if (!el.id) { el.id = 'L' + (i + 1); }
+        var a = d.createElement('a'); a.className = 'ln'; a.href = '#' + el.id; a.tabIndex = -1;
+        a.setAttribute('data-n', i + 1); a.title = 'Copy link to line ' + (i + 1);
+        gut.appendChild(a);
+      });
+      art.appendChild(gut);
+      var lns = gut.children;
+      var place = function () { var t0 = art.getBoundingClientRect().top; blocks.forEach(function (el, i) { lns[i].style.top = Math.round(el.getBoundingClientRect().top - t0) + 'px'; }); };
+      place();
+      window.addEventListener('load', place);
+      if (window.ResizeObserver) { new ResizeObserver(place).observe(art); }
+      var flash = function (el, i) {
+        el.classList.add('ln-hit'); if (lns[i]) { lns[i].classList.add('on'); }
+        setTimeout(function () { el.classList.remove('ln-hit'); if (lns[i]) { lns[i].classList.remove('on'); } }, 1800);
+      };
+      gut.addEventListener('click', function (e) {
+        var a = e.target.closest('.ln'); if (!a) { return; }
+        e.preventDefault();
+        var i = Array.prototype.indexOf.call(lns, a), h = a.getAttribute('href');
+        try { history.replaceState(null, '', h); } catch (x) {}
+        if (navigator.clipboard) { navigator.clipboard.writeText(location.origin + location.pathname + h).catch(function () {}); }
+        a.classList.add('copied'); setTimeout(function () { a.classList.remove('copied'); }, 1400);
+        flash(blocks[i], i);
+      });
+      // #L12 means "the 12th block", also when that block is a heading with its own id
+      var toLine = function () {
+        if (!/^#L[0-9]+$/.test(location.hash)) { return; }
+        var hi = parseInt(location.hash.slice(2), 10) - 1;
+        if (blocks[hi]) { setTimeout(function () { blocks[hi].scrollIntoView({ block: 'center' }); flash(blocks[hi], hi); }, 60); }
+      };
+      toLine();
+      window.addEventListener('hashchange', toLine);
+    }
+  }
   /* bottom line language: remember CZ */
   var cz = d.getElementById('tl-cz'), en = d.getElementById('tl-en');
   if (cz && en) {
