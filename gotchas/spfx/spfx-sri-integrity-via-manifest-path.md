@@ -1,6 +1,6 @@
 ---
 title: "SPFx adds Subresource Integrity to a script when the manifest path is { path, integrity }"
-summary: A component manifest you pass to SPComponentLoader.loadComponent can carry an SRI hash per script resource as path { path, integrity }; SharePoint then emits script integrity crossorigin=anonymous and the browser refuses tampered bytes – plus three traps that make console tests lie (id+version cache, requirejs path cache, CRLF in the git working copy) and how includeClientSideAssets packs only a small bootstrap into the .sppkg
+summary: A component manifest you pass to SPComponentLoader.loadComponent can carry an SRI hash per script resource as path { path, integrity }; SharePoint then emits script integrity crossorigin=anonymous and the browser refuses tampered bytes – pin the bootstrap the same way from the .sppkg manifest (immutable CDN file), because includeClientSideAssets puts it in ClientSideAssets that guests cannot read; plus three traps that make console tests lie (id+version cache, requirejs path cache, CRLF in the git working copy)
 tags: [spfx, security, sri, cdn, sp-loader, app-catalog, supply-chain]
 applies-to: SPFx 1.2x web parts and extensions that load code at runtime from your own CDN with SPComponentLoader.loadComponent (measured on SPFx 1.22.2, SharePoint Online, November 2026)
 last-reviewed: 2026-11-10
@@ -8,9 +8,9 @@ last-reviewed: 2026-11-10
 
 # SPFx adds Subresource Integrity to a script when the manifest path is `{ path, integrity }`
 
-> **Bottom line.** If your web part fetches a component manifest from a CDN and calls `SPComponentLoader.loadComponent(manifest)`, whoever can write to that CDN runs code in every tenant. You can pin the exact bytes: in `loaderConfig.scriptResources`, give each `type: "path"` resource `path: { "path": "bundle_abc.js", "integrity": "sha384-…" }`. SharePoint then renders `<script integrity="sha384-…" crossorigin="anonymous">` and the browser refuses a bundle that does not match (`Script error`). Verify the manifest itself against a hash you trust before calling `loadComponent`, and keep that trust anchor **out of the CDN** – in the `.sppkg` in the App Catalog. When you test this in the console, use a unique manifest `version` and a unique bundle path per attempt, otherwise SPFx returns the module it already loaded and the test lies.
+> **Bottom line.** If your web part fetches a component manifest from a CDN and calls `SPComponentLoader.loadComponent(manifest)`, whoever can write to that CDN runs code in every tenant. You can pin the exact bytes: in `loaderConfig.scriptResources`, give each `type: "path"` resource `path: { "path": "bundle_abc.js", "integrity": "sha384-…" }`. SharePoint then renders `<script integrity="sha384-…" crossorigin="anonymous">` and the browser refuses a bundle that does not match (`Script error`). Verify the manifest itself against a hash you trust before calling `loadComponent`. Keep that trust anchor **out of the CDN** by pinning the bootstrap the same way from the web part manifest in the `.sppkg`. Do not put the bootstrap file itself into the package: `ClientSideAssets` in the App Catalog is not readable by guests. When you test this in the console, use a unique manifest `version` and a unique bundle path per attempt, otherwise SPFx returns the module it already loaded and the test lies.
 >
-> **Ve zkratce.** Když web part načítá manifest komponenty z CDN přes `SPComponentLoader.loadComponent`, dej každému zdroji typu `path` tvar `{ path, integrity: "sha384-…" }`. SharePoint vloží `<script integrity crossorigin="anonymous">` a prohlížeč podvržený bundle nespustí. Manifest ověř proti otisku, kterému věříš, a kotvu důvěry drž mimo CDN – v `.sppkg`. V konzoli testuj s jiným `version` a jinou cestou bundlu pro každý pokus, jinak SPFx vrátí už načtený modul.
+> **Ve zkratce.** Když web part načítá manifest komponenty z CDN přes `SPComponentLoader.loadComponent`, dej každému zdroji typu `path` tvar `{ path, integrity: "sha384-…" }`. SharePoint vloží `<script integrity crossorigin="anonymous">` a prohlížeč podvržený bundle nespustí. Manifest ověř proti otisku, kterému věříš. Kotvu důvěry drž mimo CDN: otiskem zavaděče v manifestu `.sppkg`, zavaděč sám zůstane na CDN pod neměnným jménem. `ClientSideAssets` v App Catalogu host nepřečte. V konzoli testuj s jiným `version` a jinou cestou bundlu pro každý pokus, jinak SPFx vrátí už načtený modul.
 
 ## Symptom
 
@@ -47,13 +47,25 @@ for (const name of Object.keys(m.loaderConfig.scriptResources)) {
 await SPComponentLoader.loadComponent(m);
 ```
 
-**Where to keep the trust anchor.** A public key or hash list inside a bootstrap served from the same CDN is replaced together with the bootstrap. Put the bootstrap into the `.sppkg` instead:
+**Where to keep the trust anchor.** A public key or hash list inside a bootstrap served from the same CDN is replaced together with the bootstrap. Pin the bootstrap itself from the `.sppkg`:
 
-- Set `"includeClientSideAssets": true` in `package-solution.json`. In SPFx 1.22 (`spfx-heft-plugins`), `heft package-solution --production` then:
-  - packs **every file** in `release/assets` into `ClientSideAssets/`;
-  - rewrites `internalModuleBaseUrls` of **every manifest** in `release/manifests` to `HTTPS://SPCLIENTSIDEASSETLIBRARY/`.
-- If a post-build step moves the app library out of `release/assets` and `release/manifests` (it is published to the CDN instead), only the bootstrap ends up in the package. That is a few kB, served from `/sites/appcatalog/ClientSideAssets/<solution id>/`, and SharePoint's CSP allows it without extra entries.
-- Sign the list of versions and hashes (for example ECDSA P-256 with WebCrypto) and keep only the public key in the bootstrap.
+- After the build, copy the web part bundle to an **immutable, content-addressed name** on the CDN, for example `my-app-loader_<contenthash>.js`.
+- Rewrite the web part manifest in `release/manifests` (it goes into the `.sppkg`) to `path: { path: "my-app-loader_<contenthash>.js", integrity: "sha384-…" }`. `package-solution` accepts the object form.
+- The page now loads the bootstrap from the CDN with `integrity` taken from the App Catalog. A replaced bootstrap on the CDN does not run.
+- Never overwrite or prune that file while any App Catalog may point at it.
+- Sign the list of versions and hashes the bootstrap trusts (for example ECDSA P-256 with WebCrypto) and keep only the public key in the bootstrap.
+
+**Do not move the bootstrap into the `.sppkg` if guests use the app.** `"includeClientSideAssets": true` works technically. In SPFx 1.22 (`spfx-heft-plugins`), `heft package-solution --production` then:
+
+- packs **every file** in `release/assets` into `ClientSideAssets/`;
+- rewrites `internalModuleBaseUrls` of **every manifest** in `release/manifests` to `HTTPS://SPCLIENTSIDEASSETLIBRARY/`.
+
+SharePoint then serves the files from `/sites/appcatalog/ClientSideAssets/<solution id>/`. On the tenant where this was measured, that library had exactly two read grants:
+
+- *Everyone except external users*;
+- the read-only tenant admin role.
+
+External (guest) users therefore cannot load the bootstrap, unless the tenant serves client-side assets through the Office 365 public CDN. A test under an admin account will not show it. Check `roleassignments` of the target library before you move code there.
 
 **Hash what the CDN serves:** take the bytes from the git index (`git cat-file blob :<path>`), not from the working copy.
 
