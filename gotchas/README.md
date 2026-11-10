@@ -277,6 +277,7 @@ Every article carries frontmatter with `tags` and `applies-to`, so repo search g
 | [Audit query filters silently by scope](graph/audit-query-silently-filters-by-scope.md) | With only AuditLogsQuery-SharePoint.Read.All, Exchange and Entra queries return 201 → succeeded → 0 records; an unfiltered query returns only SharePoint records |
 | [Exchange Admin API — no CORS from SPFx](graph/exchange-admin-api-no-cors-from-browser.md) | adminapi/beta/{tenant}/InvokeCommand fails with 'Failed to fetch' even with a fake token; read Exchange config with an admin-run script and import, or use Graph message trace and mailbox reports |
 | [Disabled accounts include shared mailboxes](graph/disabled-accounts-include-shared-mailboxes.md) | blocked members ≠ former employees; tell shared mailboxes apart via the mailbox usage report's `recipientType` (needs real names) or `mailboxSettings.userPurpose` (per user) |
+| [Teams message sent as the user doesn't notify the sender](graph/teams-message-sent-as-user-does-not-notify-sender.md) | Delegated `ChatMessage.Send` delivers (even to the self chat `48:notes`), but Teams never alerts the sender; verify with GET + `webUrl`, notify from the app |
 
 ### azure-functions/
 
