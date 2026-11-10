@@ -1,5 +1,5 @@
 ---
-title: A Teams message your app posts in the user's name never notifies that user — and "I can't see it" needs a read-back, not a guess
+title: A Teams message your app posts in the user's name doesn't notify that user — and "I can't see it" needs a read-back, not a guess
 short-title: Teams message sent as the user doesn't notify the sender
 summary: "Delegated `ChatMessage.Send` delivers (even to the self chat `48:notes`), but Teams never alerts the sender; verify with GET + `webUrl`, notify from the app"
 tags: [graph, teams, chatmessage, adaptive-cards, notifications, spfx]
@@ -7,7 +7,7 @@ applies-to: Microsoft Graph v1.0 (delegated ChatMessage.Send / ChannelMessage.Se
 last-reviewed: 2026-11-10
 ---
 
-# A Teams message posted in the user's name never notifies that user
+# A Teams message posted in the user's name doesn't notify that user
 
 > **Bottom line.** When your app posts to Teams with a **delegated** token (`POST /chats/{id}/messages`, `ChatMessage.Send`), the message is authored by the signed-in user. Teams treats it as *their own* message: it lands in the chat but **doesn't ring, badge or toast for them** (measured in the self chat; it's the same rule as for any message you type yourself). The user's chat with themselves (`48:notes`) accepts the POST and shows the card, even though we found no Microsoft Learn page documenting that id. If a user says "the card didn't arrive", read the message back and hand them its `webUrl` before you debug delivery; if they need an alert, raise it from your app.
 >
@@ -28,7 +28,7 @@ Graph answers `201 Created`, the app says "sent" — and the user reports they d
 ## What is actually going on
 
 1. **Delivery works.** `GET /chats/48:notes/messages/{id}` returns the message right after the POST, and the POST response carries a `webUrl` (`https://teams.microsoft.com/l/message/48:notes/<id>`). Opening it shows the rendered card.
-2. **No alert is by design.** The message's `from` is the signed-in user. Teams doesn't alert you about messages you authored — measured in the self chat. In a group chat or channel expect the same for the sender (not measured here).
+2. **No alert for the author.** The message's `from` is the signed-in user. Teams doesn't alert you about messages you authored — measured in the self chat. In a group chat or channel expect the same for the sender (not measured here).
 3. So "I can't see it" usually means "I didn't get an alert, so I looked in the wrong place".
 
 ## Fix
