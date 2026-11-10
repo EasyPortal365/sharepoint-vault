@@ -83,6 +83,7 @@ Every article carries frontmatter with `tags` and `applies-to`, so repo search g
 | [/_api/hubsites is trimmed per user](rest-api/hubsites-list-is-trimmed-per-user.md) | `GET /_api/hubsites` returned 2 hubs to an admin and 1 to an ordinary user who had Full Control on the missing hub's site, so client code that discovers something by walking the hub list works for the editor and silently fails for readers; resolve it at authoring time and store the result in the web part properties |
 | [StorageMetrics can be stale, not just zero](rest-api/storagemetrics-can-be-stale-not-just-zero.md) | zero = not calculated, but non-zero can be stale (261 files / 3.1 GB vs real 794 / 9.5 GB); trust it only when `TotalFileCount` exactly matches the files you counted |
 | [Concurrent MERGE to one item: 409](rest-api/concurrent-merge-same-item-409-save-conflict.md) | `IF-MATCH: *` only switches off the ETag check (412); SharePoint still refuses a second save of the same item while the first is in flight with 409 Save Conflict. Queue writes per item (`list#id`), retry 409 briefly, never retry 412, and do not let a state-carrying write fail silently |
+| [List item versions are newest-first](rest-api/list-item-versions-are-newest-first-and-include-current.md) | `items(id)/versions` is DESCENDING and its first row is the current version (`IsCurrentVersion: true`) – the opposite of file `/Versions`; `Created` on a version is UTC WITHOUT the `Z`, so `new Date()` shifts it by the browser offset – use `Modified`; `VersionId = major*512 + minor` |
 
 ### lists/
 

@@ -4,7 +4,7 @@ short-title: File versions come back oldest-first
 summary: "`/Versions` is ascending, so `$top` drops the NEWEST ones; sorting the result descending afterwards hides it; `$orderby=ID desc` IS honoured together with `$top` (measured), and the list never contains the current version"
 tags: [rest-api, files, versioning, paging, diagnostics]
 applies-to: SharePoint Online
-last-reviewed: 2026-11-08
+last-reviewed: 2026-11-10
 ---
 
 # File versions come back oldest-first, so `$top` truncates the newest ones
@@ -100,3 +100,4 @@ If `value[0].VersionLabel` is `1.0` (or anything far below `_UIVersionString`), 
 ## Related
 
 - A cap that is never reported reads as a complete list — the same failure mode as [page-size-cap-reported-as-a-result](page-size-cap-reported-as-a-result.md).
+- List **item** versions (`items(id)/versions`) behave the other way round – newest first, current version included: [list-item-versions-are-newest-first-and-include-current](list-item-versions-are-newest-first-and-include-current.md).
