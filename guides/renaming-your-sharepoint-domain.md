@@ -1,7 +1,7 @@
 ---
 title: Renaming your SharePoint domain (contosoltd.sharepoint.com to contoso.sharepoint.com)
 short-title: Renaming your SharePoint domain
-summary: The whole tenant rename on a fresh tenant – checking the name is free, adding the matching `.onmicrosoft.com` domain the right way, the 24-hour scheduling floor (error -772), what `-WhatIf` and the status output look like, and what to freeze until it finishes
+summary: Scheduling a tenant rename on a fresh tenant – checking the name is free, adding the matching `.onmicrosoft.com` domain the right way, the 24-hour scheduling floor (error -772), what `-WhatIf` and the status output look like, and what to freeze until it finishes
 tags: [powershell, governance, migration, guide]
 applies-to: SharePoint Online
 last-reviewed: 2026-11-10
@@ -13,9 +13,9 @@ last-reviewed: 2026-11-10
 >
 > **Ve zkratce.** Tenant založený s nešikovným názvem (`contosoltd.sharepoint.com`) jde přejmenovat na `contoso.sharepoint.com` ve dvou krocích: přidat `contoso.onmicrosoft.com` přes **Add onmicrosoft domain** (ne *Add domain*) a pak naplánovat `Start-SPOTenantRename` nejdřív za 24 hodin. Je to nevratné a za život tenantu to jde nejvýš dvakrát – udělejte to jednou a hned na začátku, dokud není co rozbít.
 
-The SharePoint and OneDrive URLs come from the tenant's original `onmicrosoft.com` name, which is often generated at sign-up with a legal-form suffix or a typo. Adding a custom domain doesn't change them, and neither does making a new `onmicrosoft.com` domain the fallback. The only way is the tenant rename.
+The SharePoint and OneDrive URLs come from the tenant's original `onmicrosoft.com` name chosen at sign-up – which may carry a legal-form suffix or a typo nobody noticed. Adding a custom domain doesn't change them, and neither does making a new `onmicrosoft.com` domain the fallback. The only way is the tenant rename.
 
-This walkthrough comes from a real rename in November 2026 on a freshly built tenant: two visible sites, no content yet, nobody using it. That is the cheapest moment there will ever be – on a tenant in use, read Microsoft's [limitations table](https://learn.microsoft.com/sharepoint/change-your-sharepoint-domain-name#limitations-of-changing-a-sharepoint-domain-name) first; hub sites, Power Automate, Power BI, Teams tabs and anything with absolute URLs need follow-up work.
+Steps 0 to 3 come from a real rename scheduled in November 2026 on a freshly built tenant: two visible sites, no content yet, nobody using it. Step 4 follows Microsoft's docs – the run hadn't completed at the time of writing. That is the cheapest moment there will ever be – on a tenant in use, read Microsoft's [limitations table](https://learn.microsoft.com/sharepoint/change-your-sharepoint-domain-name#limitations-of-changing-a-sharepoint-domain-name) first; hub sites, Power Automate, Power BI, Teams tabs and anything with absolute URLs need follow-up work.
 
 ## Before you start
 
@@ -37,7 +37,9 @@ Invoke-WebRequest "https://login.microsoftonline.com/contoso.onmicrosoft.com/v2.
 - `contoso.sharepoint.com` doesn't resolve – the name is most likely free. (Microsoft's own check is the browser: a 404 means probably free, a sign-in page means taken.)
 - The OpenID endpoint returns **400** for an `onmicrosoft.com` name no tenant owns and **200** for one that exists (try it on your current name to see the 200). You need both names, because step 1 claims the matching `onmicrosoft.com` domain.
 
-(`-SkipHttpErrorCheck` is PowerShell 7; in Windows PowerShell 5.1 a 400 throws an exception instead, which tells you the same thing.)
+(`-SkipHttpErrorCheck` is PowerShell 7. In Windows PowerShell 5.1 drop it – a 400 then throws a `WebException` and a 200 returns normally. `Resolve-DnsName` is Windows-only.)
+
+The new name can't contain a hyphen or special characters, is limited to 48 characters, and can't be a name your tenant used before.
 
 If another customer has the name, Microsoft can't tell you who or contact them for you. Pick another.
 
@@ -49,13 +51,14 @@ If another customer has the name, Microsoft can't tell you who or contact them f
 4. Wait until the new domain shows **Healthy**.
 5. Do **not** select *Make fallback domain* on it.
 
-Check the spelling twice: a tenant can have at most five `onmicrosoft.com` domains and they can't be deleted.
+This needs the Domain Name Administrator role (Global Administrator includes it). Check the spelling twice: a tenant can have at most five `onmicrosoft.com` domains and they can't be deleted.
 
 ## Step 2: schedule the rename
 
 On Windows (the module doesn't run on a Mac), in Windows PowerShell 5.1, signed in as at least a SharePoint Administrator:
 
 ```powershell
+Uninstall-Module Microsoft.Online.SharePoint.PowerShell -AllVersions -Force -ErrorAction SilentlyContinue
 Install-Module -Name Microsoft.Online.SharePoint.PowerShell -Scope CurrentUser -Force
 Connect-SPOService -Url "https://contosoltd-admin.sharepoint.com"
 ```
@@ -82,11 +85,15 @@ You have aborted the rename operation.
 The scheduled time is the **local time of the machine you run it on**, and it must be at least 24 hours and at most 30 days ahead. Typing a time a few hours away fails *after* you confirm, with error code -772 (the message is localized; on a Czech system it read `Error Code: -772,Plánované datum a čas musí být v budoucnosti 24 hodin.` – the scheduled date and time must be 24 hours in the future). Computing the time avoids both the error and any doubt about which clock counts:
 
 ```powershell
-$when = (Get-Date).AddHours(25).ToString("yyyy-MM-ddTHH:mm:ss"); $when
+$when = (Get-Date).AddHours(25).ToString("s"); $when
 Start-SPOTenantRename -DomainName "contoso" -ScheduledDateTime $when
 ```
 
-Answer `Y` to the confirmation. Success prints a `RenameJobID`. Until the start time you can still cancel with `Stop-SPOTenantRename`.
+Answer `Y` to the confirmation. Success prints a `RenameJobID`. Until the start time you can still cancel – the `-Reason` is mandatory:
+
+```powershell
+Stop-SPOTenantRename -Reason "Rescheduling"
+```
 
 ## Step 3: check what got scheduled
 
@@ -95,7 +102,7 @@ Get-SPOTenantRenameStatus
 ```
 
 ```text
-RenameJobId     : 00000000-0000-0000-0000-000000000000
+RenameJobId     : xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx (redacted)
 Status          : Queued
 Requested at    : 11/10/2026 5:30:54 PM (UTC)
 Requested by    : admin@contosoltd.onmicrosoft.com
@@ -114,15 +121,18 @@ Attention required: 0
 
 Once it starts, sites still waiting for their turn are briefly inaccessible, and creating new sites, teams or private channels is blocked until it finishes. Microsoft puts the duration at hours to days depending on the number of sites. Schedule it for a quiet evening or weekend and tell users.
 
-When you're done, `Disconnect-SPOService`.
+When you're done, `Disconnect-SPOService`. Don't plan UPN changes until the rename completes. Once it has started, check progress from a new PowerShell window; if `Get-SPOTenantRenameStatus` returns access denied, connect to the new admin URL (`https://contoso-admin.sharepoint.com`).
+
+A status of all zeros right after scheduling (a zero `RenameJobId`) is Microsoft's documented symptom of an outdated module – that's why the install step removes old versions first.
 
 ## Step 4: after it completes
 
 - `Get-SPOTenantRenameStatus` shows every site under **Renamed** and **Attention required: 0**. For the per-site list, `Get-SPOSiteRenameState -ParentOperationID <RenameJobID>`.
-- `https://contoso.sharepoint.com`, `https://contoso-admin.sharepoint.com` and `https://contoso-my.sharepoint.com` open.
+- Open `https://contoso.sharepoint.com` and the admin center at `https://contoso-admin.sharepoint.com`, and try one of the old URLs to see the redirect.
 - On a tenant that was already in use, walk the [limitations table](https://learn.microsoft.com/sharepoint/change-your-sharepoint-domain-name#limitations-of-changing-a-sharepoint-domain-name) – re-register hub sites, fix absolute URLs in navigation, flows and apps, and republish isolated SPFx solutions.
 
 ## Notes
 
-- The fallback domain stays `contosoltd.onmicrosoft.com`. That's fine: users sign in with the custom domain once it's verified.
-- Microsoft's docs: [Change your SharePoint domain name](https://learn.microsoft.com/sharepoint/change-your-sharepoint-domain-name), [Add an onmicrosoft.com domain](https://learn.microsoft.com/microsoft-365/admin/setup/add-or-replace-your-onmicrosoftcom-domain), [Connect-SPOService](https://learn.microsoft.com/powershell/module/microsoft.online.sharepoint.powershell/connect-sposervice).
+- The fallback domain stays `contosoltd.onmicrosoft.com`. That's fine: sign-in names come from the users' UPNs, which normally use your custom domain, not the fallback.
+- The standard rename covers tenants with up to 10,000 sites; multi-geo, government clouds and vanity domains can't be renamed at all.
+- Microsoft's docs: [Errors when renaming](https://learn.microsoft.com/sharepoint/troubleshoot/administration/errors-when-renaming), [Change your SharePoint domain name](https://learn.microsoft.com/sharepoint/change-your-sharepoint-domain-name), [Add an onmicrosoft.com domain](https://learn.microsoft.com/microsoft-365/admin/setup/add-or-replace-your-onmicrosoftcom-domain), [Connect-SPOService](https://learn.microsoft.com/powershell/module/microsoft.online.sharepoint.powershell/connect-sposervice).
