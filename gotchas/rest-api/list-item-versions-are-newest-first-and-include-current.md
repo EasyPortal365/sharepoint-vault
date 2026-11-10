@@ -33,7 +33,7 @@ GET /_api/web/GetList('/sites/team/Lists/Posts')/items(34)/versions
 | last | 512 | `1.0` | `false` | `2026-10-29T19:54:23Z` | `2026-10-29T19:54:23` |
 
 - **Descending, current included.** The item itself reports `_UIVersionString = 10.0` – the same as the first row. Compare with file versions, which are ascending and never contain the current version ([file-versions-are-oldest-first](file-versions-are-oldest-first.md)).
-- **`$top` keeps the newest end here.** `$top=2` returned `10.0, 9.0`. A cap on item versions drops the *oldest* versions – the original text, which is often exactly what a "what did it say before review" feature needs. Put the cap above the list's major-version limit (500 by default) or omit it.
+- **`$top` keeps the newest end here.** `$top=2` returned `10.0, 9.0`. A cap on item versions drops the *oldest* versions – the original text, which is often exactly what a "what did it say before review" feature needs. Put the cap above the list's `MajorVersionLimit` (read it from the list – the measured list had 500) or omit it.
 - **`Created` has no `Z`.** Same instant as `Modified`, but without the UTC designator. `new Date('2026-11-10T12:43:07')` is 12:43 *local* time – in Central Europe an hour off in winter, two in summer.
 - **`VersionId` is `major * 512 + minor`** (`10.0` → 5120). It sorts correctly; `VersionLabel` sorted as a string puts `10.0` before `2.0`.
 - **`Editor` comes back as `{ LookupId, LookupValue, Email }`** without `$expand`; `LookupValue` is the display name.
@@ -60,8 +60,8 @@ const history = oldestFirst.map(v => ({
 
 Two more habits that keep a history UI honest:
 
-- **Read without the browser cache right after your own write** – otherwise the newest version you just created is missing from the list (add a cache-busting query parameter or `cache: 'no-store'`).
-- **A failed read is not "no history".** Show an error with retry; an empty list means the list has no versioning or the item was never edited – say which.
+- **Read without the browser cache right after your own write** – a cached response can lack the version you just created (add a cache-busting query parameter or `cache: 'no-store'`).
+- **A failed read is not "no history".** Show an error with retry instead of an empty history panel.
 
 ## How to confirm it on your tenant
 
