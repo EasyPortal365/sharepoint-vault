@@ -380,7 +380,7 @@ ${a('/blog', 'blog', 'From the blog')}
 
 /** „Was this helpful?" + a way to ask. Votes go to our own endpoint (no cookies, no third party). */
 const discussUrl = (title, url) => `${GH}/discussions/new?category=q-a&title=${encodeURIComponent('Re: ' + deEmoji(title))}&body=${encodeURIComponent(`About ${SITE}${url}\n\n`)}`;
-const helpful = (title, url) => `<div class="sv-helpful" data-svurl="${esc(url)}"><b>Was this helpful?</b><button type="button" class="sv-btn" data-svvote="up">👍 Yes</button><button type="button" class="sv-btn" data-svvote="down">👎 No</button><a class="sv-discuss" href="${esc(discussUrl(title, url))}" target="_blank" rel="noopener">ask or add your experience on GitHub →</a><span class="sv-helpful-msg" hidden></span></div>`;
+const helpful = (title, url) => `<div class="sv-helpful" data-pagefind-ignore data-svurl="${esc(url)}"><b>Was this helpful?</b><button type="button" class="sv-btn" data-svvote="up">👍 Yes</button><button type="button" class="sv-btn" data-svvote="down">👎 No</button><a class="sv-discuss" href="${esc(discussUrl(title, url))}" target="_blank" rel="noopener">ask or add your experience on GitHub →</a><span class="sv-helpful-msg" hidden></span></div>`;
 
 const fmtDay = (iso) => (iso ? new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', timeZone: 'UTC' }) : '');
 function blogSide(n) {
@@ -463,17 +463,97 @@ const UI_JS = `<script>
     cz.addEventListener('change', function () { ls('sv-lang', 'cz'); });
     en.addEventListener('change', function () { ls('sv-lang', 'en'); });
   }
-  /* search palette: Ctrl K, / or the search box; Pagefind loads on first use */
-  var pal = d.getElementById('pal'), loaded = false;
-  var focusPal = function () { var i = pal.querySelector('input'); if (i) { i.focus(); i.select(); } };
+  /* search: one compact row per hit, over the Pagefind API (loaded on first use).
+     The palette (Ctrl K, /, the search box) and the /search page share it. */
+  var pf = null;
+  function loadPf() {
+    // filters() first: only then does every search return the per-kind counts for the chips
+    if (!pf) { pf = import('/pagefind/pagefind.js').then(function (m) { return Promise.resolve(m.options({ excerptLength: 26 })).then(function () { return m.filters(); }).then(function () { return m; }); }); }
+    return pf;
+  }
+  var KC = { Gotchas: 'g', Guides: 'gd', Scripts: 'sc', Snippets: 'sn', Course: 'co', Errors: 'er' };
+  var ORDER = ['Gotchas', 'Guides', 'Scripts', 'Snippets', 'Errors', 'Course', 'Talks', 'Resources', 'Pages'];
+  function hx(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+  function clean(u) {
+    var i = u.indexOf('#'), a = i < 0 ? u : u.slice(0, i), f = i < 0 ? '' : u.slice(i);
+    if (a.slice(-5) === '.html') { a = a.slice(0, -5); }
+    if (a.slice(-6) === '/index') { a = a.slice(0, -5); }
+    return a + f;
+  }
+  function mountSearch(root, inPal, onQuery) {
+    root.innerHTML = '<div class="sx-in"><span aria-hidden="true">⌕</span><input type="search" placeholder="Search gotchas, error messages, scripts…" aria-label="Search the vault" autocomplete="off" spellcheck="false">' + (inPal ? '<kbd>Esc</kbd>' : '') + '</div><div class="sx-f"></div><div class="sx-n" aria-live="polite"></div><div class="sx-body"><ol class="sx-r"></ol><button type="button" class="sx-more" hidden></button></div>';
+    var inp = root.querySelector('input'), fl = root.querySelector('.sx-f'), cnt = root.querySelector('.sx-n'), list = root.querySelector('.sx-r'), more = root.querySelector('.sx-more');
+    var seq = 0, kind = '', hits = [], shown = 0, act = -1, timer = null;
+    function hint() { cnt.innerHTML = '<span>Try</span><button type="button" data-q="412">412</button><button type="button" data-q="list view threshold">list view threshold</button><button type="button" data-q="Sites.Selected">Sites.Selected</button><button type="button" data-q="PnP PowerShell">PnP PowerShell</button>'; }
+    function hitsEls() { return list.querySelectorAll('.sx-hit'); }
+    function setAct(i) {
+      var as = hitsEls(); if (!as.length) { return; }
+      act = Math.max(0, Math.min(i, as.length - 1));
+      as.forEach(function (a, j) { a.classList.toggle('on', j === act); });
+      if (i !== 0) { as[act].scrollIntoView({ block: 'nearest' }); }
+    }
+    function row(dt) {
+      var k = (dt.filters && dt.filters.kind && dt.filters.kind[0]) || 'Pages', mt = dt.meta || {};
+      var subs = (dt.sub_results || []).filter(function (s) { return s.url.indexOf('#') > -1 && s.title && String(mt.title || '').indexOf(s.title) !== 0; }).slice(0, 3);
+      return '<li><a class="sx-hit" href="' + hx(clean(dt.url)) + '"><span class="sx-k ' + (KC[k] || '') + '">' + hx(k === 'Course' ? 'Course' : k.replace(/s$/, '')) + '</span><span class="sx-t">' + hx(mt.title || clean(dt.url)) + '</span><span class="sx-p">' + hx(mt.path || '') + '</span><span class="sx-x">' + (dt.excerpt || '') + '</span></a>'
+        + (subs.length ? '<span class="sx-s">' + subs.map(function (s) { return '<a href="' + hx(clean(s.url)) + '">↳ ' + hx(s.title) + '</a>'; }).join('') + '</span>' : '') + '</li>';
+    }
+    function page() {
+      var my = seq, batch = hits.slice(shown, shown + 12);
+      shown += batch.length;
+      more.hidden = shown >= hits.length;
+      more.textContent = 'Show ' + Math.min(12, hits.length - shown) + ' more · ' + (hits.length - shown) + ' left';
+      return Promise.all(batch.map(function (x) { return x.data(); })).then(function (ds) {
+        if (my !== seq) { return; }
+        list.insertAdjacentHTML('beforeend', ds.map(row).join(''));
+        if (act < 0) { setAct(0); }
+      });
+    }
+    function run() {
+      var q = inp.value.trim(), my = ++seq;
+      if (onQuery) { onQuery(q); }
+      if (!q) { hits = []; list.innerHTML = ''; fl.innerHTML = ''; more.hidden = true; hint(); return; }
+      loadPf().then(function (m) { return m.search(q, kind ? { filters: { kind: kind } } : {}); }).then(function (res) {
+        if (my !== seq || !res) { return; }
+        var tf = (res.totalFilters && res.totalFilters.kind) || {}, total = res.unfilteredResultCount || res.results.length;
+        if (kind && !res.results.length && total) { kind = ''; run(); return; }
+        hits = res.results; shown = 0; act = -1; list.innerHTML = '';
+        fl.innerHTML = total ? '<button type="button" data-k=""' + (kind ? '' : ' class="on"') + '>All <small>' + total + '</small></button>' + ORDER.filter(function (k) { return tf[k]; }).map(function (k) { return '<button type="button" data-k="' + k + '"' + (kind === k ? ' class="on"' : '') + '>' + k + ' <small>' + tf[k] + '</small></button>'; }).join('') : '';
+        var n = hits.length;
+        cnt.innerHTML = n ? '<span><b>' + n + '</b> ' + (n === 1 ? 'result' : 'results') + (kind ? ' in ' + hx(kind.toLowerCase()) : '') + '</span><span class="sx-keys">↑↓ move · Enter open' + (inPal ? ' · Esc close' : '') + '</span>'
+          : '<span>Nothing found for <b>' + hx(q) + '</b>. Try fewer words, or the <a href="/errors">error lookup</a>.</span>';
+        more.hidden = true;
+        if (n) { page(); }
+      }).catch(function () {
+        if (my !== seq) { return; }
+        cnt.innerHTML = '<span>Search is not available right now. Try the <a href="/full-index">full index</a>.</span>';
+      });
+    }
+    inp.addEventListener('input', function () { clearTimeout(timer); timer = setTimeout(run, 120); });
+    inp.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowDown') { e.preventDefault(); if (act >= hitsEls().length - 1 && !more.hidden) { page().then(function () { setAct(act + 1); }); } else { setAct(act + 1); } }
+      else if (e.key === 'ArrowUp') { e.preventDefault(); setAct(act - 1); }
+      else if (e.key === 'Enter') { var a = hitsEls()[act]; if (a) { e.preventDefault(); location.href = a.href; } }
+    });
+    fl.addEventListener('click', function (e) { var t = e.target.closest('[data-k]'); if (!t) { return; } kind = t.getAttribute('data-k'); run(); inp.focus(); });
+    cnt.addEventListener('click', function (e) { var t = e.target.closest('[data-q]'); if (!t) { return; } inp.value = t.getAttribute('data-q'); run(); inp.focus(); });
+    list.addEventListener('mousemove', function (e) { var a = e.target.closest('.sx-hit'); if (!a) { return; } var as = Array.prototype.indexOf.call(hitsEls(), a); if (as !== act) { setAct(as); } });
+    more.addEventListener('click', function () { page(); });
+    hint();
+    return { input: inp, set: function (q) { inp.value = q; run(); } };
+  }
+  var spg = d.getElementById('sv-pf');
+  if (spg) {
+    var sp = mountSearch(spg, false, function (q) { try { history.replaceState(null, '', q ? '/search?q=' + encodeURIComponent(q) : '/search'); } catch (e) {} });
+    var q0 = new URLSearchParams(location.search).get('q');
+    if (q0) { sp.set(q0); }
+    sp.input.focus();
+  }
+  var pal = d.getElementById('pal'), sx = null;
   var openPal = function () {
     pal.classList.add('open');
-    if (loaded) { focusPal(); return; }
-    loaded = true;
-    var go = function () { new PagefindUI({ element: '#pal-ui', showSubResults: true, showImages: false, resetStyles: false, autofocus: true }); setTimeout(focusPal, 60); };
-    if (window.PagefindUI) { go(); return; }
-    var l = d.createElement('link'); l.rel = 'stylesheet'; l.href = '/pagefind/pagefind-ui.css'; d.head.appendChild(l);
-    var s = d.createElement('script'); s.src = '/pagefind/pagefind-ui.js'; s.onload = go; s.onerror = function () { location.href = '/search'; }; d.head.appendChild(s);
+    if (!sx) { sx = mountSearch(d.getElementById('pal-ui'), true, null); loadPf().catch(function () {}); }
+    setTimeout(function () { sx.input.focus(); sx.input.select(); }, 30);
   };
   var closePal = function () { pal.classList.remove('open'); };
   if (pal) {
@@ -509,6 +589,18 @@ function crumbFor(url, rel) {
     out.push(link ? `<a href="${link}">${esc(seg)}</a>` : `<span${last ? ' style="color:var(--soft)"' : ''}>${esc(seg)}</span>`);
   });
   return out.join('<span class="sep">›</span>');
+}
+
+// Search results show what kind of page a hit is and where it lives (Pagefind filter + meta).
+const SEARCH_KINDS = { gotchas: 'Gotchas', guides: 'Guides', scripts: 'Scripts', snippets: 'Snippets', course: 'Course', talks: 'Talks', resources: 'Resources' };
+function searchKind(url, rel) {
+  if (rel && SEARCH_KINDS[rel.split('/')[0]] && rel.includes('/')) return SEARCH_KINDS[rel.split('/')[0]];
+  if (url.startsWith('/errors')) return 'Errors';
+  return 'Pages';
+}
+function searchPath(url, rel) {
+  if (rel) return rel.includes('/') ? rel.split('/').slice(0, -1).join('/') : 'vault';
+  return url.replace(/^\/|\/$/g, '').split('/').slice(0, -1).join('/') || 'vault';
 }
 
 function layout({ url, rel = null, tab = null, title, description, lang, bodyClass, content, ld, ogType = 'article', image, pagefind = false, toc = [], side = '' }) {
@@ -555,8 +647,8 @@ function layout({ url, rel = null, tab = null, title, description, lang, bodyCla
 <main class="ide-main">
   <div class="ide-tabs">${showReadmeTab ? `<a class="ide-tab" href="/">${tabIcon('README.md')} README.md</a>` : ''}<span class="ide-tab on">${tabIcon(tabName)} ${esc(tabName)}</span></div>
   <div class="ide-crumb">${crumbFor(url, rel)}${acts}</div>
-  <article class="markdown-section" id="main"${pagefind ? ' data-pagefind-body' : ''}>
-${pagefind ? `<span data-pagefind-meta="title" hidden>${esc(deEmoji(title))}</span>` : ''}
+  <article class="markdown-section" id="main"${pagefind ? ` data-pagefind-body data-pagefind-filter="kind:${searchKind(url, rel)}"` : ''}>
+${pagefind ? `<span data-pagefind-meta="title" hidden>${esc(deEmoji(title))}</span><span data-pagefind-meta="path:${esc(searchPath(url, rel))}" hidden></span>` : ''}
 ${content}
   </article>
 </main>
@@ -593,7 +685,7 @@ function crumbs(rel) {
   }
   return trail;
 }
-const crumbsHtml = (trail) => `<nav class="sv-crumbs" aria-label="Breadcrumb">${trail.map((c) => (c.url ? `<a href="${c.url}">${esc(c.name)}</a>` : `<span>${esc(c.name)}</span>`)).join('<span aria-hidden="true">/</span>')}</nav>`;
+const crumbsHtml = (trail) => `<nav class="sv-crumbs" aria-label="Breadcrumb" data-pagefind-ignore>${trail.map((c) => (c.url ? `<a href="${c.url}">${esc(c.name)}</a>` : `<span>${esc(c.name)}</span>`)).join('<span aria-hidden="true">/</span>')}</nav>`;
 const crumbsLd = (trail, self) => ({
   '@context': 'https://schema.org', '@type': 'BreadcrumbList',
   itemListElement: [...trail, self].map((c, i) => ({ '@type': 'ListItem', position: i + 1, name: deEmoji(c.name), ...(c.url ? { item: SITE + c.url } : {}) })),
@@ -601,8 +693,8 @@ const crumbsLd = (trail, self) => ({
 
 function footer(rel, reviewed) {
   const upd = gitDate[rel] ? gitDate[rel].slice(0, 10) : null;
-  return `<div class="sv-star"><span>Saved you an hour? A star on GitHub helps other SharePoint people find the vault.</span><a class="sv-starbtn" href="${GH}" target="_blank" rel="noopener"><span class="st">★</span> Star on GitHub</a></div>
-<div class="sv-artfoot">${reviewed ? `<span>last reviewed: ${esc(reviewed)}</span>` : ''}${upd ? `<span>last updated: ${upd}</span>` : ''}<a href="${GH}/commits/main/${rel}" target="_blank" rel="noopener">history</a><a href="${GH}/edit/main/${rel}" target="_blank" rel="noopener">edit on GitHub</a><a href="${GH}/blob/main/${rel}" target="_blank" rel="noopener">view source</a></div>`;
+  return `<div class="sv-star" data-pagefind-ignore><span>Saved you an hour? A star on GitHub helps other SharePoint people find the vault.</span><a class="sv-starbtn" href="${GH}" target="_blank" rel="noopener"><span class="st">★</span> Star on GitHub</a></div>
+<div class="sv-artfoot" data-pagefind-ignore>${reviewed ? `<span>last reviewed: ${esc(reviewed)}</span>` : ''}${upd ? `<span>last updated: ${upd}</span>` : ''}<a href="${GH}/commits/main/${rel}" target="_blank" rel="noopener">history</a><a href="${GH}/edit/main/${rel}" target="_blank" rel="noopener">edit on GitHub</a><a href="${GH}/blob/main/${rel}" target="_blank" rel="noopener">view source</a></div>`;
 }
 
 /** Neighbours by name in the same folder, not "the first N": every article links to a different set. */
@@ -625,7 +717,7 @@ function related(p) {
   if (!pick.length) return '';
   const label = p.kind === 'script' ? 'scripts' : 'articles';
   const dirUrl = trackedSet.has(`${dir}/README.md`) ? `/${dir}/` : (trackedSet.has(`${dir.split('/')[0]}/README.md`) ? `/${dir.split('/')[0]}/` : null);
-  return `<div class="sv-related"><h2 id="related">More ${label} in ${esc(dir.split('/').slice(-1)[0])}</h2><ul>${pick.map((q) => `<li><a href="${q.url}">${esc(shortTitle(q))}</a></li>`).join('')}</ul>${dirUrl ? `<p><a href="${dirUrl}">All ${total} ${label} in this section →</a></p>` : ''}</div>`;
+  return `<div class="sv-related" data-pagefind-ignore><h2 id="related">More ${label} in ${esc(dir.split('/').slice(-1)[0])}</h2><ul>${pick.map((q) => `<li><a href="${q.url}">${esc(shortTitle(q))}</a></li>`).join('')}</ul>${dirUrl ? `<p><a href="${dirUrl}">All ${total} ${label} in this section →</a></p>` : ''}</div>`;
 }
 function sameArea(p) {
   const { pick, dir } = neighbours(p, 4);
@@ -639,7 +731,7 @@ function kindLine(p, words) {
   if (!k || p.kind === 'index') return '';
   const area = p.rel.split('/').length > 2 ? p.rel.split('/')[1] : '';
   const mins = words ? Math.max(1, Math.round(words / 220)) : 0;
-  return `<div class="sv-kind"><b class="${k[0]}">${k[1]}</b>${area ? `<span>${esc(area)}</span>` : ''}${mins ? `<span>· ${mins} min read</span>` : ''}</div>`;
+  return `<div class="sv-kind" data-pagefind-ignore><b class="${k[0]}">${k[1]}</b>${area ? `<span>${esc(area)}</span>` : ''}${mins ? `<span>· ${mins} min read</span>` : ''}</div>`;
 }
 
 // ── build ──────────────────────────────────────────────────────────────────
@@ -692,7 +784,7 @@ ${footer(p.rel, null)}`;
     const words = plain(p.body).split(' ').length;
     // Kind line above the H1, meta line right under it.
     let html = r.html.replace(/<h1/, `${kindLine(p, words)}<h1`);
-    if (meta.length) html = html.replace(/(<\/h1>\n?)/, `$1<div class="sv-meta">${meta.join('')}</div>\n`);
+    if (meta.length) html = html.replace(/(<\/h1>\n?)/, `$1<div class="sv-meta" data-pagefind-ignore>${meta.join('')}</div>\n`);
     content = `${crumbsHtml(trail)}
 ${html}
 ${p.kind === 'article' ? helpful(p.title, p.url) + related(p) : ''}
@@ -767,17 +859,7 @@ writePage('/search', {
   ld: [],
   content: `<h1 id="search">Search the vault</h1>
 <p class="sv-lead">Tip: <kbd class="ide-kbd" style="margin:0">Ctrl K</kbd> opens this search on every page.</p>
-<link href="/pagefind/pagefind-ui.css" rel="stylesheet">
-<div id="sv-pf"></div>
-<script src="/pagefind/pagefind-ui.js"></script>
-<script>
-  (function () {
-    if (!window.PagefindUI) { document.getElementById('sv-pf').innerHTML = '<p>Search index is not available right now — try the <a href="/full-index">full index</a>.</p>'; return; }
-    var ui = new PagefindUI({ element: '#sv-pf', showSubResults: true, showImages: false, resetStyles: false, autofocus: true });
-    var q = new URLSearchParams(location.search).get('q');
-    if (q) { ui.triggerSearch(q); }
-  })();
-</script>`,
+<div id="sv-pf" class="sx-page"><noscript><p>Search needs JavaScript. Without it, use the <a href="/full-index">full index</a> or the <a href="/errors">error lookup</a>.</p></noscript></div>`,
 });
 
 // ── home (README.md + live panels) ─────────────────────────────────────────
