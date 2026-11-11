@@ -107,3 +107,4 @@ Both page types loaded the scripts through RequireJS (`data-requiremodule` on th
 - **Without the flight there is no `integrity` attribute.** You are left with checking the manifest hash, and there is a window between that check and the browser fetching the bundle.
 - **A bundle already on the page is reused.** If an older bootstrap on the same page loaded the same bundle path without `integrity`, SharePoint will not check it again.
 - **Changing the bootstrap means a new `.sppkg`.** Keep it minimal and stable, and put everything else in the library on the CDN.
+- **Scripts your own code loads are not covered either.** Vendor libraries injected with `<script>`, worker code fetched into a `blob:` URL and `importScripts` inside a worker bypass both the manifest and the chunk map – see [spfx-sri-scripts-your-bundle-loads-itself.md](spfx-sri-scripts-your-bundle-loads-itself.md).
