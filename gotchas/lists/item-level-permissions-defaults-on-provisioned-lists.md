@@ -9,7 +9,7 @@ last-reviewed: 2026-08-22
 
 # A provisioned list with ReadSecurity=2 looks perfect to an admin and empty to everyone else
 
-> **Bottom line.** `ReadSecurity` / `WriteSecurity` are item-level permission settings that live on the list, and anyone holding **Manage Lists** bypasses them. Set them wrong in your provisioning code and the site owner who tests the app sees a full, working list while every ordinary member sees an empty one — `HTTP 200`, zero items, no error anywhere.
+> **Bottom line.** `ReadSecurity` / `WriteSecurity` are item-level permission settings that live on the list. Anyone holding **Manage Lists** bypasses the read setting. Editing other people's items additionally needs Override List Behaviors (measured 2026-11-11, see [Editing others' items needs Override List Behaviors](../permissions/editing-others-items-needs-override-list-behaviors.md)). Set them wrong in your provisioning code and the site owner who tests the app sees a full, working list while every ordinary member sees an empty one — `HTTP 200`, zero items, no error anywhere.
 >
 > **Ve zkratce.** `ReadSecurity`/`WriteSecurity` jsou item-level nastavení listu a kdo má Spravovat seznamy, ten je obchází. Špatná hodnota v provisioningu = správce vidí plný list, běžný člen prázdný, a nikde není chyba.
 

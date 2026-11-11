@@ -31,6 +31,8 @@ You add them to a SharePoint group, break inheritance on the list, grant the gro
 
 The restriction is bypassed by users who hold **ManageLists** on that list. Among the built-in roles, ManageLists is carried by **Design**, **Edit** and **Full Control** — but *not* by **Contribute**. Granting Contribute therefore grants nothing that the item-level setting does not immediately take away again.
 
+> **Correction (2026-11-11).** For `WriteSecurity = 2` it was measured that **Edit** (Manage Lists, *without* Override List Behaviors) still gets 403 on another user's item, while Edit + Override List Behaviors (`CancelCheckout`, `0x100`) succeeds. Design, the fix recommended below, carries both bits, so it works either way. Edit alone may not, so measure before relying on it. See [Editing others' items needs Override List Behaviors](editing-others-items-needs-override-list-behaviors.md).
+
 ## Fix
 
 Break inheritance on that one list and assign a role definition that carries ManageLists — Design is the least privileged of them:
