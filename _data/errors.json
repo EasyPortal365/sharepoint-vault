@@ -1132,6 +1132,7 @@
       "gotchas/graph/exchange-admin-api-no-cors-from-browser.md",
       "gotchas/graph/msgraph-client-network-failure-looks-like-http-error.md",
       "gotchas/spfx/decompressionstream-trailing-bytes-pdf-streams.md",
+      "gotchas/spfx/spfx-calling-an-intranet-api-hits-local-network-access.md",
       "gotchas/tooling/getting-bulk-data-into-a-sharepoint-page-from-the-console.md"
     ]
   },

@@ -2,7 +2,7 @@
 
 Every single thing in the vault, on one page. Section names link to folder READMEs; leaves link straight to the content.
 
-*Last updated: 2026-11-11*
+*Last updated: 2026-11-12*
 
 - 🧰 **[scripts/](scripts/)** — PowerShell scripts with comment-based help, read-only unless stated
   - [Terminal animations](scripts/media/) — the writing scripts as an animated PowerShell console; plain SVG, no JavaScript, respects `prefers-reduced-motion`
@@ -251,6 +251,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [Load an SPFx bundle's lazy chunk from the browser console — no clicking through the UI](gotchas/spfx/load-a-lazy-chunk-from-the-console-via-the-webpack-runtime.md) — Push a fake chunk with a runtime callback into the bundle's `webpackJsonp_<id>` array to get its real `__webpack_require__`, then `req.e(chunkId)` loads the chunk exactly as the app would — for checking 404s, SRI `integrity` or CSP on features you would rather not trigger
     - [Manifest SRI does not cover scripts your SPFx bundle loads itself (pdf.js, tesseract.js, workers)](gotchas/spfx/spfx-sri-scripts-your-bundle-loads-itself.md) — Pinning the loader in the .sppkg and giving every manifest path and webpack chunk an integrity hash still leaves a hole – third-party libraries your own code injects with a script tag, fetches for a worker or that a worker pulls in with importScripts run unverified; keep their SRI hashes in the already verified bundle, set the integrity attribute (not the property), fetch worker code with integrity into a blob, and for tesseract.js 5 concatenate core and worker into one blob so importScripts is skipped
     - [Two "Uncaught (in promise)" from sp-pages-assembly on a modern page are SharePoint's own, not your web part](gotchas/spfx/sp-pages-assembly-uncaught-in-promise-noise.md) — On SharePoint Online modern pages the console can show two "Uncaught (in promise)" exceptions with reason undefined and a stack only inside sp-pages-assembly, on every load and on SPA navigation – they also appear on a page with no custom code at all, so prove it with an A/B against such a page before you debug your own loader or web part; a page whose application customizer hides the SharePoint chrome may not show them, which makes "only some of my apps have it" look like a bug in those apps
+    - [SPFx calling an intranet API hits Local Network Access](gotchas/spfx/spfx-calling-an-intranet-api-hits-local-network-access.md) — A `*.sharepoint.com` page fetching a host that resolves to a private IP is a local network request – Chrome (from 142) and Edge prompt every user and a refusal is a bare `Failed to fetch`; pre-allow the SharePoint origin by policy and still plan for CORS, trusted HTTPS, VPN-only reach and per-user tokens – or let a connector inside the network write to a list through `Sites.Selected`
   - **app-catalog/**
     - [Three `.sppkg` packaging pitfalls](gotchas/app-catalog/sppkg-packaging-pitfalls.md) — ASCII-only solution name, icon exactly 96×96, Publisher column is AppSource-only
   - **graph/**
