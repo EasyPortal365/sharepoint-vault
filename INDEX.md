@@ -2,7 +2,7 @@
 
 Every single thing in the vault, on one page. Section names link to folder READMEs; leaves link straight to the content.
 
-*Last updated: 2026-11-10*
+*Last updated: 2026-11-11*
 
 - 🧰 **[scripts/](scripts/)** — PowerShell scripts with comment-based help, read-only unless stated
   - [Terminal animations](scripts/media/) — the writing scripts as an animated PowerShell console; plain SVG, no JavaScript, respects `prefers-reduced-motion`
@@ -245,6 +245,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [A textarea jumps after you change its text from code and restore the selection](gotchas/spfx/textarea-jumps-after-programmatic-selection.md) — focus() scrolls the page to the element and, in Chromium, setSelectionRange scrolls the textarea to the end of the selection; restore the selection with focus({ preventScroll }) and put scrollTop back
     - [A trailing-whitespace regex freezes the page when it parses AI output](gotchas/spfx/trailing-whitespace-regex-is-quadratic-on-ai-output.md) — /\s+$/ and lazy (.+?)\s*$ are quadratic on a line with a long run of spaces that does not end the line; text from an AI model or a foreign document is untrusted input, so trim with trimEnd() and anchor captures on a non-space character
     - [SPFx adds Subresource Integrity to a script when the manifest path is { path, integrity }](gotchas/spfx/spfx-sri-integrity-via-manifest-path.md) — A component manifest you pass to SPComponentLoader.loadComponent can carry an SRI hash per script resource as path { path, integrity }; SharePoint then emits script integrity crossorigin=anonymous and the browser refuses tampered bytes – pin the bootstrap the same way from the .sppkg manifest (immutable CDN file), because includeClientSideAssets puts it in ClientSideAssets that guests cannot read; plus three traps that make console tests lie (id+version cache, requirejs path cache, CRLF in the git working copy)
+    - [Load an SPFx bundle's lazy chunk from the browser console — no clicking through the UI](gotchas/spfx/load-a-lazy-chunk-from-the-console-via-the-webpack-runtime.md) — Push a fake chunk with a runtime callback into the bundle's `webpackJsonp_<id>` array to get its real `__webpack_require__`, then `req.e(chunkId)` loads the chunk exactly as the app would — for checking 404s, SRI `integrity` or CSP on features you would rather not trigger
   - **app-catalog/**
     - [Three `.sppkg` packaging pitfalls](gotchas/app-catalog/sppkg-packaging-pitfalls.md) — ASCII-only solution name, icon exactly 96×96, Publisher column is AppSource-only
   - **graph/**

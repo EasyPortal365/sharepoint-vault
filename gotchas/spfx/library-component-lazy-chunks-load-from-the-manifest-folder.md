@@ -3,7 +3,7 @@ title: A library component loaded from your own manifest fetches its lazy chunks
 summary: "`SPComponentLoader.loadComponent` + a relocated manifest: without the `chunk.*` files next to the bundle every `import()` 404s on first use, which an open-the-app smoke test never exercises"
 tags: [spfx, library-component, cdn, webpack, spcomponentloader, deployment]
 applies-to: SharePoint Online, SPFx library components loaded with SPComponentLoader.loadComponent (verified on SPFx 1.22.2)
-last-reviewed: 2026-09-24
+last-reviewed: 2026-11-11
 ---
 
 # A library component loaded from your own manifest fetches its lazy chunks from that manifest's folder
@@ -30,7 +30,7 @@ The SPFx loader requests the bundle from the manifest's `internalModuleBaseUrls`
 
 - Copy **every** `chunk.*` from the build's asset folder into the folder the manifest names — copy, not move, if the flat folder still serves other components.
 - Add the copy step even to components that have no chunks today; the first future `import()` would otherwise break silently.
-- Make the post-release check open one lazy-loaded feature, not just the app.
+- Make the post-release check open one lazy-loaded feature, not just the app. When the feature is costly or has side effects, load its chunk from the console instead: [Load an SPFx bundle's lazy chunk from the browser console](load-a-lazy-chunk-from-the-console-via-the-webpack-runtime.md).
 
 ## Notes
 
