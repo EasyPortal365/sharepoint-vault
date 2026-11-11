@@ -2,7 +2,7 @@
 title: "Manifest SRI does not cover scripts your SPFx bundle loads itself (pdf.js, tesseract.js, workers)"
 summary: Pinning the loader in the .sppkg and giving every manifest path and webpack chunk an integrity hash still leaves a hole – third-party libraries your own code injects with a script tag, fetches for a worker or that a worker pulls in with importScripts run unverified; keep their SRI hashes in the already verified bundle, set the integrity attribute (not the property), fetch worker code with integrity into a blob, and for tesseract.js 5 concatenate core and worker into one blob so importScripts is skipped
 tags: [spfx, security, sri, cdn, web-worker, pdfjs, tesseract, supply-chain]
-applies-to: SPFx web parts that load vendor libraries at runtime from a CDN (measured on SPFx 1.22.2, pdf.js 3.11.174, tesseract.js 5.1.1, SharePoint Online, November 2026)
+applies-to: SPFx web parts that load vendor libraries at runtime from a CDN (built and unit-tested on SPFx 1.22.2 with pdf.js 3.11.174 and tesseract.js 5.1.1, November 2026; the tesseract.js worker behaviour is read from the library source, not yet confirmed in a live SharePoint run)
 last-reviewed: 2026-11-11
 ---
 
@@ -14,7 +14,7 @@ last-reviewed: 2026-11-11
 
 ## Symptom
 
-Your web part already does everything the manifest-SRI recipe asks for: the bootstrap is pinned from the `.sppkg`, the library and its lazy chunks carry `integrity`, and the browser refuses tampered bytes. But the app also renders PDFs with pdf.js and reads scans with tesseract.js, both served from a `vendor/` folder on the same CDN (tenant CSP often allows scripts only from your app's folder, so a public CDN is not an option). Those files load without any hash:
+Your web part already does everything the manifest-SRI recipe asks for: the bootstrap is pinned from the `.sppkg`, the library and its lazy chunks carry `integrity`, and the browser refuses tampered bytes. But the app also renders PDFs with pdf.js and reads scans with tesseract.js, both served from a `vendor/` folder on the same CDN (a tenant's trusted script sources can be limited to your app's folder, so a public CDN may be blocked). Those files load without any hash:
 
 - `pdf.min.js` – `document.createElement('script')`, `src` set, appended to `<head>`;
 - `pdf.worker.min.js` – `fetch` → `Blob` → `new Worker(blobUrl)`;
@@ -36,7 +36,7 @@ The SPFx loader adds `integrity` only to what it loads from a manifest; a webpac
    ```
    Use the attribute: jsdom (20.0.3, the version Jest uses in SPFx 1.22) does not reflect the `integrity` property, so a unit test reading `getAttribute('integrity')` would see `null`. Browsers treat both forms the same.
 3. **Worker:** `const text = await (await fetch(url, { integrity: sri, credentials: 'omit' })).text();` – a mismatch rejects with `TypeError`. Start the worker with `new Worker(URL.createObjectURL(new Blob([text], { type: 'text/javascript' })))`.
-4. **Worker that calls `importScripts` itself (tesseract.js 5.1.1):** fetch both the core and the worker script with integrity and concatenate them into **one** blob (`[core, '\n;\n', worker]`). The worker skips `importScripts` when the global `TesseractCore` already exists. Pass `workerPath: blobUrl` and `workerBlobURL: false`, otherwise tesseract wraps the path in its own blob that calls `importScripts(<CDN URL>)` again.
+4. **Worker that calls `importScripts` itself (tesseract.js 5.1.1):** fetch both the core and the worker script with integrity and concatenate them into **one** blob (`[core, '\n;\n', worker]`). The worker skips `importScripts` when the global `TesseractCore` already exists. Pass `workerPath: blobUrl` and `workerBlobURL: false`, so tesseract runs `new Worker(blobUrl)` directly. The default (`workerBlobURL: true` with `workerPath` on the CDN) is exactly the unverified load: tesseract creates its own blob containing `importScripts("<CDN URL>")`.
 5. **Test the hashes against what is deployed**, e.g. `git cat-file blob HEAD:<path>` in the CDN repository – not the working copy, where `core.autocrlf` may have changed the bytes.
 
 What stays unverified: data files such as OCR language models (`*.traineddata.gz`). They are not code; decide whether that is acceptable for you.
