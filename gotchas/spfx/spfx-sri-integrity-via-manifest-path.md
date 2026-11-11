@@ -1,9 +1,9 @@
 ---
 title: "SPFx adds Subresource Integrity to a script when the manifest path is { path, integrity }"
-summary: A component manifest you pass to SPComponentLoader.loadComponent can carry an SRI hash per script resource as path { path, integrity }; SharePoint then emits script integrity crossorigin=anonymous and the browser refuses tampered bytes – pin the bootstrap the same way from the .sppkg manifest (immutable CDN file), because includeClientSideAssets puts it in ClientSideAssets that guests cannot read; plus three traps that make console tests lie (id+version cache, requirejs path cache, CRLF in the git working copy)
-tags: [spfx, security, sri, cdn, sp-loader, app-catalog, supply-chain]
+summary: A component manifest you pass to SPComponentLoader.loadComponent can carry an SRI hash per script resource as path { path, integrity }; SharePoint then emits script integrity crossorigin=anonymous and the browser refuses tampered bytes – pin the bootstrap the same way from the .sppkg manifest (immutable CDN file), because includeClientSideAssets puts it in ClientSideAssets that guests cannot read; plus three traps that make console tests lie (id+version cache, requirejs path cache, CRLF in the git working copy); on list and library views SharePoint applies none of it, so an extension there runs unverified by the browser
+tags: [spfx, security, sri, cdn, sp-loader, app-catalog, supply-chain, list-view-command-set]
 applies-to: SPFx 1.2x web parts and extensions that load code at runtime from your own CDN with SPComponentLoader.loadComponent (measured on SPFx 1.22.2, SharePoint Online, November 2026)
-last-reviewed: 2026-11-10
+last-reviewed: 2026-11-11
 ---
 
 # SPFx adds Subresource Integrity to a script when the manifest path is `{ path, integrity }`
@@ -88,7 +88,20 @@ SharePoint Online, SPFx 1.22.2, November 2026, our own tenant:
 | `path: { path, integrity: <wrong sha384> }`, unique `version` and path | `Script error`, module not loaded |
 | wrong `integrity`, same `id` + `version` as an already loaded module | "loads" – the cached module is returned |
 
+Same tenant, same day, by page type:
+
+| Page | Script | `integrity` on the tag |
+|---|---|---|
+| Modern site page (`SitePages/*.aspx`) | web part entry bundle from a manifest with `{ path, integrity }` | yes |
+| Modern site page | library loaded with `loadComponent` and `{ path, integrity }` | yes |
+| List or library view (`Forms/AllItems.aspx`) | tenant-wide ListView Command Set entry bundle (the manifest with sha384 is in the page HTML) | **no** |
+| List or library view | library loaded with `loadComponent` and `{ path, integrity }` | **no** |
+
+Both page types loaded the scripts through RequireJS (`data-requiremodule` on the tag). Lazy chunks of the library did get `integrity` on the list page too, because the library's own webpack runtime sets it, not SharePoint.
+
 ## Gotchas
+
+- **List and library pages ignore manifest `integrity` (measured November 2026).** An extension that lives there — a ListView Command Set, an Application Customizer on a list view — runs unverified by the browser even with a correct `{ path, integrity }` manifest, and so does any library it loads with `loadComponent`. Measure on the page where the component actually runs: `[...document.scripts].filter(s => s.src.includes('<bundle>')).map(s => s.hasAttribute('integrity'))`. Use `hasAttribute`: the `integrity` property is an empty string when the attribute is missing. For the libraries your extension loads, you can check the bytes yourself first — `await fetch(url, { integrity, mode: 'cors' })` rejects on a mismatch — and refuse to call `loadComponent` when it fails. The extension's own entry bundle stays out of reach, because SharePoint loads it.
 
 - **Lazy chunks are not covered.** The webpack runtime inside the verified entry bundle creates their script tags. Embed a chunk-hash map in the entry bundle (it is verified with it) and set `integrity` in the runtime, or avoid lazy chunks in code you load this way.
 - **Without the flight there is no `integrity` attribute.** You are left with checking the manifest hash, and there is a window between that check and the browser fetching the bundle.
