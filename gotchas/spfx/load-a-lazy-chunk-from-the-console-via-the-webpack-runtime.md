@@ -8,15 +8,14 @@ last-reviewed: 2026-11-11
 
 # Load an SPFx bundle's lazy chunk from the browser console — no clicking through the UI
 
-> **Bottom line.** A lazy chunk is only tested when something calls `import()`, and the feature behind it may be expensive or have side effects (an AI call, an import that writes, an email). You do not need the feature: every webpack 5 bundle exposes a global `self.webpackJsonp_<id>` array, and pushing `[[fakeId], {}, callback]` into it makes webpack call your callback with the bundle's own `__webpack_require__`. `req.e(chunkId)` then loads the chunk through the real runtime — same URL, same public path, same `integrity` and `crossOrigin` hooks — and only registers its modules; no module code runs.
+> **Bottom line.** A lazy chunk is only tested when something calls `import()`, and the feature behind it may be expensive or have side effects (an AI call, an import that writes, an email). You do not need the feature: a webpack 5 bundle that has lazy chunks keeps a global `self.webpackJsonp_<id>` array (the chunks register themselves into it), and pushing `[[fakeId], {}, callback]` into it makes webpack call your callback with the bundle's own `__webpack_require__`. `req.e(chunkId)` then loads the chunk through the real runtime — same URL, same public path, same `integrity` and `crossOrigin` hooks — and only registers its modules; no module code runs.
 >
-> **Ve zkratce.** Líně načítaný chunk je otestovaný, jen když něco zavolá `import()`, a funkce za ním může být drahá nebo mít vedlejší účinky (volání AI, import, který zapisuje, e-mail). Funkci nepotřebuješ: každý bundle z webpacku 5 má globální pole `self.webpackJsonp_<id>` a když do něj pushneš `[[falešnéId], {}, callback]`, webpack zavolá tvůj callback s vlastním `__webpack_require__` bundlu. `req.e(chunkId)` pak načte chunk skutečným runtime – stejná adresa, stejný public path, stejné háčky `integrity` a `crossOrigin` – a jen zaregistruje jeho moduly; kód modulů se nespustí.
+> **Ve zkratce.** Líně načítaný chunk je otestovaný, jen když něco zavolá `import()`, a funkce za ním může být drahá nebo mít vedlejší účinky (volání AI, import, který zapisuje, e-mail). Funkci nepotřebuješ: bundle z webpacku 5, který má líně načítané chunky, drží globální pole `self.webpackJsonp_<id>` (chunky se do něj samy registrují) a když do něj pushneš `[[falešnéId], {}, callback]`, webpack zavolá tvůj callback s vlastním `__webpack_require__` bundlu. `req.e(chunkId)` pak načte chunk skutečným runtime – stejná adresa, stejný public path, stejné háčky `integrity` a `crossOrigin` – a jen zaregistruje jeho moduly; kód modulů se nespustí.
 
 ## When to use it
 
 - Post-release smoke test of a component whose chunks moved to a new folder (see the related gotcha below) — every `chunk.*` must answer 200.
 - Checking that a build step really puts `integrity` on chunk `<script>` tags and that the browser accepts the hash.
-- A tenant CSP or a proxy that might block the CDN only for late-loaded scripts.
 
 ## Snippet
 
@@ -63,8 +62,9 @@ Use a well-formed digest: a malformed `integrity` value is ignored by the browse
 
 ## Notes
 
-- The fake chunk id is harmless: webpack marks it as installed and nothing ever requests it.
-- `req.e()` resolves the chunk's whole dependency set, like `import()` would; the modules stay unevaluated until something calls `req(moduleId)`.
-- Chunk ids are numeric in production builds (named chunks keep their name only in the file name), so read the id from the file, not from the name.
+- Use a fresh fake id on every push: webpack calls the callback only when at least one id in the pushed entry is not installed yet, then marks it installed. Nothing ever requests that id, so it is harmless.
+- `req.e(id)` loads exactly one chunk. An `import()` whose target is split across several chunks compiles to `Promise.all([req.e(a), req.e(b)])`, so search the entry bundle for the call site (`.e(774)`) to see which ids belong together and load each of them.
+- The modules stay unevaluated until something calls `req(moduleId)`.
+- In SPFx production builds the chunk ids are numbers; a named chunk (`webpackChunkName`) keeps its name only in the file name (`chunk.qa-admin_<hash>.js` registers as id `999`), so read the id from the file.
+- The global's name comes from webpack's [`output.chunkLoadingGlobal`](https://webpack.js.org/configuration/output/#outputchunkloadingglobal); SPFx sets it per bundle to `webpackJsonp_<hash>`.
 - Related: [A library component loaded from your own manifest fetches its lazy chunks from that manifest's folder](library-component-lazy-chunks-load-from-the-manifest-folder.md) — the failure this check catches.
-- Webpack's JSONP chunk format and the runtime callback: [webpack — Under the hood](https://webpack.js.org/concepts/under-the-hood/).
