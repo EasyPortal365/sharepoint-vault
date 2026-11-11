@@ -51,9 +51,16 @@ Retry only when the error names a candidate field **as not existing** — whole 
 ```ts
 function fieldsNamedAsMissing(e: unknown, candidates: string[]): string[] {
   if (status(e) !== 400) return [];
-  const msg = e instanceof Error ? e.message : String(e);
+  const msg = sharePointMessage(e);               // NOT your helper's whole message — see Notes
   if (!/exist/i.test(msg)) return [];             // "exceeds the maximum length" names X too
   return candidates.filter(f => new RegExp('(^|[^A-Za-z0-9_])' + f + '($|[^A-Za-z0-9_])').test(msg));
+}
+
+// Only what SharePoint said: odata.error.message.value from the response body.
+function sharePointMessage(e: unknown): string {
+  const body = responseBodyOf(e);                 // however your helper keeps the body
+  const m = /"value"\s*:\s*"((?:[^"\\]|\\.)*)"/.exec(body);
+  return m ? m[1] : body;
 }
 
 async function writeWithoutMissing<T>(body: Record<string, unknown>, late: string[],
@@ -77,6 +84,7 @@ The candidate field names are your own constants, so building a `RegExp` from th
 
 ## Notes
 
+- **Search SharePoint's text, not your error message.** Many helpers throw `GET <url>: HTTP 400 – <body>`, and the URL of a read carries the whole `$select`. Searching the full message then "finds" every selected field, and the read drops the whole group again. This one slipped past unit tests that used a body-only error; a test with the real message shape caught it.
 - **Whole word matters.** With columns `Party` and `PartyContact`, a plain `indexOf('Party')` matches both.
 - **The error body may be truncated** by your HTTP helper (many keep only the first 200 characters). The sentence fits with room to spare for normal internal names; if it does not, the error propagates — the safe direction.
 - **A 400 means nothing was written**, so retrying is safe for creates too. Never retry transient errors (429, 503, network) blindly on a create — the first attempt may have succeeded and you get a duplicate.
