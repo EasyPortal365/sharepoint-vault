@@ -33,8 +33,8 @@ The rejections are raised inside SharePoint's page assembly. The measured A/B:
 
 | Page | Custom code on the page | Exceptions |
 |---|---|---|
-| Home page of a team site with only the default list web part | none | 2× at `384:29687` |
-| Home page of a site with one SPFx web part (runtime loader) | one web part | 2× at `384:29687` |
+| Default home page of a team site (STS#3), out-of-the-box web parts only | none (no custom web parts, no web or site custom actions; the tenant's only tenant-wide extensions are ListView Command Sets) | 2× at `384:29687` |
+| Home page of a site with one SPFx web part (runtime loader), no list web part, no custom actions | one web part | 2× at `384:29687` |
 | Home page of a site with one SPFx web part **and** an application customizer that hides the SharePoint chrome | web part + customizer | none |
 
 The third row is why "only some apps" look affected. *Assumption, not measured further:* the code that rejects belongs to page chrome that the hiding customizer suppresses.
@@ -43,7 +43,7 @@ The third row is why "only some apps" look affected. *Assumption, not measured f
 
 Nothing to fix in your code. Make the A/B part of the routine:
 
-1. Open a modern page on a site with no custom solutions and reload it with the console open (console capture in automation tools often starts only after the first read, so reload after you attach).
+1. Open a modern page with no custom web parts and no application customizers (check `_api/web/UserCustomActions`, `_api/site/UserCustomActions` and the Tenant Wide Extensions list) and reload it with the console open (console capture in automation tools often starts only after the first read, so reload after you attach).
 2. Compare file name, line and column of the exceptions. Same location = SharePoint's.
 3. Only a frame from your own bundle, or a reason that is your error object, is worth debugging.
 
