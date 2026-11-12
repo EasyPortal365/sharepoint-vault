@@ -1,10 +1,10 @@
 ---
 title: "Previewing library files in your own app: every format behaves differently"
 short-title: Previewing library files in your own app
-summary: PDF embeds directly, Office needs WOPI by `{UniqueId}`, HTML is served as an attachment and never renders from `src`; SVG and HTML must never be framed from your own origin (uploader script runs in the viewer session) and OneDrive refuses framing with no way to detect it
+summary: PDF embeds directly, Office needs WOPI by `{UniqueId}`, HTML is served as an attachment and never renders from `src`; SVG and HTML must never be framed from your own origin (uploader script runs in the viewer session) and OneDrive refuses framing with no way to detect it; `?web=1` on a PDF ends on AccessDenied for users with access only to the file or its folder
 tags: [spfx, sharepoint, files, preview, iframe, xss, svg]
 applies-to: SharePoint Online (SPFx web parts, document libraries)
-last-reviewed: 2026-09-21
+last-reviewed: 2026-11-12
 ---
 
 # Previewing library files in your own app: every format behaves differently
@@ -111,6 +111,28 @@ const isOneDrive = /-my\.sharepoint\.com$/i.test(new URL(fileUrl).host);
 
 Same shape as the scriptable types: when you know framing will not work, say so — a blank panel
 reads as "your app is broken", not as "this file cannot be shown here".
+
+### `?web=1` on a PDF denies access to people who can read the file
+
+It is tempting to use `fileUrl + '?web=1'` for PDFs ("open in the SharePoint viewer"). For a user whose
+access is granted **only on the file or its folder** (unique permissions below the library, so on the
+library itself they have only *Limited Access*), that URL ends on `_layouts/15/AccessDenied.aspx` —
+for a document the same user can see in your list and download. (Our reading of why: the PDF viewer
+route needs access at the library level, which such a user does not have. We measured the outcome,
+not the internal route.)
+
+Measured with such a user (read permission only on their own folder):
+
+```text
+GET <file>.pdf                                → 200  application/pdf, no Content-Disposition, X-Frame-Options: SAMEORIGIN
+GET <file>.pdf?web=1                          → redirect → _layouts/15/AccessDenied.aspx
+GET _layouts/15/Doc.aspx?sourcedoc={id}&action=embedview  (a .docx in the same folder) → 200
+```
+
+**Fix:** frame PDFs by their plain URL (as above) — never `?web=1` — wherever your readers' access may
+be scoped to items or folders: personnel files, per-person folders, files shared with specific people.
+The same applies to an "Open in a new tab" button: for a PDF use the plain URL there too. Office files
+are fine through the WOPI frame.
 
 ## Meta-lesson
 
