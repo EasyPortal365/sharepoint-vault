@@ -288,6 +288,7 @@ Every article carries frontmatter with `tags` and `applies-to`, so repo search g
 | [Exchange Admin API — no CORS from SPFx](graph/exchange-admin-api-no-cors-from-browser.md) | adminapi/beta/{tenant}/InvokeCommand fails with 'Failed to fetch' even with a fake token; read Exchange config with an admin-run script and import, or use Graph message trace and mailbox reports |
 | [Disabled accounts include shared mailboxes](graph/disabled-accounts-include-shared-mailboxes.md) | blocked members ≠ former employees; tell shared mailboxes apart via the mailbox usage report's `recipientType` (needs real names) or `mailboxSettings.userPurpose` (per user) |
 | [Teams message sent as the user doesn't notify the sender](graph/teams-message-sent-as-user-does-not-notify-sender.md) | Delegated `ChatMessage.Send` delivers (even to the self chat `48:notes`), but Teams never alerts the sender; verify with GET + `webUrl`, notify from the app |
+| [sendMail without a mailbox – 504 and four attempts](graph/sendmail-without-mailbox-times-out-and-sdk-retries.md) | No `MailboxNotEnabled` error, just a 504 after ~30 s; the SDK RetryHandler repeats the non-idempotent POST up to 3×, so the button hangs ~2 min and a late success can send duplicates; check `assignedPlans` for an enabled `exchange` plan first |
 
 ### azure-functions/
 
