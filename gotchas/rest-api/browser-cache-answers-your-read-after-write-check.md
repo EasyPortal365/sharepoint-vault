@@ -1,9 +1,9 @@
 ---
 title: The browser cache answers your read-after-write check — with a 200
-summary: The same URL read on both sides of a write is served from the browser cache, so `res.ok` guards pass on stale state; a cached existence check makes `POST /fields` create a duplicate column and report success; bust only reads on the write path
+summary: The same URL read on both sides of a write is served from the browser cache, so `res.ok` guards pass on stale state; a cached existence check makes `POST /fields` create a duplicate column and report success, and an append-only number allocator loses every round; bust only reads on the write path
 tags: [rest-api, spfx, caching, idempotency, provisioning]
 applies-to: SharePoint Online (SPFx / any browser-side REST client)
-last-reviewed: 2026-08-31
+last-reviewed: 2026-11-12
 ---
 
 # The browser cache answers your read-after-write check — with a 200
@@ -36,6 +36,14 @@ await sp.post(`${list}/fields`, cfg, { body: fieldBody });
 ```
 
 `POST /fields` with an already-existing `Title` **does not error** — it creates a duplicate column with an auto-suffixed internal name (`MyField0`, `MyField1`). One cached check therefore damages the schema permanently and reports success.
+
+**A number allocator that loses every round.** A common way to hand out sequential numbers from a browser is an append-only list: read the series, add a row with `max + 1`, then read the series *again* — if another row has the same value with a lower `Id`, you lost the race and try the next value. With both reads on the same URL, the second one comes from the cache, your own row is not in it, and every attempt counts as lost:
+
+```
+Could not assign a number — series "IT/2026" is being used by several people at once.
+```
+
+…on a series nobody else is touching, with one fresh row per attempt (values 1, 2, 3 … each unique) left behind in the list. The allocation logic is correct and its unit tests pass; only the input is stale. A test fake that always returns fresh data cannot catch this — the fake has to imitate the cache (return the first response for a repeated URL).
 
 ## Cause
 
