@@ -1,7 +1,7 @@
 ---
 title: "A folder created with folders/AddUsingPath in a generic list has no list item — breaking its permissions returns 404"
 short-title: "`folders/AddUsingPath` in a generic list makes a folder without a list item"
-summary: "In a custom list (BaseTemplate 100) `web/folders/AddUsingPath` creates a 'naked' folder: `ListItemAllFields` is `odata.null` and `breakroleinheritance` is 404. Create list folders with `AddValidateUpdateItemUsingPath` and `UnderlyingObjectType: 1`, then check the item state, not just `Exists`"
+summary: "In a custom list (BaseTemplate 100) `web/folders/AddUsingPath` creates a 'naked' folder: `ListItemAllFields` is `odata.null` (`@odata.null` under SPFx's OData v4) and `breakroleinheritance` is 404. Create list folders with `AddValidateUpdateItemUsingPath` and `UnderlyingObjectType: 1`, then check the item state, not just `Exists`"
 tags: [rest-api, lists, folders, permissions]
 applies-to: SharePoint Online (measured 2026-11-12)
 last-reviewed: 2026-11-12
@@ -34,6 +34,8 @@ GET …/GetFolderByServerRelativePath(DecodedUrl='/sites/hr/Lists/Pay/12')/ListI
 → { "odata.null": true }
 ```
 
+That is the OData v3 shape (a plain `fetch` with `odata=nometadata`). `SPHttpClient` in SPFx sends `odata-version: 4.0`, and then the same call returns `{ "@odata.context": "…$metadata#Edm.Null", "@odata.null": true }` — with an `@`. Code that checks only `odata.null` will never see the naked folder from SPFx. Check both shapes, or decide by the presence of `Id`.
+
 The folder shows up in `/folders` but not in `/items`. Permissions live on the list item (`ListItemAllFields/roleassignments`), so with no item there is nothing to break inheritance on — hence 404. In a document library the same method creates the item, which is why the trap stays hidden until a library pattern is reused in a list.
 
 ## Fix
@@ -59,6 +61,6 @@ This works even when the list has `EnableFolderCreation: false` — that setting
 
 Then make your helper check the item state, not existence:
 
-1. After creating (or finding) the folder, read `…/ListItemAllFields?$select=Id`. `odata.null` = naked folder, an `Id` = a real item. Only then break inheritance.
+1. After creating (or finding) the folder, read `…/ListItemAllFields?$select=Id`. `odata.null` or `@odata.null` = naked folder, an `Id` = a real item. Only then break inheritance. Measure that response with the same client and headers your code uses — a mock built from a console `fetch` hides the v4 shape.
 2. If a naked folder already exists and is **empty** (`?$select=ItemCount` → 0), send it to the recycle bin (`…/recycle()`) and create it again as an item. If it is not empty, stop and report it — deleting a folder whose contents have no item would lose them.
 3. Rows you add into the folder later (`AddValidateUpdateItemUsingPath` with `UnderlyingObjectType: 0` and `FolderPath` set to the folder) inherit its permissions as usual.
