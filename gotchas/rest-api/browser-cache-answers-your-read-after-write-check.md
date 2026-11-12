@@ -45,7 +45,7 @@ Could not assign a number — series "IT/2026" is being used by several people a
 
 …on a series nobody else is touching, with one fresh row per attempt (values 1, 2, 3 … each unique) left behind in the list. The allocation logic is correct and its unit tests pass; only the input is stale. A test fake that always returns fresh data cannot catch this — the fake has to imitate the cache (return the first response for a repeated URL).
 
-> **Same symptom, second cause.** In the case behind this paragraph, busting the cache was necessary but not sufficient: the allocator kept losing until a double-encoded `$filter` literal (`IT%252F2026`) was fixed as well — see [A `$filter` literal encoded twice finds nothing](filter-literal-encoded-twice-finds-nothing.md). Before blaming either, look at the request URL: a repeated address points to the cache, `%25` inside the value points to encoding.
+> **Same symptom, second cause.** In the case behind this paragraph, busting the cache alone did not fix it: the allocator kept losing until a double-encoded `$filter` literal (`IT%252F2026`) was fixed as well — see [A `$filter` literal encoded twice finds nothing](filter-literal-encoded-twice-finds-nothing.md). Before blaming either, look at the request URL: a repeated address points to the cache, `%25` inside the value points to encoding.
 
 ## Cause
 

@@ -17,7 +17,7 @@ last-reviewed: 2026-11-12
 A query that works when typed into the browser console returns nothing from the code. No 400, no exception — an empty `value` array, from which the calling code draws a perfectly reasonable wrong conclusion:
 
 - "My items" is empty although the user has items (filter on a UPN — `@` went out as `%2540`).
-- A uniqueness check says "this number is free" when it is not.
+- A uniqueness check built the same way would report "this number is free" when it is not.
 - An append-only number allocator, which re-reads the series after adding its row, never sees its own row and reports that it lost a race against other users — on a series nobody else is touching (filter on `IT/2026` — `/` went out as `%252F`).
 
 The network tab shows the tell: **`%25` inside the filter value**.
