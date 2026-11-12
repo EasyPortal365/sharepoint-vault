@@ -1,7 +1,7 @@
 ---
 title: Search REST returns 500 "unknown error" and 429 "low resources" for minutes at a time — retry the read, don't fix the query
 short-title: Search 500 / 429 without Retry-After are transient — retry the read
-summary: SharePoint Search REST can fail for a few minutes with HTTP 500 SearchServiceException and HTTP 429 low-resources errors, both without Retry-After; the same query succeeds seconds later, so retry reads briefly with a fixed backoff and show a truthful error with a Try again button
+summary: SharePoint Search REST can fail for a few minutes with HTTP 500 SearchServiceException (no Retry-After) and HTTP 429 low-resources errors; the same query succeeds seconds later, so retry reads briefly with a fixed backoff and show a truthful error with a Try again button
 tags: [search, rest-api, throttling, retry, error-handling]
 applies-to: SharePoint Online Search REST (/_api/search/query, /_api/search/postquery), SPFx SPHttpClient
 last-reviewed: 2026-11-12
@@ -9,9 +9,9 @@ last-reviewed: 2026-11-12
 
 # Search REST returns 500 "unknown error" and 429 "low resources" for minutes at a time — retry the read, don't fix the query
 
-> **Bottom line.** A Search REST call that fails with HTTP 500 `SearchServiceException` ("An unknown error occurred") or HTTP 429 ("The query could not be completed because the system is low on resources") is usually the service, not your KQL — and neither response carries `Retry-After`. Retry the read twice with a short fixed backoff, then show an honest error with a *Try again* button.
+> **Bottom line.** A Search REST call that fails with HTTP 500 `SearchServiceException` ("unknown error") or HTTP 429 (the system is "low on resources") is usually the service, not your KQL — and the 500 carries no `Retry-After` to wait for. Retry the read twice with a short fixed backoff (honouring `Retry-After` when it is there), then show an honest error with a *Try again* button.
 >
-> **Ve zkratce.** Když Search REST vrátí HTTP 500 `SearchServiceException` („Došlo k neznámé chybě“) nebo HTTP 429 („systém má málo prostředků“), bývá to služba, ne tvoje KQL – a ani jedna odpověď nenese `Retry-After`. Čtení zopakuj dvakrát s krátkou pevnou prodlevou a pak ukaž poctivou chybu s tlačítkem *Zkusit znovu*.
+> **Ve zkratce.** Když Search REST vrátí HTTP 500 `SearchServiceException` („Došlo k neznámé chybě“) nebo HTTP 429 („systém má málo prostředků“), bývá to služba, ne tvoje KQL – a 500 nenese `Retry-After`, podle kterého by se dalo čekat. Čtení zopakuj dvakrát s krátkou pevnou prodlevou (`Retry-After` dodrž, když přijde) a pak ukaž poctivou chybu s tlačítkem *Zkusit znovu*.
 
 ## Symptom
 
@@ -25,10 +25,10 @@ Usually it works. Then, for a few minutes, it fails with:
 
 ```json
 {"odata.error":{"code":"-1, Microsoft.Office.Server.Search.REST.SearchServiceException",
- "message":{"lang":"en-US","value":"An unknown error occurred."}}}
+ "message":{"lang":"cs-CZ","value":"Došlo k neznámé chybě."}}}
 ```
 
-…interleaved with HTTP 429 and the message *"The query could not be completed because the system is low on resources."*
+…interleaved with HTTP 429 whose message says the query could not be completed because the system is low on resources. (Both messages are localized; the tenant above runs in Czech, so the code is the reliable part.)
 
 Measured live in one tenant, same user, same request headers (`odata-version: 3.0` included):
 
@@ -37,11 +37,11 @@ Measured live in one tenant, same user, same request headers (`odata-version: 3.
 | The site query from the root site, three times | 200 each time |
 | The same query from another site, three times | 500 each time |
 | `querytext='*'` from that other site | 500 |
-| One minute later: root site | 500; the other site 200 |
+| About a minute later, `*` from the root site, then from the other site | 500 at first on both, then 200 on both within seconds |
 | A few minutes later: `*` ten times, 2 s apart | 10 × 200 |
 | Deliberately broken KQL (`(contentclass:STS_Site OR`) | 200 |
 | A non-existent managed property | 200 |
-| `Retry-After` header on any 500 or 429 | absent |
+| `Retry-After` header on the 500 responses | absent |
 
 The first two rows look like a site-specific problem. They aren't one. The pattern dissolves as soon as you repeat the probe a minute later.
 
@@ -49,10 +49,10 @@ The first two rows look like a site-specific problem. They aren't one. The patte
 
 The Search service is briefly overloaded or failing. Nothing is wrong with the query, the site the call is made from, or the data. Malformed KQL doesn't produce a 500 either: Search tolerates it and returns 200.
 
-Generic retry helpers often miss this case for two reasons:
+A retry helper written for list and file throttling misses this case for two reasons:
 
-- They retry only 429 and 503, and only when `Retry-After` is present. Search sends neither the header nor (here) a 503.
-- They don't retry 500 at all, because for most REST endpoints a 500 is a real bug.
+- It retries only 429 and 503, often only when `Retry-After` is present. The Search 500 has no such header.
+- It doesn't retry 500 at all, because for most REST endpoints a 500 is a real bug.
 
 ## Fix
 
