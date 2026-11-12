@@ -4,7 +4,7 @@ short-title: Item edit rights cover every field
 summary: "Unique permissions on an item don't separate fields: whoever may edit it can set Status, Approver or a lookup Id via REST – derive trust from admin-only data and version history"
 tags: [permissions, item-level, security, rest-api, versioning]
 applies-to: SharePoint Online
-last-reviewed: 2026-10-09
+last-reviewed: 2026-11-12
 ---
 
 # Item-level edit rights cover every field – don't trust status, approver or link fields the user can write
@@ -35,5 +35,5 @@ Item-level permissions are per item, not per field: the permission scopes are si
 
 ## Notes
 
-- Residual risk: a user with edit rights may be able to overwrite *Modified By* through `ValidateUpdateListItem` (assumption based on how SharePoint Online behaves – not verified live). Version checks raise the bar and catch ordinary tampering; a real boundary is a decision written somewhere the user can't write (e.g. a server-side function with app permissions).
+- Residual risk: a user with edit rights may be able to overwrite *Modified By* through `ValidateUpdateListItem` (assumption based on how SharePoint Online behaves – not verified live for edit levels). Measured 2026-11-12 for a user who may only **add** items: `Author`, `Editor` and `Created` sent with `AddValidateUpdateItemUsingPath` were silently replaced by the caller and the current time (HTTP 200, no error) – see [List items with authors, dates and history](../lists/list-items-keep-authors-dates-and-version-history.md). Version checks raise the bar and catch ordinary tampering; a real boundary is a decision written somewhere the user can't write (e.g. a server-side function with app permissions).
 - Versioning must be on for the list – it usually is for evidence-like lists anyway.

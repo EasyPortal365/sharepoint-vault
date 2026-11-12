@@ -1,17 +1,17 @@
 ---
 title: Migrating list items with original authors, dates — and their version history
 short-title: List items with authors, dates and history
-summary: Copy and Move does not do lists, but REST does the job item by item — `AddValidateUpdateItemUsingPath` takes Author, Editor, Created and Modified at creation (one call, one version), version history can be replayed with `ValidateUpdateListItem(bNewDocumentUpdate:false)`, approval goes in the same call, attachments add a version, and two field formats are dropped without any error
+summary: Copy and Move does not do lists, but REST does the job item by item — `AddValidateUpdateItemUsingPath` takes Author, Editor, Created and Modified at creation (one call, one version), version history can be replayed with `ValidateUpdateListItem(bNewDocumentUpdate:false)`, approval goes in the same call, attachments add a version, two field formats are dropped without any error, and a user who may only add items cannot set the four fields – SharePoint silently keeps the real author and time
 tags: [lists, migration, rest-api, metadata, authorship, versioning, content-approval]
 applies-to: SharePoint Online
-last-reviewed: 2026-10-27
+last-reviewed: 2026-11-12
 ---
 
 # Migrating list items with original authors, dates — and their version history
 
-> **Bottom line.** The Copy and Move API (`CreateCopyJobs`) handles files and folders only. For list items, create each one with `AddValidateUpdateItemUsingPath` and pass `Author`, `Editor`, `Created` and `Modified` in the same call — all four stick and the item has a single version. Older versions can be **replayed**: one `ValidateUpdateListItem` call per version with `bNewDocumentUpdate: false`, carrying that version's values plus its `Editor` and `Modified`. Times are kept to the minute, not the second. Always read the item back: two value formats are discarded with HTTP 200 and no error.
+> **Bottom line.** The Copy and Move API (`CreateCopyJobs`) handles files and folders only. For list items, create each one with `AddValidateUpdateItemUsingPath` and pass `Author`, `Editor`, `Created` and `Modified` in the same call — all four stick and the item has a single version. Older versions can be **replayed**: one `ValidateUpdateListItem` call per version with `bNewDocumentUpdate: false`, carrying that version's values plus its `Editor` and `Modified`. Times are kept to the minute, not the second. Always read the item back: two value formats are discarded with HTTP 200 and no error. This needs high rights: for a user who may only add items, SharePoint silently replaces the four values with the caller and the current time.
 >
-> **Ve zkratce.** Copy and Move API (`CreateCopyJobs`) umí jen soubory a složky. Položky seznamu se přenášejí po jedné: `AddValidateUpdateItemUsingPath` s `Author`, `Editor`, `Created` a `Modified` v témže volání – všechny čtyři drží a položka má jedinou verzi. Starší verze jde **přehrát**: za každou verzi jedno `ValidateUpdateListItem` s `bNewDocumentUpdate: false`, hodnotami té verze a jejím `Editor` a `Modified`. Časy drží na minutu, ne na vteřinu. Položku vždy přečíst zpátky: dva tvary hodnot se zahodí s HTTP 200 a bez chyby.
+> **Ve zkratce.** Copy and Move API (`CreateCopyJobs`) umí jen soubory a složky. Položky seznamu se přenášejí po jedné: `AddValidateUpdateItemUsingPath` s `Author`, `Editor`, `Created` a `Modified` v témže volání – všechny čtyři drží a položka má jedinou verzi. Starší verze jde **přehrát**: za každou verzi jedno `ValidateUpdateListItem` s `bNewDocumentUpdate: false`, hodnotami té verze a jejím `Editor` a `Modified`. Časy drží na minutu, ne na vteřinu. Položku vždy přečíst zpátky: dva tvary hodnot se zahodí s HTTP 200 a bez chyby. Chce to vysoká práva: uživateli, který smí jen přidávat, SharePoint všechny čtyři hodnoty tiše nahradí volajícím a aktuálním časem.
 
 All results below were measured on 2026-10-27 on a custom list with versioning on (Czech locale, web time zone Pacific). The author and editor were deliberately a **different account** than the caller, so a match proves something. Every verdict comes from reading the item back, not from the response.
 
@@ -37,6 +37,12 @@ await fetch(`${web}/_api/web/GetList(@a)/AddValidateUpdateItemUsingPath?@a='${en
 ```
 
 Read back: `AuthorId`, `EditorId`, `Created`, `Modified` all as sent, `OData__UIVersionString` `1.0`, and the single version carries the foreign editor. The date must be in the web's locale and time zone — see [Created/Modified on a document library](created-modified-on-a-document-library.md) for how to build it with `utctolocaltime`.
+
+### Who can set them: not a user who may only add items
+
+The measurements above ran as a site owner. On 2026-11-12 the same call was sent by a user whose only right on the list was a custom add-only level (*Add Items* + *View Items*, item-level read and edit limited to their own items), with a foreign `Author` and `Editor` and an old `Created`. The response was HTTP 200 with `HasException: false` on every field — and the item read back with **the caller** as `Author` and `Editor`, `Created` = the time of the call, version `1.0`. SharePoint silently replaced the values instead of rejecting them.
+
+So in an add-only list the server's `Author` and `Created` do show who wrote the row and when, even if the client tries to send something else. Two limits: Contribute and Edit levels were not measured here, and anyone with Full Control can backdate a row exactly as shown above.
 
 Creating a bare item first and then sending the four fields with `ValidateUpdateListItem` also works with `bNewDocumentUpdate: true`. With `false` you get a version 2.0, and version 1.0 keeps **the caller and today's time** in the history. Creating with all four at once avoids both.
 
