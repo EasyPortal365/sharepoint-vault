@@ -66,6 +66,7 @@ If a shared read helper encodes the whole filter, fix the **helper** — do not 
 - **Use a value that needs encoding:** a slash, a diacritic and an apostrophe together (`KEY'Š/2026`), plus a second series that must *not* be counted.
 - **Negative control:** put the extra `encodeURIComponent` back and watch the test fail. Here it failed on every case with exactly the error message seen in production.
 - A grep for `encodeURIComponent(` whose argument contains the literal helper finds the existing occurrences in a codebase in seconds; a lint rule for the same shape keeps them out.
+- **The grep misses the helper shape.** `readWhere('Upn eq ' + literal(upn))` has no `encodeURIComponent` on the line; the second encoding sits in the function body. A check has to follow the call: for a call whose argument contains the literal helper, look up the called function and ask whether it encodes that parameter. In one sweep over a few dozen apps the inline grep found four occurrences and only the call-following check found the fifth — a "read tasks by filter" method whose value happened to be plain ASCII, so it worked by luck.
 
 ## Notes
 
