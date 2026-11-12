@@ -18,7 +18,7 @@ last-reviewed: 2026-11-12
 You build a one-click setup for a site that will hold confidential data (HR files, payroll). The site is a modern team site without a Microsoft 365 group, custom scripts disabled (the default). The setup should exclude the site from search, turn off access requests and member sharing, and activate the lockdown feature. Then:
 
 - `MERGE /_api/web` with `{ "NoCrawl": true }` returns **403**, also when the caller is a site collection admin. The same through CSOM fails too.
-- `POST /_api/web/SetUseAccessRequestDefaultAndUpdate` with `{ "useAccessRequestDefault": false }` returns **200**. Reading the web afterwards still shows `UseAccessRequestDefault: true`.
+- `POST /_api/web/SetUseAccessRequestDefaultAndUpdate(useAccessRequestDefault=false)` returns **200**. Reading the web afterwards still shows `UseAccessRequestDefault: true`.
 
 ## Cause
 
