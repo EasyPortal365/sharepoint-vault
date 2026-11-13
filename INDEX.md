@@ -2,7 +2,7 @@
 
 Every single thing in the vault, on one page. Section names link to folder READMEs; leaves link straight to the content.
 
-*Last updated: 2026-11-12*
+*Last updated: 2026-11-13*
 
 - 🧰 **[scripts/](scripts/)** — PowerShell scripts with comment-based help, read-only unless stated
   - [Terminal animations](scripts/media/) — the writing scripts as an animated PowerShell console; plain SVG, no JavaScript, respects `prefers-reduced-motion`
@@ -316,6 +316,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [Unanchored `.funcignore` patterns strip your dependencies](gotchas/azure-functions/funcignore-unanchored-pattern-strips-node-modules.md) — Azure/functions-action applies `.funcignore` with gitignore semantics to every path in the package, so `src/` or `test/` without a leading slash also empties those folders inside node_modules. A dependency whose entry file lives in `src/` (debug, for one) fails to load, the worker registers no functions and the function routes return 404. Anchor root patterns with a leading slash
     - [Fixed `WEBSITE_CONTENTSHARE` + slots = production back on the old share](gotchas/azure-functions/website-contentshare-fixed-value-breaks-after-slot-swap.md) — On a function app with deployment slots, `WEBSITE_CONTENTSHARE` isn't slot-sticky: a swap moves it together with the code. A template that pins the production value (say `toLower(appName)`) would point production back at its pre-swap share, which the staging slot now uses, the next time you deploy it. Leave the setting out of the template, as Microsoft recommends
     - [Azure OpenAI deployment type decides where prompts are processed](gotchas/azure-functions/aoai-deployment-type-decides-where-prompts-are-processed.md) — A GlobalStandard deployment in an EU region may process prompts in any Azure region; only Data Zone (EU Data Boundary) or regional Standard keep processing in the zone or geography — write data-location claims from the SKU your script actually creates, and print it
+    - [Public-mode flag opens every endpoint, not just the chat](gotchas/azure-functions/public-mode-flag-opens-every-endpoint.md) — One Function App serves a signed-in SPFx app and an anonymous website chatbot; the website instance switches off the token check, and every other HTTP function in the same app (usage stats, storage read/write, file parsing) quietly becomes anonymous too — gate each non-public endpoint on the mode flag and enforce it with a test that scans every app.http registration
   - **search/**
     - [Search ignores unknown managed properties](gotchas/search/unknown-managed-properties-fail-silently.md) — A made-up property name returns HTTP 200 with full results; auto-created Choice properties are not queryable; probe with a fake name, map to RefinableString
     - [Site missing from the index looks like a permissions problem](gotchas/search/site-missing-from-the-index-looks-like-a-permissions-problem.md) — Three queries tell you whether the site is in the index at all, before you debug a query that was never wrong
