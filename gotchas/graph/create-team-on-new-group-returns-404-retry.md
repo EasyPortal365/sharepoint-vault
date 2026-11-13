@@ -9,9 +9,9 @@ last-reviewed: 2026-11-13
 
 # Creating a team on a brand-new Microsoft 365 group returns 404
 
-> **Bottom line.** If you call `PUT /groups/{id}/team` right after `POST /groups`, Graph often answers **404**: the new group is not replicated yet. The same call succeeds a few minutes later under the same account. Retry **only on 404** (Microsoft suggests a few retries 10 seconds apart, then waiting up to 15 minutes); return 403/400 at once. And if the team still isn't created, say so as a warning — a provisioning log that shows "could not create the team" with a green tick is a state that lies.
+> **Bottom line.** If you call `PUT /groups/{id}/team` right after `POST /groups`, Graph often answers **404**: the new group is not replicated yet. The same call succeeds a few minutes later under the same account. Retry **only on 404** (Microsoft suggests up to three retries 10 seconds apart; if it still fails, wait until 15 minutes have passed since the group was created); return 403/400 at once. And if the team still isn't created, say so as a warning — a provisioning log that shows "could not create the team" with a green tick is a state that lies.
 >
-> **Ve zkratce.** `PUT /groups/{id}/team` hned po `POST /groups` vrací **404** – Graph novou skupinu ještě replikuje; týž požadavek o pár minut později projde. Opakujte **jen 404** (Microsoft radí několik pokusů po 10 s, jinak počkat až 15 minut), 403/400 vraťte hned. A když tým nevznikne, ukažte to jako upozornění – „tým se nepodařilo založit“ se zelenou fajfkou je stav, který lže.
+> **Ve zkratce.** `PUT /groups/{id}/team` hned po `POST /groups` vrací **404** – Graph novou skupinu ještě replikuje; týž požadavek o pár minut později projde. Opakujte **jen 404** (Microsoft radí až tři pokusy po 10 s; když ani pak, počkat, až od založení skupiny uplyne 15 minut), 403/400 vraťte hned. A když tým nevznikne, ukažte to jako upozornění – „tým se nepodařilo založit“ se zelenou fajfkou je stav, který lže.
 
 ## Symptom
 
@@ -35,7 +35,7 @@ Measured on a test tenant (delegated, Global Administrator):
 | When | `PUT /groups/{id}/team` |
 |---|---|
 | right after the group and site were ready | 404 |
-| about 5 minutes later, same account, same body | 201, team created |
+| about 5 minutes later, same account, same body | succeeded, team created |
 
 So it is not a permission problem — it is replication. Microsoft Learn says the same on the [Create team](https://learn.microsoft.com/en-us/graph/api/team-put-teams?view=graph-rest-1.0) page: a group created less than 15 minutes ago may make the call fail, and it suggests retrying.
 
