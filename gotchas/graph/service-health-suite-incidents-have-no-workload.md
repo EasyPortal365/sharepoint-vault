@@ -1,7 +1,7 @@
 ---
 title: Service health — a cross-service outage is filed under "Microsoft 365 suite", not under SharePoint or Exchange
 short-title: Suite incidents (MO…) slip past a per-service filter
-summary: "Filtering `serviceAnnouncement/issues` by `service` dropped MO1550821 (12 Nov 2026), which took down SharePoint, Exchange and Teams — its service was `Microsoft 365 suite`"
+summary: "Filtering `serviceAnnouncement/issues` by `service` dropped MO1550821 (12 Nov 2026, users unable to connect to multiple Microsoft 365 services) — its service was `Microsoft 365 suite`"
 tags: [graph, service-health, service-communications, monitoring, status-page]
 applies-to: Microsoft Graph v1.0 /admin/serviceAnnouncement/issues (application ServiceHealth.Read.All)
 last-reviewed: 2026-11-13
@@ -43,6 +43,6 @@ function affected(issue): string[] {
 
 ## Notes
 
-- Verified 2026-11-13 on one tenant with an app-only token (`ServiceHealth.Read.All`): after the change, MO1550821 appeared on the next 15-minute poll. The `service` value was inferred from the `MO` prefix and confirmed by the code path (the issue matched no workload regex and was picked up only by the suite branch).
+- Verified 2026-11-13 on one tenant with an app-only token (`ServiceHealth.Read.All`): after the change, MO1550821 (status `serviceDegradation`, start 2026-11-12T18:26:10Z) appeared on the next 15-minute poll. It reached the data only through the suite branch, which requires `service` to match `/microsoft 365 suite/i`; the raw `service` string itself wasn't logged.
 - Most incidents are partial ("some users", one feature) and often run for days. Don't turn them into an uptime percentage: weighting them as partial downtime put Exchange at 88 % over 90 days, which read as "down for days". Show days with reports, and reserve "outage" for `serviceInterruption`.
-- `healthOverviews.status` can say `serviceDegradation` because of advisories. If your page ignores advisories, derive the per-service badge from open incidents only, or the badge contradicts the incident list.
+- Before the fix, `healthOverviews` reported SharePoint and Teams as `serviceDegradation` while no incident filed under them was open (the cause wasn't isolated — likely the suite incident or advisories). Derive the per-service badge from the incidents you actually show, or the badge contradicts the incident list.
