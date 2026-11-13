@@ -71,3 +71,4 @@ await createTeamWithRetry(() => graph.api(`/groups/${groupId}/team`).put(teamSet
 - A `404` from `/groups/{id}/...` right after `POST /groups` usually means "not replicated yet", not "doesn't exist".
 - Test the hypothesis by repeating the exact call a few minutes later under the same account before you touch permissions.
 - Best-effort steps need three states in the log: done, warning, failed. A swallowed exception must not look like success.
+- Once failures are visible, watch for false ones: with a delegated token, the user who calls `POST /groups` becomes an owner automatically, so adding the same person as owner again returns 400 "One or more added object references already exist". Treat that as success — see [Group `members/$ref` needs object ID](group-member-ref-needs-object-id.md) (measured on the same run).
