@@ -18,8 +18,8 @@ last-reviewed: 2026-11-13
 Nothing visible. The website chat works; a penetration test of the public instance then shows, with nothing but the allowed `Origin` header:
 
 - `GET /api/usage` returns the monthly usage summary (requests, tokens per day),
-- the storage-backed endpoints built for the signed-in app answer `200` for reads **and** accept writes,
-- `POST /api/extractPdf` parses whatever base64 PDF you send,
+- the storage-backed endpoints built for the signed-in app answer `200` for reads, and their write routes need no token either,
+- `POST /api/extractPdf` accepts a base64 PDF for parsing from anyone,
 - an endpoint that fetches URLs is closed only because its allowlist app setting happens to be empty.
 
 The `Origin` check does not help: it stops a browser on a foreign page, not `curl -H "Origin: https://contoso.com"`.
