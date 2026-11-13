@@ -4,7 +4,7 @@ short-title: Suite incidents (MO…) slip past a per-service filter
 summary: "Filtering `serviceAnnouncement/issues` by `service` dropped MO1550821 (12 Nov 2026, users unable to connect to multiple Microsoft 365 services) — its service was `Microsoft 365 suite`"
 tags: [graph, service-health, service-communications, monitoring, status-page]
 applies-to: Microsoft Graph v1.0 /admin/serviceAnnouncement/issues (application ServiceHealth.Read.All)
-last-reviewed: 2026-11-13
+last-reviewed: 2026-11-14
 ---
 
 # Suite incidents slip past a per-service filter
@@ -44,5 +44,7 @@ function affected(issue): string[] {
 ## Notes
 
 - Verified 2026-11-13 on one tenant with an app-only token (`ServiceHealth.Read.All`): after the change, MO1550821 (status `serviceDegradation`, start 2026-11-12T18:26:10Z) appeared on the next 15-minute poll. It reached the data only through the suite branch, which requires `service` to match `/microsoft 365 suite/i`; the raw `service` string itself wasn't logged.
-- Most incidents are partial ("some users", one feature) and often run for days. Don't turn them into an uptime percentage: weighting them as partial downtime put Exchange at 88 % over 90 days, which read as "down for days". Show days with reports, and reserve "outage" for `serviceInterruption`.
+- Most incidents are partial ("some users", one feature) and often run for days. Don't weight them into an uptime percentage: counting them as partial downtime put Exchange at 88 % over 90 days, which read as "down for days". If you show uptime, compute it from outages only, state the definition on the page, and show days with reports separately.
+- Don't rely on `serviceInterruption` alone to find outages. On the same tenant, none of the incidents for SharePoint, Exchange, Teams, OneDrive and Entra over 90 days (to 13 Nov 2026) had that status — even EX1550543, "Users may be unable to connect to their mailboxes in Exchange Online through multiple connection methods", was `serviceDegradation`, as was MO1550821. A status-only rule reports 100 % through a real outage; we count suite incidents as outages and say so in the definition.
+- Polling incrementally with `lastModifiedDateTime ge <last run>` means a changed mapping rule never reaches old incidents. Store a rules version with your sync state and re-read the full window once when it changes.
 - Before the fix, `healthOverviews` reported SharePoint and Teams as `serviceDegradation` while no incident filed under them was open (the cause wasn't isolated — likely the suite incident or advisories). Derive the per-service badge from the incidents you actually show, or the badge contradicts the incident list.
