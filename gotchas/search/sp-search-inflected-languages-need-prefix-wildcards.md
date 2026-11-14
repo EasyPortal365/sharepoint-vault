@@ -75,9 +75,12 @@ returns phrases and full inflected words anyway.
   its hits in, run it at the same relaxation step at which the main search succeeded. Measured: `domova
   Path:"…/library/*"` returned 2 hits, the full question `Kolik dní můžu pracovat z domova Path:"…/library/*"`
   returned 0. The main search had succeeded only at the OR-of-stems step, but the scoped query sent only the strict
-  form, so it added nothing and the "prefer these places" setting silently did nothing. Use the strict form first,
-  and the OR-of-stems form only when the main search needed it too. The narrower scope already makes the results
-  more precise.
+  form, so it added nothing and the "prefer these places" setting silently did nothing. Give the scoped query its
+  own relaxation ladder: strict form first, then OR-of-stems when the strict form returns too little. The places
+  were chosen for this topic, so a one-word match there is far more likely to be relevant than anywhere in the
+  tenant. Do not tie it to the step at which the main search succeeded: the stem AND query can "succeed" across the
+  tenant with unrelated hits (here: three app sites), and the scoped OR query is then never sent. If the scoped
+  hits make the answer exclusive ("answer only from these places"), base that only on strict hits.
 - Evaluate on real user conversations, not on demo content. On demo data, titles tend to match the test questions
   word for word, and neither failure shows up.
 
