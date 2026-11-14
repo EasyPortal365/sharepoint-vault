@@ -9,9 +9,9 @@ last-reviewed: 2026-11-14
 
 # The hosted workbench restores your web parts on the next site you open in the same tab
 
-> **Bottom line.** The hosted workbench (`/_layouts/15/workbench.aspx`) stores its canvas in `sessionStorage` under `sp_webpart_workbench_state` — without you pressing Save, and keyed by the tenant origin, not by the site. Open the workbench of *another* site in the same tab and the web parts you added before are restored and boot there, with the **new site's** `pageContext`. If your web part provisions lists on first run, it now does so on the wrong site. Clear the key (or remove the web part from the canvas, or use a fresh tab) before switching sites.
+> **Bottom line.** The hosted workbench (`/_layouts/15/workbench.aspx`) stores its canvas in `sessionStorage` under `sp_webpart_workbench_state` — without you pressing Save, and keyed by the tenant origin, not by the site. Open the workbench of *another* site in the same tab and the web parts you added before are restored and boot there, with the **new site's** `pageContext`. If your web part provisions lists on first run, it now does so on the wrong site. Clear the key (or remove the web part from the canvas, or open a fresh tab — not a duplicated one) before switching sites.
 >
-> **Ve zkratce.** Hostovaný workbench si plátno drží v `sessionStorage` pod klíčem `sp_webpart_workbench_state` – bez uložení a pro celý tenant, ne pro web. Když v téže kartě otevřeš workbench jiného webu, vložené webparty se obnoví a spustí s `pageContext` NOVÉHO webu. Webpart, který při prvním spuštění zakládá listy, je založí na cizím webu. Před přechodem na jiný web klíč smaž (nebo webpart z plátna odeber, případně otevři novou kartu).
+> **Ve zkratce.** Hostovaný workbench si plátno drží v `sessionStorage` pod klíčem `sp_webpart_workbench_state` – bez uložení a pro celý tenant, ne pro web. Když v téže kartě otevřeš workbench jiného webu, vložené webparty se obnoví a spustí s `pageContext` NOVÉHO webu. Webpart, který při prvním spuštění zakládá listy, je založí na cizím webu. Před přechodem na jiný web klíč smaž (nebo webpart z plátna odeber, případně otevři novou kartu – ne duplikovanou, ta si `sessionStorage` kopíruje).
 
 ## Symptom
 
@@ -34,7 +34,7 @@ Before you navigate to another site's workbench in the same tab:
 sessionStorage.removeItem('sp_webpart_workbench_state');
 ```
 
-Or delete the web part from the canvas, or use a new tab (a new tab starts with an empty `sessionStorage`).
+Or delete the web part from the canvas, or open the other site in a fresh tab you start yourself (typed URL or bookmark) — a duplicated tab copies `sessionStorage`, so it carries the canvas along.
 
 If it has already happened:
 
