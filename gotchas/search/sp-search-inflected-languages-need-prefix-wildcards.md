@@ -4,7 +4,7 @@ short-title: Inflected-language queries hit 0 — use `stem*`, and zero hits is 
 summary: KQL is implicit AND and matches exact word forms, so Czech inflected forms miss; add a `stem*` variant in code, relax before giving up, and never serve a date-sorted inventory as sources for a specific question
 tags: [search, kql, rag, ai, language]
 applies-to: SharePoint Online Search REST (/_api/search/query)
-last-reviewed: 2026-10-29
+last-reviewed: 2026-11-14
 ---
 
 # SharePoint Search finds nothing for a question in an inflected language — add prefix-wildcard stems
@@ -70,6 +70,14 @@ returns phrases and full inflected words anyway.
   the same tenant, with the same synonym group and no site scope: `schval* (strop* OR limit* OR pravomoc*)` returned 1 245 hits without the target directive in the
   top five, `schvalov* (strop* OR limit* OR pravomoc*)` returned 169 with it at position 2.
 - KQL supports the wildcard only at the end of a term, never in front of it.
+- **A supplementary query into a narrower scope must not be stricter than the main search.** If you boost
+  preferred places by running an extra query restricted to them (`(query) Path:"https://…/Benefits/*"`) and merging
+  its hits in, run it at the same relaxation step at which the main search succeeded. Measured: `domova
+  Path:"…/library/*"` returned 2 hits, the full question `Kolik dní můžu pracovat z domova Path:"…/library/*"`
+  returned 0. The main search had succeeded only at the OR-of-stems step, but the scoped query sent only the strict
+  form, so it added nothing and the "prefer these places" setting silently did nothing. Use the strict form first,
+  and the OR-of-stems form only when the main search needed it too. The narrower scope already makes the results
+  more precise.
 - Evaluate on real user conversations, not on demo content. On demo data, titles tend to match the test questions
   word for word, and neither failure shows up.
 
