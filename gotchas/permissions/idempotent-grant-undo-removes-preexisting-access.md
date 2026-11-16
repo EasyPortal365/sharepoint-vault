@@ -21,7 +21,7 @@ last-reviewed: 2026-11-17
 
 ## Cause
 
-Both writes are idempotent and return 2xx whether or not anything changed. The audit records what was **called**, and the inverse step is derived from the call: `addRole` → `removeRole`, `addToGroup` → `removeFromGroup`.
+Both writes are idempotent and return 2xx whether or not anything changed. Measured: calling `addroleassignment` twice for the same principal and role returns **200** both times and leaves one binding; posting the same login to `sitegroups(id)/users` twice returns **201** both times and leaves one member. The audit records what was **called**, and the inverse step is derived from the call: `addRole` → `removeRole`, `addToGroup` → `removeFromGroup`.
 
 ## Fix
 
