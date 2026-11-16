@@ -4,7 +4,7 @@ short-title: Retrying without new columns on any 400 loses data
 summary: When one new column is missing, a group-wide retry drops the ones that exist too; drop only the fields the error names as not existing, loop, and tell the user what was left out
 tags: [rest-api, lists, error-handling, provisioning]
 applies-to: SharePoint Online REST
-last-reviewed: 2026-11-11
+last-reviewed: 2026-11-16
 ---
 
 # Retrying a write without the "new" columns on any 400 silently loses data — drop only the column the error names
@@ -85,6 +85,7 @@ The caller shows the result honestly: *"Saved, but without the description – t
 
 ## Notes
 
+- **One `$select` shared by two lists is a permanent 400 on one of them.** A media app read two libraries with the same `$select` string. A column added to only one library (in its provisioning manifest) went into that shared string, so the other library answered 400 *"The field or property 'X' does not exist"* on every load — for five months. A read fallback "on 400, select only built-in fields" hid it: the app kept working, only without type, collection, tags, video address and expiry date, so expired media stopped being hidden. Unit tests used a fake SharePoint that answered 200 to any `$select`. Fixes: build `$select` per target list from the columns that list really has; let the fake server in tests reject unknown columns with 400 like the real one; compare every `$select` with the provisioning manifest in a test; log the fallback (`console.warn`) so a read that always falls back is visible.
 - **Search SharePoint's text, not your error message.** A helper that throws `SP GET <url>: HTTP 400 – <body>` (ours does) puts the request URL in the message, and the URL of a read carries the whole `$select`. Searching the full message then "finds" every selected field, and the read drops the whole group again. This one slipped past unit tests whose error URL had no `$select`; a test with a real read URL caught it.
 - **Match the quoted name.** SharePoint quotes the column (`'X'`). A plain `indexOf('Party')` also matches `PartyContact`, and a bare whole-word match on a column named `Data` would hit `'SP.Data.…ListItem'` in every missing-column error.
 - **The error body may be truncated** by your HTTP helper (ours keeps the first 200 characters). The sentence fits with room to spare for normal internal names; if it does not, the error propagates — the safe direction.
