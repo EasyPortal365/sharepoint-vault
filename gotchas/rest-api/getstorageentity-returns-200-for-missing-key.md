@@ -4,7 +4,7 @@ short-title: "`GetStorageEntity` returns 200 for a missing key"
 summary: Unset tenant property answers `200 {"odata.null":true}`; "unset" and "failed" are indistinguishable by status code, and writing needs Tenant Admin — same trap in `…?$select=Exists`, which returns `200 {"Exists":false}`
 tags: [rest-api, tenant-properties, spfx, configuration]
 applies-to: SharePoint Online
-last-reviewed: 2026-09-24
+last-reviewed: 2026-11-16
 ---
 
 # `GetStorageEntity` returns 200 for a missing key, not 404
@@ -39,6 +39,8 @@ The read works from **any site collection** in the tenant, for ordinary users. T
 | Transient service issue | 5xx | (error) |
 
 Writing (`SetStorageEntity`) requires **Tenant Admin**, which is why it returns 403 when called from a web part running as a normal user.
+
+Measured in November 2026: `SetStorageEntity` called from the browser returned **403 even for a Global Admin who was also site collection admin of the tenant app catalog**. That account's effective mask on the catalog web was `Low fffbffff`, i.e. without `AddAndCustomizePages`, because custom scripts are off on the catalog. Our assumption is that NoScript is what blocks it, but whatever the cause, a web part cannot write a tenant property even in an admin's session. To store tenant-wide settings for a **tenant-wide extension**, use its own item in the app catalog's `TenantWideExtensions` list instead. A `MERGE` of `TenantWideExtensionComponentProperties` from the browser returned 204 for the catalog admin, and SharePoint hands those properties to the extension on every page, so readers need no permission at all.
 
 ## Fix
 
