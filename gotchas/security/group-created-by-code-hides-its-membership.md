@@ -4,7 +4,7 @@ short-title: A group created by code hides its own membership
 summary: "`sitegroups` POST defaults to `OnlyAllowMembersViewMembership: true`, so only a member or the account that ran provisioning can read the members; Full Control does not help and identical permission masks prove it"
 tags: [security, permissions, groups, provisioning, rest-api]
 applies-to: SharePoint Online
-last-reviewed: 2026-08-17
+last-reviewed: 2026-11-16
 ---
 
 # A SharePoint group created by code hides its own membership
@@ -75,6 +75,7 @@ Three things decide whether this fix actually lands:
 1. **Do not hang it on a schema-version gate.** Existing deployments already have the groups, so a "create if missing" path never runs again. Make it a separate idempotent step with its own marker, and bump that marker when you change the step — otherwise the sites that need it most are the ones that skip it.
 2. **The write needs ManagePermissions.** A regular member gets 403; keep the step fail-safe and let the first administrator's visit do the work. A per-user marker (rather than one stored on the site) is what makes that possible.
 3. **Decide it per group, not globally.** Where membership is genuinely sensitive — support queues with item-level security, for instance — `true` is the right value and the UI should stop asking for the member list instead.
+4. **When membership itself is personal data, never flip it to `false`.** A group such as "employees with a recorded workplace injury", "on probation" or "in a disciplinary process" turns into a public list the moment its membership is visible: anyone who can read the site calls `/_api/web/sitegroups/getbyname('<name>')/users` (or opens `people.aspx`) and gets names and e-mail addresses — no list permission involved. Keep `true`, make the person who manages the role the group owner, and let the app detect the role from the user's side: `/_api/web/currentuser/groups` returns the groups the *current* user belongs to without reading anyone else's membership. Ask "is *being in this role* sensitive?" when you design a role, not only "is what this role can see sensitive?".
 
 ## And stop rendering the denial as emptiness
 

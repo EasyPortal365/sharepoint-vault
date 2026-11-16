@@ -4,7 +4,7 @@ short-title: Item edit rights cover every field
 summary: "Unique permissions on an item don't separate fields: whoever may edit it can set Status, Approver or a lookup Id via REST – derive trust from admin-only data and version history"
 tags: [permissions, item-level, security, rest-api, versioning]
 applies-to: SharePoint Online
-last-reviewed: 2026-11-12
+last-reviewed: 2026-11-16
 ---
 
 # Item-level edit rights cover every field – don't trust status, approver or link fields the user can write
@@ -32,6 +32,7 @@ Item-level permissions are per item, not per field: the permission scopes are si
 1. **Identity from admin-only data.** Keep "who is the driver / manager / which vehicle" in a list only administrators write (e.g. an assignment list) and look it up there. If the item carries a link Id and the item was created by an administrator, verify the Id against the **oldest version** of the item (`items(id)/versions`, lowest `VersionId`): a level without *Delete Versions* can't remove past versions. Note that the default **Contribute** level *includes* Delete Versions – use a custom level without it.
 2. **Transitions from the version history.** Read `items(id)/versions?$select=VersionId,Status,Editor` and find the version that switched to Approved. Its `Editor.LookupId` must be the expected approver (from admin-only data) or an admin; after that version, data fields must not have been changed by anyone but an admin. Otherwise don't process the item – show it to an administrator.
 3. **Validate payloads** you copy into other lists (JSON fields, amounts, dates) – UI validation isn't a boundary.
+4. **Re-securing an item from its own fields is the same trap, one step worse.** A background job that "repairs" unique permissions by reading `AssignedBy`, `Manager` or `Buddy` from the item hands out access according to whatever the participant last wrote – including Manage Permissions to themselves – and it runs under the account of whoever opens the admin screen next. Before every grant, compare the identity fields with version `1.0` (`items(id)/versions?$select=VersionLabel,<fields>` – created by the assigner, not removable without *Delete Versions*), allow only an explicitly named change (e.g. an invitation placeholder replaced by the real account once, with every intermediate version equal to either the original or the current value), and anchor the creator on the server-side `AuthorId`, which a REST update can't change. If a version limit has trimmed `1.0` away, **don't grant anything** and say why – never fall back to trusting the fields.
 
 ## Notes
 
