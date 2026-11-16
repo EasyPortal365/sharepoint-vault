@@ -2,7 +2,7 @@
 
 Every single thing in the vault, on one page. Section names link to folder READMEs; leaves link straight to the content.
 
-*Last updated: 2026-11-15*
+*Last updated: 2026-11-16*
 
 - 🧰 **[scripts/](scripts/)** — PowerShell scripts with comment-based help, read-only unless stated
   - [Terminal animations](scripts/media/) — the writing scripts as an animated PowerShell console; plain SVG, no JavaScript, respects `prefers-reduced-motion`
@@ -367,6 +367,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [A group created by code hides its own membership](gotchas/security/group-created-by-code-hides-its-membership.md) — `sitegroups` POST defaults to `OnlyAllowMembersViewMembership: true`, so only a member or the account that ran provisioning can read the members; Full Control does not help and identical permission masks prove it
     - [An Entra group inside a SharePoint group is invisible to membership checks](gotchas/security/entra-group-inside-a-sharepoint-group-is-invisible-to-membership-checks.md) — SharePoint accepts an Entra group as a member of a site group, then never expands it: `currentuser/groups` is direct-only and `sitegroups/{id}/users` returns the group, not its people — resolve with Graph `checkMemberGroups` and keep "couldn't check" apart from "not a member"
     - [Lock down a no-script site from code](gotchas/security/locking-down-a-noscript-site-from-code.md) — On a modern site with custom scripts disabled, `NoCrawl` on the WEB returns 403 via REST and CSOM even for a site collection admin, and `SetUseAccessRequestDefaultAndUpdate(false)` returns 200 without effect; both work through the site settings pages, while `MembersCanShare` and the limited-access lockdown feature are writable via REST. Always re-read after writing a web setting.
+    - [SVG sanitiser parses XML, page renders HTML](gotchas/security/svg-sanitizer-xml-vs-html-parser.md) — A processing instruction, comment or CDATA is one inert node to `DOMParser('image/svg+xml')` but ends early in the HTML parser – the `<img onerror>` inside wakes up; also `<style>` in inline SVG styles the whole page
   - **tooling/**
     - [Driving an SPFx page from the console](gotchas/tooling/driving-a-spfx-page-from-the-console.md) — `input.value` from the console leaves React state empty (use the native setter + input event) and `window.confirm` freezes CDP automation; both fail silently as success
     - [Measuring a page in a hidden tab](gotchas/tooling/measuring-a-page-in-a-hidden-tab.md) — Hidden tabs never fire `requestAnimationFrame` and clamp `setTimeout` to ~1/s, so the run times out and looks like the very freeze you were chasing (and the code under test never ran either); CSS transitions never advance either, so `getBoundingClientRect()` keeps returning the previous position
