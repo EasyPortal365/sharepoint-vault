@@ -4,7 +4,7 @@ short-title: Item edit rights cover every field
 summary: "Unique permissions on an item don't separate fields: whoever may edit it can set Status, Approver or a lookup Id via REST – derive trust from admin-only data and version history"
 tags: [permissions, item-level, security, rest-api, versioning]
 applies-to: SharePoint Online
-last-reviewed: 2026-11-16
+last-reviewed: 2026-11-17
 ---
 
 # Item-level edit rights cover every field – don't trust status, approver or link fields the user can write
@@ -36,5 +36,6 @@ Item-level permissions are per item, not per field: the permission scopes are si
 
 ## Notes
 
-- Residual risk: a user with edit rights may be able to overwrite *Modified By* through `ValidateUpdateListItem` (assumption based on how SharePoint Online behaves – not verified live for edit levels). Measured 2026-11-12 for a user who may only **add** items: `Author`, `Editor` and `Created` sent with `AddValidateUpdateItemUsingPath` were silently replaced by the caller and the current time (HTTP 200, no error) – see [List items with authors, dates and history](../lists/list-items-keep-authors-dates-and-version-history.md). Version checks raise the bar and catch ordinary tampering; a real boundary is a decision written somewhere the user can't write (e.g. a server-side function with app permissions).
+- **Modified By of a version is reliable – measured 2026-11-17** for a user with edit rights on the item: `ValidateUpdateListItem` with `Editor` set to another account returns HTTP 200 with no `HasException`, but the version's Editor stays the caller. With `bNewDocumentUpdate: true` over a version saved by someone else, the content of that version is overwritten **and its Editor becomes the caller**. So the Editor of a version always names who wrote that version's content, and a check of transitions against version history is a real boundary against the people on the item, not just a raised bar. For users who may only **add** items, `Author`, `Editor` and `Created` sent with `AddValidateUpdateItemUsingPath` were likewise replaced by the caller and the current time (measured 2026-11-12) – see [List items with authors, dates and history](../lists/list-items-keep-authors-dates-and-version-history.md).
+- What remains: the version limit can trim the oldest versions (including the one the creator saved), so treat missing history as "unknown", never as "fine". A user without DeleteVersions can't delete versions.
 - Versioning must be on for the list – it usually is for evidence-like lists anyway.
