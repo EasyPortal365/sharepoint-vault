@@ -2,7 +2,7 @@
 
 Every single thing in the vault, on one page. Section names link to folder READMEs; leaves link straight to the content.
 
-*Last updated: 2026-11-17*
+*Last updated: 2026-11-18*
 
 - 🧰 **[scripts/](scripts/)** — PowerShell scripts with comment-based help, read-only unless stated
   - [Terminal animations](scripts/media/) — the writing scripts as an animated PowerShell console; plain SVG, no JavaScript, respects `prefers-reduced-motion`
@@ -118,6 +118,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [`folders/AddUsingPath` in a generic list makes a folder without a list item](gotchas/rest-api/list-folder-via-folders-add-has-no-list-item.md) — In a custom list (BaseTemplate 100) `web/folders/AddUsingPath` creates a 'naked' folder: `ListItemAllFields` is `odata.null` (`@odata.null` under SPFx's OData v4) and `breakroleinheritance` is 404. Create list folders with `AddValidateUpdateItemUsingPath` and `UnderlyingObjectType: 1`, then check the item state, not just `Exists`
     - [A `$filter` literal encoded twice finds nothing — with a 200](gotchas/rest-api/filter-literal-encoded-twice-finds-nothing.md) — If a helper already percent-encodes the quoted literal, wrapping the whole `$filter` in `encodeURIComponent` encodes the value a second time (`/` → `%252F`, `@` → `%2540`); SharePoint then compares against the escaped text and returns an empty result, no error; encode in exactly one layer and test with a fake server that decodes once and really filters
     - [Hub nav targeting flag needs the editor's save](gotchas/rest-api/hub-nav-audience-targeting-needs-the-hub-nav-editor.md) — `AudienceIds` on the node and `NavAudienceTargetingEnabled` on the hub web both save over REST and read back correctly, yet `HubSiteData.isNavAudienceTargeted` stays `false`; turning the switch in Edit hub navigation off and on and saving flips it – check that flag on `HubSiteData(true)`, not the web property or `MenuState`, then test with two accounts
+    - [`$batch` cannot span sites](gotchas/rest-api/batch-cannot-span-sites.md) — A SharePoint REST `$batch` is bound to the web whose `_api/$batch` endpoint you call; put requests to other site URLs in it and the whole batch fails with HTTP 400. For a tenant-wide read (one small GET per site), use a bounded worker pool of plain GETs with `Retry-After`, not one big batch
   - **lists/**
     - [The 5,000-item view threshold](gotchas/lists/list-view-threshold-and-indexes.md) — It's scanned rows, not returned rows; index early, page always
     - [View formatting JSON can't contain `<` or `&`](gotchas/lists/view-formatter-rejects-angle-bracket-and-ampersand.md) — It's stored inside the view's schema XML; reverse the comparison and nest `if()`
