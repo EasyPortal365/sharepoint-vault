@@ -1,10 +1,10 @@
 ---
 title: "HasUniqueRoleAssignments proves the break, not the hardening — and a half-done break is worse than inheritance"
 short-title: "`HasUniqueRoleAssignments` proves the break, not the hardening"
-summary: The flag is `true` after the break alone, so verifying on it reports "hardened" over a list whose trim never ran; with the safe `copy=true` form that state is worse than inheritance. Read `roleassignments` and measure `BasePermissions` bits — role names are localised and `RoleTypeKind` misses a customer's own level
+summary: The flag is `true` after the break alone, so verifying on it reports "hardened" over a list whose trim never ran; with the safe `copy=true` form that state is worse than inheritance. Read `roleassignments` and measure `BasePermissions` bits — role names are localised and `RoleTypeKind` misses a customer's own level. The flag itself is readable by a plain member without EnumeratePermissions, so it works as a fail-closed gate in the user's session
 tags: [permissions, security, rest-api, provisioning, verification]
 applies-to: SharePoint Online, SharePoint Server (list/library/item scope)
-last-reviewed: 2026-09-03
+last-reviewed: 2026-11-17
 ---
 
 # `HasUniqueRoleAssignments` proves the break, not the hardening
@@ -123,3 +123,23 @@ A seven-scenario harness against a fake `roleassignments` endpoint (healthy; req
 Edit instead of Read; Members with Read; Members with Limited Access only; Customers with
 Read; a custom level with read bits; admins missing) is enough to pin both directions — and
 the pre-fix code failed exactly the two scenarios above.
+
+## The one thing the flag *is* good for: a fail-closed gate in the user's own session
+
+The reverse direction is useful. A plain site member **without `EnumeratePermissions`** gets
+`403` on `…/roleassignments`, so an app running in their session can never read the ACL — but
+the flag itself **is readable** under that account (measured on SharePoint Online, member with
+Edit on the web):
+
+```http
+GET …/_api/web/GetList('/sites/x/Lists/Threads')?$select=HasUniqueRoleAssignments,EffectiveBasePermissions
+→ 200 { "HasUniqueRoleAssignments": false, … }     # list still inherits the web
+GET …/_api/web/GetList('/sites/x/Lists/Threads')/roleassignments
+→ 403
+```
+
+That makes it a cheap gate for "do not let users write private items into a list nobody has
+secured yet": `true` → allow, `false` → refuse with an honest message, anything else
+(403/404, network, missing property) → refuse as *unknown*. It only proves the break, not the
+trim — keep the full `roleassignments` verification for the administrator's screen — but it
+reliably catches the worst state: a list hardening never touched at all.
