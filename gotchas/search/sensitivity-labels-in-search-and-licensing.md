@@ -1,10 +1,10 @@
 ---
 title: Sensitivity labels in SharePoint Search — the managed property works, but licensing gates it
 short-title: Sensitivity labels in Search — property works, licensing gates it
-summary: "`InformationProtectionLabelId` returns a GUID only after AIP-enable + label + crawl; unlicensed tenants can't even create a label (`InvalidLicenseException`)"
+summary: "`InformationProtectionLabelId` returns a GUID only after AIP-enable + label + crawl; unlicensed tenants can't even create a label (`InvalidLicenseException`); per-item REST can't read the label column (`_IpLabelId`), so look labels up through search by `Path`"
 tags: [search, kql, purview, sensitivity-labels, licensing, governance]
 applies-to: SharePoint Search REST (/_api/search/query), Microsoft Purview Information Protection, KQL
-last-reviewed: 2026-07-24
+last-reviewed: 2026-11-17
 ---
 
 # Sensitivity labels in SharePoint Search — the managed property works, but licensing gates it
@@ -64,6 +64,39 @@ Two independent gates:
   property. It works on every licence, and it's honest about scope: a label read from search is **not a
   security boundary** anyway (the user still has SharePoint permissions to the file), so a self-managed flag
   is exactly as strong for "keep it out of the AI's source material".
+
+## Reading the label of a known file: REST won't do it, search will
+
+When you already hold a file URL (a user attached it, a page links to it) and need its label, the obvious
+move is the list item. Measured on SharePoint Online (November 2026):
+
+| Request | Result |
+|---|---|
+| `GetFileByServerRelativeUrl(...)/ListItemAllFields?$select=_IpLabelId` | **200 `{}`** – silently empty, no error |
+| same with `_IpLabelIdId` or `OData__IpLabelId` | 200 `{}` |
+| `lists/.../items?$select=_IpLabelId` (with or without `$expand`) | **400** "The field or property '_IpLabelId' does not exist" |
+
+The field exists in the list's field collection, but as a **hidden Lookup with an empty `LookupList`**
+(`LookupField: IpLabelId`) – REST has no list to resolve it against, so it either drops it or rejects it.
+An empty `{}` reads exactly like "this file has no label", which is the dangerous failure for an exclusion
+rule.
+
+What works is search, which you already use for the label anyway:
+
+```
+Path:"https://contoso.sharepoint.com/sites/x/Shared Documents/a.docx" OR Path:"https://…/b.pdf"
+selectproperties = Path,InformationProtectionLabelId
+```
+
+Batch around 10 paths per query (KQL length stays well under the limit) and match the returned `Path`
+case-insensitively, without a trailing slash. Treat three outcomes differently: a row with a GUID (labelled),
+a row without one (not labelled), and **no row at all** (not crawled yet, or the query failed) – the last
+one is "unknown", and your rule has to decide openly whether unknown passes or blocks.
+
+Two more traps on the same property: a negative restriction (`-InformationProtectionLabelId:<GUID>`) did not
+narrow results on an unlicensed tenant, and a refiner on `InformationProtectionLabelId` returned `null`
+rather than an empty bucket list. Don't use either as a "does labelling work here?" probe – sample real rows
+with `selectproperties` and count how many carry a GUID.
 
 ## Why it's easy to miss
 
