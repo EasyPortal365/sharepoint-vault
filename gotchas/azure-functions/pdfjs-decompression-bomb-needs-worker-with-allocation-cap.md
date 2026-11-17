@@ -72,4 +72,4 @@ The input is tiny: a FlateDecode stream of spaces (1:1000 ratio), or a page with
 - Build the bomb in the test: `deflateSync(Buffer.alloc(400 * 2 ** 20, 0x20))` as the page's `/Contents` with `/Filter /FlateDecode`. That's a few hundred kB on disk.
 - Assert the **longest main-thread pause** (an interval timer recording the max gap), not the tick count. Tick counts swing with machine load.
 - Keep a **counter-example** with the worker switched off: the same page must block the main thread for over a second. Otherwise the test can't tell a fix from a bomb that's too small.
-- Size the slow-page input with an order-of-magnitude margin. A page that took 8 s locally was read in under a second on a CI runner, and the deadline test failed with `complete`.
+- Size the slow-page input with an order-of-magnitude margin. A page that took 8 s locally was read within about a second (worker start included) on a CI runner, and the deadline test failed with `complete`.
