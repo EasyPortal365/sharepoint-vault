@@ -3,7 +3,7 @@ title: "A Jest test that reads a .tsx source file passes locally and fails in th
 short-title: Source-reading Jest test fails under heft (runs from lib-commonjs)
 summary: Heft runs Jest over the compiled `lib-commonjs` output, where only `.js` exists – `fs.readFileSync(path.join(__dirname, 'X.tsx'))` throws ENOENT; map `__dirname` back to `src` before reading
 tags: [spfx, heft, jest, testing, build]
-applies-to: SPFx 1.18+ projects built with heft (`heft test --clean --production`)
+applies-to: SPFx projects on the heft toolchain (1.22+, `heft test --clean --production`)
 last-reviewed: 2026-11-17
 ---
 
@@ -30,7 +30,7 @@ ENOENT: no such file or directory, open '…\lib-commonjs\webparts\…\DocPrevie
 
 ## Cause
 
-Heft compiles TypeScript first, then runs Jest over `lib-commonjs/**/*.test.js`. At run time `__dirname` points inside `lib-commonjs`, which holds `.js` files only. The `.tsx` exists solely under `src`. A Jest run started straight from `src` (via ts-jest or an IDE runner) resolves `__dirname` to `src` and never shows the problem.
+Heft compiles TypeScript first, then runs Jest over `lib-commonjs/**/*.test.js`. At run time `__dirname` points inside `lib-commonjs`, which holds `.js` files only. The `.tsx` exists solely under `src`. A runner that loads the `.ts` test straight from `src` (for example a ts-jest setup) would resolve `__dirname` to `src` and hide the problem.
 
 ## Fix
 
