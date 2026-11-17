@@ -19,7 +19,7 @@ A migration lowers an app's group on the web from Edit to Read and verifies it b
 
 ## Cause
 
-`breakroleinheritance(copyRoleAssignments=true)` copies the web's role assignments onto the object. From then on the object is independent, and changes on the web never reach it. On four sites, the old role survived in three kinds of places:
+`breakroleinheritance(copyRoleAssignments=true)` copies the web's role assignments onto the object. From then on the object keeps its own copy, and changing a group's role on the web does not change it. Microsoft documents one exception: removing a user's permissions is propagated to child objects regardless of inheritance ([Overview of site permissions](https://learn.microsoft.com/sharepoint/sites/overview-of-site-permissions-in-sharepoint-server#about-permission-inheritance)). On four sites, the old role survived in three kinds of places:
 
 - **Lists that an app hardened itself.** The app gives its admin group a "writer" exemption when it trims the copied roles, so the copied Full Control was never removed.
 - **The Site Pages library** after another app had narrowed it.
@@ -42,7 +42,7 @@ Look for the group's `RoleTypeKind` 6 (Edit) or 5 (Full Control) on these object
 2. Test under the lower account against an object with unique permissions. An inheriting page that returns 403 proves only the web.
 3. An exemption for a writer group means "at most the target level", not "keep anything above the target".
 4. You cannot tell a copied role from one the site owner granted on purpose. Whether a migration lowers roles on the customer's own libraries is a product decision. If you do lower them, remove only the role kinds your app used to grant.
-5. Reading `roleassignments` on an object with unique permissions needs `EnumeratePermissions` on that object. Full Control on the web does not carry over. If a member of the group you are lowering runs the migration, it can lower the role but then cannot read the result back (403). Leave the step unverified and let a site owner finish it. Do not mark it done.
+5. Reading `roleassignments` on an object with unique permissions needs `EnumeratePermissions` on that object. Of the default levels, only Full Control and Manage Hierarchy include it ([Permission levels in SharePoint](https://learn.microsoft.com/sharepoint/understanding-permission-levels#site-permissions-and-permission-levels)). Full Control on the web does not carry over to an object that no longer inherits. If a member of the group you are lowering runs the migration, it can lower the role but then cannot read the result back (403). Leave the step unverified and let a site owner finish it. Do not mark it done.
 6. Hidden system lists (`IWConvertedForms`, `users`, `MaintenanceLogs`) often have unique permissions with no role assignments at all. The read returns 200 with an empty list. Code that removes roles must treat that as unknown. A read-only report can treat it as "the group has nothing here", not as "unreadable".
 
 ## One way to fix it
