@@ -21,7 +21,7 @@ You need the same small fact from every site in the tenant – the row of a stat
 
 A `$batch` is processed in the context of the web it was posted to (our reading of the behaviour, not a documented rule): the inner requests are resolved against that web, and requests for other site URLs are not routed elsewhere. There is no "tenant batch" in SharePoint REST.
 
-Microsoft Graph has `$batch` with absolute paths across sites, but it is a different API with its own permissions and throttling, and it does not see SharePoint-only endpoints such as `GetList(...)` on a list URL.
+Microsoft Graph has its own `$batch`, whose requests may address different sites (`/sites/{site-id}/lists/…`), but it is a different API with its own permissions and throttling, and it does not expose SharePoint REST endpoints such as `GetList(...)`.
 
 ## Fix – Search for the sites, then a bounded worker pool
 
