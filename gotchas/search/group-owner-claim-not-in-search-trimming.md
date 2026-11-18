@@ -1,7 +1,7 @@
 ---
 title: "An owners-only library on a group-connected site is indexed, yet Search shows it to nobody — the group owners claim does not count for security trimming"
 short-title: Group owners claim is ignored by search trimming
-summary: "When the only path to content is the site's Owners group, and that group holds just the Microsoft 365 group owners claim (`…_o`), the crawler indexes everything but query-time trimming hides it from every owner; REST access works, so it looks like an indexing bug. Prove it with the crawl log and a direct-grant A/B file; fix by granting a principal that trimming expands (a populated SharePoint group or an Entra group)"
+summary: "When the only path to content is the site's Owners group, and that group holds just the Microsoft 365 group owners claim (`…_o`), the crawler indexes everything but query-time trimming hid it from the group owners we tested; the files open fine, so it looks like an indexing bug. Prove it with the crawl log and a direct-grant A/B file; fix by granting a principal that trimming expands (a populated SharePoint group or an Entra group)"
 tags: [search, security-trimming, permissions, m365-groups, owners, crawl-log, rag, troubleshooting]
 applies-to: SharePoint Online, group-connected team sites (Search REST / KQL and anything built on it — RAG, AI assistants, custom search)
 last-reviewed: 2026-11-18
@@ -9,9 +9,9 @@ last-reviewed: 2026-11-18
 
 # An owners-only library on a group-connected site is indexed, yet Search shows it to nobody
 
-> **Bottom line.** On a site connected to a Microsoft 365 group, the SharePoint **Owners** group usually contains a single member: the group owners claim `c:0o.c|federateddirectoryclaimprovider|<groupId>_o`. Permission checks (REST, opening the file) honour that claim. Search **security trimming does not**: content whose ACL reaches people *only* through the Owners group is crawled and indexed, but every query returns 0 for every owner. Members are fine, because the members claim (`…|<groupId>` without `_o`) is expanded at query time.
+> **Bottom line.** On a site connected to a Microsoft 365 group, the SharePoint **Owners** group usually contains a single member: the group owners claim `c:0o.c|federateddirectoryclaimprovider|<groupId>_o`. Search **security trimming did not honour it** in our measurement: content whose ACL reaches people *only* through the Owners group was crawled and indexed, yet queries returned 0 for both group owners we tested, while the same users found a file once they had a direct grant. Inheriting content is not affected, because its ACL also carries the Members and Visitors groups.
 >
-> **Ve zkratce.** Na webu se skupinou M365 má skupina Vlastníci obvykle jediného člena – deklaraci vlastníků skupiny (`…_o`). Kontrola oprávnění (REST, otevření souboru) ji bere, **ořez výsledků Search ne**: obsah, ke kterému vede přístup jen přes Vlastníky, je prošlý a v indexu, ale dotaz vrátí 0 každému vlastníkovi. Členové jsou v pořádku – členskou deklaraci Search rozbalí.
+> **Ve zkratce.** Na webu se skupinou M365 má skupina Vlastníci obvykle jediného člena – deklaraci vlastníků skupiny (`…_o`). **Ořez výsledků Search ji v našem měření nevzal**: obsah, ke kterému vede přístup jen přes Vlastníky, byl prošlý a v indexu, ale dotaz vrátil 0 oběma vlastníkům skupiny, které jsme zkoušeli – s přímým právem na souboru ho našli. Dědícího obsahu se to netýká, jeho ACL nese i Členy a Návštěvníky.
 
 ## Symptom
 
@@ -22,9 +22,11 @@ last-reviewed: 2026-11-18
 
 ## Cause
 
-The crawler indexes the library normally. The query-time security token simply doesn't match the ACL. The ACL lists the Owners SharePoint group plus, typically, app role groups that nobody has populated yet. The Owners group holds only the `_o` claim, and that claim is not part of what search uses to trim results. The ACL therefore names nobody search can match, so the content is invisible to everyone, owners included.
+The crawler indexes the library normally. The query-time security token simply doesn't match the ACL. The ACL lists the Owners SharePoint group plus, typically, app role groups that nobody has populated yet. The Owners group holds only the `_o` claim, and in our measurement that claim did not count when search trimmed results. The ACL therefore names nobody search can match, so the content is invisible to everyone, owners included.
 
-You won't notice this on inheriting content: its ACL also contains the Members group, and the members claim is expanded at query time.
+Measured on one tenant with two owner accounts, both also site collection admins. Their REST access could come from the admin role alone, so this does not show whether other permission checks honour the `_o` claim. It does show that neither ownership nor the admin role made the content findable.
+
+You won't notice this on inheriting content: its ACL also contains the Members and Visitors groups.
 
 ## How to prove it (in this order)
 
@@ -45,5 +47,5 @@ Don't "fix" this by adding the site collection admin. Being a site collection ad
 ## Notes
 
 - If you build an admin-only area that is also meant to be found (a knowledge source for AI, an in-app search), check that its ACL names somebody beyond the Owners group. Empty role groups plus owners-through-a-claim means nobody can find it.
-- Data lists read only through REST are unaffected: REST permission checks honour the `_o` claim.
+- Data lists read only through REST are a different path. Search trimming does not apply to them, so this trap does not hide them.
 - Related: [Site missing from the index looks like a permissions problem](site-missing-from-the-index-looks-like-a-permissions-problem.md) covers the opposite case. There the content is missing from the index; here it's indexed but trimmed.
