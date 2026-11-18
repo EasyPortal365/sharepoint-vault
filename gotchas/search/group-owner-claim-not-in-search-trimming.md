@@ -42,6 +42,8 @@ Give the content a principal that search expands:
 - populate the SharePoint group the app grants access to (for example its admins or editors group) with the people who should find the content, or
 - grant an Entra security group or the Microsoft 365 group's **members** claim, if every member may read it.
 
+Expect a delay. After we added one user to a SharePoint group the library already granted, search still returned 0 ten minutes later and returned the content about an hour later. No reindex was needed.
+
 Don't "fix" this by adding the site collection admin. Being a site collection admin doesn't help search trimming either.
 
 ## Notes
