@@ -1,10 +1,10 @@
 ---
 title: Microsoft To-Do (/me/todo) needs an Exchange mailbox — admin accounts 404
 short-title: "`/me/todo` needs an Exchange mailbox"
-summary: "404 \"Item not found\" on admin/cloud-only accounts is not a 403; Planner works without a mailbox"
-tags: [graph, tasks, todo, planner, mailbox]
+summary: "404 \"Item not found\" on accounts without a mailbox and an empty 401 UnknownError for guests are not consent problems; Planner works without a mailbox"
+tags: [graph, tasks, todo, planner, mailbox, guest]
 applies-to: Microsoft Graph (Microsoft 365)
-last-reviewed: 2026-11-03
+last-reviewed: 2026-11-19
 ---
 
 # Graph `/me/todo`: 404 "Item not found" on accounts without an Exchange mailbox
@@ -37,6 +37,18 @@ try {
 
 - Do not append a generic "check your Tasks.ReadWrite permission" to every task-creation failure — a 404 is not a 403. Add the permission hint only when the message does not already point at a missing mailbox or plan.
 - If one "Create task" button must work everywhere, offer **Planner** (Group-based, no mailbox) as the primary target and To-Do as a personal convenience.
+
+## Two more shapes of the same cause (measured 2026-11-19)
+
+| Account | `GET /me/todo/lists` | Mail on the same account |
+|---|---|---|
+| Member without a mailbox | `404 itemNotFound` "Item not found" – `MailboxNotEnabledForRESTAPI` only in `innerError.code` | `404 MailboxNotEnabledForRESTAPI` |
+| **Guest** in another tenant | **`401 UnknownError`, empty `message`, empty `innerError`** | `404 MailboxNotEnabledForRESTAPI` |
+
+The guest case is the dangerous one: a 401 looks exactly like missing consent, so a generic error mapper tells the user to ask an admin for `Tasks.ReadWrite` – which is already granted. Rules:
+
+- Read `innerError.code` as well as the top-level `code` when you classify "no mailbox"; a matcher on `code`/`message` alone misses the member case.
+- Treat `401` with code `UnknownError` **and an empty message** from `/me/todo/*` as "no mailbox (guest)". Keep any 401 that carries a message (e.g. `InvalidAuthenticationToken`) as a real auth failure.
 
 ## Notes
 

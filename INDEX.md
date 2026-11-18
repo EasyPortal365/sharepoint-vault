@@ -2,7 +2,7 @@
 
 Every single thing in the vault, on one page. Section names link to folder READMEs; leaves link straight to the content.
 
-*Last updated: 2026-11-18*
+*Last updated: 2026-11-19*
 
 - 🧰 **[scripts/](scripts/)** — PowerShell scripts with comment-based help, read-only unless stated
   - [Terminal animations](scripts/media/) — the writing scripts as an animated PowerShell console; plain SVG, no JavaScript, respects `prefers-reduced-motion`
@@ -273,7 +273,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [A newsletter looped over `/me/sendMail` is not bulk e-mail](gotchas/graph/newsletter-loop-over-sendmail-is-not-bulk-email.md) — Per-mailbox and tenant limits, bulk mail through Microsoft 365 "isn't a supported use", JSON `sendMail` can't set `List-Unsubscribe`, ACS Email retires 2028; keep Graph for personal batches, send newsletters through an ESP via a server-side connector
     - [A pasted screenshot is too big for `/me/sendMail`](gotchas/graph/sendmail-attachment-size-ceiling.md) — Inline base64 attachments share a ~4 MB request budget; shrink bitmaps in a canvas, cap the total, and remember `mailto:` fallbacks carry no attachments at all
     - [ApplicationAccessPolicy rejects a shared mailbox](gotchas/graph/application-access-policy-rejects-shared-mailbox.md) — "not a security principal"; scope app-only `Mail.Send` to a mail-enabled security group
-    - [`/me/todo` needs an Exchange mailbox](gotchas/graph/todo-requires-exchange-mailbox.md) — 404 "Item not found" on admin/cloud-only accounts is not a 403; Planner works without a mailbox
+    - [`/me/todo` needs an Exchange mailbox](gotchas/graph/todo-requires-exchange-mailbox.md) — 404 "Item not found" on accounts without a mailbox and an empty 401 UnknownError for guests are not consent problems; Planner works without a mailbox
     - [A mail-permission probe that can't tell "no mailbox" from "no consent" lies to admins](gotchas/graph/mail-probe-no-mailbox-vs-no-consent.md) — `/me/messages` 404 `MailboxNotEnabled*` on mailbox-less accounts ≠ missing consent; three verdicts, and never cache a negative probe result
     - [Purview Audit Query API is async](gotchas/graph/purview-audit-query-api-is-async.md) — Hour-long queries; attach to the last succeeded, create in background
     - [`dont have any permissions` rejects the user, not the app](gotchas/graph/audit-query-permission-vs-audit-role.md) — Consent vs. Exchange audit role; Global Admin usually inherits it, so compare accounts
