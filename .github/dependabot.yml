@@ -1,0 +1,11 @@
+# Aktualizace akci GitHub Actions (audit 2026-11, E7): akce jsou pinnute na plne SHA
+# s komentarem verze; Dependabot jednou mesicne navrhne novejsi SHA jako pull request.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    groups:
+      actions:
+        patterns: ["*"]
