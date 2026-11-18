@@ -1,10 +1,10 @@
 ---
 title: A protocol-relative URL walks straight through your host allowlist
 short-title: Protocol-relative URL defeats a host allowlist
-summary: A host check built on `^https?://` reads `//evil.example/…` as relative and lets it through; the browser then supplies the scheme and the request leaves for a foreign origin
+summary: A host check built on `^https?://` reads `//evil.example/…` — and the browser-equivalent `/\evil.example` — as relative and lets it through; the browser then supplies the scheme and the request leaves for a foreign origin
 tags: [spfx, security, rest-api, validation]
 applies-to: SharePoint Online
-last-reviewed: 2026-09-04
+last-reviewed: 2026-11-18
 ---
 
 # `//evil.example/Lists/X` is not a relative URL
@@ -64,4 +64,37 @@ Now `//evil.example/Lists/X` yields `evil.example`, the allowlist rejects it, an
 
 - The same reasoning applies to anything you accept and then fetch: a webhook target, an image source, a "load config from" field. It is not specific to lists.
 - Why it matters more than a normal SSRF-ish bug in an AI-adjacent app: content fetched from an attacker-chosen host may end up inside a model prompt. The allowlist is what keeps foreign text out of it.
-- Backslashes deserve a thought too. Some parsers normalise `\\` to `//`; if yours might, include that shape in the corpus.
+
+## The backslash variant: `/\evil.example` is not a path either
+
+Browsers do normalise backslashes. For `http`/`https` URLs the WHATWG URL parser reads `\` as `/` in the authority and the path, and strips TAB, LF and CR from the address before parsing. So all of these are protocol-relative, and all of them leave for `evil.example`:
+
+| Input | What the browser navigates to |
+|---|---|
+| `/\evil.example/x` | `https://evil.example/x` |
+| `\/evil.example/x` | `https://evil.example/x` |
+| `\\evil.example\x` | `https://evil.example/x` |
+| `/<TAB>/evil.example/x` | `https://evil.example/x` |
+
+A guard that says "starts with `/` and not `//`, therefore root-relative, therefore my site" passes the first and last row. A guard that only rejects strings containing a dot in the host passes `\\server\x` too.
+
+```ts
+// Decide routing on the string the browser will actually see.
+function routingForm(raw: string): string {
+  const s = raw.replace(/[\t\n\r]/g, '');
+  const cut = s.search(/[?#]/);
+  const head = cut === -1 ? s : s.slice(0, cut);
+  return head.replace(/\\/g, '/') + (cut === -1 ? '' : s.slice(cut));
+}
+
+function isRootRelative(raw: string): boolean {
+  const s = routingForm(raw);
+  return s.charAt(0) === '/' && s.charAt(1) !== '/';
+}
+```
+
+- **Normalise only before `?` and `#`.** A backslash inside the query is data, not a path separator.
+- **Percent-encoded forms stay relative.** `/%5Cevil.example` and `/%2F/evil.example` are not decoded for routing, so they really are paths on your own host.
+- **HTML hides it once more.** In a string that ends up as HTML (an email template, rendered markdown), `/&#92;evil.example` decodes to `/\evil.example`. Reject entities that can produce `\` or `/` in a URL attribute, or build the attribute from the parsed value.
+- **For an `<iframe src>`, refuse backslashes and control characters outright.** There is no legitimate frame source that needs them, and a strict "https:// or `/` + not `//`" rule is easier to defend than normalising.
+- Add every row of the table above to the test corpus, plus `/%5Cevil.example` as the counterexample that must stay relative.
