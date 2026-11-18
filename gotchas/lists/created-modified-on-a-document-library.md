@@ -1,7 +1,7 @@
 ---
 title: Created/Modified on a document library won't stick — and the API says 200 while ignoring you
 short-title: Created/Modified on a document library
-summary: A plain MERGE reports 204 and SharePoint overwrites both with "now"; only site admins can backdate at all (a member gets 200 with no HasException and "now"); `ValidateUpdateListItem` + `bNewDocumentUpdate` is the only path that holds, it wants the web's locale format (the error message tells you which), reads it in the web's regional time zone rather than the browser's, truncates to the minute even when you send seconds, and drops `Author` without a word unless all four author/date fields arrive together
+summary: A plain MERGE reports 204 and SharePoint overwrites both with "now"; Contribute and Edit users cannot backdate at all (200, no HasException, "now"), site collection admins can; `ValidateUpdateListItem` + `bNewDocumentUpdate` is the only path that holds, it wants the web's locale format (the error message tells you which), reads it in the web's regional time zone rather than the browser's, truncates to the minute even when you send seconds, and drops `Author` without a word unless all four author/date fields arrive together
 tags: [lists, document-library, rest-api, metadata, dates, timezone, authorship]
 applies-to: SharePoint Online
 last-reviewed: 2026-11-18
@@ -180,22 +180,24 @@ Check `OData__UIVersionString` before and after. To clean up, publish each page 
 version and sets `Editor` (not `Author`) to the caller, so do the authorship rewrite **before**
 the final publish, or accept the caller as last editor.
 
-## Who can backdate at all: site admins yes, members no (measured 2026-11-18)
+## Who can backdate at all: site collection admins yes, Contribute and Edit no (measured 2026-11-18)
 
-Everything above was measured as a **site admin**. A regular member with **Contribute** on a
-custom list (`IsSiteAdmin: false`) sending the same `ValidateUpdateListItem` with `Modified` in
-the past – en-US and a local format, `bNewDocumentUpdate` both `true` and `false` – gets
-**HTTP 200 and `HasException: false` on every field**, yet `Modified` on the item **and on every
-version** is "now". The other fields in the same call are saved. So the response looks like a
-successful backdate while nothing was backdated.
+Everything above was measured as a **site collection admin**. A regular user (`IsSiteAdmin:
+false`) with **Contribute** or **Edit** on a custom list, sending the same
+`ValidateUpdateListItem` with `Modified` in the past – en-US and a local format (Contribute),
+`bNewDocumentUpdate` both `true` and `false` – gets **HTTP 200 and `HasException: false` on
+every field**, yet `Modified` on the item **and on every version** is "now", while `Title` sent in
+the same call is saved. So the response looks like a successful backdate while nothing was
+backdated. Full Control without site collection admin was not measured.
 
-The useful side of this: a version's `Modified` is something a member cannot forge into the
-past, so it can serve as a **cut-off** – e.g. "data saved before the day this check shipped is
-trusted as before". Only site admins can move it, and they are trusted anyway. (In the
-`/versions` payload `SMLastModifiedDate` is the item's real last write, identical on every
-version; `$select=SMLastModifiedDate` on `/items` returns 400.)
+The useful side of this: a version's `Modified` is something a Contribute or Edit user cannot
+forge into the past, so it can serve as a **cut-off** – e.g. "data saved before the day this
+check shipped is trusted as before". A site collection admin can move it, so the cut-off only
+holds against people you would not trust anyway. (In the `/versions` payload
+`SMLastModifiedDate` is the item's real last write, identical on every version;
+`$select=SMLastModifiedDate` on `/items` returns 400.)
 
-> **Ve zkratce.** Běžný člen s Přispívat dostane na `Modified` dozadu HTTP 200 bez `HasException`, ale uloží se „teď“ – u položky i verzí. Dozadu umí jen správce webu, takže `Modified` verze poslouží jako hranice „uloženo před zavedením kontroly“.
+> **Ve zkratce.** Uživatel s Přispívat nebo Upravit (ne správce kolekce) dostane na `Modified` dozadu HTTP 200 bez `HasException`, ale uloží se „teď“ – u položky i verzí, ostatní pole ve volání se uloží. Správce kolekce to umí; Úplné řízení bez správce kolekce neměřeno. `Modified` verze proto poslouží jako hranice „uloženo před zavedením kontroly“ proti běžným uživatelům.
 
 ## Rule
 
