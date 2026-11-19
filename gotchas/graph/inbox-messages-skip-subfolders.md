@@ -19,8 +19,8 @@ An "awaiting reply" or "what came in today" widget works for most users, but som
 
 ## Cause
 
-- A folder's `messages` collection contains only the messages in that folder. Subfolders are separate `childFolders` with their own `messages` collections; the request does not recurse.
-- `/me/messages` lists messages across the mailbox — every folder, including Sent Items, Drafts and Deleted Items.
+- A folder's `messages` collection contains only the messages in that folder. Subfolders are separate `childFolders` with their own `messages` collections, and you reach them by walking the folder tree; the request does not recurse. We saw this with a real user whose rules sorted mail into Inbox subfolders (2026-11-19).
+- `/me/messages` gets all the messages in the user's mailbox, in every folder. In the same case, the user's own replies from Sent Items came back alongside received mail.
 
 Neither is "mail I received".
 
@@ -38,7 +38,7 @@ Neither is "mail I received".
    GET /me/mailFolders/conversationhistory?$select=id
    ```
 
-   A folder that does not exist in a given mailbox (Archive often doesn't) returns an error — just don't exclude it.
+   If one of these lookups fails (for example, a mailbox without an Archive folder), don't exclude that folder; carry on with the rest.
 
 2. Read the whole mailbox, newest first, with the folder of each message:
 
@@ -53,8 +53,14 @@ Neither is "mail I received".
 
 4. **If Sent Items or Deleted Items could not be resolved** (network error, missing consent), fall back to `/me/mailFolders/inbox/messages` and don't cache that incomplete result. A narrower list is better than showing the user's own sent mail as received.
 
-We filter on the client rather than with `parentFolderId ne '…'` on the server: combining `$filter` and `$orderby` on messages has its own rules and we have not verified `ne` on the folder there.
+We filter on the client rather than with `parentFolderId ne '…'` on the server. When `$filter` and `$orderby` are used together on messages, the properties in `$orderby` must also appear in `$filter`, in the same order and before any others, otherwise the request fails with `InefficientFilter`. We have not tested `ne` on the folder under those rules.
 
 ## When Inbox-only is right
 
 Keep reading `/me/mailFolders/inbox/messages` when the feature **acts on the Inbox itself**. Examples are triage that archives messages, which must not pull mail out of folders a rule already sorted it into, and intake from a shared mailbox's Inbox. Write down which group each caller belongs to.
+
+## Sources
+
+- [List messages – Microsoft Graph v1.0](https://learn.microsoft.com/graph/api/user-list-messages?view=graph-rest-1.0) – `/me/messages` versus `/me/mailFolders/{id}/messages`, and the rules for `$filter` with `$orderby`
+- [mailFolder resource type – well-known folder names](https://learn.microsoft.com/graph/api/resources/mailfolder?view=graph-rest-1.0)
+- [Organize Outlook messages](https://learn.microsoft.com/graph/outlook-organize-messages) – folders under the Inbox, reached through `childFolders`
