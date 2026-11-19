@@ -301,6 +301,7 @@ Every article carries frontmatter with `tags` and `applies-to`, so repo search g
 | [sendMail without a mailbox – 504 and four attempts](graph/sendmail-without-mailbox-times-out-and-sdk-retries.md) | No `MailboxNotEnabled` error, just a 504 after ~30 s; the SDK RetryHandler repeats the non-idempotent POST up to 3×, so the button hangs ~2 min and a late success can send duplicates; check `assignedPlans` for an enabled `exchange` plan first |
 | [PUT /groups/{id}/team on a new group returns 404](graph/create-team-on-new-group-returns-404-retry.md) | `PUT /groups/{id}/team` fails with 404 for minutes after `POST /groups` (replication); retry only 404, surface a real failure as a warning |
 | [Suite incidents (MO…) slip past a per-service filter](graph/service-health-suite-incidents-have-no-workload.md) | Filtering `serviceAnnouncement/issues` by `service` dropped MO1550821 (12 Nov 2026, users unable to connect to multiple Microsoft 365 services) — its service was `Microsoft 365 suite` |
+| [Guest search: files only](graph/search-api-guest-files-only.md) | A guest's /search/query for chatMessage, message, event or person fails with 400 "Guest access is only supported for File entity types" — not a consent or licence problem; skip those sources for guests or explain it |
 
 ### azure-functions/
 
