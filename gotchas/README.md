@@ -309,6 +309,7 @@ Every article carries frontmatter with `tags` and `applies-to`, so repo search g
 | [Guest search: files only](graph/search-api-guest-files-only.md) | A guest's /search/query for chatMessage, message, event or person fails with 400 "Guest access is only supported for File entity types" — not a consent or licence problem; skip those sources for guests or explain it |
 | [Inbox messages skip subfolders; /me/messages includes Sent](graph/inbox-messages-skip-subfolders.md) | A folder's messages collection holds only messages directly in that folder, so rule-sorted mail in Inbox subfolders is missing; /me/messages is the whole mailbox incl. Sent, Drafts and Deleted. Read /me/messages with parentFolderId and drop the well-known non-received folders client-side |
 | [Office add-in NAA times out on the web (MSAL 5)](graph/office-addin-naa-msal5-web-needs-redirect-bridge.md) | `ssoSilent` → `timed_out` only in Word/Excel/PowerPoint on the web; the redirect page must call `broadcastResponseToMainFrame()` |
+| [`/me/onlineMeetings` 403 3003 ≠ consent](graph/onlinemeeting-lookup-3003-not-consent.md) | Looking up a meeting by JoinWebUrl returns 403 "3003: User does not have access to lookup meeting" for attendees of someone else's meeting, even with OnlineMeetingTranscript.Read.All consented |
 
 ### azure-functions/
 
