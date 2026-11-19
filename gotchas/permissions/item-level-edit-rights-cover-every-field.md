@@ -4,7 +4,7 @@ short-title: Item edit rights cover every field
 summary: "Unique permissions on an item don't separate fields: whoever may edit it can set Status, Approver or a lookup Id via REST – derive trust from admin-only data and version history"
 tags: [permissions, item-level, security, rest-api, versioning]
 applies-to: SharePoint Online
-last-reviewed: 2026-11-17
+last-reviewed: 2026-11-19
 ---
 
 # Item-level edit rights cover every field – don't trust status, approver or link fields the user can write
@@ -38,4 +38,7 @@ Item-level permissions are per item, not per field: the permission scopes are si
 
 - **Modified By of a version is reliable – measured 2026-11-17** for a user with edit rights on the item: `ValidateUpdateListItem` with `Editor` set to another account returns HTTP 200 with no `HasException`, but the version's Editor stays the caller. With `bNewDocumentUpdate: true` over a version saved by someone else, the content of that version is overwritten **and its Editor becomes the caller**. So the Editor of a version always names who wrote that version's content, and a check of transitions against version history is a real boundary against the people on the item, not just a raised bar. For users who may only **add** items, `Author`, `Editor` and `Created` sent with `AddValidateUpdateItemUsingPath` were likewise replaced by the caller and the current time (measured 2026-11-12) – see [List items with authors, dates and history](../lists/list-items-keep-authors-dates-and-version-history.md).
 - What remains: the version limit can trim the oldest versions (including the one the creator saved), so treat missing history as "unknown", never as "fine". A user without DeleteVersions can't delete versions.
+- **Take the LAST switch to Approved, not the first.** The submitter can send an approved item back to *Submitted*, change the dates or amount and set *Approved* again; a check that stops at the first approved version finds the old, genuine approval and passes. Walk to the most recent transition, check its Editor, and only then look for later changes.
+- **Three outcomes, not two.** Return `ok`, `bad` or `unknown`; trimmed or unreadable history is `unknown`. `unknown` blocks closing steps (payroll export, invoicing, issuing a document) and is shown to an administrator – but it must not trigger a delete either: a "rebuild the calendar from approved items" job that removes everything not `ok` wipes genuine rows whose history was trimmed. Remove only `bad`.
+- **"Not the submitter" is weaker than "the recorded approver".** If the item names an approver (person field or object id written by an administrator), the Editor of the approving version must be that person, or an administrator acting for them; any other colleague with edit rights on the item is a third outcome (`foreign`), not a pass.
 - Versioning must be on for the list – it usually is for evidence-like lists anyway.
