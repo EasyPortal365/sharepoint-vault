@@ -302,6 +302,7 @@ Every article carries frontmatter with `tags` and `applies-to`, so repo search g
 | [PUT /groups/{id}/team on a new group returns 404](graph/create-team-on-new-group-returns-404-retry.md) | `PUT /groups/{id}/team` fails with 404 for minutes after `POST /groups` (replication); retry only 404, surface a real failure as a warning |
 | [Suite incidents (MO…) slip past a per-service filter](graph/service-health-suite-incidents-have-no-workload.md) | Filtering `serviceAnnouncement/issues` by `service` dropped MO1550821 (12 Nov 2026, users unable to connect to multiple Microsoft 365 services) — its service was `Microsoft 365 suite` |
 | [Guest search: files only](graph/search-api-guest-files-only.md) | A guest's /search/query for chatMessage, message, event or person fails with 400 "Guest access is only supported for File entity types" — not a consent or licence problem; skip those sources for guests or explain it |
+| [Inbox messages skip subfolders; /me/messages includes Sent](graph/inbox-messages-skip-subfolders.md) | A folder's messages collection holds only messages directly in that folder, so rule-sorted mail in Inbox subfolders is missing; /me/messages is the whole mailbox incl. Sent, Drafts and Deleted. Read /me/messages with parentFolderId and drop the well-known non-received folders client-side |
 
 ### azure-functions/
 
