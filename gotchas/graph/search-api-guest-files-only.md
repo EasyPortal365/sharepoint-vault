@@ -9,7 +9,7 @@ last-reviewed: 2026-11-19
 
 # Graph Search API for a guest: only file entity types
 
-> **Bottom line.** When the signed-in user is a guest (B2B) in the tenant, `POST /search/query` works for files (`driveItem`, `listItem`, `site`, `list`, `drive`) but fails for `chatMessage`, `message`, `event`, `person` and the answer types with **400 BadRequest "SearchRequest Invalid (Guest access is only supported for File entity types. Please remove other entity types from your request.)"**. It is a documented platform limitation — no admin consent, licence or retry fixes it. Detect the message and tell the user plainly, or don't offer those sources to guests at all.
+> **Bottom line.** When the signed-in user is a guest (B2B) in the tenant, `POST /search/query` works for files (`driveItem`, `listItem`) but fails for `chatMessage`, `message`, `event`, `person` and the answer types with **400 BadRequest "SearchRequest Invalid (Guest access is only supported for File entity types. Please remove other entity types from your request.)"**. It is a documented platform limitation — no admin consent, licence or retry fixes it. Detect the message and tell the user plainly, or don't offer those sources to guests at all.
 >
 > **Ve zkratce.** Host (B2B) smí přes Graph Search prohledávat jen soubory. Chaty Teams, pošta, kalendář i lidé vrátí 400 „Guest access is only supported for File entity types“. Není to souhlas správce ani licence – je to omezení platformy. Hlášku rozpoznej a řekni ji lidsky, nebo hostům tyto zdroje nenabízej.
 
