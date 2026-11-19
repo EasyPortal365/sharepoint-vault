@@ -9,19 +9,18 @@ last-reviewed: 2026-11-19
 
 # Office add-in with NAA times out in Office on the web
 
-> **Bottom line.** In an Office add-in that signs in with `createNestablePublicClientApplication` (nested app authentication), tokens arrive instantly on desktop, but in Word, Excel and PowerPoint **on the web** `ssoSilent` ends with `timed_out` after about 10 seconds. On the web these hosts use the normal browser flow: a hidden iframe or popup loads your `redirectUri`. MSAL Browser 5 no longer reads that response by itself. The redirect page has to post it back with `broadcastResponseToMainFrame()` from `@azure/msal-browser/redirect-bridge`.
+> **Bottom line.** In an Office add-in that signs in with `createNestablePublicClientApplication` (nested app authentication), Word, Excel and PowerPoint **on the web** can end `ssoSilent` with `timed_out`. On the web these hosts use the normal browser flow: a hidden iframe or popup loads your `redirectUri`. MSAL Browser 5 no longer reads that response by itself. The redirect page has to post it back with `broadcastResponseToMainFrame()` from `@azure/msal-browser/redirect-bridge`.
 >
-> **Ve zkratce.** Doplněk Office s přihlášením přes `createNestablePublicClientApplication` (NAA) dostane token na desktopu hned. Ve Wordu, Excelu a PowerPointu **na webu** ale `ssoSilent` po ~10 s skončí `timed_out`. Na webu tyto aplikace používají běžný tok prohlížeče, tedy skrytý iframe nebo popup na `redirectUri`. MSAL Browser 5 odpověď sám nepřečte, takže stránka přesměrování ji musí poslat zpět voláním `broadcastResponseToMainFrame()` z `@azure/msal-browser/redirect-bridge`.
+> **Ve zkratce.** Doplněk Office s přihlášením přes `createNestablePublicClientApplication` (NAA) může ve Wordu, Excelu a PowerPointu **na webu** skončit u `ssoSilent` chybou `timed_out`. Na webu tyto aplikace používají běžný tok prohlížeče, tedy skrytý iframe nebo popup na `redirectUri`. MSAL Browser 5 odpověď sám nepřečte, takže stránka přesměrování ji musí poslat zpět voláním `broadcastResponseToMainFrame()` z `@azure/msal-browser/redirect-bridge`.
 
 ## Symptom
 
-- Desktop Office: `acquireTokenSilent` / `ssoSilent` succeeds in milliseconds through the NAA broker.
-- Office on the web: `ssoSilent` throws `BrowserAuthError: timed_out`, and a fallback `acquireTokenPopup` opens a window that never closes.
+- Office on the web (document opened from SharePoint Online): `ssoSilent` throws `BrowserAuthError: timed_out`.
 - The app registration and CORS look correct. A SPA redirect to `brk-multihub://<your-origin>` is registered, and the token endpoint answers.
 
 ## Cause
 
-Office on the web doesn't broker tokens for these hosts the way desktop does, so MSAL falls back to the standard iframe or popup flow against `redirectUri`. Since MSAL Browser 5, the page at `redirectUri` must hand the auth response to the main frame explicitly. If that page is your task pane and it just boots the app again, the response is never delivered, and the caller waits until it times out.
+Microsoft's NAA guide states that Word, Excel and PowerPoint on the web use a standard browser authentication flow, which is why the task pane page needs its own SPA redirect URI. That flow loads `redirectUri` in a hidden iframe or popup. Since MSAL Browser 5, the page at `redirectUri` must hand the auth response to the main frame explicitly. If that page is your task pane and it just boots the app again, the response is never delivered, and the caller waits until it times out.
 
 ## Fix
 
@@ -49,8 +48,15 @@ After this change, tokens on the web were issued silently in about 1–3 s in al
 
 ## Related trap: cached task pane code
 
-A CDN that serves the task pane page and script with `Cache-Control: max-age=…` keeps old code in the pane after you redeploy. Chrome partitions its HTTP cache by top-level site, so the iframe copy (under the Office/SharePoint origin) is separate from the copy you open directly. A hard reload of the document page doesn't refresh it. Keep the pane page stable and small, and load the code with a version in the URL.
+A CDN that serves the task pane page and script with `Cache-Control: max-age=…` keeps old code in the pane after you redeploy. Chrome partitions its HTTP cache by top-level site, so the iframe copy (under the Office/SharePoint origin) is separate from the copy you open directly. Reloading the document page may not refresh it. Keep the pane page stable and small, and load the code with a version in the URL.
 
 ## Related trap: sideloading on the web is per app
 
 An add-in uploaded in Word on the web does not appear in Excel or PowerPoint on the web, even if the manifest lists all three hosts. Upload it in each app via **Home → Add-ins → Advanced… → MY ADD-INS → Upload My Add-in**. The newer "Apps" store dialog has no upload option.
+
+## Sources
+
+- [Enable SSO in an Office Add-in with nested app authentication](https://learn.microsoft.com/office/dev/add-ins/develop/enable-nested-app-authentication-in-your-add-in) – `brk-multihub` redirect and the extra task pane redirect for Word, Excel and PowerPoint on the web.
+- [Migrate from MSAL Browser v4 to v5](https://learn.microsoft.com/entra/msal/javascript/browser/v4-migration) – all flows use the redirect bridge; popup and silent responses go through `broadcastResponseToMainFrame()`.
+- [Set up the redirect bridge page](https://learn.microsoft.com/entra/msal/javascript/browser/redirect-bridge) – the bridge page must not be served with COOP headers.
+- [Nested app auth requirement set](https://learn.microsoft.com/javascript/api/requirement-sets/common/nested-app-auth-requirement-sets) – on the web, NAA is supported only for documents opened from SharePoint Online and OneDrive.
