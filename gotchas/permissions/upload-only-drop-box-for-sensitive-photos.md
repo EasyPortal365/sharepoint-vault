@@ -4,7 +4,7 @@ short-title: Upload-only drop box for sensitive files
 summary: Giving someone write access to a protected library folder also lets them read every file in it; a list with `ReadSecurity = 2`, Contribute for the senders and Edit for the reviewers lets people send files they alone can see — the direct attachment URL of someone else's item is denied in SharePoint Online (measured)
 tags: [permissions, lists, attachments, item-level-security, libraries, sensitive-data]
 applies-to: SharePoint Online — any "people send files that only a small team may see" feature (injury photos, incident evidence, HR documents)
-last-reviewed: 2026-10-20
+last-reviewed: 2026-11-20
 ---
 
 # A drop box for sensitive files — a document library can't do it, a list with ReadSecurity 2 and attachments can
@@ -51,6 +51,7 @@ The attachment inherits the item's item-level protection, including its direct U
 - **The access-denied page says "you don't have access to this list".** That wording does not mean the sender lost the whole list. Check with the `items` query: an empty 200 means the list is readable and only the foreign item is hidden.
 - **Don't give senders Edit "to be safe".** Edit includes Manage Lists, which silently turns `ReadSecurity = 2` off for them. Assert the absence of Manage Lists on the sender group in your hardening checks.
 - **An empty inbox item looks like "photos waiting".** If none of the attachments uploaded, delete the item right away.
+- **A write-only library is possible with a custom level.** A permission level with Add Items but no View Items (created through REST, not the UI) lets senders drop files into a library they can't read. The catch is that the upload answers 403 even when it succeeded, so you can't confirm it from the sender's side. Details in [An add-only permission level saves, then reports 403](add-only-permission-level-saves-then-reports-403.md).
 - **Resize photos on the phone before sending.** Phone photos are 3–8 MB and shop floors have weak signal. Redrawing on a canvas also strips EXIF, including GPS. HEIC that the browser can't decode has to go up as the original, still carrying its EXIF.
 
 ## Related
