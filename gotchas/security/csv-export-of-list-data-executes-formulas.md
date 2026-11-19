@@ -4,7 +4,7 @@ short-title: CSV export executes formulas
 summary: A member-written cell starting `= + - @` (or TAB/CR) runs in Excel on the reader's machine; quoting doesn't disarm it, an apostrophe prefix does
 tags: [security, spfx, export, csv, stored-injection]
 applies-to: SharePoint Online (any client exporting list/library data to CSV)
-last-reviewed: 2026-07-25
+last-reviewed: 2026-11-19
 ---
 
 # CSV export of list data hands Excel a formula, not text
@@ -58,4 +58,5 @@ The apostrophe is consumed by Excel as the "treat as text" marker, so the reader
 - **Also quote lone CR.** A value containing a bare `\r` (no `\n`) splits the record in Excel; the tail then starts a fresh cell that may begin with `=`. Include `\r` in the "needs quoting" test, not just `\n`.
 - Same exposure applies to **anything downstream that opens the file as a spreadsheet**: mail attachments, Power Automate "create file" flows, an archive handed to an auditor.
 - This is the export-time sibling of stored XSS (`gotchas/security/stored-xss-from-list-content.md`): the same untrusted list column, a different rendering engine. An app that sanitizes HTML but pipes raw text into CSV has closed one exit and left the other open.
+- **Ship guard and quoting as one function.** A guard that leaves quoting "to the caller" gets copied without the second half. An audit across a dozen exporters found several that prefixed `'` but never quoted: a value with `;` or a newline shifted the columns, and the text after the `;` became a fresh cell starting with `=` that the guard never saw. Export one `csvCell(v)` that guards, then always quotes and doubles `"`, and delete the local copies.
 - Numbers are not safe by construction — a negative number renders as `-5`, which starts with `-`. Excel parses `-5` fine, but `-5+cmd…` is a formula, so run *every* cell through the guard rather than reasoning per column.
