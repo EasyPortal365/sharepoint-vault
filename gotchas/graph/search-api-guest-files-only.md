@@ -26,7 +26,7 @@ The same account searches SharePoint/OneDrive files fine. Because the call is a 
 
 ## Cause
 
-Microsoft documents it in the Search API known limitations: *guest search doesn't support searches for acronym, bookmark, message, chatMessage, event, person, qna, or externalItem* ([Search API overview — Known limitations](https://learn.microsoft.com/graph/api/resources/search-api-overview?view=graph-rest-1.0#known-limitations), item 7). A guest also usually has no mailbox in the resource tenant, so mail and calendar would be empty anyway.
+Microsoft documents it in the Search API known limitations: *guest search doesn't support searches for acronym, bookmark, message, chatMessage, event, person, qna, or externalItem* ([Search API overview — Known limitations](https://learn.microsoft.com/graph/api/resources/search-api-overview?view=graph-rest-1.0#known-limitations)). A guest also usually has no mailbox in the resource tenant, so mail and calendar would be empty anyway.
 
 ## What to do
 
