@@ -1,10 +1,10 @@
 ---
 title: A library with NoCrawl returns nothing from Search — and silently blinds anything built on Search
 short-title: "`NoCrawl` on a library silently blinds your RAG"
-summary: Excluded containers return 0 with HTTP 200 and no log, so Search-backed AI never sees them; provisioning that excludes *data* lists must not inherit that onto *content* libraries; reindex can't be forced over REST (`SP.PropertyValues` won't MERGE); indexing is not a permission change — Search trims per user; and `Hidden` is a separate axis from `NoCrawl`, so hiding a library does not take it out of the index (measured before/after)
+summary: Excluded containers return 0 with HTTP 200 and no log, so Search-backed AI never sees them; provisioning that excludes *data* lists must not inherit that onto *content* libraries; reindex can't be forced over REST (`SP.PropertyValues` won't MERGE); indexing is not a permission change — Search trims per user; and `Hidden` is a separate axis from `NoCrawl`, so hiding a library does not take it out of the index (measured before/after); switching `NoCrawl` on drops an indexed file from results in minutes (measured 6–11 min)
 tags: [search, crawl, indexing, rag, ai, provisioning, governance, hidden]
 applies-to: SharePoint Online
-last-reviewed: 2026-09-17
+last-reviewed: 2026-11-20
 ---
 
 # A library with `NoCrawl` returns nothing from Search — and silently blinds anything built on Search
@@ -123,6 +123,29 @@ Two caveats worth stating with it:
 - **Hiding does cost something real:** a hidden library cannot be opened from Site
   contents and cannot be synced to OneDrive. Hide the ones only your app touches;
   leave the ones people work in directly.
+
+### What a library created hidden looks like (and why that is still not exclusion)
+
+A second measurement, one unique word per file, queried every 5 minutes:
+
+| Setup | In the index |
+|---|---|
+| new **visible** library, file uploaded | within 5 min |
+| new **hidden** library, file uploaded at the same moment | not after 20 min |
+| libraries created hidden by an app (`NoCrawl: false`), files uploaded | not after 1 h 40 min |
+
+So a library that is hidden *from creation* may never show up in practice. That is an
+observation, not documented behaviour, and the table above already shows the other
+half: a library that *is* in the index stays there when you hide it. If content must
+stay out of Search, set `NoCrawl: true` explicitly. Do not rely on `Hidden`.
+
+### How fast `NoCrawl: true` takes effect
+
+On a visible library whose file was already in the results: `NoCrawl` switched on at
+10:04, file still returned at 10:10, gone at 10:15. That is **minutes, not hours**.
+A file uploaded right after the switch never appeared. And when you A/B this yourself,
+change one variable at a time. "Unhide and re-upload" in one step proves nothing about
+either change.
 
 From the browser, remember the OData shape: a raw `fetch` against `_api` rejects
 `@odata.type` (`400 '@odata.type' is an invalid instance annotation name`) — send
