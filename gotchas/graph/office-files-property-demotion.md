@@ -1,7 +1,7 @@
 ---
 title: Office files change their content hash when you PATCH metadata — property demotion
 short-title: "Office files: property demotion changes the hash"
-summary: Metadata PATCH and copy jobs rewrite Office, .msg and .htm file bytes; key change detection on `lastModifiedBy`, fingerprint approved Office files by ZIP content parts, never compare sizes exactly
+summary: Metadata PATCH and copy jobs rewrite Office, .msg and .htm file bytes; key change detection on `lastModifiedBy`, fingerprint approved Office files by ZIP content parts, and expect a copy uploaded to the same library to inherit every column (property promotion)
 tags: [graph, files, sharepoint-online, automation, migration, copy-job]
 applies-to: SharePoint Online (Microsoft Graph / REST)
 last-reviewed: 2026-11-20
@@ -98,3 +98,13 @@ const SKIP = (n: string) => n.startsWith('customXml/') || n.startsWith('docProps
 - Keep whole-byte hashing for files that are not ZIP packages (PDF, images, text).
 - Old binary Office, `.msg` and `.htm` get rewritten too (see above), and there is no cheap part-level fingerprint for them: either keep them out of the workflow or do not fingerprint them — decide it explicitly.
 - A test double that does not rewrite files on metadata writes will never catch this. Add a test case where only the metadata parts differ, and verify live by comparing parts of `versions(id)/$value`.
+
+## The reverse: a copy uploaded to the same library inherits every column — including your record key
+
+Measured in the same workflow (November 2026). Before publishing it fills the document and uploads the filled copy to a subfolder (`_publish/<key>/`) of the **same** library that holds the working files. Afterwards a query "the record with key X" returned **two items**: the real working file and the copy, with the same key, step and status columns.
+
+Nobody wrote those columns. Because of demotion, the working file carries its column values inside `customXml`; when the copy's bytes were uploaded, SharePoint read them back and filled the new item's columns (property promotion) — with the values as they were at copy time, so the copy showed a stale state. Code that merged results into a map by key picked the copy and showed the wrong screen; counters counted the document twice.
+
+- A record is the file at an agreed location (for example the library root). Filter every "records" query by the parent folder of `FileRef` and `FSObjType = 0`, not by the key column alone, and never take `rows[0]` of a key query without that filter.
+- Copying an Office file into the same library creates an item with the original's columns. Put working copies in another library, or treat them as carrying the original's (snapshot) metadata.
+- Fix all reads at once (lists, detail lookups, counters) — the duplicate shows up wherever the library is queried.
