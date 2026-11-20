@@ -4,7 +4,7 @@ short-title: "PDF conversion endpoint: plain fetch only"
 summary: "`_api/v2.0/drives/…/content?format=pdf` converts Office files server-side with no Graph consent, but auth-decorating clients break its 302 to `*.svc.ms`; resolve the drive explicitly and guard on Content-Type"
 tags: [rest-api, files, pdf, spfx, diagnostics]
 applies-to: SharePoint Online
-last-reviewed: 2026-08-17
+last-reviewed: 2026-11-20
 ---
 
 # SharePoint's built-in PDF conversion endpoint works only with a plain fetch — auth headers break the redirect
@@ -39,6 +39,9 @@ The path after `root:` is **relative to the drive (library) root**, URL-encoded 
 3. **Guard on `Content-Type`.** An expired session answers with a login **HTML page and HTTP 200**. If you pipe the body straight into a viewer, an `<iframe>` for printing, or a file download, the user gets a saved login page instead of their document. Accept only `application/pdf` (or `application/octet-stream`); treat `text/html` as failure.
 
 4. **PDFs and images don't need the transform.** Fetch them directly (same `Content-Type` guard applies). Sending a PDF through `format=pdf` is pointless and can error.
+
+5. **Word fields are not recalculated.** The conversion renders table-of-contents and `PAGEREF` fields with the values **stored in the file** – whatever Word last computed. `PAGE`/`NUMPAGES` in headers and footers are fine, but a TOC whose cached numbers are all `1` stays all `1` in the PDF. Adding `<w:updateFields w:val="true"/>` to `word/settings.xml` makes no difference (measured A/B: identical output). If your code writes into the document before converting (metadata, revision rows), pagination shifts and even a freshly updated TOC would be wrong. Either drop page numbers from the TOC (remove the tab + `PAGEREF` field from each entry, keep the `w:hyperlink`, add the `
+` switch to the `TOC` instruction) or convert with desktop Word. *Ve zkratce: převod pole obsahu nepřepočítá ani s `updateFields` – obsah bez čísel stran, odkazy na kapitoly nechat.*
 
 ## Why not Graph?
 
