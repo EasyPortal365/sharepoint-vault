@@ -1,10 +1,10 @@
 ---
 title: Office files change their content hash when you PATCH metadata — property demotion
 short-title: "Office files: property demotion changes the hash"
-summary: Metadata PATCH and copy jobs rewrite Office, .msg and .htm file bytes; key change detection on `lastModifiedBy`, never compare sizes exactly
+summary: Metadata PATCH and copy jobs rewrite Office, .msg and .htm file bytes; key change detection on `lastModifiedBy`, fingerprint approved Office files by ZIP content parts, never compare sizes exactly
 tags: [graph, files, sharepoint-online, automation, migration, copy-job]
 applies-to: SharePoint Online (Microsoft Graph / REST)
-last-reviewed: 2026-11-01
+last-reviewed: 2026-11-20
 ---
 
 # Office files change their *content hash* when you PATCH metadata — property demotion
@@ -79,3 +79,22 @@ Measured on a second migration (November 2026, a library of 2,135 files, grouped
 | `.pdf`, `.jpg`, `.png`, `.tif`, `.txt`, `.eml`, `.rtf`, `.odt`, `.zip` | 0 | — | nothing |
 
 The two `.htm` files measured in detail (7 kB and 62 kB) grew by exactly the same 1,185 characters, and the rest of the file was unchanged. So the metadata allowance in a migration check must cover old binary Office, `.msg` and `.htm/.html` too, not just OOXML. To find the formats you forgot, compare sizes for the whole library grouped by extension, not file by file.
+
+## Approval fingerprints: "the file changed after approval" when nobody touched it
+
+Measured in November 2026 on a document workflow that keeps its state (step, round, reviewers) in columns of the working file's list item. At submission it stored a SHA-256 of the file bytes; before publishing it compared that with the current bytes to make sure exactly the approved content goes out. Every Office document was blocked with "the file changed after approval".
+
+Each state update is a metadata write, and each metadata write rewrote the file: an `.xlsx` went from 14,318 to 15,729 bytes and from version 1.0 to 6.0 within three minutes, with no one opening it. Comparing the ZIP central directories of all versions showed changes only in `customXml/item*.xml`, `customXml/itemProps*.xml`, `docProps/core.xml` and `[trash]/*` entries; the worksheet part never changed.
+
+Fingerprint Office files by their content parts instead of their bytes:
+
+```ts
+// SHA-256 over sorted "name crc32 size" lines from the ZIP central directory,
+// skipping the parts SharePoint rewrites on metadata writes. Nothing is decompressed.
+const SKIP = (n: string) => n.startsWith('customXml/') || n.startsWith('docProps/') || n.startsWith('[trash]/')
+  || n === '[Content_Types].xml' || n === '_rels/.rels';
+```
+
+- Keep whole-byte hashing for files that are not ZIP packages (PDF, images, text).
+- Old binary Office, `.msg` and `.htm` get rewritten too (see above), and there is no cheap part-level fingerprint for them: either keep them out of the workflow or do not fingerprint them — decide it explicitly.
+- A test double that does not rewrite files on metadata writes will never catch this. Add a test case where only the metadata parts differ, and verify live by comparing parts of `versions(id)/$value`.
