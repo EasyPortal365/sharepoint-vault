@@ -1,7 +1,7 @@
 ---
 title: Check whether an SPFx Graph permission is approved without admin rights
 short-title: API access approval, checked without admin rights
-summary: "Guests and ordinary users cannot open API access in the SharePoint admin center, and `SP.OAuth.Token/Acquire` answers 400 “Resource is not allowed” – but the Graph token SPFx caches in `localStorage` lists its granted scopes in plain text"
+summary: "Only admins can open API access in the SharePoint admin center, and `SP.OAuth.Token/Acquire` answers 400 “Resource is not allowed” – but the affected user can read the granted scopes of the Graph token SPFx cached in their own browser, without printing the token"
 tags: [spfx, graph, permissions, troubleshooting]
 applies-to: SharePoint Online, SharePoint Framework (AadHttpClient / MSGraphClient)
 last-reviewed: 2026-11-20
@@ -9,21 +9,21 @@ last-reviewed: 2026-11-20
 
 # Is the permission approved? Read the scopes SPFx already received
 
-> **Bottom line.** When an SPFx feature fails with 403 and you are not a SharePoint or Global Administrator in that tenant, you cannot open *Advanced › API access* to see whether a scope was approved. You do not need to: open any page where the solution has run once, and read the `target` of the cached Microsoft Graph access token in `localStorage`. It is the list of scopes the tenant actually granted, readable without decoding or printing the token.
+> **Bottom line.** When an SPFx feature fails with 403, the API access page answers “was the scope approved?”, but only an administrator can open it. The affected user can answer it too, in their own browser: the Microsoft Graph token SPFx cached in `localStorage` lists the granted scopes in its `target` field. This is the user's own sign-in data. Ask them to run the check, or run it in your own tenant. Don't read the token cache of a tenant or a person who has not explicitly allowed it, even as a guest.
 >
-> **Ve zkratce.** Když funkce SPFx padá na 403 a v tenantu nejste správce, stránku *Přístup k rozhraní API* neotevřete. Nepotřebujete ji: na stránce, kde řešení aspoň jednou běželo, je v `localStorage` uložený token Graphu a jeho pole `target` vypisuje oprávnění, která tenant skutečně vydal – bez dekódování a bez vypsání tokenu.
+> **Ve zkratce.** Když funkce SPFx padá na 403, odpověď „bylo oprávnění schválené?“ dá stránka *Přístup k rozhraní API*, ale otevře ji jen správce. Odpověď dá i prohlížeč dotčeného uživatele: token Graphu, který SPFx uložil do `localStorage`, má v poli `target` seznam vydaných oprávnění. Jsou to přihlašovací údaje toho uživatele. Kontrolu proto spustí on sám, nebo ji uděláte ve svém tenantu. V cizím tenantu nebo cizím prohlížeči cache tokenů bez výslovného souhlasu nečtěte, ani jako host.
 
 ## Symptom
 
-- A feature that needs a newly added delegated scope (for example `ChatMessage.Send`) returns **401/403** after the customer uploaded the new `.sppkg`.
-- You work in the tenant as a guest or a normal user. The admin center refuses you (for a guest: *“External sharing is disabled for …-admin.sharepoint.com”*).
+- A feature that needs a newly added delegated scope (for example `ChatMessage.Send`) returns **401/403** after the tenant uploaded the new `.sppkg`.
+- The person troubleshooting is not an administrator in that tenant. The admin center refuses them (a guest sees *“External sharing is disabled for …-admin.sharepoint.com”*).
 - Asking SharePoint for a Graph token directly does not help either: `POST /_api/SP.OAuth.Token/Acquire` with `{"resource":"https://graph.microsoft.com"}` answers **400 `10002` “Resource is not allowed.”** (measured 2026-11-20).
 
 ## Why it works
 
-Uploading a package with `webApiPermissionRequests` only creates *pending* requests; a Global Administrator approves them. Once approved, every Graph token issued to the SharePoint client extensibility principal carries the scope. SPFx obtains that token through MSAL and keeps it in the MSAL cache in `localStorage`; the cache entry stores the granted scopes in its `target` field. So the cache answers “was it approved?” for the signed-in user, read-only.
+Uploading a package with `webApiPermissionRequests` only creates *pending* requests. For Microsoft Graph, a Global Administrator approves them on the [API access page](https://learn.microsoft.com/sharepoint/api-access), and the delegated scopes are added to the *SharePoint Online Client Extensibility Web Application Principal*. From then on, every Graph token issued to that principal carries the scope. SPFx obtains the token through MSAL and keeps it in the MSAL cache in `localStorage`. The cache entry stores the granted scopes in its `target` field, so it shows, read-only, what the signed-in user was actually granted.
 
-## Check (paste into the browser console on a page where the web part has loaded)
+## Check (the affected user pastes it into the browser console on a page where the web part has loaded)
 
 ```js
 (() => {
@@ -46,12 +46,15 @@ Uploading a package with `webApiPermissionRequests` only creates *pending* reque
 })();
 ```
 
+The user sends back only the `has`, `cachedAt` and `scopes` values. A screenshot of the result is enough. Never ask for the token itself.
+
 ## Reading the result
 
-- **Scope present** → the permission is approved. A 403 has another cause. Have the user sign out and back in so the token is issued after the approval (`cachedAt` tells you how old yours is), then capture the full Graph error code and message.
-- **Scope missing in a token cached after the upload** → the request is still pending (or was rejected). The Global Administrator approves it in *SharePoint admin center › Advanced › API access*.
+- **Scope present** → the permission is approved. A 403 has another cause. Have the user sign out and back in so they get a token issued after the approval (`cachedAt` shows how old the current one is). Then capture the full Graph error code and message.
+- **Scope missing from a token cached after the upload** → the request is still pending or was rejected. A Global Administrator approves it in *SharePoint admin center › Advanced › API access*.
 - **No Graph entry at all** → the solution has not requested a Graph token in this browser yet. Use the feature once, then check again.
 
 ## Related
 
-- Make the error itself say more: surface the Graph `code` and `message` next to your friendly text. A bare “403” cannot tell a missing consent from a licence or policy block.
+- Make the error itself say more. Surface the Graph `code` and `message` next to your friendly text, because a bare “403” cannot tell a missing consent from a licence or policy block. With that in place, the user's screenshot of the error often replaces this check.
+- Revoking a permission does not invalidate tokens already issued: they stay valid until they expire ([Microsoft Learn](https://learn.microsoft.com/sharepoint/dev/spfx/use-aadhttpclient#considerations)). A token cached *before* a change can therefore mislead in either direction.
