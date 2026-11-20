@@ -1,10 +1,10 @@
 ---
 title: File versions come back oldest-first, so $top truncates the newest ones
 short-title: File versions come back oldest-first
-summary: "`/Versions` is ascending, so `$top` drops the NEWEST ones; sorting the result descending afterwards hides it; `$orderby=ID desc` IS honoured together with `$top` (measured), and the list never contains the current version"
+summary: "`/Versions` is ascending, so `$top` drops the NEWEST ones; sorting the result descending afterwards hides it; `$orderby=ID desc` IS honoured together with `$top` (measured), the list never contains the current version, and with a bearer token old content downloads via `versions(ID)/$value`, not the `_vti_history` Url (401)"
 tags: [rest-api, files, versioning, paging, diagnostics]
 applies-to: SharePoint Online
-last-reviewed: 2026-11-10
+last-reviewed: 2026-11-20
 ---
 
 # File versions come back oldest-first, so `$top` truncates the newest ones
@@ -83,7 +83,7 @@ So on SPO `$orderby=ID desc` **is** applied before `$top` – with it, a cap kee
 Three more facts from the same run that trip up version-history UIs:
 
 - **The current version is not in `/Versions`.** Every row has `IsCurrentVersion: false`. Labelling the first row "current" marks an old version. Read the current one from the file itself: `GetFileByServerRelativePath(…)?$select=UIVersionLabel,TimeLastModified,CheckInComment,Length,ModifiedBy/Title&$expand=ModifiedBy`.
-- **`Url` is web-relative** (`_vti_history/512/Library/file.png`) and serves the old content directly (200, original content type) – prefix the web path and encode each segment. `CreatedBy` can be expanded (`$expand=CreatedBy`, `CreatedBy/Title`) for the author; `CheckInComment` is the version note.
+- **`Url` is web-relative** (`_vti_history/512/Library/file.png`) and serves the old content directly **in a browser session** (cookies; 200, original content type) – prefix the web path and encode each segment. **With an OAuth bearer token it does not:** measured 2026-11-20 on two .docx files, `<web>/_vti_history/<ID>/…` with `Authorization: Bearer` returned **401**, while `GetFileByServerRelativePath(decodedurl=@p)/versions(<ID>)/$value?@p='…'` with the same token returned **200**. Code that runs with a token (Office add-in, Azure Function, script) should download old versions through `versions(<ID>)/$value`. `CreatedBy` can be expanded (`$expand=CreatedBy`, `CreatedBy/Title`) for the author; `CheckInComment` is the version note.
 - **`Versions/RestoreByLabel(versionlabel='1.0')` restores the file content only.** It creates a new current version; the list item fields (Title and custom columns) keep their current values, even when the restored version had them empty. History is not shortened.
 
 ## How to confirm it on your tenant
