@@ -9,9 +9,9 @@ last-reviewed: 2026-11-20
 
 # Word shows the old column names after you rename or hide library columns — the server is right, the open copy is not
 
-> **Bottom line.** After you change a library column's `Title` or `Hidden`, Word for Windows can keep showing the internal name (and the hidden column) under File → Info → Properties, with a yellow "Document Updates Available" bar on top. The library is already correct: the list field, the content type's field and `FieldLinks` carry the new values, and SharePoint writes the current schema into the file when it is downloaded, even if the file was last saved before the change. Word is showing the schema of the copy it had open or cached. Close Word, reopen the document from the library, and only then decide whether anything needs fixing.
+> **Bottom line.** After you change a library column's `Title` or `Hidden`, Word for Windows can keep showing the internal name (and the hidden column) under File → Info → Properties, with a yellow "Document Updates Available" bar on top. The library is already correct: the list field, the content type's field and `FieldLinks` carry the new values, and the file you download from the library already contains the current schema, even if it was last saved before the change. Word is showing the schema of the copy it had open or cached. Close Word, reopen the document from the library, and only then decide whether anything needs fixing.
 >
-> **Ve zkratce.** Po změně `Title` nebo `Hidden` sloupce knihovny může Word na počítači dál ukazovat ve Vlastnostech interní název (i skrytý sloupec) a nahoře žlutý pruh „Document Updates Available“. Knihovna je přitom v pořádku: pole seznamu, pole typu obsahu i `FieldLinks` mají nové hodnoty a SharePoint aktuální schéma zapíše do souboru při stažení, i když byl soubor naposledy uložený před změnou. Word ukazuje schéma kopie, kterou měl otevřenou nebo v mezipaměti. Zavři Word, otevři dokument znovu z knihovny a teprve pak řeš, jestli je co opravovat.
+> **Ve zkratce.** Po změně `Title` nebo `Hidden` sloupce knihovny může Word na počítači dál ukazovat ve Vlastnostech interní název (i skrytý sloupec) a nahoře žlutý pruh „Document Updates Available“. Knihovna je přitom v pořádku: pole seznamu, pole typu obsahu i `FieldLinks` mají nové hodnoty a soubor stažený z knihovny už aktuální schéma obsahuje, i když byl naposledy uložený před změnou. Word ukazuje schéma kopie, kterou měl otevřenou nebo v mezipaměti. Zavři Word, otevři dokument znovu z knihovny a teprve pak řeš, jestli je co opravovat.
 
 ## Symptom
 
@@ -35,14 +35,14 @@ GET /_api/web/GetList(@l)/contenttypes('<ctId>')/fields?@l='<library>'&$select=I
 
 In the case behind this article, all three already had the new titles, and `Hidden=true` on the field link of the hidden column.
 
-Then download the document itself (`GetFileByServerRelativePath(decodedurl='…')/$value`) and unzip it. `customXml/item*.xml` holds the content type schema (`<ct:contentTypeSchema …>`). It already had the new `ma:displayName` values and `ma:hidden="true"`, although the file's `TimeLastModified` was **before** the rename. SharePoint fills in the schema from the current content type when it serves the file; it is not frozen at the last save.
+Then download the document itself (`GetFileByServerRelativePath(decodedurl='…')/$value`) and unzip it. `customXml/item*.xml` holds the content type schema (`<ct:contentTypeSchema …>`). It already had the new `ma:displayName` values and `ma:hidden="true"`, although the file's `TimeLastModified` was **before** the rename. So the schema a client receives follows the current content type; it is not frozen at the last save.
 
 ## Cause
 
-Word for Windows shows the properties from the schema stored in the copy it has open, or in the copy kept by the Office document cache. That copy predates the change. The yellow bar is Word noticing that the server's schema is newer; it applies it on the next save.
+Word for Windows shows the properties from the schema in the copy it has open (or cached), and that copy predates the change. Closing Word completely and opening the document from the library again showed the new titles and no hidden column. The yellow bar says the document will be updated when you save it.
 
 ## Rules
 
 1. **Measure the server first.** List field, content type field, `FieldLinks` and `SchemaXml`, plus the downloaded file's `customXml`. That last one is exactly what Word receives.
-2. **Verify in Word on a fresh open.** Close Word completely, then open the document from the library again. Saving once also refreshes the schema (that is what the yellow bar announces).
+2. **Verify in Word on a fresh open.** Close Word completely, then open the document from the library again.
 3. **Don't "fix" content types on a stale reading.** If the measurements show the new values, updating the list fields was enough, and patching `FieldLinks` in provisioning adds code for a problem that is not there.
