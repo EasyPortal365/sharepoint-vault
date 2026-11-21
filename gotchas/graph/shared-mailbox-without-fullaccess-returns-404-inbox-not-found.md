@@ -26,7 +26,9 @@ HTTP 404 · ErrorItemNotFound: The specified object was not found in the store.,
 
 ## Cause
 
-Delegated access to another mailbox needs both the scope (`Mail.Read.Shared` / `Mail.ReadWrite.Shared`) **and** an Exchange mailbox permission (FullAccess, or folder permissions) for the signed-in user. Without the Exchange permission, Exchange does not reveal the folder to that user, and Graph reports the well-known folder as not found. A Global Admin is not automatically a member of shared mailboxes — "the admin can do anything" does not apply to mailbox content.
+Delegated access to another mailbox needs both the scope (`Mail.Read.Shared` / `Mail.ReadWrite.Shared` — "mail a user has permission to access" [1]) **and** an Exchange mailbox permission for the signed-in user: Full Access to open the shared mailbox, Send As to send from it [2]. Without the Exchange permission, Graph reports the well-known folder as not found (measured, see below). An admin role does not open mailbox content by itself — even an administrator who should read all mailboxes is granted Full Access explicitly with `Add-MailboxPermission` [3].
+
+Measured 2026-11-21 on one shared mailbox, same SPFx app, same request: the user who is a member of the mailbox (has it in Outlook) → 200 and the messages; a Global Admin who is not a member → the 404 above on every poll.
 
 A second, app-side problem makes it invisible: if the polling loop catches the per-mailbox error and then writes a "last checked at …" stamp regardless, the UI keeps saying everything is fine.
 
@@ -49,4 +51,10 @@ await setStamp('mail-check', `${new Date().toISOString()}|${me}` + (failed.lengt
 ## Verify
 
 - Under the affected user, `GET /users/{shared}/mailFolders/inbox?$select=id` → 404; under a member of the mailbox → 200.
-- After granting FullAccess, allow some minutes for Exchange to apply it before re-testing.
+- A freshly granted permission can take a while to show up — Microsoft mentions up to a few hours for the mailbox to appear in Outlook [3]; re-test later before concluding it didn't work.
+
+## Sources
+
+1. [Microsoft Graph permissions reference – Mail.ReadWrite.Shared](https://learn.microsoft.com/graph/permissions-reference) · [Get Outlook messages in a shared or delegated folder](https://learn.microsoft.com/graph/outlook-share-messages-folders)
+2. [Shared mailboxes in Exchange Online – Which permissions should you use?](https://learn.microsoft.com/exchange/collaboration-exo/shared-mailboxes)
+3. [Accessing other people's mailboxes in Microsoft 365](https://learn.microsoft.com/troubleshoot/exchange/user-and-shared-mailboxes/how-to-access-other-mailboxes)
