@@ -4,7 +4,7 @@ short-title: The 5,000-item view threshold
 summary: It's scanned rows, not returned rows; index early, page always
 tags: [lists, performance, rest-api]
 applies-to: SharePoint Online, SharePoint Server
-last-reviewed: 2026-07-16
+last-reviewed: 2026-11-21
 ---
 
 # The 5,000-item list view threshold — and why indexes must come early
@@ -38,4 +38,5 @@ The threshold is not about how many items you *retrieve* — it's about how many
 - The REST failure mode is an `SPQueryThrottledException` surfacing as **HTTP 500** — with a defensive data layer that swallows errors, the app just looks permanently empty. (See [silent fallbacks](../rest-api/silent-fallbacks-poison-destructive-writes.md) for why that combination is dangerous.)
 - Indexes can be ensured programmatically after provisioning: `GET` the field's `Indexed` flag via `fields/getbyinternalnameortitle('…')?$select=Indexed`, and `MERGE { Indexed: true }` when false — idempotent, safe to re-run. Budget matters: **max 20 indexes per list**, so index only the fields you actually filter on.
 - Search-based rollups (KQL against the search index) don't hit the threshold — sometimes search *is* the fix for cross-list dashboards.
+- An index is not enough when the indexed condition itself matches more than 5,000 items — see [Indexed filter with > 5,000 matches still throttles](indexed-filter-with-over-5000-matches-still-throttles.md).
 - Related script in this repo: [`Get-LargeListsReport.ps1`](../../scripts/lists-and-libraries/Get-LargeListsReport.ps1) — early warning before lists reach the limit.
