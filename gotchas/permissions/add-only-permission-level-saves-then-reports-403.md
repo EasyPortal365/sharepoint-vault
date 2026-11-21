@@ -4,7 +4,7 @@ short-title: Add-only permission level saves, then reports 403
 summary: A custom permission level with Add Items and Open but no View Items can be created through REST (not in the UI) and gives a write-only library or list; the upload succeeds but `Files/add` returns 403 and `POST /items` returns 500 "Item does not exist", because the server can't return what the caller may not read — use `AddValidateUpdateItemUsingPath` for lists, treat library uploads as unconfirmed, and never measure a direct URL by its status code
 tags: [permissions, libraries, lists, permission-levels, append-only, testing]
 applies-to: SharePoint Online — write-only archives, drop boxes and append-only logs built with custom permission levels
-last-reviewed: 2026-11-20
+last-reviewed: 2026-11-21
 ---
 
 # An "add only" permission level (Add Items without View Items) saves the file — and then answers 403 or 500
@@ -36,6 +36,7 @@ With **View Items + Add Items + Open Items + View Versions** (no Edit, no Delete
 - **A direct URL without access returns HTTP 200.** `fetch` follows the redirect to `/_layouts/15/AccessDenied.aspx`. Check `new URL(response.url).pathname` or use `redirect: 'manual'` (`opaqueredirect`); a status-code test passes even when access is denied.
 - **`ReadSecurity = 2` also hides other people's items from a reviewer** who has only "add and read". Adding **Override List Behaviors** (`0x100`) lets the reviewer see all items without Manage Lists; such a role still can't change list settings or edit someone else's item (403).
 - **Role names with parentheses or commas** were rejected by REST (400). Use letters and spaces.
+- **Existence checks lie too.** `GetFolderByServerRelativePath` on a folder the caller created earlier returns 200 with `Exists: false`, and `GetFileByServerRelativePath` returns 404. A second file for the same folder therefore tries to create the folder again and gets **400 `-2130575257` "A file or folder with the name … already exists"**. For an add-only role, treat that error code (not the message text, which follows the site language) as success; any other 400 is still an error.
 
 ## Related
 
