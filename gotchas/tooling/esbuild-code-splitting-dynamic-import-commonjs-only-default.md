@@ -44,7 +44,7 @@ if (!mammoth || typeof mammoth.extractRawText !== 'function') {
 const { value } = await mammoth.extractRawText({ arrayBuffer });
 ```
 
-The same applies to any CommonJS library you load lazily: SheetJS (`xlsx`), JSZip, `pdfjs` legacy builds, and so on.
+The same applies to any CommonJS-only library you load lazily (JSZip, for example). A package that also ships an ES module build (SheetJS `xlsx` has `xlsx.mjs`) may resolve to it and keep its named exports, but the same fallback costs nothing and covers both.
 
 ## Test it the way it ships
 
