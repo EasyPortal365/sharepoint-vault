@@ -2,7 +2,7 @@
 
 Every single thing in the vault, on one page. Section names link to folder READMEs; leaves link straight to the content.
 
-*Last updated: 2026-11-20*
+*Last updated: 2026-11-21*
 
 - 🧰 **[scripts/](scripts/)** — PowerShell scripts with comment-based help, read-only unless stated
   - [Terminal animations](scripts/media/) — the writing scripts as an animated PowerShell console; plain SVG, no JavaScript, respects `prefers-reduced-motion`
@@ -421,6 +421,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [ECDSA: Node DER vs WebCrypto r||s](gotchas/tooling/ecdsa-signature-node-der-vs-webcrypto-p1363.md) — crypto.sign in Node returns a DER-encoded ECDSA signature (69–72 bytes); WebCrypto verify in an SPFx bundle expects IEEE P1363 (64 bytes for P-256) and just returns false. Sign with dsaEncoding ieee-p1363, check the length, and test both directions with a DER counterexample
     - [Moving a static CDN off GitHub Pages without breaking the apps that load from it](gotchas/tooling/moving-a-static-cdn-off-github-pages.md) — Upload git blobs, not a Windows working tree (CRLF breaks SRI); allow the new CA in CAA; missing files must stay 404, not 403; Azure static website has no CORS and Front Door ignores the query string by default; folders without a trailing slash (URL path regex, not a negated file-extension condition); upload content before pointers
     - [Azure Front Door serves a stale pointer file for longer than max-age after you publish](gotchas/tooling/azure-front-door-stale-pointer-file-two-cache-tiers.md) — Front Door caches through more than one layer and per Accept-Encoding variant, so a fixed-URL index (versions.json, a signed release index) can stay stale ~12 min with max-age=600; curl without compression hits a cold variant and looks fresh. Give pointer files a short s-maxage, and test with Accept-Encoding: br
+    - [Dynamic import of a CommonJS package under esbuild code splitting exposes only `default`](gotchas/tooling/esbuild-code-splitting-dynamic-import-commonjs-only-default.md) — await import('mammoth') works in an SPFx (webpack) bundle but throws 'extractRawText is not a function' in an esbuild build with splitting: true, because the split chunk exports only default. A single-file esbuild test passes anyway. Fall back to m.default and test with the same splitting as production
 - 🧭 **[guides/](guides/)** — end-to-end walkthroughs
   - [Calling SharePoint REST like a pro](guides/calling-sharepoint-rest-like-a-pro.md) — The client landscape, headers that matter, safe writes, reading well, field/list creation quirks, and a ten-minute diagnosis routine
   - [Search queries that actually work](guides/search-queries-that-actually-work.md) — The one mandatory header, practical KQL, managed properties (`RefinableString*`), paging/sorting, and the freshness/trimming traps
