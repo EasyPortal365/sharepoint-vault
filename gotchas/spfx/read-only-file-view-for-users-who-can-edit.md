@@ -9,15 +9,15 @@ last-reviewed: 2026-11-22
 
 # Read-only file view for a user who can edit
 
-> **Bottom line.** You cannot make Office for the web read-only for someone who has edit rights. `Doc.aspx?…&action=embedview` and `action=interactivepreview` hide the toolbar, but the full-screen button in the corner opens the document with **Edit document**, and the address can be rewritten to `action=edit`. The `/preview` API (read-only embed token) refuses a Contribute user with 403. For a dependable read-only view, show the file in the browser's PDF viewer: PDF by its direct URL, Word/Excel/PowerPoint through `content?format=pdf`.
+> **Bottom line.** You cannot make Office for the web read-only for someone who has edit rights. `Doc.aspx?…&action=embedview` and `action=interactivepreview` hide the toolbar, but the full-screen button in the corner opens the document with **Edit document**. The `/preview` API (read-only embed token) refuses a Contribute user with 403. For a dependable read-only view, show the file in the browser's PDF viewer: PDF by its direct URL, Word/Excel/PowerPoint through `content?format=pdf`.
 >
-> **Ve zkratce.** Office pro web nejde udělat jen pro čtení pro toho, kdo smí soubor měnit. Režim `embedview` i `interactivepreview` skryje lištu, ale ikona celé obrazovky otevře dokument s **Upravit dokument** a adresu lze přepsat na `action=edit`. API `/preview` (token jen pro čtení) vrátí uživateli s Přispívat 403. Spolehlivý náhled jen pro čtení je prohlížeč PDF v iframu: PDF přímou adresou, Word, Excel a PowerPoint přes `content?format=pdf`.
+> **Ve zkratce.** Office pro web nejde udělat jen pro čtení pro toho, kdo smí soubor měnit. Režim `embedview` i `interactivepreview` skryje lištu, ale ikona celé obrazovky otevře dokument s **Upravit dokument**. API `/preview` (token jen pro čtení) vrátí uživateli s Přispívat 403. Spolehlivý náhled jen pro čtení je prohlížeč PDF v iframu: PDF přímou adresou, Word, Excel a PowerPoint přes `content?format=pdf`.
 
 ## Symptom
 
 You want users who have **Contribute** on a library (they must, to publish) to *open* final documents without an editing mode, so a stray click does not start autosaved edits.
 
-- `/_layouts/15/Doc.aspx?sourcedoc={id}&action=embedview` and `action=interactivepreview`: no ribbon, no *Edit* button. The status bar's menu offers only *Download a copy*, *Print to PDF*, accessibility options.
+- `/_layouts/15/Doc.aspx?sourcedoc={id}&action=embedview` and `action=interactivepreview`: no ribbon, no *Edit* button. The status bar's menu offers *Download a copy*, *Print to PDF*, accessibility and embed information – no editing.
 - But the **full-screen icon** (bottom right) opens a new tab with `action=view&wdEmbedFS=1` – the normal viewer with **Edit document**.
 - `POST /_api/v2.0/drives/{drive}/items/{item}/preview` returns a `getUrl` with a read-only token for a site owner, but **403 `accessDenied`** for a Contribute user (measured 2026-11-22).
 
