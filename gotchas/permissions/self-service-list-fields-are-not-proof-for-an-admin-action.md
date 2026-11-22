@@ -4,7 +4,7 @@ short-title: Self-service list fields are not proof for an admin action
 summary: Request, metadata and steward lists that members can write carry client-written requester, status, user id and e-mail fields; an approver's or admin's click then executes them with elevated delegated rights — take identity from the server Author/Editor stamp, resolve people exactly in Graph by id, treat a client "Failed/Approved" status as no decision, and make the confirmation show exactly what will run
 tags: [permissions, delegated-tokens, confused-deputy, author-editor, graph-users, approvals, spfx]
 applies-to: SharePoint Online — SPFx or Power Apps solutions that keep requests, approvals, group metadata or stewards in a list that ordinary members can edit
-last-reviewed: 2026-11-16
+last-reviewed: 2026-11-22
 ---
 
 # In a self-service list, every field except Author and Editor is a claim — an admin action built on them runs the requester's data with the admin's token
@@ -31,8 +31,9 @@ Delegated permissions mean the code runs with whoever clicks. Checks done in the
 1. **Identity from the server stamp.** Select and expand `Author`/`Editor` (`$select=Author/EMail,Author/Name,Author/Title&$expand=Author`). Compare the stamp, not the requester column, with the owner, and send notifications to the stamp's address. When the claimed name differs from `Author`, show both.
 2. **Trust by who last saved.** For metadata items, decide from `Editor`: saved by an app admin or by an owner of the object → trusted; anyone else → do not run admin actions from it, and surface it as a finding ("metadata changed by someone outside admins and owners"). An unreadable stamp or admin list means *unknown*, never trusted.
 3. **Resolve people exactly.** For ids, `POST /directoryObjects/getByIds` and require the stored e-mail/UPN to belong to *that* id. For e-mails, `GET /users?$filter=mail eq '…' or userPrincipalName eq '…'` and require exactly one exact match. Reject claims (`i:0#.f|…`, `c:0…`). Show the approver the display name **and** UPN from Graph, and execute with that object.
-4. **A status is not a decision.** Before offering "retry", look for an approval record in an append-only audit list whose server `Author` is not the requester. Without it, run the normal approval again (with compliance and plan).
-5. **Decide on the current item.** Read the item again just before writing the decision; if the status changed (withdrawn, already decided), stop.
+4. **A status is not a decision.** Before offering "retry", look for an approval record in an append-only audit list whose server `Author` is a **verified approver**: the signed-in approver, a direct member of the app's admin or approver group (read the roster strictly; an unreadable roster counts as empty), or a named approver of that request type. "Author is not the requester" is not enough — any site member can add a row to an append-only list, so a colleague of the requester can write "approved". Approvers given as Entra ID groups can't be checked from the browser: accept only admins there. The requester never counts, even as an admin. Without such a record, run the normal approval again (with compliance and plan).
+5. **"Mine" by the stamp, too.** "My requests", "my sites" and any automatic grant of read access to the requester come from `Author` (e-mail, login, or the UPN at the end of the claim — the whole UPN, not a suffix match), never from the requester column. Pair a site with its request by id, not by a URL the requester could copy into their own item. Lists, search, sorting and CSV exports show the server requester, too.
+6. **Decide on the current item.** Read the item again just before writing the decision; if the status changed (withdrawn, already decided), stop.
 
 ## Applies to
 
