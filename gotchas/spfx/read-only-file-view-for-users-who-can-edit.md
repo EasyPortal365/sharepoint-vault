@@ -23,7 +23,7 @@ You want users who have **Contribute** on a library (they must, to publish) to *
 
 ## Why
 
-The viewer modes only hide controls; the user's permission to edit is unchanged, and Office always leaves a path back to the full viewer. The preview endpoint needs more than Contribute.
+The viewer modes only hide controls; the user's permission to edit is unchanged, and both modes leave a path back to the full viewer. The preview endpoint refused Contribute (an owner passed).
 
 ## Fix
 
