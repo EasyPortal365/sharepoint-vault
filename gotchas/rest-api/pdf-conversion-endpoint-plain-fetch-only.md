@@ -4,7 +4,7 @@ short-title: "PDF conversion endpoint: plain fetch only"
 summary: "`_api/v2.0/drives/…/content?format=pdf` converts Office files server-side with no Graph consent, but auth-decorating clients break its 302 to `*.svc.ms`; resolve the drive explicitly and guard on Content-Type"
 tags: [rest-api, files, pdf, spfx, diagnostics]
 applies-to: SharePoint Online
-last-reviewed: 2026-11-20
+last-reviewed: 2026-11-23
 ---
 
 # SharePoint's built-in PDF conversion endpoint works only with a plain fetch — auth headers break the redirect
@@ -41,7 +41,7 @@ The path after `root:` is **relative to the drive (library) root**, URL-encoded 
 4. **PDFs and images don't need the transform.** Fetch them directly (same `Content-Type` guard applies). Sending a PDF through `format=pdf` is pointless and can error.
 
 5. **Word fields are not recalculated.** The conversion renders table-of-contents and `PAGEREF` fields with the values **stored in the file** – whatever Word last computed. `PAGE`/`NUMPAGES` in headers and footers are fine, but a TOC whose cached numbers are all `1` stays all `1` in the PDF. Adding `<w:updateFields w:val="true"/>` to `word/settings.xml` makes no difference (measured A/B: identical output). If your code writes into the document before converting (metadata, revision rows), pagination shifts and even a freshly updated TOC would be wrong. Either drop page numbers from the TOC (remove the tab + `PAGEREF` field from each entry, keep the `w:hyperlink`, add the `
-` switch to the `TOC` instruction) or convert with desktop Word. *Ve zkratce: převod pole obsahu nepřepočítá ani s `updateFields` – obsah bez čísel stran, odkazy na kapitoly nechat.*
+` switch to the `TOC` instruction) or convert with desktop Word. Handle **both shapes** Word writes for a TOC entry: with the `h` switch the entry is a `w:hyperlink` wrapping the text, tab and `PAGEREF`; without `h` it is a plain `TOC1`–`TOC9` paragraph with the tab and the `PAGEREF` result directly in its runs – a cleaner that only looks inside `w:hyperlink` silently misses it. And clean the copy on **every** path that feeds the converter (e.g. a migration that keeps the original file must still convert a cleaned copy, not the source). *Ve zkratce: převod pole obsahu nepřepočítá ani s `updateFields` – obsah bez čísel stran, odkazy na kapitoly nechat.*
 
 ## Why not Graph?
 
