@@ -1,6 +1,6 @@
 ---
 title: Integrated apps says "Invalid manifest file" for a valid Office add-in manifest – the file arrived as application/xml, not text/xml
-summary: "When you update or upload an Office add-in manifest in the Microsoft 365 admin center (Settings → Integrated apps) through browser automation, every file can be rejected instantly with \"Invalid manifest file\" and no network request. The form's client-side check accepts the file only with the MIME type text/xml (what the Windows file picker gives); automation tools often set application/xml. Re-wrap the File as text/xml via DataTransfer and fire input + change"
+summary: "When you update or upload an Office add-in manifest in the Microsoft 365 admin center (Settings → Integrated apps) through browser automation, every file can be rejected instantly with \"Invalid manifest file\" and no network request. The form's client-side check rejected the file typed application/xml (as a Chrome-extension upload set it) and accepted the same bytes typed text/xml. Re-wrap the File as text/xml via DataTransfer and fire input + change"
 tags: [office-add-ins, manifest, m365-admin-center, integrated-apps, browser-automation, tooling]
 applies-to: Microsoft 365 admin center → Settings → Integrated apps (Upload custom apps, Update add-in) with an add-in-only XML manifest, driven by a browser automation tool (Chrome extension, Playwright setInputFiles, DataTransfer)
 last-reviewed: 2026-11-24
@@ -8,9 +8,9 @@ last-reviewed: 2026-11-24
 
 # Integrated apps says "Invalid manifest file" for a valid Office add-in manifest – the file arrived as application/xml, not text/xml
 
-> **Bottom line.** You update a deployed add-in in **Integrated apps → Update add-in → Upload manifest file (.xml) from device**, and every manifest is rejected straight away with **"Invalid manifest file"**. This happens even with a manifest that differs from an accepted one only in `<Version>`, and the browser sends no network request. The check runs in the page and lets the file through only when `File.type` is **`text/xml`**, which is what the Windows file dialog gives. An automation tool that puts the file into the `<input type="file">` usually labels it **`application/xml`**. Re-wrap the file as `text/xml` and the same manifest passes ("Manifest file validated").
+> **Bottom line.** You update a deployed add-in in **Integrated apps → Update add-in → Upload manifest file (.xml) from device**, and every manifest is rejected straight away with **"Invalid manifest file"**. This happens even with a manifest that differs from an accepted one only in `<Version>`, and the browser sends no network request. The check runs in the page and looks at `File.type`. In our case, the Claude in Chrome extension put the file into the `<input type="file">` as **`application/xml`** and the form rejected it. The same bytes re-wrapped as **`text/xml`** passed ("Manifest file validated"). Other automation tools may set other types, so check `files[0].type`.
 >
-> **Ve zkratce.** Doplněk v **Integrated apps → Update add-in** aktualizuješ nahráním manifestu a každý soubor je hned odmítnut hláškou **„Invalid manifest file“**. Stane se to i u manifestu, který se od přijatého liší jen verzí, a prohlížeč přitom neodešle žádný požadavek. Kontrola běží ve stránce a propustí jen soubor s typem **`text/xml`**, který dává dialog Windows. Automat, který soubor vloží do inputu, ho obvykle označí jako **`application/xml`**. Přebal soubor na `text/xml` a tentýž manifest projde.
+> **Ve zkratce.** Doplněk v **Integrated apps → Update add-in** aktualizuješ nahráním manifestu a každý soubor je hned odmítnut hláškou **„Invalid manifest file“**. Stane se to i u manifestu, který se od přijatého liší jen verzí, a prohlížeč přitom neodešle žádný požadavek. Kontrola běží ve stránce a dívá se na `File.type`. Rozšíření Claude in Chrome vložilo soubor jako **`application/xml`** a formulář ho odmítl. Tentýž obsah přebalený na **`text/xml`** prošel.
 
 ## Symptom
 
@@ -34,7 +34,7 @@ input.dispatchEvent(new Event('input', { bubbles: true }));
 input.dispatchEvent(new Event('change', { bubbles: true }));
 ```
 
-The form then shows "Uploading and validating" and, for a correct manifest, "Manifest file validated" followed by **Next → Accept and update**. With Playwright you can pass the type directly: `setInputFiles({ name, mimeType: 'text/xml', buffer })`.
+The form then shows "Uploading and validating" and, for a correct manifest, "Manifest file validated" followed by **Next → Accept and update**. Playwright's `setInputFiles` takes a file payload with an explicit type (`{ name, mimeType: 'text/xml', buffer }`). We have not tested that route against this form.
 
 ## Second trap in the same screen
 
