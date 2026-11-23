@@ -35,7 +35,7 @@ last-reviewed: 2026-11-23
    Any hit in HEAD means a rewrite will change your current tree – fix HEAD in a normal commit first.
 2. **Replace with a case-insensitive regex**, whole-word for short codes, and keep the shape of the match (lower case in → lower-case replacement out). Skip blobs with NUL bytes, and only *check* blobs that are not valid UTF-8 (decode as latin1) instead of re-encoding them.
 3. **Verify** after the import with the step 1 queries across all refs, and check that `git rev-parse HEAD^{tree}` is the same before and after.
-4. Then push with `--force-with-lease=<branch>:<old-hash>`, expire the reflog, and run `git gc --prune=now`. Old commits may still be served by the hosting provider by hash until its own garbage collection runs.
+4. Then push with `--force-with-lease=<branch>:<old-hash>`, expire the reflog, and run `git gc --prune=now`. The hosting provider may still serve old commits by their hash (on GitHub, removing cached views and unreachable commits goes through GitHub Support).
 
 ```js
 // fast-export stream filter: case-insensitive, whole word for short codes
