@@ -22,7 +22,7 @@ last-reviewed: 2026-11-23
 
 - The replace step searched exact strings (`Buffer.indexOf`, `sed s/ABC/XY/`, a `--replace-text` file with literal entries). Variants of case were listed by hand, and one was missing.
 - `git log -S<string>` is case-sensitive by default. It counts occurrences of exactly the strings you give it – the same list the replace used. A form missing from the list is invisible to both.
-- Adding `-i` naively does not help with short codes: a three-letter code as a case-insensitive substring also matches `mood`, `month`, base64 and hashes in lock files. Replacing those would change the tree of HEAD, which you normally must keep byte-identical.
+- Adding `-i` naively does not help with short codes: a three-letter code as a case-insensitive substring such as `ABC` also matches `cabcd`, `Fabcon`, base64 and hashes in lock files. Replacing those would change the tree of HEAD, which you normally must keep byte-identical.
 
 ## Fix
 
