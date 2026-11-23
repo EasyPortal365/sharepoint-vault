@@ -15,7 +15,7 @@ last-reviewed: 2026-11-23
 
 ## Symptom
 
-You rename a file in place (keeping the item, its ID and version history) and pass the new base name, the way the library form shows the *Name* field — without the extension:
+You rename a file in place (keeping the item, its ID and version history) and pass the new name without the extension:
 
 ```http
 POST …/_api/web/GetList('/sites/x/Docs')/items(2)/ValidateUpdateListItem
@@ -27,7 +27,7 @@ The call returns **200** with no field exception — and the file is now called 
 
 ## Cause
 
-SharePoint splits the value at the **first** dot: `F1` is taken as the base name and `.02 Sample procedure` as an "extension", which it then swaps for the file's real extension. Names without a dot (`Sample procedure`) work, which is why it slips through testing. Numbered document names (`F1.02 …`, `4.3 …`, `v1.2 …`) hit it every time.
+SharePoint splits the value at the **first** dot: `F1` is taken as the base name and `.02 Sample procedure` as an "extension", which it then swaps for the file's real extension. Numbered document names (`F1.02 …`, `4.3 …`, `v1.2 …`) are the typical victims.
 
 ## Fix
 
@@ -38,4 +38,4 @@ Send the complete file name, extension included — SharePoint keeps it as given
   "bNewDocumentUpdate": true }
 ```
 
-Always read `FileLeafRef` back after the call and compare it with what you sent; the 200 response alone proves nothing. `bNewDocumentUpdate: true` renames without creating a new version (the `Modified` stamp still changes).
+Always read `FileLeafRef` back after the call and compare it with what you sent; the 200 response alone proves nothing. With `bNewDocumentUpdate: true` the version label stayed the same in our test (no new version was created).
