@@ -2,7 +2,7 @@
 
 Every single thing in the vault, on one page. Section names link to folder READMEs; leaves link straight to the content.
 
-*Last updated: 2026-11-24*
+*Last updated: 2026-11-25*
 
 - 🧰 **[scripts/](scripts/)** — PowerShell scripts with comment-based help, read-only unless stated
   - [Terminal animations](scripts/media/) — the writing scripts as an animated PowerShell console; plain SVG, no JavaScript, respects `prefers-reduced-motion`
@@ -183,6 +183,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [Read opens old versions, Contribute deletes](gotchas/permissions/read-includes-old-versions-and-contribute-includes-delete.md) — The built-in Read level includes View Versions, so a reader opens an overwritten file's earlier content through `versions(<id>)/$value` or `_vti_history`; Read without View Versions blocks both and still opens the current file. Contribute without Delete Items and Delete Versions blocks delete, recycle, move and rename — but still allows overwriting someone else's file
     - [`BasePermissions` as strings 400s under OData v4](gotchas/permissions/role-definition-basepermissions-as-string-400s-under-odata-v4.md) — Under `OData-Version: 4.0` (the SPHttpClient default) `High`/`Low` must be numbers, or the Content-Type must carry `IEEE754Compatible=true`; measured A/B on POST /roledefinitions
     - [Classify consent errors in a multitenant SPA (AADSTS 90093, 90094, 65001…)](gotchas/permissions/spa-consent-errors-classify-aadsts.md) — A multitenant SPA that signs in with MSAL must turn "Need admin approval" into a clear "ask your Global Administrator" message; match AADSTS65001, 90093 (user consent turned off), 90094, 90095, 90099 and the risky-app codes 900941/900981, treat 65004 after the admin consent workflow as "waiting for admin", keep 90090 as a transient error — and test it with unit tests or a second tenant, because once tenant-wide consent exists your own tenant never shows these errors
+    - [`ApproveItems` alone does not show drafts](gotchas/permissions/approve-items-alone-does-not-show-drafts.md) — With content approval and `DraftVersionVisibility = Approver`, a role with Read + ApproveItems sees neither drafts nor pending files and its `Approve` returns 404; Read + EditListItems + ApproveItems works. An Edit member who is not the author sees only the last approved major. MERGE on `roledefinitions(id)` returns 204 but does not change the mask — measured live
   - **spfx/**
     - [A zip-bomb guard on a private JSZip field fails open](gotchas/spfx/zip-bomb-guard-reading-a-private-jszip-field.md) — `entry._data.uncompressedSize` is an implementation detail, and `undefined → allow` turns the next library upgrade into a silent loss of protection; read the declared sizes from the ZIP central directory instead
     - [Hand-built .docx / .pptx: the parts Office demands](gotchas/spfx/hand-built-ooxml-missing-parts.md) — Header images are referenced from the header's own rels, Content_Types must know the image extension, namespaces are per part, and a .pptx without theme + master + layout is invalid; split parts from zipping so a strict XML parser can check them in tests
