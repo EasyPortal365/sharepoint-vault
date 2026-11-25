@@ -53,7 +53,7 @@ X-RequestDigest: <digest>
 
 Two things that bite right after:
 
-- **Order.** A new node is appended to the end and the POST body carries no position. What worked for us: delete the node you want to end up last and re-create it after your own links — `POST web/navigation/getnodebyid(<id>)` with `X-HTTP-Method: DELETE` and `IF-MATCH: *`.
+- **Order.** The POST body carries no position: a new node goes to the end of the menu. The built-in **Site contents** link is the exception — measured on two sites, links added over REST landed *above* it and it stayed last. Delete it and create it again and that privilege is gone: your copy is an ordinary node, and anything added later sits below it. To reorder, delete the node that should end up last and re-create it after your own links — `POST web/navigation/getnodebyid(<id>)` with `X-HTTP-Method: DELETE` and `IF-MATCH: *`.
 - **Translations.** SharePoint localizes its own default nodes, so `Home` reads back as `Domovská stránka` under `Accept-Language: cs-CZ` without anyone setting it. A node you create yourself does not get that for free — it shows the same text in every language until you set the resource for each culture through `TitleResource.SetValueForUICulture` in a `ProcessQuery` call, exactly as for a list title.
 
 Verify by reading the collection **and** by loading the page. The read alone cannot tell you which collection the header uses.
@@ -62,4 +62,4 @@ Verify by reading the collection **and** by loading the page. The read alone can
 
 - Clean up what you wrote into the wrong collection. Leftover nodes in `topnavigationbar` are invisible on this site but will surface if the site is ever switched or its content is copied to a template.
 - Hub navigation is a store of its own again, maintained by the hub site — see [Hub nav audience targeting needs the hub nav editor](hub-nav-audience-targeting-needs-the-hub-nav-editor.md).
-- Re-read the menu once more some minutes after you finish. In our run two nodes we had not touched were gone from QuickLaunch between two reads, with no write of ours in between; re-creating them held. We could not reproduce it and have no cause to offer — only the advice to look again.
+- Re-read the menu once more a few minutes after you finish, and again after a page load. The collection is small and the read is cheap, and a site someone else is editing in the browser at the same time can lose a link you just created — the API will not tell you.
