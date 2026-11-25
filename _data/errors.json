@@ -487,6 +487,14 @@
     ]
   },
   {
+    "message": "Invalid request.",
+    "status": 200,
+    "source": "SharePoint CSOM",
+    "articles": [
+      "gotchas/rest-api/processquery-rejects-single-quoted-xml-attributes.md"
+    ]
+  },
+  {
     "message": "Invalid text value. A text field contains invalid data",
     "status": 500,
     "source": "SharePoint REST",
