@@ -59,4 +59,4 @@ Measured A/B on SharePoint Online, same node, same payload, only the quote chara
 
 - CSOM reports failures inside an HTTP 200 body. Parse the response array and check `ErrorInfo` on every element; a status check alone reports success for every one of these.
 - `Invalid request.` is the parser's generic answer and does not name the quoting specifically — only the A/B above ties it to that. If double quotes do not clear it, look at the object-path graph next: every `Id` has to be unique across `<Actions>` and `<ObjectPaths>`, and every `ObjectPathId` has to point at an `Id` that the same request declares.
-- Escape the values themselves (`&`, `<`, `>`, `"`) before you paste them into the XML — a title with an ampersand produces a different error, from the XML reader rather than from the client service.
+- Escape the values themselves (`&`, `<`, `>`, `"`) before you paste them into the XML; an unescaped one breaks the document before the client service gets to it.

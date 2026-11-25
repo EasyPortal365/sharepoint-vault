@@ -29,14 +29,9 @@ Every link returns `201 Created`. Reading the collection back returns all of the
 
 ## Cause
 
-A web has two separate node collections, and which one is rendered depends on the site, not on the name:
+A web has two separate node collections, and which one is rendered depends on the site, not on the name. Classically, `topnavigationbar` is the top link bar and `quicklaunch` the left-hand menu ([Overview of site navigation](https://learn.microsoft.com/sharepoint/sites/site-navigation-overview#common-navigation-controls)). On a modern communication site that pairing no longer holds: `HorizontalQuickLaunch` is `true`, and then **QuickLaunch is what the header draws**, horizontally, under the site title. TopNavigationBar keeps accepting writes — it is a real collection with real nodes — so nothing fails. It is just dead storage on that site.
 
-| Collection | Classic team site | Modern communication site |
-|---|---|---|
-| `web/navigation/topnavigationbar` | top link bar | **not rendered** (still writable) |
-| `web/navigation/quicklaunch` | left-hand menu | the horizontal menu under the site title |
-
-The switch is `HorizontalQuickLaunch`. Communication sites (`WebTemplate` `SITEPAGEPUBLISHING`, configuration `0`) have it set to `true` out of the box, and then QuickLaunch is what the header draws. TopNavigationBar keeps accepting writes — it is a real collection with real nodes — so nothing fails. It is just dead storage on that site.
+Measured in one tenant: five communication sites, all `SITEPAGEPUBLISHING#0`, all with `HorizontalQuickLaunch: true` and `MegaMenuEnabled: true`; a classic team site (`STS#0`) in the same tenant has `HorizontalQuickLaunch: false`. The flag is writable, so do not infer it from the template — read it.
 
 ## Fix
 
@@ -58,7 +53,7 @@ X-RequestDigest: <digest>
 
 Two things that bite right after:
 
-- **Order.** A new node is appended to the end; the REST API takes no position. To put your links above an existing one, delete that node and re-create it afterwards — `POST web/navigation/getnodebyid(<id>)` with `X-HTTP-Method: DELETE` and `IF-MATCH: *`.
+- **Order.** A new node is appended to the end and the POST body carries no position. What worked for us: delete the node you want to end up last and re-create it after your own links — `POST web/navigation/getnodebyid(<id>)` with `X-HTTP-Method: DELETE` and `IF-MATCH: *`.
 - **Translations.** SharePoint localizes its own default nodes, so `Home` reads back as `Domovská stránka` under `Accept-Language: cs-CZ` without anyone setting it. A node you create yourself does not get that for free — it shows the same text in every language until you set the resource for each culture through `TitleResource.SetValueForUICulture` in a `ProcessQuery` call, exactly as for a list title.
 
 Verify by reading the collection **and** by loading the page. The read alone cannot tell you which collection the header uses.
@@ -66,5 +61,5 @@ Verify by reading the collection **and** by loading the page. The read alone can
 ## Notes
 
 - Clean up what you wrote into the wrong collection. Leftover nodes in `topnavigationbar` are invisible on this site but will surface if the site is ever switched or its content is copied to a template.
-- Hub navigation is a third store again, maintained by the hub site and merged in above the site's own menu — see [Hub nav audience targeting needs the hub nav editor](hub-nav-audience-targeting-needs-the-hub-nav-editor.md).
-- The same `$select` tells you whether the site uses the mega menu (`MegaMenuEnabled`), which changes how sub-links are displayed but not which collection is read.
+- Hub navigation is a store of its own again, maintained by the hub site — see [Hub nav audience targeting needs the hub nav editor](hub-nav-audience-targeting-needs-the-hub-nav-editor.md).
+- Re-read the menu once more some minutes after you finish. In our run two nodes we had not touched were gone from QuickLaunch between two reads, with no write of ours in between; re-creating them held. We could not reproduce it and have no cause to offer — only the advice to look again.
