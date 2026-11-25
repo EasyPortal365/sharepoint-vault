@@ -2,7 +2,7 @@
 
 Every single thing in the vault, on one page. Section names link to folder READMEs; leaves link straight to the content.
 
-*Last updated: 2026-11-25*
+*Last updated: 2026-11-26*
 
 - 🧰 **[scripts/](scripts/)** — PowerShell scripts with comment-based help, read-only unless stated
   - [Terminal animations](scripts/media/) — the writing scripts as an animated PowerShell console; plain SVG, no JavaScript, respects `prefers-reduced-motion`
@@ -336,6 +336,7 @@ Every single thing in the vault, on one page. Section names link to folder READM
     - [Word — Paragraph.text includes deleted tracked text](gotchas/graph/word-paragraph-text-includes-deleted-tracked-changes.md) — In a document with tracked changes, Word's `Paragraph.text` also returns runs marked as deleted, so an AI or diff working from it sees both versions; read `getReviewedText('Current')` (WordApi 1.4) instead and trim the trailing paragraph mark
     - [Word — undo own tracked changes (no ids)](gotchas/graph/word-undo-tracked-changes-without-ids.md) — Ctrl+Z after a multi-batch Word add-in write needs several presses and works only with the cursor in the document text; to offer your own Undo, snapshot body.getTrackedChanges() before and after and identify changes by type, author and date, comparing text per group, because a comment over a paragraph can split an existing change into pieces
     - [Word — keep inline formatting when rewriting a paragraph](gotchas/graph/word-replace-paragraph-keeps-run-formatting.md) — Paragraph.insertText(text, 'Replace') keeps the paragraph style but writes plain runs, so bold passages, italics and hyperlinks inside the paragraph are lost (for example in a translation); read the inline formatting from body.getOoxml(), carry it through the rewrite as markers, then search only inside the range insertText returned and set font.bold, font.italic and hyperlink on the found passages
+    - [Office add-in stuck loading (CSP blocks MicrosoftAjax.js)](gotchas/graph/office-addin-csp-office-js-loads-microsoftajax.md) — Classic Outlook needs `ajax.aspnetcdn.com` (MicrosoftAjax.js) in `script-src`; Office.onReady never fires otherwise
   - **azure-functions/**
     - [Windows zip deploy breaks the running app](gotchas/azure-functions/windows-zip-deploy-breaks-running-app.md) — Live `wwwroot` file locks → whole app 503; re-run the deploy, prevent with `WEBSITE_RUN_FROM_PACKAGE=1`
     - [Verifying CORS by header presence passes every origin](gotchas/azure-functions/verifying-cors-by-header-presence-passes-every-origin.md) — The header comes back for every origin (servers answer with a fallback, not an omission), so presence proves nothing; compare it to the `Origin` you sent, keep at least one case that expects *allowed*, and point the probe at a nonexistent route to prove it can fail
