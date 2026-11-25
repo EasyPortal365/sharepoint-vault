@@ -20,9 +20,9 @@ last-reviewed: 2026-11-25
 
 ## Cause
 
-The guard loads a source module (here a provisioning service) through `require`, with a TypeScript transpile hook and stubbed `@microsoft/sp-http`. The new step imported a small helper, the helper imported a shared HTTP utility, and that utility imported the solution's i18n module – which imports `react` and a UI package for its hooks.
+The guard loads a source module (here a provisioning service) through `require`, with a TypeScript transpile hook and stubbed `@microsoft/sp-http`. The new step imported a small helper, the helper imported a shared HTTP utility, and that utility imported the solution's i18n module — which imports `react` and a UI package for its hooks.
 
-The guard also stubs `global.window = { localStorage: … }`, because the provisioning step reads a localStorage gate. That stub is the trigger. React DOM 17's scheduler checks `typeof window` when it loads: with no `window` it schedules with timers, with a `window` it opens a `MessageChannel`. An open `MessagePort` is an active handle, so the event loop never empties and the process never exits, even though every promise in the check has settled.
+The guard also stubs `global.window = { localStorage: … }`, because the provisioning step reads a localStorage gate. That stub is the trigger. React DOM 17's scheduler checks `typeof window` when it loads: with no `window` it schedules with timers, with a `window` it opens a `MessageChannel` (`scheduler` 0.20.2 nested in `react-dom` 17.0.1, `cjs/scheduler.development.js`: `typeof window === 'undefined' || typeof MessageChannel !== 'function'` selects the timer fallback). An open `MessagePort` is an active handle, so the event loop never empties and the process never exits, even though every promise in the check has settled.
 
 Measured (React 17.0.1, Node 24):
 
@@ -34,7 +34,7 @@ global.window = {}; require('react-dom')     -> active handles: [Socket, Message
 Finding it took a wrapper:
 
 ```js
-// hang-probe.js – run the guard, then print what keeps the process alive
+// hang-probe.js — run the guard, then print what keeps the process alive
 const t = setTimeout(() => {
   const hs = process._getActiveHandles().filter(h => h !== t);
   console.error(hs.map(h => h.constructor && h.constructor.name).join('\n'));
