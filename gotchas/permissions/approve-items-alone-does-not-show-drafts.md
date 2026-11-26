@@ -4,7 +4,7 @@ short-title: "`ApproveItems` alone does not show drafts"
 summary: "With content approval and `DraftVersionVisibility = Approver`, a role with Read + ApproveItems sees neither drafts nor pending files and its `Approve` returns 404; Read + EditListItems + ApproveItems works. An Edit member who is not the author sees only the last approved major. MERGE on `roledefinitions(id)` returns 204 but does not change the mask — measured live"
 tags: [permissions, rest-api, versioning, content-approval, drafts, role-definitions]
 applies-to: SharePoint Online document libraries with minor versions and content approval (`EnableModeration`), REST `Publish` / `Approve`
-last-reviewed: 2026-11-25
+last-reviewed: 2026-11-26
 ---
 
 # Content approval with drafts visible to approvers: `ApproveItems` alone shows no drafts — the approver also needs `EditListItems`
@@ -31,6 +31,7 @@ Side observations:
 
 - Overwriting an approved file with Edit Items in a moderated library creates a new draft (`1.2`); readers keep getting `1.0` until someone approves it.
 - `moveto` into a subfolder keeps the version history, the current draft, the moderation status and `UniqueId`.
+- Turning content approval on in a library that already has files (`EnableModeration: true`, `DraftVersionVisibility: 2`): every published major version gets `_ModerationStatus = 0` (Approved) right away and stays visible to readers. A draft (`0.1`) and a minor version on top of a major (`1.1`) stay at status 3 (Draft); readers then get `1.0` for that file. Nothing moves to Pending and no published file disappears. Only drafts that readers could see before get hidden.
 
 ## Second trap: updating a role definition's mask
 
