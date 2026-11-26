@@ -1,7 +1,7 @@
 ---
 title: System fields that start with an underscore are `OData__…` in REST – the bare name gives 400 on items and a silent `{}` on a file
 short-title: Underscore fields need the OData__ prefix
-summary: "`$select=_UIVersionString` or `_ModerationStatus` on `lists(...)/items` returns 400 \"field or property does not exist\"; on `GetFileBy…/ListItemAllFields` it returns 200 `{}` and silently drops the field – use `OData__UIVersionString` / `OData__ModerationStatus` (the response uses the same prefixed keys); `/fields` still lists the bare `InternalName`"
+summary: "`$select=_UIVersionString` or `_ModerationStatus` on `lists(...)/items` returns 400 \"field or property does not exist\"; on `GetFileBy…/ListItemAllFields` it returns 200 `{}` and silently drops the field – use `OData__UIVersionString` / `OData__ModerationStatus` (the response uses the same prefixed keys); `/fields` still lists the bare `InternalName`; file size is not `File_x0020_Size` (400) but `File/Length` with `$expand=File`"
 tags: [rest-api, lists, versioning, moderation, odata]
 applies-to: SharePoint Online
 last-reviewed: 2026-11-27
@@ -50,6 +50,17 @@ The response keys carry the same prefix, so read `item.OData__UIVersionString`, 
 - The bare name is still right in `/fields` (`InternalName`) and in `ValidateUpdateListItem` (`FieldName: "_ModerationStatus"`).
 - Build the test fixture for a new REST query from a **live response**, not from memory – otherwise the test confirms the author's assumption.
 - Moderation values: 0 approved, 1 rejected, 2 pending, 3 draft.
+
+## Same trap, different field: file size
+
+`File_x0020_Size` (the "File Size" column you see in library views) cannot be selected on `lists(...)/items` either – 400 in every library we tried, and neither `OData__File_x0020_Size` nor `SMTotalFileStreamSize` works. Read the size through the file:
+
+```
+GET _api/web/GetList('<library url>')/items?$select=Id,FileRef,FSObjType,File/Length&$expand=File
+→ 200  [{"Id":1,"ID":1}, {"File":{"Length":"30190"},"Id":2,…}]
+```
+
+`Length` comes back as a **string**, and folder rows have no `File` key at all.
 
 ## Related
 
