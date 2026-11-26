@@ -95,6 +95,7 @@ Every article carries frontmatter with `tags` and `applies-to`, so repo search g
 | [Horizontal menu renders QuickLaunch](rest-api/topnavigationbar-is-not-rendered-on-a-communication-site.md) | On a site with `HorizontalQuickLaunch = true` — every modern communication site — the menu under the site title comes from `web/navigation/quicklaunch`. Writes to `web/navigation/topnavigationbar` return 201 and read back fine, they are simply never rendered |
 | [Sharing links: rename yes, re-upload no](rest-api/sharing-links-survive-rename-not-reupload.md) | “Copy link” URLs resolve by the file's UniqueId – overwriting content (Files/add overwrite) or renaming (MoveTo) keeps them working, recycling the old file and uploading a new one breaks every link; readers get only “people with existing access” links |
 | [Copy with overwrite creates a new item](rest-api/copyto-overwrite-creates-a-new-item.md) | CopyTo/CopyToUsingPath over an existing file deletes the target item and inserts a new one (new Id, new UniqueId); overwrite content with Files/AddUsingPath or the flow action Update file instead |
+| [Underscore fields need the OData__ prefix](rest-api/underscore-system-fields-need-odata-prefix.md) | `$select=_UIVersionString` or `_ModerationStatus` on `lists(...)/items` returns 400 "field or property does not exist"; on `GetFileBy…/ListItemAllFields` it returns 200 `{}` and silently drops the field – use `OData__UIVersionString` / `OData__ModerationStatus` (the response uses the same prefixed keys); `/fields` still lists the bare `InternalName` |
 
 ### lists/
 
