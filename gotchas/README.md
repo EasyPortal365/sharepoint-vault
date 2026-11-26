@@ -93,6 +93,7 @@ Every article carries frontmatter with `tags` and `applies-to`, so repo search g
 | [Rename with FileLeafRef – send the extension](rest-api/rename-file-leafref-dot-in-name.md) | `FileLeafRef` without the extension cuts the name at the first dot (`F1.02 Plan` → `F1.docx`); always send the full name with its extension |
 | [ProcessQuery needs double-quoted attributes](rest-api/processquery-rejects-single-quoted-xml-attributes.md) | CSOM's `/_vti_bin/client.svc/ProcessQuery` accepts only `Name="value"`. The same payload with `Name='value'` — still well-formed XML — comes back as HTTP 200 with `ErrorMessage: Invalid request.` and no hint about the cause |
 | [Horizontal menu renders QuickLaunch](rest-api/topnavigationbar-is-not-rendered-on-a-communication-site.md) | On a site with `HorizontalQuickLaunch = true` — every modern communication site — the menu under the site title comes from `web/navigation/quicklaunch`. Writes to `web/navigation/topnavigationbar` return 201 and read back fine, they are simply never rendered |
+| [Sharing links: rename yes, re-upload no](rest-api/sharing-links-survive-rename-not-reupload.md) | “Copy link” URLs resolve by the file's UniqueId – overwriting content (Files/add overwrite) or renaming (MoveTo) keeps them working, recycling the old file and uploading a new one breaks every link; readers get only “people with existing access” links |
 
 ### lists/
 
