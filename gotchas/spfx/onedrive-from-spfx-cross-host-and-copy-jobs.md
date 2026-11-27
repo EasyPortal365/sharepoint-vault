@@ -44,7 +44,7 @@ The request body used for the copy test:
 ## What it means for an app
 
 - **Run the copy from the destination side.** Call `CreateCopyJobs` and `GetCopyJobProgress` on the destination site. That request is same-origin, so `SPHttpClient` handles it.
-- **Do not plan on REST calls to `-my` for listing files.** Neither cookies nor an SPFx-issued SharePoint token get there. Listing a OneDrive has to go another way, such as Microsoft Graph over the user's drive. That route was not measured here.
+- **Do not plan on REST calls to `-my` for listing files.** Neither cookies nor an SPFx-issued SharePoint token get there. Use Microsoft Graph over the user's drive instead (measured below).
 - **Admin access to another person's OneDrive is a separate step.** The copy runs with the caller's permissions, so the admin must first be added as site collection admin of that OneDrive. In the Microsoft 365 admin center this is **Users › Active users › (user) › OneDrive › Get access to files › Create link to files**. The same page notes that a manual **Move to** / **Copy to** moves only the latest version, so the copy job above is the way to keep the history ([Microsoft Learn: Give another employee access to OneDrive and Outlook data](https://learn.microsoft.com/microsoft-365/admin/add-users/remove-former-employee-step-5)). The SharePoint admin API lives on the `-admin` host, which is another origin, so the app cannot grant this access from the browser. It can only point the admin to the setting and check the result by reading.
 
 ## Can the app grant itself access? Not from the browser
@@ -63,8 +63,21 @@ The built-in automatic access delegation ([OneDrive retention and deletion](http
 
 So a "no admin clicks" OneDrive transfer needs an app-only identity: an application permission such as `Sites.FullControl.All` with a certificate, which means a backend. SPFx package permission requests (`webApiPermissionRequests`) are delegated only.
 
+## After the admin has been granted access
+
+Measured on a second user's OneDrive with a test folder. The admin was removed as site collection admin afterwards and the folders were deleted.
+
+| Step | Result |
+|---|---|
+| Direct link to the admin center page: `https://admin.cloud.microsoft/#/users/:/UserDetails/<objectId>/OneDrive` (object ID from the user profile property `msOnline-ObjectId`) | Opens the user's OneDrive tab with **Create link to files**. One click makes the caller site collection admin of that OneDrive |
+| Delegated Graph `GET /users/{upn}/drive` | `200` with access, `403 accessDenied` without it. A good access check for the app, because Graph is not bound to the browser origin |
+| Delegated Graph `GET /users/{upn}/drive/root/children` | Lists the content |
+| `CreateCopyJobs` on the destination site with the other user's OneDrive file as source | File arrives as version 2.0 with history 1.0, original dates kept |
+| Same with `MoveButKeepSource: false` | The source file is deleted right after the job. For "delete only after checking", copy first, check, then delete the source with Graph `DELETE /users/{upn}/drive/items/{id}` (`204`, goes to the OneDrive recycle bin) |
+| Source file with an organization view link, then copied | The destination file has `HasUniqueRoleAssignments: false` – sharing links are not carried over |
+| Removing yourself as site collection admin | Works only where you are admin (REST on the `-my` host: `/_api/web/getuserbyid(<id>)` with `X-HTTP-Method: MERGE` and `{ "__metadata": { "type": "SP.User" }, "IsSiteAdmin": false }`; `siteusers(<id>)` with MERGE returned 404). From a page on `<tenant>.sharepoint.com` this is cross-origin, so the app cannot do it |
+
 ## Not measured
 
-- A copy from someone else's OneDrive after access was granted. Only the caller's own OneDrive was tested.
 - Whether `CreateCopyJobs` accepts an app-only caller.
-- Whether Microsoft Graph listing of another user's drive works with delegated permissions once access is granted.
+- A fast way to count shared files in a large OneDrive.
