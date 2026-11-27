@@ -28,9 +28,9 @@ Also measured:
 
 - Same `SystemUpdate` as a **non-admin owner** (no site collection admin, mask `fffbffff`) – works.
 - On a file with a **draft on top** (2.1 over approved 2.0) `SystemUpdate` writes into the draft; 2.0 keeps the old value. Write **after** approval if readers must see it.
-- **Dates:** a `DateTime` parameter **without a time zone** (`2026-11-28T00:00:00`) is taken in the site's time zone – the library shows 28 Nov. An ISO value with `Z` is shifted by the site offset. (`ValidateUpdateListItem` instead wants the site *locale* format, e.g. `11/28/2026` – any other format fails the whole request.)
-- **Errors come in a 200.** A missing column returns HTTP 200 with `ErrorInfo.ErrorMessage` „Column 'X' does not exist“ and **nothing** is written – parse the body.
-- Address the file by **`GetFileById(UniqueId)`** – it does not care about `%` or `#` in the file name.
+- **Dates:** a `DateTime` parameter **without a time zone** (`2026-11-28T00:00:00`) is taken in the site's time zone – the library shows 28 Nov (stored as `2026-11-27T23:00:00Z` on a UTC+1 site). An ISO value with `Z` is taken as UTC (`…T00:00:00Z` came back unchanged), so on a site west of UTC the shown day moves back by one. (`ValidateUpdateListItem` instead wants the site *locale* format, e.g. `11/28/2026` – any other format fails the whole request.)
+- **Errors come in a 200.** A missing column returns HTTP 200 with `ErrorInfo.ErrorMessage` „Column 'X' does not exist“ – parse the body and treat the whole request as failed. An unknown file id answers the same way („File Not Found.“).
+- Address the file by **`GetFileById(UniqueId)`** – no file name or path in the request, so nothing to encode.
 
 ## The request
 
@@ -55,7 +55,7 @@ X-RequestDigest: {digest of THAT web – /_api/contextinfo}
 </Request>
 ```
 
-XML-escape the values (`&`, `<`, `>`, `"`). A Choice column takes the choice text as `String` – CSOM does not check it against the choices, so check it yourself first.
+XML-escape the values (`&`, `<`, `>`, `"`). A Choice column takes the choice text as `String` (measured), a Number column a `Double`. Check the value against the column's `Choices` yourself before writing – a value outside the choices was not tested.
 
 ## Rule
 
