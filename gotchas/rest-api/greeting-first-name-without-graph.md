@@ -1,7 +1,7 @@
 ---
 title: "Greeting by first name: the first word of the display name is often the surname — read `FirstName` from the User Information List, no Graph permission needed"
 short-title: "First name for a greeting without Graph: User Information List `FirstName`"
-summary: Tenants with display names like „Surname Firstname EXT“ make a first-word greeting address people by surname; currentuser Id + SiteUserInfoList/items(Id)?$select=FirstName works with plain site read access, GetMyProperties as a fallback, and the name stays blank until it arrives
+summary: Tenants with display names like „Surname Firstname EXT“ make a first-word greeting address people by surname; currentuser Id + SiteUserInfoList/items(Id)?$select=FirstName needs no Graph scope (SharePoint REST only), GetMyProperties as a fallback, and the name stays blank until it arrives
 tags: [rest-api, user-profile, user-information-list, spfx, ux]
 applies-to: SharePoint Online (REST from SPFx)
 last-reviewed: 2026-11-27
@@ -15,10 +15,12 @@ last-reviewed: 2026-11-27
 
 ## Measured (SharePoint Online, 2026-11-27, own tenant)
 
-- `SiteUserInfoList/items({currentuser Id})?$select=FirstName` returned the profile first name for a regular member of the site – no Graph scope, no admin consent, plain `SPHttpClient`.
+- `SiteUserInfoList/items({currentuser Id})?$select=FirstName` returned HTTP 200 with the profile first name for an account whose display name carries a suffix („Firstname Surname - GA“) – SharePoint REST only, no Graph scope, no admin consent.
+- `GetMyProperties` returned the same value in the `FirstName` profile property.
 
 Not measured (assumptions):
 
+- The measuring account was a tenant admin. A site member without admin rights was not measured; the code is written fail-safe for that case (empty value → fallback).
 - How quickly a changed `givenName` reaches the User Information List – the sync is background work and can lag.
 - Accounts without `givenName` (shared mailboxes, service accounts) give an empty value – that is why the fallbacks exist.
 
